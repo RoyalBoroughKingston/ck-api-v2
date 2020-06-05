@@ -44,6 +44,9 @@ class AppServiceProvider extends ServiceProvider
             case 'gov':
                 $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\GovNotifyEmailSender::class);
                 break;
+            case 'mailgun':
+                $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\MailgunEmailSender::class);
+                break;
             case 'null':
                 $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\NullEmailSender::class);
                 break;
@@ -58,6 +61,9 @@ class AppServiceProvider extends ServiceProvider
             case 'gov':
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\GovNotifySmsSender::class);
                 break;
+            case 'twilio':
+                $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\TwilioSmsSender::class);
+                break;
             case 'null':
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\NullSmsSender::class);
                 break;
@@ -66,6 +72,9 @@ class AppServiceProvider extends ServiceProvider
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\LogSmsSender::class);
                 break;
         }
+
+        // Variable substitution.
+        $this->app->bind(VariableSubstituter::class, DoubleParenthesisVariableSubstituter::class);
     }
 
     /**

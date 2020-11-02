@@ -18,7 +18,9 @@ class File extends Model implements Responsable
 
     const MIME_TYPE_PNG = 'image/png';
 
-    const MIME_TYPE_JPG = 'image/jpeg';
+    const MIME_TYPE_JPG = 'image/jpg';
+
+    const MIME_TYPE_JPEG = 'image/jpeg';
 
     const MIME_TYPE_SVG = 'image/svg+xml';
 
@@ -267,10 +269,10 @@ class File extends Model implements Responsable
     public static function extensionFromMime(string $mimeType, bool $withPeriod = true): string
     {
         $map = [
-            static::MIME_TYPE_JPG => '.jpg',
             static::MIME_TYPE_PNG => '.png',
             static::MIME_TYPE_SVG => '.svg',
             static::MIME_TYPE_JPG => '.jpg',
+            static::MIME_TYPE_JPEG => '.jpg',
             static::MIME_TYPE_TXT => '.txt',
         ];
 

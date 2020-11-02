@@ -21,7 +21,11 @@ class FileSchema extends Schema
                     ->format(Schema::FORMAT_UUID),
                 Schema::boolean('is_private'),
                 Schema::string('mime_type')
-                    ->enum(File::MIME_TYPE_PNG),
+                    ->enum(
+                        File::MIME_TYPE_PNG,
+                        File::MIME_TYPE_JPG,
+                        File::MIME_TYPE_JPEG
+                    ),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

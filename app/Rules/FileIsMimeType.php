@@ -44,6 +44,8 @@ class FileIsMimeType implements Rule
      */
     public function message()
     {
-        return "The :attribute must be of type $this->mimeTypes.";
+        $mimeTypes = implode(', ', $this->mimeTypes);
+
+        return "The :attribute must be of type $mimeTypes.";
     }
 }

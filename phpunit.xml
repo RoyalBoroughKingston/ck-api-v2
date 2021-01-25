@@ -31,8 +31,8 @@
 
         <server name="DB_HOST" value="mysql-testing"/>
         <server name="DB_PORT" value="3306"/>
-        <server name="DB_DATABASE" value="connected_kingston"/>
-        <server name="DB_USERNAME" value="connected_kingston"/>
+        <server name="DB_DATABASE" value="one_hounslow_connect"/>
+        <server name="DB_USERNAME" value="one_hounslow_connect"/>
         <server name="DB_PASSWORD" value="secret"/>
 
         <server name="FILESYSTEM_CLOUD" value="testing_cloud"/>

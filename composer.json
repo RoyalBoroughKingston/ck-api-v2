@@ -80,6 +80,7 @@
             "@fix:style --dry-run"
         ],
         "test:unit": [
+            "@php artisan cache:clear --env=testing",
             "@php vendor/bin/phpunit"
         ],
         "fix:style": [

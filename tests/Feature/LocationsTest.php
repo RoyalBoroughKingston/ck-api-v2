@@ -539,7 +539,6 @@ class LocationsTest extends TestCase
      * Upload a specific location's image.
      */
 
-
     public function test_organisation_admin_can_upload_image()
     {
         /** @var \App\Models\User $user */

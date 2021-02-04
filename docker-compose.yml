@@ -13,8 +13,6 @@ services:
       - redis
       - elasticsearch
     command: /usr/bin/supervisord
-    ports:
-      - 80:80
 
   queue-worker:
     image: one-hounslow-connect/api/app

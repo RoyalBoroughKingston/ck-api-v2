@@ -6,16 +6,13 @@ services:
     build:
       context: ./docker/app
       dockerfile: Dockerfile
-    environment:
-      IS_LOCAL: 'true'
     volumes:
       - .:/var/www/html
-    ports:
-      - '${APP_PORT}:80'
     depends_on:
       - mysql
       - redis
       - elasticsearch
+    command: /usr/bin/supervisord
 
   queue-worker:
     image: one-hounslow-connect/api/app
@@ -23,7 +20,6 @@ services:
       - .:/var/www/html
     command: php artisan queue:work --queue=default,search,notifications --tries=1
     depends_on:
-      - app
       - mysql
       - redis
       - elasticsearch
@@ -34,7 +30,6 @@ services:
       - .:/var/www/html
     command: php artisan ck:run-scheduler
     depends_on:
-      - app
       - mysql
       - redis
       - elasticsearch
@@ -56,8 +51,6 @@ services:
       MYSQL_PASSWORD: '${DB_PASS}'
     volumes:
       - mysql-data:/var/lib/mysql
-    ports:
-      - '${DB_PORT}:3306'
 
   mysql-testing:
     image: mysql:5.7
@@ -82,18 +75,6 @@ services:
       discovery.type: single-node
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - '${ELASTICSEARCH_PORT}:9200'
-
-  kibana:
-    image: kibana:7.9.3
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    ports:
-      - '${KIBANA_PORT}:5601'
-    depends_on:
-      - elasticsearch
 
   troposphere:
     image: one-hounslow-connect/api/troposphere
@@ -102,7 +83,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./aws:/tmp
-    command: 'python ${CFN_TEMPLATE}.py'
+    command: python ${CFN_TEMPLATE}.py
 
 volumes:
   mysql-data:

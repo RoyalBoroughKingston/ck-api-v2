@@ -13,8 +13,6 @@ services:
       - redis
       - elasticsearch
     command: /usr/bin/supervisord
-    ports:
-      - 80:${APP_PORT}
 
   queue-worker:
     image: one-hounslow-connect/api/app
@@ -53,8 +51,6 @@ services:
       MYSQL_PASSWORD: '${DB_PASS}'
     volumes:
       - mysql-data:/var/lib/mysql
-    ports:
-      - 3306:${DB_PORT}
 
   mysql-testing:
     image: mysql:5.7

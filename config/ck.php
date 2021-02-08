@@ -77,126 +77,126 @@ return [
      */
     'notifications_template_ids' => [
         'password_reset' => [
-            'email' => '8bc73398-f16d-42b0-8ef1-85aafef7d2b4',
+            'email' => env('NOTIFICATION_TEMPLATE_PASSWORD_RESET_EMAIL'),
         ],
         'otp_login_code' => [
-            'sms' => '74a989eb-db89-4000-8d69-fa90826cb9b9',
+            'sms' => env('NOTIFICATION_TEMPLATE_OTP_LOGIN_SMS'),
         ],
         'referral_created' => [
             'notify_client' => [
-                'email' => '48dce378-91de-4bf9-9ac8-77ec76229221',
-                'sms' => 'bb71dc5b-1a30-4681-bf8a-69dac4494b26',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_CREATED_NOTIFY_CLIENT_EMAIL'),
+                'sms' => env('NOTIFICATION_TEMPLATE_REFERRAL_CREATED_NOTIFY_CLIENT_SMS'),
             ],
             'notify_referee' => [
-                'email' => '9e38d7db-8a61-44cb-8169-8a4ecf6661f7',
-                'sms' => '00664af2-4593-47ef-8e80-13b8b0f3981e',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_CREATED_NOTIFY_REFEREE_EMAIL'),
+                'sms' => env('NOTIFICATION_TEMPLATE_REFERRAL_CREATED_NOTIFY_REFEREE_SMS'),
             ],
             'notify_service' => [
-                'email' => 'ef7c27d0-d731-49e3-b4ff-60e1fee686e5',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_CREATED_NOTIFY_SERVICE_EMAIL'),
             ],
         ],
         'referral_unactioned' => [
             'notify_service' => [
-                'email' => '6edd8392-a138-462c-a952-308a6746c669',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_UNACTIONED_NOTIFY_SERVICE_EMAIL'),
             ],
         ],
         'referral_still_unactioned' => [
             'notify_global_admin' => [
-                'email' => '26979e76-1739-4824-9687-cdb528bf6e5b',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_STILL_UNACTIONED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'referral_completed' => [
             'notify_client' => [
-                'email' => 'f0bc02af-4b57-4b7e-96fa-987408b7fb7f',
-                'sms' => '763be3c9-90cb-486b-a2f2-d2f4e68ded0c',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_COMPLETED_NOTIFY_CLIENT_EMAIL'),
+                'sms' => env('NOTIFICATION_TEMPLATE_REFERRAL_COMPLETED_NOTIFY_CLIENT_SMS'),
             ],
             'notify_referee' => [
-                'email' => '53e08e71-828c-4889-ba43-5aae50dc1bd5',
-                'sms' => 'f85f8eb0-5d7f-4b25-8e49-e564e2ed96d4',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_COMPLETED_NOTIFY_REFEREE_EMAIL'),
+                'sms' => env('NOTIFICATION_TEMPLATE_REFERRAL_COMPLETED_NOTIFY_REFEREE_SMS'),
             ],
         ],
         'referral_incompleted' => [
             'notify_client' => [
-                'email' => '50998ddc-0155-40e2-bba5-164f3378806a',
-                'sms' => '4bea0fdb-e02c-48d3-b900-b6d96829910d',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_INCOMPLETED_NOTIFY_CLIENT_EMAIL'),
+                'sms' => env('NOTIFICATION_TEMPLATE_REFERRAL_INCOMPLETED_NOTIFY_CLIENT_SMS'),
             ],
             'notify_referee' => [
-                'email' => '061ff344-9964-4a96-9bf3-6f9322610713',
-                'sms' => '0eef2dad-1dbf-4cf4-8278-83e9c038c13e',
+                'email' => env('NOTIFICATION_TEMPLATE_REFERRAL_INCOMPLETED_NOTIFY_REFEREE_EMAIL'),
+                'sms' => env('NOTIFICATION_TEMPLATE_REFERRAL_INCOMPLETED_NOTIFY_REFEREE_SMS'),
             ],
         ],
         'page_feedback_received' => [
             'notify_global_admin' => [
-                'email' => 'ac05c50a-1b67-4e76-8d56-9da72fef57b7',
+                'email' => env('NOTIFICATION_TEMPLATE_PAGE_FEEDBACK_RECEIVED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'update_request_received' => [
             'notify_submitter' => [
-                'email' => '14468224-add5-494f-af4d-10b30b1bf74c',
+                'email' => env('NOTIFICATION_TEMPLATE_UPDATE_REQUEST_RECEIVED_NOTIFY_SUBMITTER_EMAIL'),
             ],
             'notify_global_admin' => [
-                'email' => '8f562f1f-a215-47a7-a370-7d23cd4af779',
+                'email' => env('NOTIFICATION_TEMPLATE_UPDATE_REQUEST_RECEIVED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'update_request_approved' => [
             'notify_submitter' => [
-                'email' => '197eb9e6-6fe0-4b6b-af4e-397f3ea7124c',
+                'email' => env('NOTIFICATION_TEMPLATE_UPDATE_REQUEST_APPROVED_NOTIFY_SUBMITTER_EMAIL'),
             ],
         ],
         'update_request_rejected' => [
             'notify_submitter' => [
-                'email' => 'fb265b95-9911-4c85-bd36-65b0a7128e65',
+                'email' => env('NOTIFICATION_TEMPLATE_UPDATE_REQUEST_REJECTED_NOTIFY_SUBMITTER_EMAIL'),
             ],
         ],
         'user_created' => [
             'notify_user' => [
-                'email' => '2e2ae951-4f26-402e-9251-912880900637',
+                'email' => env('NOTIFICATION_TEMPLATE_USER_CREATED_NOTIFY_USER_EMAIL'),
             ],
         ],
         'user_roles_updated' => [
             'notify_user' => [
-                'email' => 'aacadcd9-81ab-42cc-a306-87dae5a3de64',
+                'email' => env('NOTIFICATION_TEMPLATE_USER_ROLES_UPDATED_NOTIFY_USER_EMAIL'),
             ],
         ],
         'service_created' => [
             'notify_global_admin' => [
-                'email' => '20e32c1d-667c-4e82-9a71-c4730329af91',
+                'email' => env('NOTIFICATION_TEMPLATE_SERVICE_CREATED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'service_update_prompt' => [
             'notify_service_admin' => [
-                'email' => '2e028fb4-24ca-4665-8d67-48363f9dfe15',
+                'email' => env('NOTIFICATION_TEMPLATE_SERVICE_UPDATE_PROMPT_NOTIFY_SERVICE_ADMIN_EMAIL'),
             ],
             'notify_global_admin' => [
-                'email' => '8557ae00-57d2-4880-a4d4-357663bc86b9',
+                'email' => env('NOTIFICATION_TEMPLATE_SERVICE_UPDATE_PROMPT_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'stale_service_disabled' => [
             'notify_global_admin' => [
-                'email' => '03a062c3-0172-4604-9f38-9c8490fdc96f',
+                'email' => env('NOTIFICATION_TEMPLATE_STALE_SERVICE_DISABLED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'scheduled_report_generated' => [
             'notify_global_admin' => [
-                'email' => '6d0f4c77-6a82-4a12-8056-b51fa93bb20d',
+                'email' => env('NOTIFICATION_TEMPLATE_SCHEDULED_REPORT_GENERATED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'organisation_sign_up_form_received' => [
             'notify_submitter' => [
-                'email' => '3e710bf7-750c-4499-a5a0-c0b3c76eb2dd',
+                'email' => env('NOTIFICATION_TEMPLATE_ORGANISATION_SIGNUP_RECEIVED_NOTIFY_SUBMITTER_EMAIL'),
             ],
             'notify_global_admin' => [
-                'email' => '176b47e3-fdc4-485c-97f8-c3a33a229c86',
+                'email' => env('NOTIFICATION_TEMPLATE_ORGANISATION_SIGNUP_RECEIVED_NOTIFY_GLOBAL_ADMIN_EMAIL'),
             ],
         ],
         'organisation_sign_up_form_approved' => [
             'notify_submitter' => [
-                'email' => '0a52c55d-237c-4427-9a3d-f375be41d06d',
+                'email' => env('NOTIFICATION_TEMPLATE_ORGANISATION_SIGNUP_APPROVED_NOTIFY_SUBMITTER_EMAIL'),
             ],
         ],
         'organisation_sign_up_form_rejected' => [
             'notify_submitter' => [
-                'email' => '57130622-53ad-409c-ba24-410cb4426594',
+                'email' => env('NOTIFICATION_TEMPLATE_ORGANISATION_SIGNUP_REJECTED_NOTIFY_SUBMITTER_EMAIL'),
             ],
         ],
     ],

@@ -9,6 +9,12 @@
 # Bail out on first error.
 set -e
 
+# Log in to Docker Hub
+if ! [ -z "${DOCKER_USER}" ] && ! [ -z "${DOCKER_PWD}" ];  then
+    echo "Logging into Docker as ${DOCKER_USER}"
+    docker login --username "${DOCKER_USER}"  --password "${DOCKER_PWD}"
+fi
+
 # Package the app.
 echo "Packaging the app..."
 cd ${TRAVIS_BUILD_DIR}

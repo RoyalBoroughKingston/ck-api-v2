@@ -77,128 +77,127 @@ return [
      */
     'notifications_template_ids' => [
         'password_reset' => [
-            'email' => '5018a240-1c8e-4cb9-9322-f4f465c4500f',
+            'email' => '8bc73398-f16d-42b0-8ef1-85aafef7d2b4',
         ],
         'otp_login_code' => [
-            'sms' => '7b86b267-d0c9-434f-843d-c05b4d065c9a',
+            'sms' => '74a989eb-db89-4000-8d69-fa90826cb9b9',
         ],
         'referral_created' => [
             'notify_client' => [
-                'email' => '7e46d4d4-ce3f-475f-9416-fa35f2d5a65f',
-                'sms' => '8ab81261-3b84-4cc9-8c76-d9aa85aa6aaa',
+                'email' => '48dce378-91de-4bf9-9ac8-77ec76229221',
+                'sms' => 'bb71dc5b-1a30-4681-bf8a-69dac4494b26',
             ],
             'notify_referee' => [
-                'email' => '6b789487-da89-4bee-8061-8af31c84cbfe',
-                'sms' => '354e712f-a435-4ac6-9b18-52018992fcaf',
+                'email' => '9e38d7db-8a61-44cb-8169-8a4ecf6661f7',
+                'sms' => '00664af2-4593-47ef-8e80-13b8b0f3981e',
             ],
             'notify_service' => [
-                'email' => '8fc13a1c-1194-4a7e-849c-42412bf1ede7',
+                'email' => 'ef7c27d0-d731-49e3-b4ff-60e1fee686e5',
             ],
         ],
         'referral_unactioned' => [
             'notify_service' => [
-                'email' => '30a5e55f-0e56-4387-9cf3-3eb4ed83b115',
+                'email' => '6edd8392-a138-462c-a952-308a6746c669',
             ],
         ],
         'referral_still_unactioned' => [
             'notify_global_admin' => [
-                'email' => 'd13651c2-93fd-4ace-8a19-2e83f7e30ca1',
+                'email' => '26979e76-1739-4824-9687-cdb528bf6e5b',
             ],
         ],
         'referral_completed' => [
             'notify_client' => [
-                'email' => '6cde8dcc-3458-4190-a42a-a2a62fcbb37e',
-                'sms' => '33d7f0a0-dfe3-41ff-b7a3-a16e570317f2',
+                'email' => 'f0bc02af-4b57-4b7e-96fa-987408b7fb7f',
+                'sms' => '763be3c9-90cb-486b-a2f2-d2f4e68ded0c',
             ],
             'notify_referee' => [
-                'email' => 'ccdab7ea-4a16-4add-a4b0-bdb8f056b31d',
-                'sms' => 'adf7ea2f-8ebc-4429-baf9-c15eece24e1f',
+                'email' => '53e08e71-828c-4889-ba43-5aae50dc1bd5',
+                'sms' => 'f85f8eb0-5d7f-4b25-8e49-e564e2ed96d4',
             ],
         ],
         'referral_incompleted' => [
             'notify_client' => [
-                'email' => '69e6a891-21e1-402b-8670-71b651218507',
-                'sms' => 'b9d203fa-2db1-4baf-aa1a-0ef7a8a8ecdc',
+                'email' => '50998ddc-0155-40e2-bba5-164f3378806a',
+                'sms' => '4bea0fdb-e02c-48d3-b900-b6d96829910d',
             ],
             'notify_referee' => [
-                'email' => '2fee9310-d1d5-4cd2-8b2e-88a03fabf111',
-                'sms' => '4429932d-fbe7-401e-9b30-7d15df08647c',
+                'email' => '061ff344-9964-4a96-9bf3-6f9322610713',
+                'sms' => '0eef2dad-1dbf-4cf4-8278-83e9c038c13e',
             ],
         ],
         'page_feedback_received' => [
             'notify_global_admin' => [
-                'email' => '55af8b8f-1b36-4854-8cce-07d998fdd82a',
+                'email' => 'ac05c50a-1b67-4e76-8d56-9da72fef57b7',
             ],
         ],
         'update_request_received' => [
             'notify_submitter' => [
-                'email' => 'e6cd56cc-6259-4cc7-9568-7c48a4988abc',
+                'email' => '14468224-add5-494f-af4d-10b30b1bf74c',
             ],
             'notify_global_admin' => [
-                'email' => '9d6c6177-37af-47f0-b097-bffd430a48cc',
+                'email' => '8f562f1f-a215-47a7-a370-7d23cd4af779',
             ],
         ],
         'update_request_approved' => [
             'notify_submitter' => [
-                'email' => 'e26647a6-97e9-4ab0-bedd-e924b4d03742',
+                'email' => '197eb9e6-6fe0-4b6b-af4e-397f3ea7124c',
             ],
         ],
         'update_request_rejected' => [
             'notify_submitter' => [
-                'email' => '4b9a76de-f869-4327-8563-51ebdf9d13f6',
+                'email' => 'fb265b95-9911-4c85-bd36-65b0a7128e65',
             ],
         ],
         'user_created' => [
             'notify_user' => [
-                'email' => '7bb4074d-ffe8-4c80-baac-fbeb92be3ef9',
+                'email' => '2e2ae951-4f26-402e-9251-912880900637',
             ],
         ],
         'user_roles_updated' => [
             'notify_user' => [
-                'email' => '9018cd8d-46fd-47e7-baa3-1ac6d3b6d943',
+                'email' => 'aacadcd9-81ab-42cc-a306-87dae5a3de64',
             ],
         ],
         'service_created' => [
             'notify_global_admin' => [
-                'email' => 'e659e10a-f7b3-4f86-a5fa-289cfef1cf3f',
+                'email' => '20e32c1d-667c-4e82-9a71-c4730329af91',
             ],
         ],
         'service_update_prompt' => [
             'notify_service_admin' => [
-                'email' => '647ab603-26c9-4620-a1ad-ab91909bd605',
+                'email' => '2e028fb4-24ca-4665-8d67-48363f9dfe15',
             ],
             'notify_global_admin' => [
-                'email' => 'd4a30c4f-e32b-4b69-ad19-ce7bd6c70e81',
+                'email' => '8557ae00-57d2-4880-a4d4-357663bc86b9',
             ],
         ],
         'stale_service_disabled' => [
             'notify_global_admin' => [
-                'email' => 'e1686c8c-926e-4ec3-bf1f-4ff906e93b76',
+                'email' => '03a062c3-0172-4604-9f38-9c8490fdc96f',
             ],
         ],
         'scheduled_report_generated' => [
             'notify_global_admin' => [
-                'email' => 'fa6f064a-6b63-4dc0-a83d-602e9cbb5bfe',
+                'email' => '6d0f4c77-6a82-4a12-8056-b51fa93bb20d',
             ],
         ],
         'organisation_sign_up_form_received' => [
             'notify_submitter' => [
-                'email' => 'a6834de1-7144-4183-b3ce-edf481ef6953',
+                'email' => '3e710bf7-750c-4499-a5a0-c0b3c76eb2dd',
             ],
             'notify_global_admin' => [
-                'email' => '0eb7828f-b28f-4c0c-acbe-62c7fbcc0be7',
+                'email' => '176b47e3-fdc4-485c-97f8-c3a33a229c86',
             ],
         ],
         'organisation_sign_up_form_approved' => [
             'notify_submitter' => [
-                'email' => '18815d90-b2b9-4205-9784-f0e05e801599',
+                'email' => '0a52c55d-237c-4427-9a3d-f375be41d06d',
             ],
         ],
         'organisation_sign_up_form_rejected' => [
             'notify_submitter' => [
-                'email' => '6575fea8-5517-41fa-b78d-0c77cdc5d533',
+                'email' => '57130622-53ad-409c-ba24-410cb4426594',
             ],
         ],
     ],
-
 ];

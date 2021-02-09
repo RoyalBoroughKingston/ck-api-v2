@@ -12,7 +12,7 @@ set -e
 # Log in to Docker Hub
 if [ ! -z "${DOCKER_USER}" ] && [ ! -z "${DOCKER_PWD}" ];  then
     echo "Logging into Docker as ${DOCKER_USER}"
-    docker login --username "${DOCKER_USER}" --password '${DOCKER_PWD}'
+    echo ${DOCKER_PWD} | docker login --username "${DOCKER_USER}" --password-stdin
 fi
 
 # Package the app.

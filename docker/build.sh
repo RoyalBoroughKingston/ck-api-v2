@@ -10,7 +10,7 @@
 set -e
 
 # Log in to Docker Hub
-if ! [ -z "${DOCKER_USER}" ] && ! [ -z "${DOCKER_PWD}" ];  then
+if [ ! -z "${DOCKER_USER}" ] && [ ! -z "${DOCKER_PWD}" ];  then
     echo "Logging into Docker as ${DOCKER_USER}"
     docker login --username "${DOCKER_USER}"  --password "${DOCKER_PWD}"
 fi

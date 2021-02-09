@@ -1,6 +1,6 @@
 # One Hounslow Connect
 
-A scheme run by Hounclow to help residents take control of their own health
+A scheme run by Hounslow to help residents take control of their own health
 by connecting them with services and events in their local area. This
 system forms the online aspect of this scheme, by providing an API as
 well a frontend and backend web app.

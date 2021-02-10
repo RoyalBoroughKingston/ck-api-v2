@@ -246,7 +246,6 @@ class BatchUploader
                 $serviceArray['Organisation ID*'] &&
                 $serviceArray['Name*'];
         })->map(function (array $serviceArray) use ($organisations): Service {
-
             $organisationId = $organisations->first(function (Organisation $organisation) use ($serviceArray): bool {
                 return $organisation->_id == $serviceArray['Organisation ID*'];
             })->id;

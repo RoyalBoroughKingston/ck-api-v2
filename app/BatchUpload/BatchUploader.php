@@ -241,7 +241,11 @@ class BatchUploader
     protected function processServices(array $services, EloquentCollection $organisations): EloquentCollection
     {
         $services = new EloquentCollection($services);
-        $services = $services->map(function (array $serviceArray) use ($organisations): Service {
+        $services = $services->filter(function ($serviceArray) {
+            return $serviceArray['ID*'] &&
+                $serviceArray['Organisation ID*'] &&
+                $serviceArray['Name*'];
+        })->map(function (array $serviceArray) use ($organisations): Service {
             $organisationId = $organisations->first(function (Organisation $organisation) use ($serviceArray): bool {
                 return $organisation->_id == $serviceArray['Organisation ID*'];
             })->id;
@@ -264,21 +268,21 @@ class BatchUploader
                 'organisation_id' => $organisationId,
                 'slug' => $slug,
                 'name' => $serviceArray['Name*'],
-                'status' => $serviceArray['Status*'],
+                'status' => $serviceArray['Status*'] ?: Service::STATUS_ACTIVE,
                 'intro' => Str::limit($serviceArray['Intro*'], 250),
                 'description' => $serviceArray['Description*'],
                 'wait_time' => $this->parseWaitTime($serviceArray['Wait Time']),
                 'is_free' => $isFree,
-                'fees_text' => !$isFree ? $serviceArray['Fees Text'] : null,
+                'fees_text' => !$isFree ? Str::limit($serviceArray['Fees Text'], 250) : null,
                 'fees_url' => !$isFree ? $serviceArray['Fees URL'] : null,
                 'testimonial' => $serviceArray['Testimonial'],
                 'video_embed' => $serviceArray['Video Embed'],
                 'url' => $serviceArray['URL*'],
-                'contact_name' => $serviceArray['Contact Name*'],
-                'contact_phone' => $serviceArray['Contact Phone*'],
-                'contact_email' => $serviceArray['Contact Email*'],
+                'contact_name' => $serviceArray['Contact Name'],
+                'contact_phone' => $serviceArray['Contact Phone'],
+                'contact_email' => $serviceArray['Contact Email'],
                 'show_referral_disclaimer' => $serviceArray['Show Referral Disclaimer*'] == 'yes',
-                'referral_method' => $serviceArray['Referral Method*'],
+                'referral_method' => $serviceArray['Referral Method*'] ?: Service::REFERRAL_METHOD_NONE,
                 'referral_button_text' => !$isNone ? 'Make referral' : null,
                 'referral_email' => $isInternal ? $serviceArray['Referral Email'] : null,
                 'referral_url' => $isExternal ? $serviceArray['Referral URL'] : null,
@@ -424,7 +428,9 @@ class BatchUploader
     ): EloquentCollection {
         $serviceLocations = new EloquentCollection($serviceLocations);
 
-        $serviceLocations = $serviceLocations->map(function (array $serviceLocationArray) use ($services, $locations): ServiceLocation {
+        $serviceLocations = $serviceLocations->filter(function ($serviceLocationArray) {
+            return $serviceLocationArray['Service ID*'] && $serviceLocationArray['Location ID*'];
+        })->map(function (array $serviceLocationArray) use ($services, $locations): ServiceLocation {
             $serviceId = $services->first(function (Service $service) use ($serviceLocationArray): bool {
                 return $service->_id == $serviceLocationArray['Service ID*'];
             })->id;

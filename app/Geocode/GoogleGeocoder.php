@@ -57,7 +57,7 @@ class GoogleGeocoder extends Geocoder
         if (count($results) === 0) {
             $this->saveToCache($address, null);
 
-            throw new AddressNotFoundException();
+            throw new AddressNotFoundException($this->normaliseAddress($address));
         }
 
         // Get the latitude and longitude.

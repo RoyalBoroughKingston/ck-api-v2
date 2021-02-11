@@ -233,7 +233,7 @@ def create_launch_template_resource(template, api_launch_template_name_variable,
             'LaunchTemplate',
             LaunchTemplateName=api_launch_template_name_variable,
             LaunchTemplateData=ec2.LaunchTemplateData(
-                ImageId='ami-0f82969826859fb14',
+                ImageId='ami-0c15700b4e6bf474e',
                 InstanceType=Ref(api_instance_class_parameter),
                 IamInstanceProfile=ec2.IamInstanceProfile(
                     Arn=GetAtt(ec2_instance_profile_resource, 'Arn')
@@ -637,7 +637,7 @@ def create_autoscaling_group_resource(template, api_instance_count_parameter, la
                 LaunchTemplateId=Ref(launch_template_resource),
                 Version=GetAtt(launch_template_resource, 'LatestVersionNumber')
             ),
-            AvailabilityZones=['eu-west-2a', 'eu-west-2b', 'eu-west-2c']
+            AvailabilityZones=['eu-west-1a', 'eu-west-1b', 'eu-west-1c']
         )
     )
 

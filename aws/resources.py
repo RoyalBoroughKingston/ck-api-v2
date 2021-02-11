@@ -233,7 +233,7 @@ def create_launch_template_resource(template, api_launch_template_name_variable,
             'LaunchTemplate',
             LaunchTemplateName=api_launch_template_name_variable,
             LaunchTemplateData=ec2.LaunchTemplateData(
-                ImageId='ami-005383956f2e5fb96',
+                ImageId='ami-0f82969826859fb14',
                 InstanceType=Ref(api_instance_class_parameter),
                 IamInstanceProfile=ec2.IamInstanceProfile(
                     Arn=GetAtt(ec2_instance_profile_resource, 'Arn')

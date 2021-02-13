@@ -13,9 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('oauth/clients', 'Passport\\ClientController@index');
+// OAuth.
+Route::get('/oauth/clients', 'Passport\\ClientController@index');
 
-Route::prefix('core/v1')
+// Meta.
+Route::post('/_exception', 'MetaController@exception');
+
+// Core.
+Route::prefix('/core/v1')
     ->namespace('Core\\V1')
     ->name('core.v1.')
     ->group(

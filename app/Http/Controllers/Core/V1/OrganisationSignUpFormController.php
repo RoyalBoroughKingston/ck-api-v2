@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Core\V1;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganisationSignUpForm\StoreRequest;
+use App\Http\Resources\UserResource;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Models\Organisation;
 use App\Models\UpdateRequest;
+use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -28,27 +31,39 @@ class OrganisationSignUpFormController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            /** @var \App\Models\UpdateRequest $updateRequest */
-            $updateRequest = UpdateRequest::create([
-                'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
-                'data' => [
-                    'user' => [
-                        'first_name' => $request->input('user.first_name'),
-                        'last_name' => $request->input('user.last_name'),
-                        'email' => $request->input('user.email'),
-                        'phone' => $request->input('user.phone'),
-                        'password' => bcrypt($request->input('user.password')),
-                    ],
-                    'organisation' => [
-                        'slug' => $request->input('organisation.slug'),
-                        'name' => $request->input('organisation.name'),
-                        'description' => sanitize_markdown(
-                            $request->input('organisation.description')
-                        ),
-                        'url' => $request->input('organisation.url'),
-                        'email' => $request->input('organisation.email'),
-                        'phone' => $request->input('organisation.phone'),
-                    ],
+            $user = User::create([
+                'first_name' => $request->input('user.first_name'),
+                'last_name' => $request->input('user.last_name'),
+                'email' => $request->input('user.email'),
+                'phone' => $request->input('user.phone'),
+                'password' => bcrypt($request->input('user.password')),
+            ]);
+
+            event(EndpointHit::onCreate($request, "Created user [{$user->id}]", $user));
+
+            if ($request->has('organisation.id')) {
+                $organisation = Organisation::find($request->input('organisation.id'));
+            }
+
+            if ($request->has('organisation.slug')) {
+                $organisation = Organisation::create([
+                    'slug' => $request->input('organisation.slug'),
+                    'name' => $request->input('organisation.name'),
+                    'description' => sanitize_markdown(
+                        $request->input('organisation.description')
+                    ),
+                    'url' => $request->input('organisation.url'),
+                    'email' => $request->input('organisation.email'),
+                    'phone' => $request->input('organisation.phone'),
+                ]);
+
+                event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
+            }
+
+            $user->makeOrganisationAdmin($organisation);
+
+            if ($request->has('service')) {
+                $updateData = [
                     'service' => [
                         'slug' => $request->input('service.slug'),
                         'name' => $request->input('service.name'),
@@ -106,18 +121,26 @@ class OrganisationSignUpFormController extends Controller
                             $request->input('service.social_medias')
                         ),
                     ],
-                ],
-            ]);
+                ];
 
-            event(
-                EndpointHit::onCreate(
-                    $request,
-                    "Submitted organisation sign up form [{$updateRequest->id}]",
-                    $updateRequest
-                )
-            );
+                /** @var \App\Models\UpdateRequest $updateRequest */
+                $updateRequest = UpdateRequest::create([
+                    'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
+                    'data' => $updateData,
+                ]);
 
-            return new UpdateRequestReceived($updateRequest, Response::HTTP_CREATED);
+                event(
+                    EndpointHit::onCreate(
+                        $request,
+                        "Submitted organisation sign up form [{$updateRequest->id}]",
+                        $updateRequest
+                    )
+                );
+
+                return new UpdateRequestReceived($updateRequest, Response::HTTP_CREATED);
+            }
+
+            return new UserResource($user);
         });
     }
 }

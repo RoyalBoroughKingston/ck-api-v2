@@ -156,6 +156,158 @@ class OrganisationSignUpFormTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
+    /**
+     * @test
+     */
+    public function guest_can_sign_up_to_existing_organisation()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => [
+                'id' => $organisation->id,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseHas('users', [
+            'first_name' => $userSubmission['first_name'],
+            'last_name' => $userSubmission['last_name'],
+            'email' => $userSubmission['email'],
+        ]);
+
+        $user = \App\Models\User::where('email', $userSubmission['email'])->first();
+
+        $this->assertDatabaseHas('user_roles', [
+            'user_id' => $user->id,
+            'organisation_id' => $organisation->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function guest_cannot_sign_up_to_non_existing_organisation()
+    {
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => [
+                'id' => 'thisisnotanorganisationid',
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $this->assertDatabaseMissing('users', [
+            'first_name' => $userSubmission['first_name'],
+            'last_name' => $userSubmission['last_name'],
+            'email' => $userSubmission['email'],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function guest_can_sign_up_with_new_organisation_without_service()
+    {
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+        $organisationSubmission = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => null,
+        ];
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => $organisationSubmission,
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseHas('users', [
+            'first_name' => $userSubmission['first_name'],
+            'last_name' => $userSubmission['last_name'],
+            'email' => $userSubmission['email'],
+        ]);
+
+        $this->assertDatabaseHas('organisations', [
+            'slug' => $organisationSubmission['slug'],
+            'name' => $organisationSubmission['name'],
+            'email' => $organisationSubmission['email'],
+        ]);
+
+        $user = \App\Models\User::where('email', $userSubmission['email'])->first();
+        $organisation = \App\Models\Organisation::where('email', $organisationSubmission['email'])->first();
+
+        $this->assertDatabaseHas('user_roles', [
+            'user_id' => $user->id,
+            'organisation_id' => $organisation->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function guest_cannot_sign_up_with_new_organisation_which_matches_existing_organisation()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => [
+                'slug' => $organisation->slug,
+                'name' => $organisation->name,
+                'description' => 'Test description',
+                'url' => $organisation->url,
+                'email' => $organisation->email,
+                'phone' => null,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+
+        $this->assertDatabaseMissing('users', [
+            'first_name' => $userSubmission['first_name'],
+            'last_name' => $userSubmission['last_name'],
+            'email' => $userSubmission['email'],
+        ]);
+
+        $this->assertEquals(1, \App\Models\Organisation::where('email', $organisation->email)->count());
+    }
+
     public function test_service_worker_cannot_create_one()
     {
         /** @var \App\Models\Service $service */

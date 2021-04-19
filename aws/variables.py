@@ -37,6 +37,10 @@ def create_scheduler_log_group_name_variable(environment_parameter):
     return Join('-', ['scheduler', Ref(environment_parameter)])
 
 
+def create_elasticsearch_log_group_name_variable(environment_parameter):
+    return Join('-', ['search', Ref(environment_parameter)])
+
+
 def create_api_task_definition_family_variable(environment_parameter):
     return Join('-', ['api', Ref(environment_parameter)])
 

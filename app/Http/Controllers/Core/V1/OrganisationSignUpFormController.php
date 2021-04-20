@@ -6,7 +6,6 @@ use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganisationSignUpForm\StoreRequest;
 use App\Http\Responses\UpdateRequestReceived;
-use App\Models\Organisation;
 use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;

@@ -52,7 +52,8 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
         ]);
 
         /** @var \App\Models\Organisation $organisation */
-        $organisation = Organisation::create([
+        $organisationId = Arr::get($data, 'organisation.id', null);
+        $organisation = $organisationId ? Organisation::find($organisationId) : Organisation::create([
             'slug' => Arr::get($data, 'organisation.slug'),
             'name' => Arr::get($data, 'organisation.name'),
             'description' => sanitize_markdown(
@@ -63,71 +64,73 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
             'phone' => Arr::get($data, 'organisation.phone'),
         ]);
 
-        /** @var \App\Models\Service $service */
-        $service = Service::create([
-            'organisation_id' => $organisation->id,
-            'slug' => Arr::get($data, 'service.slug'),
-            'name' => Arr::get($data, 'service.name'),
-            'type' => Arr::get($data, 'service.type'),
-            'status' => Service::STATUS_INACTIVE,
-            'intro' => Arr::get($data, 'service.intro'),
-            'description' => sanitize_markdown(
-                Arr::get($data, 'service.description')
-            ),
-            'wait_time' => Arr::get($data, 'service.wait_time'),
-            'is_free' => Arr::get($data, 'service.is_free'),
-            'fees_text' => Arr::get($data, 'service.fees_text'),
-            'fees_url' => Arr::get($data, 'service.fees_url'),
-            'testimonial' => Arr::get($data, 'service.testimonial'),
-            'video_embed' => Arr::get($data, 'service.video_embed'),
-            'url' => Arr::get($data, 'service.url'),
-            'contact_name' => Arr::get($data, 'service.contact_name'),
-            'contact_phone' => Arr::get($data, 'service.contact_phone'),
-            'contact_email' => Arr::get($data, 'service.contact_email'),
-            'show_referral_disclaimer' => false,
-            'referral_method' => Service::REFERRAL_METHOD_NONE,
-            'referral_button_text' => null,
-            'referral_email' => null,
-            'referral_url' => null,
-            'logo_file_id' => null,
-            'last_modified_at' => Date::now(),
-        ]);
-
-        // Create the service criterion record.
-        $service->serviceCriterion()->create([
-            'age_group' => Arr::get($data, 'service.criteria.age_group'),
-            'disability' => Arr::get($data, 'service.criteria.disability'),
-            'employment' => Arr::get($data, 'service.criteria.employment'),
-            'gender' => Arr::get($data, 'service.criteria.gender'),
-            'housing' => Arr::get($data, 'service.criteria.housing'),
-            'income' => Arr::get($data, 'service.criteria.income'),
-            'language' => Arr::get($data, 'service.criteria.language'),
-            'other' => Arr::get($data, 'service.criteria.other'),
-        ]);
-
-        // Create the useful info records.
-        foreach (Arr::get($data, 'service.useful_infos') as $usefulInfo) {
-            $service->usefulInfos()->create([
-                'title' => $usefulInfo['title'],
-                'description' => sanitize_markdown($usefulInfo['description']),
-                'order' => $usefulInfo['order'],
+        if (Arr::get($data, 'service.name', null)) {
+            /** @var \App\Models\Service $service */
+            $service = Service::create([
+                'organisation_id' => $organisation->id,
+                'slug' => Arr::get($data, 'service.slug'),
+                'name' => Arr::get($data, 'service.name'),
+                'type' => Arr::get($data, 'service.type'),
+                'status' => Service::STATUS_INACTIVE,
+                'intro' => Arr::get($data, 'service.intro'),
+                'description' => sanitize_markdown(
+                    Arr::get($data, 'service.description')
+                ),
+                'wait_time' => Arr::get($data, 'service.wait_time'),
+                'is_free' => Arr::get($data, 'service.is_free'),
+                'fees_text' => Arr::get($data, 'service.fees_text'),
+                'fees_url' => Arr::get($data, 'service.fees_url'),
+                'testimonial' => Arr::get($data, 'service.testimonial'),
+                'video_embed' => Arr::get($data, 'service.video_embed'),
+                'url' => Arr::get($data, 'service.url'),
+                'contact_name' => Arr::get($data, 'service.contact_name'),
+                'contact_phone' => Arr::get($data, 'service.contact_phone'),
+                'contact_email' => Arr::get($data, 'service.contact_email'),
+                'show_referral_disclaimer' => false,
+                'referral_method' => Service::REFERRAL_METHOD_NONE,
+                'referral_button_text' => null,
+                'referral_email' => null,
+                'referral_url' => null,
+                'logo_file_id' => null,
+                'last_modified_at' => Date::now(),
             ]);
-        }
 
-        // Create the offering records.
-        foreach (Arr::get($data, 'service.offerings') as $offering) {
-            $service->offerings()->create([
-                'offering' => $offering['offering'],
-                'order' => $offering['order'],
+            // Create the service criterion record.
+            $service->serviceCriterion()->create([
+                'age_group' => Arr::get($data, 'service.criteria.age_group'),
+                'disability' => Arr::get($data, 'service.criteria.disability'),
+                'employment' => Arr::get($data, 'service.criteria.employment'),
+                'gender' => Arr::get($data, 'service.criteria.gender'),
+                'housing' => Arr::get($data, 'service.criteria.housing'),
+                'income' => Arr::get($data, 'service.criteria.income'),
+                'language' => Arr::get($data, 'service.criteria.language'),
+                'other' => Arr::get($data, 'service.criteria.other'),
             ]);
-        }
 
-        // Create the social media records.
-        foreach (Arr::get($data, 'service.social_medias') as $socialMedia) {
-            $service->socialMedias()->create([
-                'type' => $socialMedia['type'],
-                'url' => $socialMedia['url'],
-            ]);
+            // Create the useful info records.
+            foreach (Arr::get($data, 'service.useful_infos') as $usefulInfo) {
+                $service->usefulInfos()->create([
+                    'title' => $usefulInfo['title'],
+                    'description' => sanitize_markdown($usefulInfo['description']),
+                    'order' => $usefulInfo['order'],
+                ]);
+            }
+
+            // Create the offering records.
+            foreach (Arr::get($data, 'service.offerings') as $offering) {
+                $service->offerings()->create([
+                    'offering' => $offering['offering'],
+                    'order' => $offering['order'],
+                ]);
+            }
+
+            // Create the social media records.
+            foreach (Arr::get($data, 'service.social_medias') as $socialMedia) {
+                $service->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ]);
+            }
         }
 
         $user->makeOrganisationAdmin($organisation->load('services'));

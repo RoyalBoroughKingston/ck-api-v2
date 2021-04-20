@@ -161,6 +161,8 @@ class OrganisationSignUpFormTest extends TestCase
      */
     public function guest_can_sign_up_to_existing_organisation()
     {
+        $this->fakeEvents();
+
         $organisation = factory(Organisation::class)->create();
 
         $userSubmission = [
@@ -180,18 +182,16 @@ class OrganisationSignUpFormTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->assertDatabaseHas('users', [
-            'first_name' => $userSubmission['first_name'],
-            'last_name' => $userSubmission['last_name'],
-            'email' => $userSubmission['email'],
-        ]);
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = UpdateRequest::findOrFail(
+                $this->getResponseContent($response, 'id')
+            );
 
-        $user = \App\Models\User::where('email', $userSubmission['email'])->first();
-
-        $this->assertDatabaseHas('user_roles', [
-            'user_id' => $user->id,
-            'organisation_id' => $organisation->id,
-        ]);
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser() === null) &&
+                ($event->getModel()->is($updateRequest));
+        });
     }
 
     /**

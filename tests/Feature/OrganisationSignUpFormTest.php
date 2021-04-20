@@ -182,6 +182,9 @@ class OrganisationSignUpFormTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $this->assertEquals($userSubmission['email'], $this->getResponseContent($response, 'data.user.email'));
+        $this->assertEquals($organisation->id, $this->getResponseContent($response, 'data.organisation.id'));
+
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
             /** @var \App\Models\UpdateRequest $updateRequest */
             $updateRequest = UpdateRequest::findOrFail(
@@ -213,13 +216,7 @@ class OrganisationSignUpFormTest extends TestCase
             ],
         ]);
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-
-        $this->assertDatabaseMissing('users', [
-            'first_name' => $userSubmission['first_name'],
-            'last_name' => $userSubmission['last_name'],
-            'email' => $userSubmission['email'],
-        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -227,6 +224,8 @@ class OrganisationSignUpFormTest extends TestCase
      */
     public function guest_can_sign_up_with_new_organisation_without_service()
     {
+        $this->fakeEvents();
+
         $userSubmission = [
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
@@ -249,25 +248,19 @@ class OrganisationSignUpFormTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $this->assertDatabaseHas('users', [
-            'first_name' => $userSubmission['first_name'],
-            'last_name' => $userSubmission['last_name'],
-            'email' => $userSubmission['email'],
-        ]);
+        $this->assertEquals($userSubmission['email'], $this->getResponseContent($response, 'data.user.email'));
+        $this->assertEquals($organisationSubmission['email'], $this->getResponseContent($response, 'data.organisation.email'));
 
-        $this->assertDatabaseHas('organisations', [
-            'slug' => $organisationSubmission['slug'],
-            'name' => $organisationSubmission['name'],
-            'email' => $organisationSubmission['email'],
-        ]);
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = UpdateRequest::findOrFail(
+                $this->getResponseContent($response, 'id')
+            );
 
-        $user = \App\Models\User::where('email', $userSubmission['email'])->first();
-        $organisation = \App\Models\Organisation::where('email', $organisationSubmission['email'])->first();
-
-        $this->assertDatabaseHas('user_roles', [
-            'user_id' => $user->id,
-            'organisation_id' => $organisation->id,
-        ]);
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser() === null) &&
+                ($event->getModel()->is($updateRequest));
+        });
     }
 
     /**
@@ -297,15 +290,8 @@ class OrganisationSignUpFormTest extends TestCase
             ],
         ]);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertDatabaseMissing('users', [
-            'first_name' => $userSubmission['first_name'],
-            'last_name' => $userSubmission['last_name'],
-            'email' => $userSubmission['email'],
-        ]);
-
-        $this->assertEquals(1, \App\Models\Organisation::where('email', $organisation->email)->count());
     }
 
     public function test_service_worker_cannot_create_one()

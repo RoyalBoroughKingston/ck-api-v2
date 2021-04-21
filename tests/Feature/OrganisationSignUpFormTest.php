@@ -156,6 +156,144 @@ class OrganisationSignUpFormTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
+    /**
+     * @test
+     */
+    public function guest_can_sign_up_to_existing_organisation()
+    {
+        $this->fakeEvents();
+
+        $organisation = factory(Organisation::class)->create();
+
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => [
+                'id' => $organisation->id,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertEquals($userSubmission['email'], $this->getResponseContent($response, 'data.user.email'));
+        $this->assertEquals($organisation->id, $this->getResponseContent($response, 'data.organisation.id'));
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = UpdateRequest::findOrFail(
+                $this->getResponseContent($response, 'id')
+            );
+
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser() === null) &&
+                ($event->getModel()->is($updateRequest));
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function guest_cannot_sign_up_to_non_existing_organisation()
+    {
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => [
+                'id' => 'thisisnotanorganisationid',
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @test
+     */
+    public function guest_can_sign_up_with_new_organisation_without_service()
+    {
+        $this->fakeEvents();
+
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+        $organisationSubmission = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => null,
+        ];
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => $organisationSubmission,
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertEquals($userSubmission['email'], $this->getResponseContent($response, 'data.user.email'));
+        $this->assertEquals($organisationSubmission['email'], $this->getResponseContent($response, 'data.organisation.email'));
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = UpdateRequest::findOrFail(
+                $this->getResponseContent($response, 'id')
+            );
+
+            return ($event->getAction() === Audit::ACTION_CREATE) &&
+                ($event->getUser() === null) &&
+                ($event->getModel()->is($updateRequest));
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function guest_cannot_sign_up_with_new_organisation_which_matches_existing_organisation()
+    {
+        $organisation = factory(Organisation::class)->create();
+
+        $userSubmission = [
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->safeEmail,
+            'phone' => random_uk_phone(),
+            'password' => 'P@55w0rd.',
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-sign-up-forms', [
+            'user' => $userSubmission,
+            'organisation' => [
+                'slug' => $organisation->slug,
+                'name' => $organisation->name,
+                'description' => 'Test description',
+                'url' => $organisation->url,
+                'email' => $organisation->email,
+                'phone' => null,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+    }
+
     public function test_service_worker_cannot_create_one()
     {
         /** @var \App\Models\Service $service */

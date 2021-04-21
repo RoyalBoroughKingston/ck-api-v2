@@ -21,8 +21,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->required(
                 'user',
-                'organisation',
-                'service'
+                'organisation'
             )
             ->properties(
                 StoreUserSchema::create('user')
@@ -47,6 +46,10 @@ class StoreOrganisationSignUpFormSchema extends Schema
                     ),
                 StoreOrganisationSchema::create('organisation')
                     ->properties(
+                        Schema::string('id')
+                            ->format(Schema::FORMAT_UUID)
+                            ->description('An existing Organisation ID')
+                            ->nullable(),
                         ...array_filter(
                             StoreOrganisationSchema::create()->properties,
                             function (Schema $property): bool {
@@ -92,6 +95,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
                             }
                         )
                     )
+                    ->nullable()
             );
     }
 }

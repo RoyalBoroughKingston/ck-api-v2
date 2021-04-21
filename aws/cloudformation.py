@@ -9,7 +9,7 @@ from parameters import create_uuid_parameter, create_environment_parameter, crea
 from variables import create_default_queue_name_variable, create_notifications_queue_name_variable, \
     create_search_queue_name_variable, create_uploads_bucket_name_variable, create_api_launch_template_name_variable, \
     create_docker_repository_name_variable, create_api_log_group_name_variable, create_queue_worker_log_group_name_variable, \
-    create_scheduler_log_group_name_variable, create_api_task_definition_family_variable, \
+    create_scheduler_log_group_name_variable, create_elasticsearch_log_group_name_variable, create_api_task_definition_family_variable, \
     create_queue_worker_task_definition_family_variable, create_scheduler_task_definition_family_variable, \
     create_api_user_name_variable, create_ci_user_name_variable, create_database_name_variable, create_database_username_variable, create_api_name_variable, \
     create_elasticsearch_domain_name_variable
@@ -19,7 +19,7 @@ from resources import create_load_balancer_security_group_resource, create_api_s
     create_notifications_queue_resource, create_search_queue_resource, create_uploads_bucket_resource, \
     create_ecs_cluster_role_resource, create_ec2_instance_profile_resource, create_ecs_cluster_resource, \
     create_launch_template_resource, create_docker_repository_resource, create_api_log_group_resource, \
-    create_queue_worker_log_group_resource, create_scheduler_log_group_resource, create_api_task_definition_resource, \
+    create_queue_worker_log_group_resource, create_scheduler_log_group_resource, create_elasticsearch_log_group_resource, create_api_task_definition_resource, \
     create_queue_worker_task_definition_resource, create_scheduler_task_definition_resource, create_load_balancer_resource, \
     create_api_tarcreate_group_resource, create_load_balancer_listener_resource, create_ecs_service_role_resource, \
     create_api_service_resource, create_queue_worker_service_resource, create_scheduler_service_resource, \
@@ -81,6 +81,8 @@ queue_worker_log_group_name_variable = create_queue_worker_log_group_name_variab
     environment_parameter)
 scheduler_log_group_name_variable = create_scheduler_log_group_name_variable(
     environment_parameter)
+elasticsearch_log_group_name_variable = create_elasticsearch_log_group_name_variable(
+    environment_parameter)
 api_task_definition_family_variable = create_api_task_definition_family_variable(
     environment_parameter)
 queue_worker_task_definition_family_variable = create_queue_worker_task_definition_family_variable(
@@ -136,6 +138,8 @@ queue_worker_log_group_resource = create_queue_worker_log_group_resource(
     template, queue_worker_log_group_name_variable)
 scheduler_log_group_resource = create_scheduler_log_group_resource(
     template, scheduler_log_group_name_variable)
+elasticsearch_log_group_resource = create_elasticsearch_log_group_resource(
+    template, elasticsearch_log_group_name_variable)
 api_task_definition_resource = create_api_task_definition_resource(template, api_task_definition_family_variable,
                                                                    docker_repository_resource, api_log_group_resource)
 queue_worker_task_definition_resource = create_queue_worker_task_definition_resource(template,
@@ -177,7 +181,8 @@ elasticsearch_resource = create_elasticsearch_resource(template, elasticsearch_d
                                                        elasticsearch_instance_count_parameter,
                                                        elasticsearch_instance_class_parameter,
                                                        elasticsearch_security_group_resource,
-                                                       subnets_parameter)
+                                                       subnets_parameter,
+                                                       elasticsearch_log_group_resource)
 
 # Outputs.
 create_database_name_output(template, database_username_variable)

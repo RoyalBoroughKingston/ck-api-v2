@@ -862,6 +862,120 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
+    public function test_global_admin_can_approve_one_for_organisation_sign_up_form_without_service()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        /** @var \App\Models\UpdateRequest $updateRequest */
+        $updateRequest = UpdateRequest::create([
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
+            'data' => [
+                'user' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john.doe@example.com',
+                    'phone' => '07700000000',
+                    'password' => 'P@55w0rd.',
+                ],
+                'organisation' => [
+                    'slug' => 'test-org',
+                    'name' => 'Test Org',
+                    'description' => 'Test description',
+                    'url' => 'http://test-org.example.com',
+                    'email' => 'info@test-org.example.com',
+                    'phone' => '07700000000',
+                ],
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
+        $this->assertDatabaseHas((new User())->getTable(), [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'phone' => '07700000000',
+        ]);
+        $this->assertDatabaseHas((new Organisation())->getTable(), [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+        ]);
+
+        $user = User::where('email', 'john.doe@example.com')->first();
+        $organisation = Organisation::where('email', 'info@test-org.example.com')->first();
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'organisation_id' => $organisation->id,
+            'role_id' => Role::organisationAdmin()->id,
+        ]);
+    }
+
+    public function test_global_admin_can_approve_one_for_organisation_sign_up_form_with_existing_organisation()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $organisation = factory(Organisation::class)->create();
+
+        /** @var \App\Models\UpdateRequest $updateRequest */
+        $updateRequest = UpdateRequest::create([
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
+            'data' => [
+                'user' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john.doe@example.com',
+                    'phone' => '07700000000',
+                    'password' => 'P@55w0rd.',
+                ],
+                'organisation' => [
+                    'id' => $organisation->id,
+                ],
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $user->id,
+            'approved_at' => $now->toDateTimeString(),
+        ]);
+        $this->assertDatabaseHas((new User())->getTable(), [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'phone' => '07700000000',
+        ]);
+
+        $user = User::where('email', 'john.doe@example.com')->first();
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'organisation_id' => $organisation->id,
+            'role_id' => Role::organisationAdmin()->id,
+        ]);
+    }
+
     public function test_audit_created_when_approved()
     {
         $this->fakeEvents();

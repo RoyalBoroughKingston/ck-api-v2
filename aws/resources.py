@@ -306,6 +306,16 @@ def create_scheduler_log_group_resource(template, scheduler_log_group_name_varia
     )
 
 
+def create_elasticsearch_log_group_resource(template, elasticsearch_log_group_name_variable):
+    return template.add_resource(
+        logs.LogGroup(
+            'SearchLogGroup',
+            LogGroupName=elasticsearch_log_group_name_variable,
+            RetentionInDays=7
+        )
+    )
+
+
 def create_api_task_definition_resource(template, api_task_definition_family_variable, docker_repository_resource,
                                         api_log_group_resource):
     return template.add_resource(
@@ -740,7 +750,7 @@ def create_elasticsearch_security_group_resource(template, api_security_group_re
 
 def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                                   elasticsearch_instance_count_parameter, elasticsearch_instance_class_parameter,
-                                  elasticsearch_security_group_resource, subnets_parameter):
+                                  elasticsearch_security_group_resource, subnets_parameter, elasticsearch_log_group_resource):
     return template.add_resource(
         elasticsearch.Domain(
             'Elasticsearch',
@@ -755,6 +765,17 @@ def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                         'Action': 'es:*',
                         'Resource': Sub('arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*',
                                         DomainName=elasticsearch_domain_name_variable)
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "es.amazonaws.com"
+                        },
+                        "Action": [
+                            "logs:PutLogEvents",
+                            "logs:CreateLogStream"
+                        ],
+                        "Resource": GetAtt(elasticsearch_log_group_resource, 'Arn')
                     }
                 ]
             },

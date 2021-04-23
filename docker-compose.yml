@@ -72,8 +72,8 @@ services:
   elasticsearch:
     image: elasticsearch:7.9.3
     environment:
-      - discovery.type=single-node
-      - xpack.ml.enabled=false
+      - "discovery.type=single-node"
+      - "xpack.ml.enabled=false"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
 

@@ -177,7 +177,7 @@ class ImportTaxonomiesCommand extends Command
             array_shift($taxonomyRecords);
         }
 
-        $taxonomyImports = $this->prepareImports($taxonomyRecords);
+        $taxonomyImports = $this->prepareImports($taxonomyRecords, $refresh);
 
         if (count($this->failedRows) && App::environment() != 'testing') {
             $this->info('Rolling back transaction');
@@ -206,9 +206,10 @@ class ImportTaxonomiesCommand extends Command
      * Sanity check the records before converting them to format for import.
      *
      * @param array $records
+     * @param bool $refresh
      * @return array
      */
-    public function prepareImports(array $records): array
+    public function prepareImports(array $records, bool $refresh): array
     {
         $parentIds = array_map(function ($record) {
             return $record[2] ?? null;
@@ -223,7 +224,7 @@ class ImportTaxonomiesCommand extends Command
                 $failedRow = $record;
                 $failedRow[] = 'ID or parent ID invalid';
             }
-            if (DB::table((new Taxonomy())->getTable())->where('id', $record[0])->exists()) {
+            if (!$refresh && DB::table((new Taxonomy())->getTable())->where('id', $record[0])->exists()) {
                 $failedRow = $failedRow ?? $record;
                 $failedRow[] = 'Taxonomy exists';
             }

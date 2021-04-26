@@ -199,7 +199,7 @@ class ImportTaxonomiesCommandTest extends TestCase
 
         array_splice($taxonomyRecords, 0, 0, [['ID', 'Name', 'Parent ID']]);
 
-        $cmd->importTaxonomyRecords($taxonomyRecords, false);
+        $cmd->importTaxonomyRecords($taxonomyRecords, false, false);
 
         $this->assertDatabaseHas((new Taxonomy())->getTable(), [
             'id' => $taxonomyRecords[10][0],
@@ -233,7 +233,7 @@ class ImportTaxonomiesCommandTest extends TestCase
 
         array_splice($taxonomyRecords, 0, 0, [['ID', 'Name', 'Parent ID']]);
 
-        $cmd->importTaxonomyRecords($taxonomyRecords, true);
+        $cmd->importTaxonomyRecords($taxonomyRecords, true, false);
 
         $this->assertDatabaseHas((new Taxonomy())->getTable(), [
             'id' => $taxonomyRecords[10][0],

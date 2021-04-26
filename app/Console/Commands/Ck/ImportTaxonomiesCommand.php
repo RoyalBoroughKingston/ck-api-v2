@@ -23,7 +23,8 @@ class ImportTaxonomiesCommand extends Command
      */
     protected $signature = 'ck:import-taxonomies
                             {url : The url of the taxonomies .csv file}
-                            {--refresh : Delete all current taxonomies}';
+                            {--refresh : Delete all current taxonomies}
+                            {--dry-run : Parse the import but do not commit the changes}';
 
     /**
      * The console command description.
@@ -57,6 +58,11 @@ class ImportTaxonomiesCommand extends Command
     {
         $csvUrl = $this->argument('url');
         $refresh = $this->option('refresh');
+        $dryrun = $this->option('dry-run');
+
+        if ($dryrun) {
+            $this->warn('Dry Run, no data will be committed, delete option ignored');
+        }
 
         $this->line('Fetching ' . $csvUrl);
 
@@ -65,13 +71,13 @@ class ImportTaxonomiesCommand extends Command
         if (is_array($records) && count($records)) {
             $this->info('Spreadsheet uploaded');
 
-            if ($refresh) {
+            if ($refresh && !$dryrun) {
                 $this->warn('You are about to delete all current Taxonomies');
                 $refresh = $this->confirm('Confirm you wish to delete all current Taxonomies?');
                 $this->warn($refresh ? 'All current Taxonomies will be deleted' : 'Current Taxonomies will be preserved');
             }
 
-            $importCount = $this->importTaxonomyRecords($records, $refresh);
+            $importCount = $this->importTaxonomyRecords($records, $refresh, $dryrun);
 
             if (count($this->failedRows)) {
                 $this->warn('Unable to import all records. Failed records:');
@@ -81,6 +87,10 @@ class ImportTaxonomiesCommand extends Command
             }
         } else {
             $this->info('Spreadsheet could not be uploaded');
+        }
+
+        if ($dryrun) {
+            $this->warn('Dry Run complete');
         }
     }
 
@@ -155,9 +165,10 @@ class ImportTaxonomiesCommand extends Command
      *
      * @param array $taxonomyRecords
      * @param bool $refresh
+     * @param bool $dryrun
      * @return bool | int
      */
-    public function importTaxonomyRecords(array $taxonomyRecords, bool $refresh)
+    public function importTaxonomyRecords(array $taxonomyRecords, bool $refresh, bool $dryrun)
     {
         if (App::environment() != 'testing') {
             $this->info('Starting transaction');
@@ -179,13 +190,13 @@ class ImportTaxonomiesCommand extends Command
 
         $taxonomyImports = $this->mapTaxonomyDepth($taxonomyImports);
 
-        if ($refresh) {
+        if ($refresh && !$dryrun) {
             $this->deleteAllTaxonomies();
         }
 
         DB::table((new Taxonomy())->getTable())->insert($taxonomyImports);
 
-        if (App::environment() != 'testing') {
+        if (!$dryrun && App::environment() != 'testing') {
             $this->info('Commiting transaction');
             DB::commit();
         }
@@ -209,12 +220,22 @@ class ImportTaxonomiesCommand extends Command
          * Non-UUID cells or incorrect relationships cannot be imported so the import will fail.
          */
         foreach ($records as $record) {
+            $failedRow = null;
             if (!is_uuid($record[0]) || (!empty($record[2]) && !in_array($record[2], $parentIds))) {
-                $this->failedRows[] = $record;
+                $failedRow = $record;
+                $failedRow[] = 'ID or parent ID invalid';
             }
-            if (count($this->failedRows)) {
-                return [];
+            if (DB::table((new Taxonomy())->getTable())->where('id', $record[0])->exists()) {
+                $failedRow = $failedRow ?? $record;
+                $failedRow[] = 'Taxonomy exists';
             }
+            if ($failedRow) {
+                $this->failedRows[] = $failedRow;
+            }
+        }
+
+        if (count($this->failedRows)) {
+            return [];
         }
 
         $imports = $this->mapToIdKeys($records);

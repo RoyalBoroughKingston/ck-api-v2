@@ -71,10 +71,8 @@ class ImportTaxonomiesCommand extends Command
         if (is_array($records) && count($records)) {
             $this->info('Spreadsheet uploaded');
 
-            if ($refresh && !$dryrun) {
-                $this->warn('You are about to delete all current Taxonomies');
-                $refresh = $this->confirm('Confirm you wish to delete all current Taxonomies?');
-                $this->warn($refresh ? 'All current Taxonomies will be deleted' : 'Current Taxonomies will be preserved');
+            if ($refresh) {
+                $this->warn($dryrun ? 'Current Taxonomies will be preserved' : 'All current Taxonomies will be deleted');
             }
 
             $importCount = $this->importTaxonomyRecords($records, $refresh, $dryrun);

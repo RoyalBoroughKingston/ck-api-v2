@@ -5,6 +5,7 @@ namespace App\Console\Commands\Ck;
 use App\Models\CollectionTaxonomy;
 use App\Models\ServiceTaxonomy;
 use App\Models\Taxonomy;
+use App\Models\UpdateRequest;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -90,6 +91,13 @@ class ImportTaxonomiesCommand extends Command
     {
         DB::table((new ServiceTaxonomy())->getTable())->truncate();
         DB::table((new CollectionTaxonomy())->getTable())->truncate();
+        DB::table((new UpdateRequest())->getTable())->whereIn(
+            'updateable_type',
+            [
+                UpdateRequest::EXISTING_TYPE_SERVICE,
+                UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
+            ]
+        )->delete();
 
         $taxonomyIds = $this->getDescendantTaxonomyIds([Taxonomy::category()->id]);
         Schema::disableForeignKeyConstraints();

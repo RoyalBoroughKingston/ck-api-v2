@@ -39,7 +39,7 @@ class OrganisationSignUpFormController extends Controller
             ];
 
             $updateData['organisation'] = [];
-            if ($request->has('organisation.id')) {
+            if ($request->filled('organisation.id')) {
                 $updateData['organisation']['id'] = $request->input('organisation.id');
             } else {
                 $updateData['organisation'] = [

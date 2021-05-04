@@ -22,6 +22,7 @@ class ImportOrganisationsResponseSchema extends Schema
                         Schema::object()->properties(
                             Schema::object('row')->properties(
                                 Schema::integer('index'),
+                                Schema::string('id'),
                                 Schema::string('name'),
                                 Schema::string('description'),
                                 Schema::string('url'),
@@ -29,6 +30,7 @@ class ImportOrganisationsResponseSchema extends Schema
                                 Schema::string('phone')
                             ),
                             Schema::object('errors')->properties(
+                                Schema::string('id'),
                                 Schema::string('name'),
                                 Schema::string('description'),
                                 Schema::string('url'),
@@ -42,6 +44,7 @@ class ImportOrganisationsResponseSchema extends Schema
                     Schema::object()->properties(
                         Schema::object('row')->properties(
                             Schema::integer('index'),
+                            Schema::string('id'),
                             Schema::string('name'),
                             Schema::string('description'),
                             Schema::string('url'),

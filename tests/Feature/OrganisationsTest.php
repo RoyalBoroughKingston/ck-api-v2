@@ -28,6 +28,7 @@ class OrganisationsTest extends TestCase
     public function createOrganisationSpreadsheets(\Illuminate\Support\Collection $organisations)
     {
         $headers = [
+            'id',
             'name',
             'description',
             'url',
@@ -36,7 +37,9 @@ class OrganisationsTest extends TestCase
         ];
 
         $organisations = $organisations->map(function ($organisation) {
-            return $organisation->getAttributes();
+            $organisationAttributes = $organisation->getAttributes();
+            $organisationAttributes['id'] = $organisation->id ?: uuid();
+            return $organisationAttributes;
         });
 
         $spreadsheet = \Tests\Integration\SpreadsheetParserTest::createSpreadsheets($organisations->all(), $headers);
@@ -873,6 +876,12 @@ class OrganisationsTest extends TestCase
         $response = $this->json('POST', "/core/v1/organisations/import", $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 2,
+            ],
+        ]);
     }
 
     public function test_validate_file_import_type()
@@ -902,6 +911,7 @@ class OrganisationsTest extends TestCase
         $this->createOrganisationSpreadsheets($organisations);
 
         $response = $this->json('POST', "/core/v1/organisations/import", ['spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls')))]);
+
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
             'data' => [
@@ -942,7 +952,25 @@ class OrganisationsTest extends TestCase
         $user->makeSuperAdmin();
         Passport::actingAs($user);
 
-        $response = $this->json('POST', "/core/v1/organisations/import", ['spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(base_path('tests/assets/organisations_import_2_bad.xls')))]);
+        $organisation1 = factory(Organisation::class)->make([
+            'name' => '',
+            'url' => 'www.foo.com',
+            'email' => 'foo.com',
+        ]);
+
+        $organisation2 = factory(Organisation::class)->make([
+            'email' => '',
+            'phone' => '',
+        ]);
+
+        $organisation3 = factory(Organisation::class)->make([
+            'id' => factory(Organisation::class)->create()->id,
+        ]);
+
+        $this->createOrganisationSpreadsheets(collect([$organisation1, $organisation2, $organisation3]));
+
+        $response = $this->json('POST', "/core/v1/organisations/import", ['spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls')))]);
+
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
             'data' => [
@@ -963,12 +991,19 @@ class OrganisationsTest extends TestCase
                                 'phone' => [],
                             ],
                         ],
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [],
+                            ],
+                        ],
                     ],
                 ],
             ],
         ]);
 
-        $response = $this->json('POST', "/core/v1/organisations/import", ['spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(base_path('tests/assets/organisations_import_2_bad.xlsx')))]);
+        $response = $this->json('POST', "/core/v1/organisations/import", ['spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx')))]);
+
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
             'data' => [
@@ -1067,7 +1102,55 @@ class OrganisationsTest extends TestCase
     /**
      * @test
      */
-    public function duplicate_import_organisations_are_detected()
+    public function duplicate_import_organisation_ids_are_detected()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $organisation = factory(Organisation::class)->create();
+
+        $organisations = collect([
+            $organisation,
+            factory(Organisation::class)->make(),
+        ]);
+
+        $this->createOrganisationSpreadsheets($organisations);
+
+        $response = $this->json('POST', "/core/v1/organisations/import", [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $headers = [
+            'id',
+            'name',
+            'description',
+            'url',
+            'email',
+            'phone',
+        ];
+
+        $response->assertJsonFragment([
+            'row' => collect($organisation->getAttributes())->only($headers)->put('index', 2)->all(),
+        ]);
+        $response->assertJsonFragment([
+            'errors' => [
+                'id' => [
+                    'The id has already been taken.',
+                ],
+            ],
+        ]);
+        $response->assertJsonFragment(collect($organisation->getAttributes())->only($headers)->all());
+    }
+
+    /**
+     * @test
+     */
+    public function duplicate_import_organisation_names_are_detected()
     {
         Storage::fake('local');
 
@@ -1097,45 +1180,60 @@ class OrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $headers = [
+            'id',
             'name',
             'description',
             'url',
             'email',
             'phone',
         ];
-        $headersWithId = array_merge($headers, ['id']);
 
         $response->assertJsonFragment([
-            collect($organisation1->getAttributes())->only($headersWithId)->all(),
+            'originals' => [
+                collect($organisation1->getAttributes())->only($headers)->all(),
+                collect($organisation2->getAttributes())->only($headers)->all(),
+                collect($organisation3->getAttributes())->only($headers)->all(),
+                collect($organisation4->getAttributes())->only($headers)->all(),
+                collect($organisation5->getAttributes())->only($headers)->all(),
+                collect($organisation6->getAttributes())->only($headers)->all(),
+            ],
         ]);
-        $response->assertJsonFragment([
-            'row' => collect($organisations->get(0)->getAttributes())->only($headers)->put('index', 2)->all(),
-        ]);
+        $this->assertEquals($organisations->get(0)->email, $response->json('data.duplicates')[0]['row']['email']);
+
         $response->assertJsonFragment([
             'email' => $organisations->get(2)->email,
         ]);
         $response->assertJsonFragment([
-            'row' => collect($organisations->get(1)->getAttributes())->only($headers)->put('index', 3)->all(),
+            'email' => $organisations->get(1)->email,
         ]);
         $response->assertJsonStructure([
             'data' => [
                 'duplicates' => [
                     [
-                        'row',
+                        'row' => [
+                            'index',
+                            'id',
+                            'name',
+                            'description',
+                            'url',
+                            'email',
+                            'phone',
+                        ],
                         'originals' => [
-                            $headersWithId,
+                            [
+                                'id',
+                                'name',
+                                'description',
+                                'url',
+                                'email',
+                                'phone',
+                            ],
                         ],
                     ],
                 ],
                 'imported_row_count',
             ],
         ]);
-        $response->assertJsonFragment(collect($organisation1->getAttributes())->only($headersWithId)->all());
-        $response->assertJsonFragment(collect($organisation2->getAttributes())->only($headersWithId)->all());
-        $response->assertJsonFragment(collect($organisation3->getAttributes())->only($headersWithId)->all());
-        $response->assertJsonFragment(collect($organisation4->getAttributes())->only($headersWithId)->all());
-        $response->assertJsonFragment(collect($organisation5->getAttributes())->only($headersWithId)->all());
-        $response->assertJsonFragment(collect($organisation6->getAttributes())->only($headersWithId)->all());
     }
 
     /**
@@ -1229,6 +1327,7 @@ class OrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $headers = [
+            'id',
             'name',
             'description',
             'url',
@@ -1241,11 +1340,10 @@ class OrganisationsTest extends TestCase
                 'imported_row_count' => 0,
             ],
         ]);
-        $response->assertJsonFragment([
-            'row' => collect($organisations->get(0)->getAttributes())->only($headers)->put('index', 2)->all(),
-        ]);
+
+        $this->assertEquals($organisations->get(0)->email, $response->json('data.duplicates')[0]['row']['email']);
         $response->assertJsonCount(2, 'data.duplicates.*.originals.*');
         $response->assertJsonFragment(collect($organisations->get(1)->getAttributes())->only($headers)->put('id', null)->all());
-        $response->assertJsonFragment(collect($organisation->getAttributes())->only(array_merge($headers, ['id']))->all());
+        $response->assertJsonFragment(collect($organisation->getAttributes())->only($headers)->all());
     }
 }

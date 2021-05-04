@@ -17,8 +17,10 @@ use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
@@ -28,6 +30,70 @@ use Tests\TestCase;
 
 class ServicesTest extends TestCase
 {
+    /**
+     * Create spreadsheets of services
+     *
+     * @param Illuminate\Support\Collection $services
+     * @return null
+     **/
+    public function createServiceSpreadsheets(\Illuminate\Support\Collection $services)
+    {
+        $faker = Faker::create('en_GB');
+
+        $headers = [
+            'id',
+            'organisation_id',
+            'name',
+            'type',
+            'status',
+            'intro',
+            'description',
+            'wait_time',
+            'is_free',
+            'fees_text',
+            'fees_url',
+            'testimonial',
+            'video_embed',
+            'url',
+            'contact_name',
+            'contact_phone',
+            'contact_email',
+            'referral_method',
+            'referral_email',
+            'referral_url',
+            'show_referral_disclaimer',
+            'referral_button_text',
+            'criteria_age_group',
+            'criteria_disability',
+            'criteria_employment',
+            'criteria_gender',
+            'criteria_housing',
+            'criteria_income',
+            'criteria_language',
+            'criteria_other',
+
+        ];
+
+        $services = $services->map(function ($service) use ($faker) {
+            $serviceAttributes = $service->getAttributes();
+            $serviceAttributes['id'] = $service->id ?: uuid();
+            $criteria = [
+                'criteria_age_group' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_disability' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_employment' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_gender' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_housing' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_income' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_language' => $faker->boolean() ? $faker->sentence() : '',
+                'criteria_other' => $faker->boolean() ? $faker->sentence() : '',
+            ];
+            return array_merge($serviceAttributes, $criteria);
+        });
+
+        $spreadsheet = \Tests\Integration\SpreadsheetParserTest::createSpreadsheets($services->all(), $headers);
+        \Tests\Integration\SpreadsheetParserTest::writeSpreadsheetsToDisk($spreadsheet, 'test.xlsx', 'test.xls');
+    }
+
     /*
      * List all the services.
      */
@@ -2872,5 +2938,719 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    /**
+     * Bulk import organisations
+     */
+
+    public function test_guest_cannot_bulk_import()
+    {
+        Storage::fake('local');
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_service_worker_cannot_bulk_import()
+    {
+        Storage::fake('local');
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make();
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_service_admin_cannot_bulk_import()
+    {
+        Storage::fake('local');
+
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function test_organisation_admin_from_other_organisation_cannot_bulk_import()
+    {
+        Storage::fake('local');
+
+        $organisation1 = factory(Organisation::class)->create();
+        $organisation2 = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation1);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation2->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'organisation_id' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    public function test_organisation_admin_can_bulk_import()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services, $organisation->id);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_global_admin_can_bulk_import()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make();
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_super_admin_can_bulk_import()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make();
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_validate_file_import_type()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+
+        $invalidFieldTypes = [
+            ['spreadsheet' => 'This is a string'],
+            ['spreadsheet' => 1],
+            ['spreadsheet' => ['foo' => 'bar']],
+            ['spreadsheet' => UploadedFile::fake()->create('dummy.doc', 3000)],
+            ['spreadsheet' => UploadedFile::fake()->create('dummy.txt', 3000)],
+            ['spreadsheet' => UploadedFile::fake()->create('dummy.csv', 3000)],
+        ];
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+        $organisation = factory(Organisation::class)->create();
+
+        Passport::actingAs($user);
+
+        foreach ($invalidFieldTypes as $data) {
+            $data['organisation_id'] = $organisation->id;
+            $response = $this->json('POST', "/core/v1/services/import", $data);
+            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $services = factory(Service::class, 2)->make([
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 2,
+            ],
+        ]);
+
+        $services = factory(Service::class, 2)->make([
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/octet-stream;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 2,
+            ],
+        ]);
+
+        $services = factory(Service::class, 2)->make([
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 2,
+            ],
+        ]);
+    }
+
+    public function test_validate_file_import_service_fields()
+    {
+        Storage::fake('local');
+        $faker = Faker::create('en_GB');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make([
+            'organisation_id' => uuid(),
+            'name' => '',
+            'type' => '',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => '',
+            'description' => '',
+            'is_free' => '',
+            'url' => '',
+            'show_referral_disclaimer' => '',
+            'referral_method' => '',
+        ]);
+
+        foreach ($services as &$service) {
+            $service->id = $faker->word;
+        }
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [],
+                                'organisation_id' => [],
+                                'name' => [],
+                                'type' => [],
+                                'status' => [],
+                                'intro' => [],
+                                'description' => [],
+                                'is_free' => [],
+                                'url' => [],
+                                'show_referral_disclaimer' => [],
+                                'referral_method' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $services = factory(Service::class, 2)->make([
+            'organisation_id' => uuid(),
+            'name' => '',
+            'type' => '',
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => '',
+            'description' => '',
+            'is_free' => '',
+            'url' => '',
+            'show_referral_disclaimer' => '',
+            'referral_method' => '',
+            'referral_email' => $faker->word,
+            'referral_url' => $faker->word,
+        ]);
+
+        foreach ($services as &$service) {
+            $service->id = $faker->word;
+        }
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [],
+                                'organisation_id' => [],
+                                'name' => [],
+                                'type' => [],
+                                'status' => [],
+                                'intro' => [],
+                                'description' => [],
+                                'is_free' => [],
+                                'url' => [],
+                                'show_referral_disclaimer' => [],
+                                'referral_method' => [],
+                                'referral_email' => [],
+                                'referral_url' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    public function test_validate_file_import_service_field_global_admin_permissions()
+    {
+        Storage::fake('local');
+        $faker = Faker::create('en_GB');
+
+        $organisation = factory(Organisation::class)->create();
+        $organisationAdminUser = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($organisationAdminUser);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
+            'referral_button_text' => $faker->word,
+            'referral_email' => $faker->email,
+            'referral_url' => $faker->url,
+            'show_referral_disclaimer' => 1,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'status' => [],
+                                'referral_method' => [],
+                                'referral_button_text' => [],
+                                'referral_email' => [],
+                                'referral_url' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'status' => [],
+                                'referral_method' => [],
+                                'referral_button_text' => [],
+                                'referral_email' => [],
+                                'referral_url' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        Passport::actingAs($globalAdminUser);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
+            'referral_button_text' => $faker->word,
+            'referral_email' => $faker->email,
+            'referral_url' => $faker->url,
+            'show_referral_disclaimer' => 1,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_validate_file_import_service_field_super_admin_permissions()
+    {
+        Storage::fake('local');
+        $faker = Faker::create('en_GB');
+
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+        $superAdminUser = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($globalAdminUser);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
+            'referral_button_text' => $faker->word,
+            'referral_email' => $faker->email,
+            'referral_url' => $faker->url,
+            'show_referral_disclaimer' => 0,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'show_referral_disclaimer' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'show_referral_disclaimer' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        Passport::actingAs($superAdminUser);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_ACTIVE,
+            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
+            'referral_button_text' => $faker->word,
+            'referral_email' => $faker->email,
+            'referral_url' => $faker->url,
+            'show_referral_disclaimer' => 0,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_services_file_import_100rows()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 100)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 100,
+            ],
+        ]);
+
+        $services = factory(Service::class, 100)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 100,
+            ],
+        ]);
+    }
+
+    /**
+     * @group slow
+     */
+    public function test_services_file_import_5krows()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 5000)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 5000,
+            ],
+        ]);
+
+        $services = factory(Service::class, 5000)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 5000,
+            ],
+        ]);
+    }
+
+    public function test_service_criterions_created_on_import()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make([
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 2,
+            ],
+        ]);
+
+        $serviceId = \DB::table('services')->latest()->pluck('id');
+
+        $this->assertDatabaseHas('service_criteria', [
+            'service_id' => $serviceId,
+        ]);
     }
 }

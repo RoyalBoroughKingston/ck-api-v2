@@ -106,7 +106,7 @@ class ImportController extends Controller
             $row['show_referral_disclaimer'] = null === $row['show_referral_disclaimer'] ? null : (bool)$row['show_referral_disclaimer'];
 
             $validator = Validator::make($row, [
-                'id' => ['required', 'string', 'uuid'],
+                'id' => ['required', 'string', 'uuid', 'unique:services,id'],
                 'organisation_id' => [
                     'required',
                     'string',

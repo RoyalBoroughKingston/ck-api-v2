@@ -2941,7 +2941,7 @@ class ServicesTest extends TestCase
     }
 
     /**
-     * Bulk import organisations
+     * Bulk import services
      */
 
     public function test_guest_cannot_bulk_import()
@@ -3309,6 +3309,58 @@ class ServicesTest extends TestCase
                                 'referral_method' => [],
                                 'referral_email' => [],
                                 'referral_url' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $service = factory(Service::class)->make([
+            'id' => factory(Service::class)->create()->id,
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $this->createServiceSpreadsheets(collect([$service]));
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [],
                             ],
                         ],
                     ],

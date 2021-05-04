@@ -134,7 +134,12 @@ CASE `update_requests`.`updateable_type`
         LIMIT 1
     )
     WHEN "{$organisationSignUpForm}" THEN (
-        `update_requests`.`data`->>"$.organisation.name"
+        IF(`update_requests`.`data`->>"$.organisation.id", (
+            SELECT `organisations`.`name`
+            FROM `organisations`
+            WHERE `update_requests`.`data`->>"$.organisation.id" = `organisations`.`id`
+            LIMIT 1
+        ), `update_requests`.`data`->>"$.organisation.name")
     )
 END
 EOT;

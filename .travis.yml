@@ -7,8 +7,6 @@ branches:
     - /^[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$/
     # Master
     - master
-    # Release branches
-    - /^release\/.+$/
     # Develop
     - develop
 
@@ -58,13 +56,6 @@ deploy:
     on:
       all_branches: true
       condition: ${TRAVIS_TAG} =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$
-  # Release branches
-  - provider: script
-    script: ENVIRONMENT=release REPO_URI=$REPO_URI_RELEASE CLUSTER=$CLUSTER_RELEASE AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_RELEASE AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_RELEASE AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION_RELEASE bash .travis/deploy.sh
-    skip_cleanup: true
-    on:
-      all_branches: true
-      condition: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} =~ ^release\/.+$
   # Develop
   - provider: script
     script: ENVIRONMENT=staging REPO_URI=$REPO_URI_STAGING CLUSTER=$CLUSTER_STAGING AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_STAGING AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_STAGING AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION_STAGING bash .travis/deploy.sh

@@ -1024,6 +1024,12 @@ class OrganisationsTest extends TestCase
                                 'phone' => [],
                             ],
                         ],
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1112,9 +1118,16 @@ class OrganisationsTest extends TestCase
 
         $organisation = factory(Organisation::class)->create();
 
+        $uuid = uuid();
+
         $organisations = collect([
             $organisation,
-            factory(Organisation::class)->make(),
+            factory(Organisation::class)->make([
+                'id' => $uuid,
+            ]),
+            factory(Organisation::class)->make([
+                'id' => $uuid,
+            ]),
         ]);
 
         $this->createOrganisationSpreadsheets($organisations);
@@ -1137,10 +1150,28 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment([
             'row' => collect($organisation->getAttributes())->only($headers)->put('index', 2)->all(),
         ]);
-        $response->assertJsonFragment([
-            'errors' => [
-                'id' => [
-                    'The id has already been taken.',
+
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [
+                                    'The id has already been taken.',
+                                ],
+                            ],
+                        ],
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [
+                                    'The ID is used elsewhere in the spreadsheet.',
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ]);

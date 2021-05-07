@@ -71,7 +71,6 @@ class ServicesTest extends TestCase
             'criteria_income',
             'criteria_language',
             'criteria_other',
-
         ];
 
         $services = $services->map(function ($service) use ($faker) {
@@ -3217,9 +3216,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
             'intro' => '',
             'description' => '',
-            'is_free' => '',
             'url' => '',
-            'show_referral_disclaimer' => '',
             'referral_method' => '',
         ]);
 
@@ -3250,9 +3247,7 @@ class ServicesTest extends TestCase
                                 'status' => [],
                                 'intro' => [],
                                 'description' => [],
-                                'is_free' => [],
                                 'url' => [],
-                                'show_referral_disclaimer' => [],
                                 'referral_method' => [],
                             ],
                         ],
@@ -3268,9 +3263,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
             'intro' => '',
             'description' => '',
-            'is_free' => '',
             'url' => '',
-            'show_referral_disclaimer' => '',
             'referral_method' => '',
             'referral_email' => $faker->word,
             'referral_url' => $faker->word,
@@ -3303,9 +3296,7 @@ class ServicesTest extends TestCase
                                 'status' => [],
                                 'intro' => [],
                                 'description' => [],
-                                'is_free' => [],
                                 'url' => [],
-                                'show_referral_disclaimer' => [],
                                 'referral_method' => [],
                                 'referral_email' => [],
                                 'referral_url' => [],
@@ -3369,6 +3360,74 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function validate_file_import_duplicate_service_ids()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->create();
+
+        $uuid = uuid();
+
+        $services = collect([
+            $service,
+            factory(Service::class)->make([
+                'id' => $uuid,
+            ]),
+            factory(Service::class)->make([
+                'id' => $uuid,
+            ]),
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $response = $this->json('POST', "/core/v1/services/import", [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $headers = [
+            'id',
+            'name',
+            'description',
+            'url',
+            'email',
+            'phone',
+        ];
+
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [
+                                    'The id has already been taken.',
+                                ],
+                            ],
+                        ],
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'id' => [
+                                    'The ID is used elsewhere in the spreadsheet.',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
     public function test_validate_file_import_service_field_global_admin_permissions()
     {
         Storage::fake('local');
@@ -3382,11 +3441,12 @@ class ServicesTest extends TestCase
 
         $services = factory(Service::class, 2)->make([
             'status' => Service::STATUS_ACTIVE,
+            'organisation_id' => $organisation->id,
             'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
             'referral_button_text' => $faker->word,
             'referral_email' => $faker->email,
             'referral_url' => $faker->url,
-            'show_referral_disclaimer' => 1,
+            'show_referral_disclaimer' => '1',
         ]);
 
         $this->createServiceSpreadsheets($services);
@@ -3459,7 +3519,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $faker->word,
             'referral_email' => $faker->email,
             'referral_url' => $faker->url,
-            'show_referral_disclaimer' => 1,
+            'show_referral_disclaimer' => '1',
         ]);
 
         $this->createServiceSpreadsheets($services);
@@ -3489,7 +3549,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $faker->word,
             'referral_email' => $faker->email,
             'referral_url' => $faker->url,
-            'show_referral_disclaimer' => 0,
+            'show_referral_disclaimer' => '0',
         ]);
 
         $this->createServiceSpreadsheets($services);
@@ -3554,7 +3614,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $faker->word,
             'referral_email' => $faker->email,
             'referral_url' => $faker->url,
-            'show_referral_disclaimer' => 0,
+            'show_referral_disclaimer' => '0',
         ]);
 
         $this->createServiceSpreadsheets($services);

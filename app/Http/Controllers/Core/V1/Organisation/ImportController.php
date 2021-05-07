@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
 class ImportController extends Controller
@@ -115,12 +116,13 @@ class ImportController extends Controller
              * Check for duplicate IDs in the spreadsheet.
              */
             if (false !== array_search($row['id'], $rowIds)) {
+                $error = ['id' => ['The ID is used elsewhere in the spreadsheet.']];
                 if ($rejectedRow) {
-                    $rejectedRow['errors']['id'] = array_merge(($rejectedRow['errors']['id'] ?: []), ['The ID is used elsewhere in the spreadsheet.']);
+                    $rejectedRow['errors']->merge($error);
                 } else {
                     $rejectedRow = [
                         'row' => $row,
-                        'errors' => ['id' => ['The ID is used elsewhere in the spreadsheet.']],
+                        'errors' => new MessageBag($error),
                     ];
                 }
             }

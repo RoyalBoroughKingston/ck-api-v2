@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -85,7 +86,7 @@ class ImportController extends Controller
 
         $spreadsheetParser->readHeaders();
 
-        $rejectedRows = [];
+        $rejectedRows = $rowIds = [];
 
         $globalAdminRoleId = Role::globalAdmin()->id;
         $globalAdminRole = new UserRole([
@@ -99,11 +100,12 @@ class ImportController extends Controller
         ]);
 
         foreach ($spreadsheetParser->readRows() as $i => $row) {
+            $rejectedRow = null;
             /**
              * Cast Boolean rows to boolean value.
              */
-            $row['is_free'] = null === $row['is_free'] ? null : (bool)$row['is_free'];
-            $row['show_referral_disclaimer'] = null === $row['show_referral_disclaimer'] ? null : (bool)$row['show_referral_disclaimer'];
+            $row['is_free'] = null === ($row['is_free'] ?? null) ?: (bool)$row['is_free'];
+            $row['show_referral_disclaimer'] = null === ($row['show_referral_disclaimer'] ?? null) ?: (bool)$row['show_referral_disclaimer'];
 
             $validator = Validator::make($row, [
                 'id' => ['required', 'string', 'uuid', 'unique:services,id'],
@@ -224,8 +226,27 @@ class ImportController extends Controller
 
             if ($validator->fails()) {
                 $row['index'] = $i + 2;
-                $rejectedRows[] = ['row' => $row, 'errors' => $validator->errors()];
+                $rejectedRow = ['row' => $row, 'errors' => $validator->errors()];
             }
+
+            /**
+             * Check for duplicate IDs in the spreadsheet.
+             */
+            if (false !== array_search($row['id'], $rowIds)) {
+                $error = ['id' => ['The ID is used elsewhere in the spreadsheet.']];
+                if ($rejectedRow) {
+                    $rejectedRow['errors']->merge($error);
+                } else {
+                    $rejectedRow = [
+                        'row' => $row,
+                        'errors' => new MessageBag($error),
+                    ];
+                }
+            }
+            if ($rejectedRow) {
+                $rejectedRows[] = $rejectedRow;
+            }
+            $rowIds[] = $row['id'];
         }
 
         return $rejectedRows;

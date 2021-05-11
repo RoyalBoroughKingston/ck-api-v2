@@ -7,6 +7,9 @@ use App\BatchUpload\StoresSpreadsheets;
 use App\Exceptions\DuplicateContentException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organisation\ImportRequest;
+use App\Models\Organisation;
+use App\Models\Role;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -294,13 +297,15 @@ class ImportController extends Controller
         $importedRows = 0;
 
         DB::transaction(function () use ($spreadsheetParser, &$importedRows) {
-            $organisationRowBatch = $rowIndex = [];
+            $globalUserIds = Role::globalAdmin()->users()->pluck('users.id');
+            $organisationAdminId = Role::organisationAdmin()->id;
+            $organisationRowBatch = $rowIndex = $userRoleBatch = [];
             foreach ($spreadsheetParser->readRows() as $i => $organisationRow) {
                 /**
                  * Normalise the Organistion name
                  * and add the meta fields to the Organisation row.
                  */
-                $organisationRow['name'] = preg_replace('/[^a-zA-Z0-9,\.\'\&" ]/', '', $organisationRow['name']);
+                $organisationRow['name'] = preg_replace('/[^a-zA-Z0-9,\.\'\&\-" ]/', '', $organisationRow['name']);
                 $organisationRow['slug'] = Str::slug($organisationRow['name'] . ' ' . uniqid(), '-');
                 $organisationRow['created_at'] = Date::now();
                 $organisationRow['updated_at'] = Date::now();
@@ -316,6 +321,21 @@ class ImportController extends Controller
                 ];
 
                 /**
+                 * Create the User permission rows.
+                 */
+                foreach ($globalUserIds as $userId) {
+                    $userRoleBatch[] = [
+                        'id' => uuid(),
+                        'user_id' => $userId,
+                        'role_id' => $organisationAdminId,
+                        'service_id' => null,
+                        'organisation_id' => $organisationRow['id'],
+                        'created_at' => Date::now(),
+                        'updated_at' => Date::now(),
+                    ];
+                }
+
+                /**
                  * Add the row to the batch array.
                  */
                 $organisationRowBatch[] = $organisationRow;
@@ -324,9 +344,10 @@ class ImportController extends Controller
                  * If the batch array has reach the import batch size create the insert queries.
                  */
                 if (count($organisationRowBatch) === self::ROW_IMPORT_BATCH_SIZE) {
-                    DB::table('organisations')->insert($organisationRowBatch);
+                    DB::table((new Organisation())->getTable())->insert($organisationRowBatch);
+                    DB::table((new UserRole())->getTable())->insert($userRoleBatch);
                     $importedRows += self::ROW_IMPORT_BATCH_SIZE;
-                    $organisationRowBatch = [];
+                    $organisationRowBatch = $userRoleBatch = [];
                 }
             }
 
@@ -334,7 +355,8 @@ class ImportController extends Controller
              * If there are a final batch that did not meet the import batch size, create queries for these.
              */
             if (count($organisationRowBatch) && count($organisationRowBatch) !== self::ROW_IMPORT_BATCH_SIZE) {
-                DB::table('organisations')->insert($organisationRowBatch);
+                DB::table((new Organisation())->getTable())->insert($organisationRowBatch);
+                DB::table((new UserRole())->getTable())->insert($userRoleBatch);
                 $importedRows += count($organisationRowBatch);
             }
 

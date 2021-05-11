@@ -6,9 +6,11 @@ use App\Events\EndpointHit;
 use App\Models\Audit;
 use App\Models\File;
 use App\Models\Organisation;
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\UserRole;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
@@ -881,6 +883,93 @@ class OrganisationsTest extends TestCase
             'data' => [
                 'imported_row_count' => 2,
             ],
+        ]);
+    }
+
+    public function test_super_admin_can_view_bulk_imported_organisation()
+    {
+        Storage::fake('local');
+
+        $organisations = factory(Organisation::class, 2)->make();
+
+        $this->createOrganisationSpreadsheets($organisations);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', "/core/v1/organisations/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response = $this->json('GET', "/core/v1/organisations?filter=[has_permission]=true");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment([
+            'name' => $organisations->get(0)->name,
+        ]);
+
+        $response->assertJsonFragment([
+            'name' => $organisations->get(1)->name,
+        ]);
+    }
+
+    public function test_global_admin_can_view_bulk_imported_organisation()
+    {
+        Storage::fake('local');
+
+        $organisations = factory(Organisation::class, 2)->make();
+
+        $this->createOrganisationSpreadsheets($organisations);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $super = factory(User::class)->create();
+        $super->makeSuperAdmin();
+        $global = factory(User::class)->create();
+        $global->makeGlobalAdmin();
+        Passport::actingAs($super);
+
+        $response = $this->json('POST', "/core/v1/organisations/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        Passport::actingAs($global);
+
+        $response = $this->json('GET', "/core/v1/organisations?filter=[has_permission]=true&page=1&sort=name");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment([
+            'name' => $organisations->get(0)->name,
+        ]);
+
+        $response->assertJsonFragment([
+            'name' => $organisations->get(1)->name,
+        ]);
+
+        $organisation1Id = Organisation::where('name', $organisations->get(0)->name)->value('id');
+        $organisation2Id = Organisation::where('name', $organisations->get(1)->name)->value('id');
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $global->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'service_id' => null,
+            'organisation_id' => $organisation1Id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $global->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'service_id' => null,
+            'organisation_id' => $organisation2Id,
         ]);
     }
 

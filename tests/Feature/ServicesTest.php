@@ -2248,7 +2248,7 @@ class ServicesTest extends TestCase
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
         $service->syncServiceTaxonomies(new Collection([$taxonomy]));
-        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
 
@@ -2377,6 +2377,48 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => null, 'data' => $payload]);
+    }
+
+    public function test_global_admin_can_update_one_with_auto_approval()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => factory(Organisation::class)->create()->id,
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $data = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_SERVICE)
+            ->where('updateable_id', $service->id)
+            ->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = json_decode($response->getContent())->id;
+        Passport::actingAs($user);
+
+        $updateRequestCheckResponse = $this->get(
+            route('core.v1.update-requests.show',
+                ['update_request' => $updateRequestId])
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
+
+        // Update request should already have been approved.
+        $this->assertNotNull($updateRequestResponseData->approved_at);
     }
 
     /*

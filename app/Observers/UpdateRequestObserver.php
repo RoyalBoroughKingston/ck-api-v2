@@ -23,14 +23,38 @@ class UpdateRequestObserver
     public function created(UpdateRequest $updateRequest)
     {
         if ($updateRequest->isExisting()) {
-            $this->sendCreatedNotificationsForExisting($updateRequest);
-            $this->removeSameFieldsForPendingAndExisting($updateRequest);
-            $this->deleteEmptyPendingForExisting($updateRequest);
+            $this->handleExistingUpdateRequest($updateRequest);
         }
 
         if ($updateRequest->isNew()) {
+            $this->handleNewUpdateRequest($updateRequest);
+        }
+
+        if ($this->ownerIsGlobalAdmin($updateRequest)) {
+            $updateRequest->apply($updateRequest->user);
+        }
+    }
+
+    private function handleExistingUpdateRequest(UpdateRequest $updateRequest)
+    {
+        if (!$this->ownerIsGlobalAdmin($updateRequest)) {
+            $this->sendCreatedNotificationsForExisting($updateRequest);
+        }
+
+        $this->removeSameFieldsForPendingAndExisting($updateRequest);
+        $this->deleteEmptyPendingForExisting($updateRequest);
+    }
+
+    private function handleNewUpdateRequest(UpdateRequest $updateRequest)
+    {
+        if (!$this->ownerIsGlobalAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForNew($updateRequest);
         }
+    }
+
+    private function ownerIsGlobalAdmin(UpdateRequest $updateRequest)
+    {
+        return $updateRequest->user()->exists() ? $updateRequest->user->isGlobalAdmin() : false;
     }
 
     /**

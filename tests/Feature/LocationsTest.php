@@ -615,4 +615,57 @@ class LocationsTest extends TestCase
         $updateRequest = UpdateRequest::where('updateable_id', $location->id)->firstOrFail();
         $this->assertEquals(null, $updateRequest->data['image_file_id']);
     }
+
+    public function test_global_admin_can_update_one_with_auto_approval()
+    {
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $location = factory(Location::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
+        ];
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
+            'updateable_id' => $location->id,
+        ]);
+        $data = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
+            ->where('updateable_id', $location->id)
+            ->firstOrFail()
+            ->data;
+        $this->assertEquals($data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = json_decode($response->getContent())->id;
+        Passport::actingAs($user);
+
+        $updateRequestCheckResponse = $this->get(
+            route('core.v1.update-requests.show',
+                ['update_request' => $updateRequestId])
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
+
+        // Update request should already have been approved.
+        $this->assertNotNull($updateRequestResponseData->approved_at);
+    }
 }

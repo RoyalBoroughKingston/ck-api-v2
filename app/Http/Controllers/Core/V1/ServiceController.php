@@ -352,7 +352,6 @@ class ServiceController extends Controller
             // Only persist to the database if the user did not request a preview.
             if (!$request->isPreview()) {
                 $updateRequest->save();
-
                 event(EndpointHit::onUpdate($request, "Updated service [{$service->id}]", $service));
             }
 

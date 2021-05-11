@@ -189,6 +189,54 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
+    public function test_global_admin_can_update_one_with_auto_approval()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
+            'updateable_id' => $organisation->id,
+        ]);
+
+        $data = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
+            ->where('updateable_id', $organisation->id)
+            ->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = json_decode($response->getContent())->id;
+        Passport::actingAs($user);
+
+        $updateRequestCheckResponse = $this->get(
+            route('core.v1.update-requests.show',
+                ['update_request' => $updateRequestId])
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
+
+        // Update request should already have been approved.
+        $this->assertNotNull($updateRequestResponseData->approved_at);
+    }
+
     public function test_global_admin_can_create_one_with_single_form_of_contact()
     {
         /**
@@ -422,6 +470,7 @@ class OrganisationsTest extends TestCase
             'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
             'updateable_id' => $organisation->id,
         ]);
+
         $data = UpdateRequest::query()
             ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
             ->where('updateable_id', $organisation->id)
@@ -505,7 +554,7 @@ class OrganisationsTest extends TestCase
     public function test_fields_removed_for_existing_update_requests()
     {
         $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeSuperAdmin();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
 
         Passport::actingAs($user);
 

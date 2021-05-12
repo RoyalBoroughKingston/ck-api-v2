@@ -18,6 +18,7 @@ services:
   - docker
 
 before_script:
+  - if [ ! -z "$DOCKER_USER" ] && [ ! -z "$DOCKER_PWD" ];  then echo ${DOCKER_PWD} | docker login --username ${DOCKER_USER} --password-stdin; fi
   - sudo service mysql stop
   - ./develop build
   - ./develop up -d

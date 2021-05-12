@@ -15,6 +15,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Organisation;
+use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -84,6 +85,16 @@ class OrganisationController extends Controller
                 }
             }
 
+            // Create the social media records.
+            if ($request->filled('social_medias')) {
+                foreach ($request->social_medias as $socialMedia) {
+                    $organisation->socialMedias()->create([
+                        'type' => $socialMedia['type'],
+                        'url' => $socialMedia['url'],
+                    ]);
+                }
+            }
+
             event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
 
             return new OrganisationResource($organisation);
@@ -120,20 +131,17 @@ class OrganisationController extends Controller
     public function update(UpdateRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
-            /** @var \App\Models\UpdateRequest $updateRequest */
-            $updateRequest = $organisation->updateRequests()->create([
-                'user_id' => $request->user()->id,
-                'data' => array_filter_missing([
-                    'slug' => $request->missing('slug'),
-                    'name' => $request->missing('name'),
-                    'description' => $request->missing('description', function ($description) {
-                        return sanitize_markdown($description);
-                    }),
-                    'url' => $request->missing('url'),
-                    'email' => $request->missing('email'),
-                    'phone' => $request->missing('phone'),
-                    'logo_file_id' => $request->missing('logo_file_id'),
-                ]),
+            $data = array_filter_missing([
+                'slug' => $request->missing('slug'),
+                'name' => $request->missing('name'),
+                'description' => $request->missing('description', function ($description) {
+                    return sanitize_markdown($description);
+                }),
+                'url' => $request->missing('url'),
+                'email' => $request->missing('email'),
+                'phone' => $request->missing('phone'),
+                'logo_file_id' => $request->missing('logo_file_id'),
+                'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
             ]);
 
             if ($request->filled('logo_file_id')) {
@@ -145,6 +153,20 @@ class OrganisationController extends Controller
                     $file->resizedVersion($maxDimension);
                 }
             }
+
+            // Loop through each social media.
+            foreach ($request->input('social_medias', []) as $socialMedia) {
+                $data['social_medias'][] = [
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ];
+            }
+
+            /** @var \App\Models\UpdateRequest $updateRequest */
+            $updateRequest = $organisation->updateRequests()->create([
+                'user_id' => $request->user()->id,
+                'data' => $data,
+            ]);
 
             event(EndpointHit::onUpdate($request, "Updated organisation [{$organisation->id}]", $organisation));
 

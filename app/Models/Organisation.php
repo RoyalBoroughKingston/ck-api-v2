@@ -64,7 +64,30 @@ class Organisation extends Model implements AppliesUpdateRequests
             'logo_file_id' => Arr::get($data, 'logo_file_id', $this->logo_file_id),
         ]);
 
+        // Update the social media records.
+        if (array_key_exists('social_medias', $updateRequest->data)) {
+            $this->socialMedias()->delete();
+            foreach ($data['social_medias'] as $socialMedia) {
+                $this->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ]);
+            }
+        }
+
         return $updateRequest;
+    }
+
+    /**
+     * Delete polymorphic relationships when deleting.
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        $this->socialMedias()->delete();
+
+        return parent::delete();
     }
 
     /**

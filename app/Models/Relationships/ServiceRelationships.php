@@ -70,11 +70,11 @@ trait ServiceRelationships
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function socialMedias()
     {
-        return $this->hasMany(SocialMedia::class);
+        return $this->morphMany(SocialMedia::class, 'sociable');
     }
 
     /**

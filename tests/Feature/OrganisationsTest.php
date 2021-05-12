@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
+use App\Models\SocialMedia;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Models\UserRole;
@@ -69,6 +70,7 @@ class OrganisationsTest extends TestCase
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
+                'social_medias' => [],
                 'created_at' => $organisation->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $organisation->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -179,6 +181,12 @@ class OrganisationsTest extends TestCase
             'url' => 'http://test-org.example.com',
             'email' => 'info@test-org.example.com',
             'phone' => '07700000000',
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
         ];
 
         Passport::actingAs($user);
@@ -303,6 +311,12 @@ class OrganisationsTest extends TestCase
             'url' => 'http://test-org.example.com',
             'email' => 'info@test-org.example.com',
             'phone' => '07700000000',
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
@@ -320,6 +334,11 @@ class OrganisationsTest extends TestCase
     {
         $organisation = factory(Organisation::class)->create();
 
+        $organisation->socialMedias()->create([
+            'type' => SocialMedia::TYPE_INSTAGRAM,
+            'url' => 'https://www.instagram.com/ayupdigital',
+        ]);
+
         $response = $this->json('GET', "/core/v1/organisations/{$organisation->id}");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -333,6 +352,12 @@ class OrganisationsTest extends TestCase
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
+                'social_medias' => [
+                    [
+                        'type' => SocialMedia::TYPE_INSTAGRAM,
+                        'url' => 'https://www.instagram.com/ayupdigital',
+                    ],
+                ],
                 'created_at' => $organisation->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $organisation->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -356,6 +381,7 @@ class OrganisationsTest extends TestCase
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
+                'social_medias' => [],
                 'created_at' => $organisation->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $organisation->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -444,6 +470,113 @@ class OrganisationsTest extends TestCase
             ->where('updateable_id', $organisation->id)
             ->firstOrFail()->data;
         $this->assertEquals($data, $payload);
+    }
+
+    public function test_organisation_admin_can_add_social_media_to_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $payload = [
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
+            'updateable_id' => $organisation->id,
+        ]);
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
+            ->where('updateable_id', $organisation->id)
+            ->firstOrFail();
+        $this->assertEquals($updateRequest->data, $payload);
+        $updateRequest->apply(factory(User::class)->create()->makeGlobalAdmin());
+        $organisation->refresh();
+        $this->assertCount(1, $organisation->socialMedias);
+        $this->assertInstanceOf(SocialMedia::class, $organisation->socialMedias->first());
+        $this->assertEquals('https://www.instagram.com/ayupdigital', $organisation->socialMedias->first()->url);
+    }
+
+    public function test_organisation_admin_can_remove_social_media_from_one()
+    {
+        $organisation = factory(Organisation::class)->states(['social-media'])->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $payload = [
+            'social_medias' => [],
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
+            'updateable_id' => $organisation->id,
+        ]);
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
+            ->where('updateable_id', $organisation->id)
+            ->firstOrFail();
+        $this->assertEquals($updateRequest->data, $payload);
+        $updateRequest->apply(factory(User::class)->create()->makeGlobalAdmin());
+        $organisation->refresh();
+        $this->assertCount(0, $organisation->socialMedias);
+    }
+
+    public function test_organisation_admin_can_add_additional_social_media_to_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $organisation->socialMedias()->create([
+            'type' => SocialMedia::TYPE_TWITTER,
+            'url' => 'https://twitter.com/ayupdigital/',
+        ]);
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $payload = [
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_TWITTER,
+                    'url' => 'https://twitter.com/ayupdigital/',
+                ],
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
+            'updateable_id' => $organisation->id,
+        ]);
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
+            ->where('updateable_id', $organisation->id)
+            ->firstOrFail();
+        $this->assertEquals($updateRequest->data, $payload);
+        $updateRequest->apply(factory(User::class)->create()->makeGlobalAdmin());
+        $organisation->refresh();
+        $this->assertCount(2, $organisation->socialMedias);
     }
 
     public function test_organisation_admin_can_update_with_single_form_of_contact()
@@ -652,6 +785,23 @@ class OrganisationsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing((new Organisation())->getTable(), ['id' => $organisation->id]);
+    }
+
+    public function test_related_social_media_are_deleted_when_deleting_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $organisation->socialMedias()->create([
+            'type' => SocialMedia::TYPE_TWITTER,
+            'url' => 'https://twitter.com/ayupdigital/',
+        ]);
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new SocialMedia())->getTable(), ['url' => 'https://twitter.com/ayupdigital/']);
     }
 
     public function test_audit_created_when_deleted()

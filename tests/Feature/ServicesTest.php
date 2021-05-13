@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\HolidayOpeningHour;
 use App\Models\Organisation;
 use App\Models\RegularOpeningHour;
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\ServiceRefreshToken;
@@ -16,6 +17,7 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\UserRole;
 use Carbon\CarbonImmutable;
 use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Collection;
@@ -3155,6 +3157,134 @@ class ServicesTest extends TestCase
         $response = $this->json('POST', "/core/v1/services/import", $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    public function test_global_admin_can_view_bulk_imported_services()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make();
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response = $this->json('GET', "/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment([
+            'name' => $services->get(0)->name,
+        ]);
+
+        $response->assertJsonFragment([
+            'name' => $services->get(1)->name,
+        ]);
+
+        $service1 = Service::where('name', $services->get(0)->name)->first();
+        $service2 = Service::where('name', $services->get(1)->name)->first();
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $service1->id,
+            'organisation_id' => $service1->organisation_id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $service2->id,
+            'organisation_id' => $service2->organisation_id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service1->id,
+            'organisation_id' => $service1->organisation_id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service2->id,
+            'organisation_id' => $service2->organisation_id,
+        ]);
+    }
+
+    public function test_super_admin_can_view_bulk_imported_services()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $services = factory(Service::class, 2)->make();
+
+        $this->createServiceSpreadsheets($services);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response = $this->json('GET', "/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment([
+            'name' => $services->get(0)->name,
+        ]);
+
+        $response->assertJsonFragment([
+            'name' => $services->get(1)->name,
+        ]);
+
+        $service1 = Service::where('name', $services->get(0)->name)->first();
+        $service2 = Service::where('name', $services->get(1)->name)->first();
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $service1->id,
+            'organisation_id' => $service1->organisation_id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $service2->id,
+            'organisation_id' => $service2->organisation_id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service1->id,
+            'organisation_id' => $service1->organisation_id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole())->getTable(), [
+            'user_id' => $user->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service2->id,
+            'organisation_id' => $service2->organisation_id,
+        ]);
     }
 
     public function test_validate_file_import_type()

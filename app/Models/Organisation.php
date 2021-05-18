@@ -7,20 +7,34 @@ use App\Models\Mutators\OrganisationMutators;
 use App\Models\Relationships\OrganisationRelationships;
 use App\Models\Scopes\OrganisationScopes;
 use App\Rules\FileIsMimeType;
+use App\TaxonomyRelationships\HasTaxonomyRelationships;
+use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
-class Organisation extends Model implements AppliesUpdateRequests
+class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRelationships
 {
     use OrganisationMutators;
     use OrganisationRelationships;
     use OrganisationScopes;
     use UpdateRequests;
+    use UpdateTaxonomyRelationships;
+
+    /**
+     * Return the OrganisationTaxonomy relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function taxonomyRelationship(): HasMany
+    {
+        return $this->organisationTaxonomies();
+    }
 
     /**
      * Check if the update request is valid.
@@ -31,6 +45,9 @@ class Organisation extends Model implements AppliesUpdateRequests
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
         $rules = (new UpdateOrganisationRequest())
+            ->setUserResolver(function () use ($updateRequest) {
+                return $updateRequest->user;
+            })
             ->merge(['organisation' => $this])
             ->rules();
 
@@ -73,6 +90,12 @@ class Organisation extends Model implements AppliesUpdateRequests
                     'url' => $socialMedia['url'],
                 ]);
             }
+        }
+
+        // Update the category taxonomy records.
+        if (array_key_exists('category_taxonomies', $data)) {
+            $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
+            $this->syncTaxonomyRelationships($taxonomies);
         }
 
         return $updateRequest;

@@ -1486,7 +1486,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -1559,7 +1559,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -1632,7 +1632,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -1706,7 +1706,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -1780,7 +1780,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -1852,7 +1852,7 @@ class ServicesTest extends TestCase
     {
         $service = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -1926,7 +1926,7 @@ class ServicesTest extends TestCase
     {
         $service = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2003,7 +2003,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -2059,7 +2059,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -2115,7 +2115,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2171,7 +2171,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2227,7 +2227,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2285,7 +2285,7 @@ class ServicesTest extends TestCase
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -2345,7 +2345,7 @@ class ServicesTest extends TestCase
             'referral_email' => $this->faker->safeEmail,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2403,7 +2403,7 @@ class ServicesTest extends TestCase
             'referral_email' => $this->faker->safeEmail,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
         $image = Storage::disk('local')->get('/test-data/image.png');
 
@@ -2433,7 +2433,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2454,7 +2454,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -2509,7 +2509,7 @@ class ServicesTest extends TestCase
             'referral_url' => $this->faker->url,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2528,7 +2528,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
 
         Passport::actingAs($user);
@@ -2547,7 +2547,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2568,7 +2568,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -2593,7 +2593,7 @@ class ServicesTest extends TestCase
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncServiceTaxonomies(new Collection([$taxonomy]));
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);

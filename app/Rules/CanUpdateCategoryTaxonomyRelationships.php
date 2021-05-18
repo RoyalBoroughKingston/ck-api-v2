@@ -2,13 +2,15 @@
 
 namespace App\Rules;
 
+use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
+use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Arr;
 
-class CanUpdateServiceCategoryTaxonomies implements Rule
+class CanUpdateCategoryTaxonomyRelationships implements Rule
 {
     /**
      * @var \App\Models\User
@@ -16,20 +18,20 @@ class CanUpdateServiceCategoryTaxonomies implements Rule
     protected $user;
 
     /**
-     * @var \App\Models\Service
+     * @var \App\TaxonomyRelationships\HasTaxonomyRelationships
      */
-    protected $service;
+    protected $model;
 
     /**
      * Create a new rule instance.
      *
      * @param \App\Models\User $user
-     * @param \App\Models\Service $service
+     * @param \App\TaxonomyRelationships\HasTaxonomyRelationships $model
      */
-    public function __construct(User $user, Service $service)
+    public function __construct(User $user, HasTaxonomyRelationships $model)
     {
         $this->user = $user;
-        $this->service = $service;
+        $this->model = $model;
     }
 
     /**
@@ -53,12 +55,15 @@ class CanUpdateServiceCategoryTaxonomies implements Rule
         }
 
         // Allow changing of taxonomies if global admin.
-        if ($this->user->isGlobalAdmin()) {
+        if (
+            ($this->model instanceof Service && $this->user->isGlobalAdmin())
+            || ($this->model instanceof Organisation && $this->user->isOrganisationAdmin($this->model))
+        ) {
             return true;
         }
 
         // Only pass if the taxonomies remain unchanged.
-        $existingTaxonomyIds = $this->service
+        $existingTaxonomyIds = $this->model
             ->taxonomies()
             ->pluck(table(Taxonomy::class, 'id'))
             ->toArray();
@@ -76,6 +81,6 @@ class CanUpdateServiceCategoryTaxonomies implements Rule
      */
     public function message()
     {
-        return 'You are not authorised to update this service\'s category taxonomies.';
+        return 'You are not authorised to update this ' . class_basename($this->model) . '\'s category taxonomies.';
     }
 }

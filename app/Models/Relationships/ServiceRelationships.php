@@ -17,6 +17,7 @@ use App\Models\Taxonomy;
 use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait ServiceRelationships
@@ -104,7 +105,7 @@ trait ServiceRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function taxonomies()
+    public function taxonomies(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new ServiceTaxonomy())->getTable());
     }

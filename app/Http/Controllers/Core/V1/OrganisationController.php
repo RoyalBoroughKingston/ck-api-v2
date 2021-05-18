@@ -15,6 +15,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\Organisation;
+use App\Models\Taxonomy;
 use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -95,6 +96,10 @@ class OrganisationController extends Controller
                 }
             }
 
+            // Create the category taxonomy records.
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $organisation->syncTaxonomyRelationships($taxonomies);
+
             event(EndpointHit::onCreate($request, "Created organisation [{$organisation->id}]", $organisation));
 
             return new OrganisationResource($organisation);
@@ -142,6 +147,7 @@ class OrganisationController extends Controller
                 'phone' => $request->missing('phone'),
                 'logo_file_id' => $request->missing('logo_file_id'),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
+                'category_taxonomies' => $request->missing('category_taxonomies'),
             ]);
 
             if ($request->filled('logo_file_id')) {

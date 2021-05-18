@@ -9,7 +9,7 @@ use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
-use App\Rules\CanUpdateServiceCategoryTaxonomies;
+use App\Rules\CanUpdateCategoryTaxonomyRelationships;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use App\Rules\InOrder;
@@ -168,7 +168,7 @@ class UpdateRequest extends FormRequest
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
 
                     return $referralMethod === Service::REFERRAL_METHOD_INTERNAL
-                        && $this->service->referral_email === null;
+                    && $this->service->referral_email === null;
                 }),
                 new NullableIf(function () {
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
@@ -191,7 +191,7 @@ class UpdateRequest extends FormRequest
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
 
                     return $referralMethod === Service::REFERRAL_METHOD_EXTERNAL
-                        && $this->service->referral_url === null;
+                    && $this->service->referral_url === null;
                 }),
                 new NullableIf(function () {
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
@@ -312,14 +312,14 @@ class UpdateRequest extends FormRequest
                     return $this->service->serviceTaxonomies()->doesntExist();
                 }),
                 'array',
-                new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
+                new CanUpdateCategoryTaxonomyRelationships($this->user(), $this->service),
             ];
         }
 
         // If not a global admin.
         return [
             'array',
-            new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
+            new CanUpdateCategoryTaxonomyRelationships($this->user(), $this->service),
         ];
     }
 

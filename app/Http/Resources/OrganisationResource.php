@@ -25,6 +25,7 @@ class OrganisationResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'social_medias' => SocialMediaResource::collection($this->socialMedias),
+            'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
         ];

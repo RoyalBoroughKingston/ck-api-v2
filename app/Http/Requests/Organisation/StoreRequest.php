@@ -5,8 +5,10 @@ namespace App\Http\Requests\Organisation;
 use App\Models\File;
 use App\Models\Organisation;
 use App\Models\SocialMedia;
+use App\Models\Taxonomy;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -71,6 +73,8 @@ class StoreRequest extends FormRequest
                 SocialMedia::TYPE_OTHER,
             ])],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
+            'category_taxonomies' => ['present', 'array'],
+            'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
         ];
     }
 }

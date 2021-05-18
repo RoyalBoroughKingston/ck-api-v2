@@ -18,8 +18,8 @@ class ServicePersistenceService implements DataPersistenceService
     public function store(FormRequest $request)
     {
         return $request->user()->isGlobalAdmin()
-            ? $this->processAsNewEntity($request)
-            : $this->processAsUpdateRequest($request);
+        ? $this->processAsNewEntity($request)
+        : $this->processAsUpdateRequest($request);
     }
 
     public function update(FormRequest $request, Model $model)
@@ -57,17 +57,17 @@ class ServicePersistenceService implements DataPersistenceService
                 'referral_email' => $request->missing('referral_email'),
                 'referral_url' => $request->missing('referral_url'),
                 'criteria' => $request->has('criteria')
-                    ? array_filter_missing([
-                        'age_group' => $request->missing('criteria.age_group'),
-                        'disability' => $request->missing('criteria.disability'),
-                        'employment' => $request->missing('criteria.employment'),
-                        'gender' => $request->missing('criteria.gender'),
-                        'housing' => $request->missing('criteria.housing'),
-                        'income' => $request->missing('criteria.income'),
-                        'language' => $request->missing('criteria.language'),
-                        'other' => $request->missing('criteria.other'),
-                    ])
-                    : new MissingValue(),
+                ? array_filter_missing([
+                    'age_group' => $request->missing('criteria.age_group'),
+                    'disability' => $request->missing('criteria.disability'),
+                    'employment' => $request->missing('criteria.employment'),
+                    'gender' => $request->missing('criteria.gender'),
+                    'housing' => $request->missing('criteria.housing'),
+                    'income' => $request->missing('criteria.income'),
+                    'language' => $request->missing('criteria.language'),
+                    'other' => $request->missing('criteria.other'),
+                ])
+                : new MissingValue(),
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'offerings' => $request->has('offerings') ? [] : new MissingValue(),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
@@ -251,7 +251,7 @@ class ServicePersistenceService implements DataPersistenceService
 
             // Create the category taxonomy records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
-            $service->syncServiceTaxonomies($taxonomies);
+            $service->syncTaxonomyRelationships($taxonomies);
 
             return $service;
         });

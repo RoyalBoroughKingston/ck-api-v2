@@ -40,6 +40,11 @@ class UpdateOrganisationSchema extends Schema
                     ->items(
                         SocialMediaSchema::create()
                             ->required('type', 'url')
+                    ),
+                Schema::array('category_taxonomies')
+                    ->items(
+                        Schema::string()
+                            ->format(Schema::FORMAT_UUID)
                     )
             );
     }

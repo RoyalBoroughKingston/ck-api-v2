@@ -468,7 +468,7 @@ class BatchUploader
 
         $services->each(function (Service $service) use ($taxonomies) {
             if ($taxonomies->has($service->_id)) {
-                $service->syncServiceTaxonomies($taxonomies[$service->_id]);
+                $service->syncTaxonomyRelationships($taxonomies[$service->_id]);
             }
         });
 

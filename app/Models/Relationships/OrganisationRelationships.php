@@ -3,12 +3,15 @@
 namespace App\Models\Relationships;
 
 use App\Models\File;
+use App\Models\OrganisationTaxonomy;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\SocialMedia;
+use App\Models\Taxonomy;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait OrganisationRelationships
 {
@@ -62,5 +65,21 @@ trait OrganisationRelationships
             ->whereDoesntHave('userRoles', function (Builder $query) {
                 $query->whereIn('user_roles.role_id', [Role::superAdmin()->id, Role::globalAdmin()->id]);
             });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function organisationTaxonomies()
+    {
+        return $this->hasMany(OrganisationTaxonomy::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function taxonomies(): BelongsToMany
+    {
+        return $this->belongsToMany(Taxonomy::class, (new OrganisationTaxonomy())->getTable());
     }
 }

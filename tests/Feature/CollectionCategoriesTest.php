@@ -53,6 +53,48 @@ class CollectionCategoriesTest extends TestCase
         ]);
     }
 
+    /*
+     * List all the category collections.
+     */
+
+    public function test_guest_can_list_all_of_them()
+    {
+        $collectionCategoryCount = Collection::categories()->count();
+
+        $response = $this->json('GET', '/core/v1/collections/categories/all');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'name',
+                    'intro',
+                    'icon',
+                    'order',
+                    'sideboxes' => [
+                        '*' => [
+                            'title',
+                            'content',
+                        ],
+                    ],
+                    'category_taxonomies' => [
+                        '*' => [
+                            'id',
+                            'parent_id',
+                            'name',
+                            'created_at',
+                            'updated_at',
+                        ],
+                    ],
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+        $response->assertJsonCount($collectionCategoryCount, 'data');
+    }
+
     public function test_audit_created_when_listed()
     {
         $this->fakeEvents();

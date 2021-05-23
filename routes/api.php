@@ -32,6 +32,7 @@ Route::prefix('/core/v1')
 
             // Collection Categories.
             Route::match(['GET', 'POST'], '/collections/categories/index', 'CollectionCategoryController@index');
+            Route::get('/collections/categories/all', 'CollectionCategoryController@index')->name('collection-categories.all');
             Route::apiResource('/collections/categories', 'CollectionCategoryController')
                 ->parameter('categories', 'collection')
                 ->names([
@@ -44,6 +45,7 @@ Route::prefix('/core/v1')
 
             // Collection Personas.
             Route::match(['GET', 'POST'], '/collections/personas/index', 'CollectionPersonaController@index');
+            Route::get('/collections/personas/all', 'CollectionPersonaController@index')->name('collection-personas.all');
             Route::apiResource('/collections/personas', 'CollectionPersonaController')
                 ->parameter('personas', 'collection')
                 ->names([

@@ -55,6 +55,48 @@ class CollectionPersonasTest extends TestCase
         ]);
     }
 
+    /*
+     * List all the persona collections.
+     */
+
+    public function test_guest_can_list_all_of_them()
+    {
+        $response = $this->json('GET', '/core/v1/collections/personas/all');
+
+        $collectionPersonaCount = Collection::personas()->count();
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'name',
+                    'intro',
+                    'subtitle',
+                    'order',
+                    'sideboxes' => [
+                        '*' => [
+                            'title',
+                            'content',
+                        ],
+                    ],
+                    'category_taxonomies' => [
+                        '*' => [
+                            'id',
+                            'parent_id',
+                            'name',
+                            'created_at',
+                            'updated_at',
+                        ],
+                    ],
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+        $response->assertJsonCount($collectionPersonaCount, 'data');
+    }
+
     public function test_audit_created_when_listed()
     {
         $this->fakeEvents();

@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection as LaravelCollection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
@@ -460,5 +461,12 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             Response::HTTP_OK,
             ['Content-Type' => File::MIME_TYPE_PNG]
         );
+    }
+
+    public function getServiceEligibilities(): LaravelCollection
+    {
+        return $this->serviceEligibilities->map(function ($item) {
+            return $item->taxonomy;
+        });
     }
 }

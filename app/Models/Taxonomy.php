@@ -14,6 +14,7 @@ class Taxonomy extends Model
 
     const NAME_CATEGORY = 'Category';
     const NAME_ORGANISATION = 'Organisation';
+    const NAME_SERVICE_ELIGIBILITY = 'Service Eligibility';
 
     /**
      * @return \App\Models\Taxonomy
@@ -29,6 +30,11 @@ class Taxonomy extends Model
     public static function organisation(): self
     {
         return static::whereNull('parent_id')->where('name', static::NAME_ORGANISATION)->firstOrFail();
+    }
+
+    public static function serviceEligibility(): self
+    {
+        return static::whereNull('parent_id')->where('name', static::NAME_SERVICE_ELIGIBILITY)->firstOrFail();
     }
 
     /**

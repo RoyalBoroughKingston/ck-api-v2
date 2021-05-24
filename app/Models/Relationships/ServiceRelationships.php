@@ -8,6 +8,7 @@ use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\ServiceCriterion;
+use App\Models\ServiceEligibility;
 use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
 use App\Models\ServiceRefreshToken;
@@ -100,6 +101,11 @@ trait ServiceRelationships
     public function serviceTaxonomies()
     {
         return $this->hasMany(ServiceTaxonomy::class);
+    }
+
+    public function serviceEligibilities()
+    {
+        return $this->hasMany(ServiceEligibility::class);
     }
 
     /**

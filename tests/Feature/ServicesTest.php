@@ -1239,6 +1239,142 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
+    public function test_slug_is_incremented_when_creating_one_with_duplicate_slug()
+    {
+        $organisation1 = factory(Organisation::class)->create();
+        $organisation2 = factory(Organisation::class)->create();
+        $organisation3 = factory(Organisation::class)->create();
+        $organisation4 = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        //Given that a global admin is logged in
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation1->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        // Slug is not incremented if no clashes exist
+        $response->assertJsonFragment([
+            'slug' => 'test-service',
+        ]);
+
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'organisation_id' => $organisation1->id,
+            'slug' => 'test-service',
+        ]);
+
+        $payload['organisation_id'] = $organisation2->id;
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        // slug is incremented when clashes exist
+        $response->assertJsonFragment([
+            'slug' => 'test-service-1',
+        ]);
+
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'organisation_id' => $organisation2->id,
+            'slug' => 'test-service-1',
+        ]);
+
+        $payload['organisation_id'] = $organisation3->id;
+        $payload['slug'] = 'test-service-1';
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        // slug continues to increment as long as there are clashes
+        $response->assertJsonFragment([
+            'slug' => 'test-service-2',
+        ]);
+
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'organisation_id' => $organisation3->id,
+            'slug' => 'test-service-2',
+        ]);
+
+        $service = factory(Service::class)->create([
+            'slug' => 'demo-service-1',
+        ]);
+
+        $payload['organisation_id'] = $organisation4->id;
+        $payload['slug'] = 'demo-service';
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        // slug is permissable if same slug with suffix exists
+        $response->assertJsonFragment([
+            'slug' => 'demo-service',
+        ]);
+
+        $this->assertDatabaseHas((new Service())->getTable(), [
+            'organisation_id' => $organisation4->id,
+            'slug' => 'demo-service',
+        ]);
+    }
+
     /*
      * Get a specific service.
      */

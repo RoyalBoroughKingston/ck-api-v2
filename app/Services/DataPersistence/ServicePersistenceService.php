@@ -158,7 +158,7 @@ class ServicePersistenceService implements DataPersistenceService
             /** @var \App\Models\Service $service */
             $service = Service::create([
                 'organisation_id' => $request->organisation_id,
-                'slug' => $request->slug,
+                'slug' => $this->uniqueSlug($request->slug),
                 'name' => $request->name,
                 'type' => $request->type,
                 'status' => $request->status,
@@ -255,5 +255,26 @@ class ServicePersistenceService implements DataPersistenceService
 
             return $service;
         });
+    }
+
+    /**
+     * Return a unique version of the proposed slug.
+     *
+     * @param string $slug
+     * @return string
+     */
+    public function uniqueSlug($slug)
+    {
+        $uniqueSlug = $baseSlug = preg_replace('|\-\d$|', '', $slug);
+        $suffix = 1;
+        do {
+            $exists = DB::table((new Service())->getTable())->where('slug', $uniqueSlug)->exists();
+            if ($exists) {
+                $uniqueSlug = $baseSlug . '-' . $suffix;
+            }
+            $suffix++;
+        } while ($exists);
+
+        return $uniqueSlug;
     }
 }

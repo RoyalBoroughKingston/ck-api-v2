@@ -53,7 +53,7 @@ class UpdateSettingSchema extends Schema
             ->properties(
                 Schema::string('title'),
                 Schema::string('content')->format('markdown')
-        );
+            );
 
         $privacyPolicy = Schema::object('privacy_policy')
             ->required(
@@ -68,8 +68,7 @@ class UpdateSettingSchema extends Schema
         $about = Schema::object('about')
             ->required(
                 'title',
-                'content',
-                'video_url'
+                'content'
             )
             ->properties(
                 Schema::string('title'),

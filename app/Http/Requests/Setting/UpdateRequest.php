@@ -57,7 +57,7 @@ class UpdateRequest extends FormRequest
             'cms.frontend.about' => ['required', 'array'],
             'cms.frontend.about.title' => ['required', 'string'],
             'cms.frontend.about.content' => ['required', 'string'],
-            'cms.frontend.about.video_url' => ['required', 'string', 'url', new VideoEmbed()],
+            'cms.frontend.about.video_url' => ['nullable', 'string', 'url', new VideoEmbed()],
 
             'cms.frontend.contact' => ['required', 'array'],
             'cms.frontend.contact.title' => ['required', 'string'],

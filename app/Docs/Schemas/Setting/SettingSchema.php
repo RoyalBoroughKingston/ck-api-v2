@@ -42,7 +42,7 @@ class SettingSchema extends Schema
         $about = Schema::object('about')->properties(
             Schema::string('title'),
             Schema::string('content')->format('markdown'),
-            Schema::string('video_url')
+            Schema::string('video_url')->nullable()
         );
 
         $contact = Schema::object('contact')->properties(

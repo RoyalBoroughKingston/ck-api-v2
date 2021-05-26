@@ -55,6 +55,11 @@ class SettingController extends Controller
                                 'categories_title' => $request->input('cms.frontend.home.categories_title'),
                                 'personas_title' => $request->input('cms.frontend.home.personas_title'),
                                 'personas_content' => sanitize_markdown($request->input('cms.frontend.home.personas_content')),
+                                'banners' => array_map(function ($banner) {
+                                    $banner['content'] = sanitize_markdown($banner['content']);
+
+                                    return $banner;
+                                }, $request->input('cms.frontend.home.banners', [])),
                             ],
                             'terms_and_conditions' => [
                                 'title' => $request->input('cms.frontend.terms_and_conditions.title'),

@@ -17,22 +17,76 @@ use Tests\TestCase;
 
 class SettingsTest extends TestCase
 {
-    /*
-     * List all the settings.
-     */
+    protected $settingsData;
 
-    public function test_guest_can_list_them()
+    protected $settingsStructure;
+
+    protected $settingsResponse;
+
+    protected function setUp(): void
     {
-        $response = $this->getJson('/core/v1/settings');
+        parent::setUp();
+        $this->settingsData = [
+            'cms' => [
+                'frontend' => [
+                    'global' => [
+                        'footer_title' => 'data/cms/frontend/global/footer_title',
+                        'footer_content' => 'data/cms/frontend/global/footer_content',
+                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
+                        'contact_email' => 'example@example.com',
+                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
+                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
+                    ],
+                    'home' => [
+                        'search_title' => 'data/cms/frontend/home/search_title',
+                        'categories_title' => 'data/cms/frontend/home/categories_title',
+                        'personas_title' => 'data/cms/frontend/home/personas_title',
+                        'personas_content' => 'data/cms/frontend/home/personas_content',
+                        'banners' => [
+                            [
+                                'title' => 'data/cms/frontend/home/banners/title',
+                                'content' => 'data/cms/frontend/home/banners/content',
+                                'button_text' => 'button_text',
+                                'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url',
+                            ],
+                        ],
+                    ],
+                    'terms_and_conditions' => [
+                        'title' => 'data/cms/frontend/terms_and_conditions/title',
+                        'content' => 'data/cms/frontend/terms_and_conditions/content',
+                    ],
+                    'privacy_policy' => [
+                        'title' => 'data/cms/frontend/privacy_policy/title',
+                        'content' => 'data/cms/frontend/privacy_policy/content',
+                    ],
+                    'about' => [
+                        'title' => 'data/cms/frontend/about/title',
+                        'content' => 'data/cms/frontend/about/content',
+                        'video_url' => 'https://www.youtube.com/random-video-slug',
+                    ],
+                    'contact' => [
+                        'title' => 'data/cms/frontend/contact/title',
+                        'content' => 'data/cms/frontend/contact/content',
+                    ],
+                    'get_involved' => [
+                        'title' => 'data/cms/frontend/get_involved/title',
+                        'content' => 'data/cms/frontend/get_involved/content',
+                    ],
+                    'favourites' => [
+                        'title' => 'data/cms/frontend/favourites/title',
+                        'content' => 'data/cms/frontend/favourites/content',
+                    ],
+                    'banner' => [
+                        'title' => 'data/cms/frontend/banner/title',
+                        'content' => 'data/cms/frontend/banner/content',
+                        'button_text' => 'button_text',
+                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
+                    ],
+                ],
+            ],
+        ];
 
-        $response->assertStatus(Response::HTTP_OK);
-    }
-
-    public function test_structure_correct_when_listed()
-    {
-        $response = $this->getJson('/core/v1/settings');
-
-        $response->assertJsonStructure([
+        $this->settingsStructure = [
             'data' => [
                 'cms' => [
                     'frontend' => [
@@ -49,6 +103,14 @@ class SettingsTest extends TestCase
                             'categories_title',
                             'personas_title',
                             'personas_content',
+                            'banners' => [
+                                [
+                                    'title',
+                                    'content',
+                                    'button_text',
+                                    'button_url',
+                                ],
+                            ],
                         ],
                         'terms_and_conditions' => [
                             'title',
@@ -85,7 +147,87 @@ class SettingsTest extends TestCase
                     ],
                 ],
             ],
-        ]);
+        ];
+
+        $this->settingsResponse = [
+            'data' => [
+                'cms' => [
+                    'frontend' => [
+                        'global' => [
+                            'footer_title' => 'data/cms/frontend/global/footer_title',
+                            'footer_content' => 'data/cms/frontend/global/footer_content',
+                            'contact_phone' => 'data/cms/frontend/global/contact_phone',
+                            'contact_email' => 'example@example.com',
+                            'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
+                            'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
+                        ],
+                        'home' => [
+                            'search_title' => 'data/cms/frontend/home/search_title',
+                            'categories_title' => 'data/cms/frontend/home/categories_title',
+                            'personas_title' => 'data/cms/frontend/home/personas_title',
+                            'personas_content' => 'data/cms/frontend/home/personas_content',
+                            'banners' => [
+                                [
+                                    'title' => 'data/cms/frontend/home/banners/title',
+                                    'content' => 'data/cms/frontend/home/banners/content',
+                                    'button_text' => 'button_text',
+                                    'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url',
+                                ],
+                            ],
+                        ],
+                        'terms_and_conditions' => [
+                            'title' => 'data/cms/frontend/terms_and_conditions/title',
+                            'content' => 'data/cms/frontend/terms_and_conditions/content',
+                        ],
+                        'privacy_policy' => [
+                            'title' => 'data/cms/frontend/privacy_policy/title',
+                            'content' => 'data/cms/frontend/privacy_policy/content',
+                        ],
+                        'about' => [
+                            'title' => 'data/cms/frontend/about/title',
+                            'content' => 'data/cms/frontend/about/content',
+                            'video_url' => 'https://www.youtube.com/random-video-slug',
+                        ],
+                        'contact' => [
+                            'title' => 'data/cms/frontend/contact/title',
+                            'content' => 'data/cms/frontend/contact/content',
+                        ],
+                        'get_involved' => [
+                            'title' => 'data/cms/frontend/get_involved/title',
+                            'content' => 'data/cms/frontend/get_involved/content',
+                        ],
+                        'favourites' => [
+                            'title' => 'data/cms/frontend/favourites/title',
+                            'content' => 'data/cms/frontend/favourites/content',
+                        ],
+                        'banner' => [
+                            'title' => 'data/cms/frontend/banner/title',
+                            'content' => 'data/cms/frontend/banner/content',
+                            'button_text' => 'button_text',
+                            'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
+                            'has_image' => false,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+    /*
+     * List all the settings.
+     */
+
+    public function test_guest_can_list_them()
+    {
+        $response = $this->getJson('/core/v1/settings');
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function test_structure_correct_when_listed()
+    {
+        $response = $this->getJson('/core/v1/settings');
+
+        $response->assertJsonStructure($this->settingsStructure);
     }
 
     public function test_values_correct_when_listed()
@@ -109,6 +251,14 @@ class SettingsTest extends TestCase
                             'categories_title' => 'Categories title',
                             'personas_title' => 'Personas title',
                             'personas_content' => 'Personas content',
+                            'banners' => [
+                                [
+                                    'title' => null,
+                                    'content' => null,
+                                    'button_text' => null,
+                                    'button_url' => null,
+                                ],
+                            ],
                         ],
                         'terms_and_conditions' => [
                             'title' => 'Title',
@@ -215,57 +365,7 @@ class SettingsTest extends TestCase
             factory(User::class)->create()->makeGlobalAdmin()
         );
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                    ],
-                ],
-            ],
-        ]);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
         $response->assertStatus(Response::HTTP_OK);
     }
@@ -276,112 +376,9 @@ class SettingsTest extends TestCase
             factory(User::class)->create()->makeGlobalAdmin()
         );
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                    ],
-                ],
-            ],
-        ]);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
-        $response->assertJsonStructure([
-            'data' => [
-                'cms' => [
-                    'frontend' => [
-                        'global' => [
-                            'footer_title',
-                            'footer_content',
-                            'contact_phone',
-                            'contact_email',
-                            'facebook_handle',
-                            'twitter_handle',
-                        ],
-                        'home' => [
-                            'search_title',
-                            'categories_title',
-                            'personas_title',
-                            'personas_content',
-                        ],
-                        'terms_and_conditions' => [
-                            'title',
-                            'content',
-                        ],
-                        'privacy_policy' => [
-                            'title',
-                            'content',
-                        ],
-                        'about' => [
-                            'title',
-                            'content',
-                            'video_url',
-                        ],
-                        'contact' => [
-                            'title',
-                            'content',
-                        ],
-                        'get_involved' => [
-                            'title',
-                            'content',
-                        ],
-                        'favourites' => [
-                            'title',
-                            'content',
-                        ],
-                        'banner' => [
-                            'title',
-                            'content',
-                            'button_text',
-                            'button_url',
-                            'has_image',
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $response->assertJsonStructure($this->settingsStructure);
     }
 
     public function test_values_correct_when_updated()
@@ -390,112 +387,9 @@ class SettingsTest extends TestCase
             factory(User::class)->create()->makeGlobalAdmin()
         );
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                    ],
-                ],
-            ],
-        ]);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
-        $response->assertJson([
-            'data' => [
-                'cms' => [
-                    'frontend' => [
-                        'global' => [
-                            'footer_title' => 'data/cms/frontend/global/footer_title',
-                            'footer_content' => 'data/cms/frontend/global/footer_content',
-                            'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                            'contact_email' => 'example@example.com',
-                            'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                            'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                        ],
-                        'home' => [
-                            'search_title' => 'data/cms/frontend/home/search_title',
-                            'categories_title' => 'data/cms/frontend/home/categories_title',
-                            'personas_title' => 'data/cms/frontend/home/personas_title',
-                            'personas_content' => 'data/cms/frontend/home/personas_content',
-                        ],
-                        'terms_and_conditions' => [
-                            'title' => 'data/cms/frontend/terms_and_conditions/title',
-                            'content' => 'data/cms/frontend/terms_and_conditions/content',
-                        ],
-                        'privacy_policy' => [
-                            'title' => 'data/cms/frontend/privacy_policy/title',
-                            'content' => 'data/cms/frontend/privacy_policy/content',
-                        ],
-                        'about' => [
-                            'title' => 'data/cms/frontend/about/title',
-                            'content' => 'data/cms/frontend/about/content',
-                            'video_url' => 'https://www.youtube.com/random-video-slug',
-                        ],
-                        'contact' => [
-                            'title' => 'data/cms/frontend/contact/title',
-                            'content' => 'data/cms/frontend/contact/content',
-                        ],
-                        'get_involved' => [
-                            'title' => 'data/cms/frontend/get_involved/title',
-                            'content' => 'data/cms/frontend/get_involved/content',
-                        ],
-                        'favourites' => [
-                            'title' => 'data/cms/frontend/favourites/title',
-                            'content' => 'data/cms/frontend/favourites/content',
-                        ],
-                        'banner' => [
-                            'title' => 'data/cms/frontend/banner/title',
-                            'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'button_text',
-                            'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                            'has_image' => false,
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $response->assertJson($this->settingsResponse);
     }
 
     public function test_audit_created_when_updated()
@@ -506,57 +400,7 @@ class SettingsTest extends TestCase
             factory(User::class)->create()->makeGlobalAdmin()
         );
 
-        $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                    ],
-                ],
-            ],
-        ]);
+        $this->putJson('/core/v1/settings', $this->settingsData);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return ($event->getAction() === Audit::ACTION_UPDATE);
@@ -572,59 +416,7 @@ class SettingsTest extends TestCase
             factory(User::class)->create()->makeGlobalAdmin()
         );
 
-        $settingsData = [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                    ],
-                ],
-            ],
-        ];
-
-        $response = $this->putJson('/core/v1/settings', $settingsData);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -636,9 +428,9 @@ class SettingsTest extends TestCase
             ],
         ]);
 
-        $settingsData['cms']['frontend']['about']['video_url'] = null;
+        $this->settingsData['cms']['frontend']['about']['video_url'] = null;
 
-        $response = $this->putJson('/core/v1/settings', $settingsData);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -668,113 +460,13 @@ class SettingsTest extends TestCase
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                        'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
-                    ],
-                ],
-            ],
-        ]);
+        $this->settingsData['cms']['frontend']['banner']['image_file_id'] = $this->getResponseContent($imageResponse, 'data.id');
 
-        $response->assertJson([
-            'data' => [
-                'cms' => [
-                    'frontend' => [
-                        'global' => [
-                            'footer_title' => 'data/cms/frontend/global/footer_title',
-                            'footer_content' => 'data/cms/frontend/global/footer_content',
-                            'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                            'contact_email' => 'example@example.com',
-                            'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                            'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                        ],
-                        'home' => [
-                            'search_title' => 'data/cms/frontend/home/search_title',
-                            'categories_title' => 'data/cms/frontend/home/categories_title',
-                            'personas_title' => 'data/cms/frontend/home/personas_title',
-                            'personas_content' => 'data/cms/frontend/home/personas_content',
-                        ],
-                        'terms_and_conditions' => [
-                            'title' => 'data/cms/frontend/terms_and_conditions/title',
-                            'content' => 'data/cms/frontend/terms_and_conditions/content',
-                        ],
-                        'privacy_policy' => [
-                            'title' => 'data/cms/frontend/privacy_policy/title',
-                            'content' => 'data/cms/frontend/privacy_policy/content',
-                        ],
-                        'about' => [
-                            'title' => 'data/cms/frontend/about/title',
-                            'content' => 'data/cms/frontend/about/content',
-                            'video_url' => 'https://www.youtube.com/random-video-slug',
-                        ],
-                        'contact' => [
-                            'title' => 'data/cms/frontend/contact/title',
-                            'content' => 'data/cms/frontend/contact/content',
-                        ],
-                        'get_involved' => [
-                            'title' => 'data/cms/frontend/get_involved/title',
-                            'content' => 'data/cms/frontend/get_involved/content',
-                        ],
-                        'favourites' => [
-                            'title' => 'data/cms/frontend/favourites/title',
-                            'content' => 'data/cms/frontend/favourites/content',
-                        ],
-                        'banner' => [
-                            'title' => 'data/cms/frontend/banner/title',
-                            'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'button_text',
-                            'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                            'has_image' => true,
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $this->settingsResponse['data']['cms']['frontend']['banner']['has_image'] = true;
+
+        $response->assertJson($this->settingsResponse);
     }
 
     public function test_banner_image_remains_when_not_provided()
@@ -791,112 +483,11 @@ class SettingsTest extends TestCase
         );
         Setting::cms()->update(['value' => $cmsValue]);
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                    ],
-                ],
-            ],
-        ]);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
-        $response->assertJson([
-            'data' => [
-                'cms' => [
-                    'frontend' => [
-                        'global' => [
-                            'footer_title' => 'data/cms/frontend/global/footer_title',
-                            'footer_content' => 'data/cms/frontend/global/footer_content',
-                            'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                            'contact_email' => 'example@example.com',
-                            'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                            'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                        ],
-                        'home' => [
-                            'search_title' => 'data/cms/frontend/home/search_title',
-                            'categories_title' => 'data/cms/frontend/home/categories_title',
-                            'personas_title' => 'data/cms/frontend/home/personas_title',
-                            'personas_content' => 'data/cms/frontend/home/personas_content',
-                        ],
-                        'terms_and_conditions' => [
-                            'title' => 'data/cms/frontend/terms_and_conditions/title',
-                            'content' => 'data/cms/frontend/terms_and_conditions/content',
-                        ],
-                        'privacy_policy' => [
-                            'title' => 'data/cms/frontend/privacy_policy/title',
-                            'content' => 'data/cms/frontend/privacy_policy/content',
-                        ],
-                        'about' => [
-                            'title' => 'data/cms/frontend/about/title',
-                            'content' => 'data/cms/frontend/about/content',
-                            'video_url' => 'https://www.youtube.com/random-video-slug',
-                        ],
-                        'contact' => [
-                            'title' => 'data/cms/frontend/contact/title',
-                            'content' => 'data/cms/frontend/contact/content',
-                        ],
-                        'get_involved' => [
-                            'title' => 'data/cms/frontend/get_involved/title',
-                            'content' => 'data/cms/frontend/get_involved/content',
-                        ],
-                        'favourites' => [
-                            'title' => 'data/cms/frontend/favourites/title',
-                            'content' => 'data/cms/frontend/favourites/content',
-                        ],
-                        'banner' => [
-                            'title' => 'data/cms/frontend/banner/title',
-                            'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'button_text',
-                            'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                            'has_image' => true,
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $this->settingsResponse['data']['cms']['frontend']['banner']['has_image'] = true;
+
+        $response->assertJson($this->settingsResponse);
     }
 
     public function test_banner_image_can_be_removed()
@@ -913,113 +504,11 @@ class SettingsTest extends TestCase
         );
         Setting::cms()->update(['value' => $cmsValue]);
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => 'data/cms/frontend/banner/content',
-                        'button_text' => 'button_text',
-                        'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                        'image_file_id' => null,
-                    ],
-                ],
-            ],
-        ]);
+        $this->settingsData['cms']['frontend']['banner']['image_file_id'] = null;
 
-        $response->assertJson([
-            'data' => [
-                'cms' => [
-                    'frontend' => [
-                        'global' => [
-                            'footer_title' => 'data/cms/frontend/global/footer_title',
-                            'footer_content' => 'data/cms/frontend/global/footer_content',
-                            'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                            'contact_email' => 'example@example.com',
-                            'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                            'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                        ],
-                        'home' => [
-                            'search_title' => 'data/cms/frontend/home/search_title',
-                            'categories_title' => 'data/cms/frontend/home/categories_title',
-                            'personas_title' => 'data/cms/frontend/home/personas_title',
-                            'personas_content' => 'data/cms/frontend/home/personas_content',
-                        ],
-                        'terms_and_conditions' => [
-                            'title' => 'data/cms/frontend/terms_and_conditions/title',
-                            'content' => 'data/cms/frontend/terms_and_conditions/content',
-                        ],
-                        'privacy_policy' => [
-                            'title' => 'data/cms/frontend/privacy_policy/title',
-                            'content' => 'data/cms/frontend/privacy_policy/content',
-                        ],
-                        'about' => [
-                            'title' => 'data/cms/frontend/about/title',
-                            'content' => 'data/cms/frontend/about/content',
-                            'video_url' => 'https://www.youtube.com/random-video-slug',
-                        ],
-                        'contact' => [
-                            'title' => 'data/cms/frontend/contact/title',
-                            'content' => 'data/cms/frontend/contact/content',
-                        ],
-                        'get_involved' => [
-                            'title' => 'data/cms/frontend/get_involved/title',
-                            'content' => 'data/cms/frontend/get_involved/content',
-                        ],
-                        'favourites' => [
-                            'title' => 'data/cms/frontend/favourites/title',
-                            'content' => 'data/cms/frontend/favourites/content',
-                        ],
-                        'banner' => [
-                            'title' => 'data/cms/frontend/banner/title',
-                            'content' => 'data/cms/frontend/banner/content',
-                            'button_text' => 'button_text',
-                            'button_url' => 'https://example.com/data/cms/frontend/banner/button_url',
-                            'has_image' => false,
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertJson($this->settingsResponse);
     }
 
     public function test_all_banner_fields_are_required()
@@ -1035,57 +524,14 @@ class SettingsTest extends TestCase
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
-        $response = $this->putJson('/core/v1/settings', [
-            'cms' => [
-                'frontend' => [
-                    'global' => [
-                        'footer_title' => 'data/cms/frontend/global/footer_title',
-                        'footer_content' => 'data/cms/frontend/global/footer_content',
-                        'contact_phone' => 'data/cms/frontend/global/contact_phone',
-                        'contact_email' => 'example@example.com',
-                        'facebook_handle' => 'data/cms/frontend/global/facebook_handle',
-                        'twitter_handle' => 'data/cms/frontend/global/twitter_handle',
-                    ],
-                    'home' => [
-                        'search_title' => 'data/cms/frontend/home/search_title',
-                        'categories_title' => 'data/cms/frontend/home/categories_title',
-                        'personas_title' => 'data/cms/frontend/home/personas_title',
-                        'personas_content' => 'data/cms/frontend/home/personas_content',
-                    ],
-                    'terms_and_conditions' => [
-                        'title' => 'data/cms/frontend/terms_and_conditions/title',
-                        'content' => 'data/cms/frontend/terms_and_conditions/content',
-                    ],
-                    'privacy_policy' => [
-                        'title' => 'data/cms/frontend/privacy_policy/title',
-                        'content' => 'data/cms/frontend/privacy_policy/content',
-                    ],
-                    'about' => [
-                        'title' => 'data/cms/frontend/about/title',
-                        'content' => 'data/cms/frontend/about/content',
-                        'video_url' => 'https://www.youtube.com/random-video-slug',
-                    ],
-                    'contact' => [
-                        'title' => 'data/cms/frontend/contact/title',
-                        'content' => 'data/cms/frontend/contact/content',
-                    ],
-                    'get_involved' => [
-                        'title' => 'data/cms/frontend/get_involved/title',
-                        'content' => 'data/cms/frontend/get_involved/content',
-                    ],
-                    'favourites' => [
-                        'title' => 'data/cms/frontend/favourites/title',
-                        'content' => 'data/cms/frontend/favourites/content',
-                    ],
-                    'banner' => [
-                        'title' => 'data/cms/frontend/banner/title',
-                        'content' => null,
-                        'button_text' => null,
-                        'button_url' => null,
-                    ],
-                ],
-            ],
-        ]);
+        $this->settingsData['cms']['frontend']['banner'] = [
+            'title' => 'data/cms/frontend/banner/title',
+            'content' => null,
+            'button_text' => null,
+            'button_url' => null,
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -1156,5 +602,241 @@ class SettingsTest extends TestCase
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return ($event->getAction() === Audit::ACTION_READ);
         });
+    }
+
+    /**
+     * CMS Frontend Home Banners
+     */
+
+    /**
+     * @test
+     */
+    public function single_home_banner_can_be_added()
+    {
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        $this->settingsData['cms']['frontend']['home']['banners'][] = [
+            'title' => 'data/cms/frontend/home/banners/title2',
+            'content' => 'data/cms/frontend/home/banners/content2',
+            'button_text' => 'button_text2',
+            'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url2',
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $this->settingsResponse['data']['cms']['frontend']['home']['banners'][] = [
+            'title' => 'data/cms/frontend/home/banners/title2',
+            'content' => 'data/cms/frontend/home/banners/content2',
+            'button_text' => 'button_text2',
+            'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url2',
+        ];
+
+        $response->assertJson($this->settingsResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function multiple_home_banners_can_be_added()
+    {
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        // Clear any existing banners
+        $this->settingsData['cms']['frontend']['home']['banners'] = [];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $this->settingsResponse['data']['cms']['frontend']['home']['banners'] = [];
+
+        $response->assertJson($this->settingsResponse);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banner1/title',
+                'content' => 'data/cms/frontend/home/banner1/content',
+                'button_text' => 'button_text1',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banner1/button_url',
+            ],
+            [
+                'title' => 'data/cms/frontend/home/banner2/title',
+                'content' => 'data/cms/frontend/home/banner2/content',
+                'button_text' => 'button_text2',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banner2/button_url',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $this->settingsResponse['data']['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banner1/title',
+                'content' => 'data/cms/frontend/home/banner1/content',
+                'button_text' => 'button_text1',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banner1/button_url',
+            ],
+            [
+                'title' => 'data/cms/frontend/home/banner2/title',
+                'content' => 'data/cms/frontend/home/banner2/content',
+                'button_text' => 'button_text2',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banner2/button_url',
+            ],
+        ];
+
+        $response->assertJson($this->settingsResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function home_banners_can_be_updated()
+    {
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertJson($this->settingsResponse);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banners/title_updated',
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+                'button_text' => 'button_text_updated',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url_updated',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $this->settingsResponse['data']['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banners/title_updated',
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+                'button_text' => 'button_text_updated',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url_updated',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function home_banners_require_title_content_button_text_and_button_url()
+    {
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            null,
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [null],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => null,
+                'content' => null,
+                'button_text' => null,
+                'button_url' => null,
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banners/title_updated',
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banners/title_updated',
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+                'button_text' => 'button_text_updated',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banners/title_updated',
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+                'button_text' => 'button_text_updated',
+                'button_url' => 'www.not-a-valid-url',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->settingsData['cms']['frontend']['home']['banners'] = [
+            [
+                'title' => 'data/cms/frontend/home/banners/title_updated',
+                'content' => 'data/cms/frontend/home/banners/content_updated',
+                'button_text' => 'button_text_updated',
+                'button_url' => 'https://example.com/data/cms/frontend/home/banners/button_url_updated',
+            ],
+        ];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * @test
+     */
+    public function home_banners_can_be_removed()
+    {
+        Passport::actingAs(
+            factory(User::class)->create()->makeGlobalAdmin()
+        );
+
+        // Clear any existing banners
+        $this->settingsData['cms']['frontend']['home']['banners'] = [];
+
+        $response = $this->putJson('/core/v1/settings', $this->settingsData);
+
+        $this->settingsResponse['data']['cms']['frontend']['home']['banners'] = [];
+
+        $response->assertJson($this->settingsResponse);
     }
 }

@@ -2,9 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Events\EndpointHit;
+use App\Models\Audit;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -15,6 +19,44 @@ class TaxonomyServiceEligibilityTest extends TestCase
     {
         parent::setUp();
         $this->generateServiceEligibilityTaxonomy();
+    }
+
+    /*
+     * List all the category taxonomies.
+     */
+
+    public function test_guest_can_list_them()
+    {
+        $response = $this->json('GET', '/core/v1/taxonomies/service-eligibilities');
+
+        $taxonomyCount = Taxonomy::serviceEligibility()->children()->count();
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount($taxonomyCount, 'data');
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'order',
+                    'children' => [],
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+    }
+
+    public function test_audit_created_when_listed()
+    {
+        $this->fakeEvents();
+
+        $this->json('GET', '/core/v1/taxonomies/service-eligibilities');
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     public function test_criteria_property_returns_comma_separated_service_eligibilities()
@@ -33,11 +75,11 @@ class TaxonomyServiceEligibilityTest extends TestCase
                 'language' => 'Language taxonomy child,custom language',
                 'ethnicity' => 'Ethnicity taxonomy child,custom ethnicity',
                 'other' => 'custom other',
-            ]
+            ],
         ]);
     }
 
-    private function  createService()
+    private function createService()
     {
         $service = factory(Service::class)->create();
 
@@ -47,21 +89,21 @@ class TaxonomyServiceEligibilityTest extends TestCase
             'description' => 'This is a test description',
             'order' => 1,
         ]);
-        
+
         $service->offerings()->create([
             'offering' => 'Weekly club',
             'order' => 1,
         ]);
-        
+
         $service->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
             'url' => 'https://www.instagram.com/ayupdigital/',
         ]);
 
         // Loop through each top level child of service eligibility taxonomy
-        Taxonomy::serviceEligibility()->children->each((function($topLevelChild) use ($service) {
+        Taxonomy::serviceEligibility()->children->each((function ($topLevelChild) use ($service) {
             // And for each top level child, attach one of its children to the service
-            $topLevelChild->children->each(function($serviceEligibilityTaxonomyParent) use ($service) {
+            $topLevelChild->children->each(function ($serviceEligibilityTaxonomyParent) use ($service) {
                 $service->serviceEligibilities()->create([
                     'id' => (string) Str::uuid(),
                     'taxonomy_id' => $serviceEligibilityTaxonomyParent->id,
@@ -78,7 +120,6 @@ class TaxonomyServiceEligibilityTest extends TestCase
         $service->eligibility_language_custom = 'custom language';
         $service->eligibility_ethnicity_custom = 'custom ethnicity';
         $service->eligibility_other_custom = 'custom other';
-
 
         $service->save();
         return $service;
@@ -126,7 +167,7 @@ class TaxonomyServiceEligibilityTest extends TestCase
                 'name' => 'Ethnicity',
                 'order' => 7,
                 'depth' => 1,
-            ]
+            ],
         ];
 
         Taxonomy::serviceEligibility()

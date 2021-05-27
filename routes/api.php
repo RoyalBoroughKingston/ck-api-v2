@@ -171,6 +171,9 @@ Route::prefix('/core/v1')
                     'destroy' => 'taxonomy-organisations.destroy',
                 ]);
 
+            // Taxonomy Service Eligibility.
+            Route::get('/taxonomies/service-eligibilities', 'TaxonomyServiceEligibilityController@index');
+
             // Thesaurus.
             Route::get('/thesaurus', 'ThesaurusController@index')
                 ->name('thesaurus.index');

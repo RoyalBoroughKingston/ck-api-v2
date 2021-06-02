@@ -102,7 +102,7 @@ class ServiceController extends Controller
 
         event(EndpointHit::onCreate($request, "Created service [{$entity->id}]", $entity));
 
-        $entity->load('usefulInfos', 'offerings', 'socialMedias', 'taxonomies');
+        $entity->load('usefulInfos', 'offerings', 'socialMedias', 'taxonomies', 'serviceEligibilities');
 
         return new ServiceResource($entity);
     }

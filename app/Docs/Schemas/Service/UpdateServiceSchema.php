@@ -155,6 +155,23 @@ class UpdateServiceSchema extends Schema
                     ->items(
                         Schema::string()
                             ->format(Schema::FORMAT_UUID)
+                    ),
+                Schema::object('eligibility_types')
+                    ->properties(
+                        Schema::object('custom')
+                            ->properties(
+                                Schema::string('age_group')->nullable(),
+                                Schema::string('disability')->nullable(),
+                                Schema::string('ethnicity')->nullable(),
+                                Schema::string('gender')->nullable(),
+                                Schema::string('income')->nullable(),
+                                Schema::string('language')->nullable(),
+                                Schema::string('other')->nullable()
+                            ),
+                        Schema::array('taxonomies')
+                            ->items(
+                                Schema::string()
+                            )
                     )
             );
     }

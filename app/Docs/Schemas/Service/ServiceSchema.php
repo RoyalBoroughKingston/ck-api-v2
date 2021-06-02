@@ -108,7 +108,24 @@ class ServiceSchema extends Schema
                     ->nullable(),
                 Schema::string('updated_at')
                     ->format(Schema::FORMAT_DATE_TIME)
-                    ->nullable()
+                    ->nullable(),
+                Schema::object('eligibility_types')
+                    ->properties(
+                        Schema::object('custom')
+                            ->properties(
+                                Schema::string('age_group')->nullable(),
+                                Schema::string('disability')->nullable(),
+                                Schema::string('ethnicity')->nullable(),
+                                Schema::string('gender')->nullable(),
+                                Schema::string('income')->nullable(),
+                                Schema::string('language')->nullable(),
+                                Schema::string('other')->nullable()
+                            ),
+                        Schema::array('taxonomies')
+                            ->items(
+                                Schema::string()
+                            )
+                    )
             );
     }
 }

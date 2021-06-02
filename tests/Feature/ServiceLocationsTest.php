@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Date;
@@ -63,6 +64,8 @@ class ServiceLocationsTest extends TestCase
 
     public function test_guest_can_list_them_with_opening_hours()
     {
+        Date::setTestNow(Date::now()->setTime(18, 0));
+
         $location = factory(Location::class)->create();
         $service = factory(Service::class)->create();
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
@@ -298,6 +301,8 @@ class ServiceLocationsTest extends TestCase
 
     public function test_guest_can_view_one_with_opening_hours()
     {
+        Date::setTestNow(Date::now()->setTime(18, 0));
+
         $location = factory(Location::class)->create();
         $service = factory(Service::class)->create();
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);

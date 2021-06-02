@@ -1,0 +1,373 @@
+[
+  {
+    "id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "name": "Age Group",
+    "parent_id": "AFC14A10-3C3F-4AB1-B23B-0F1D013C8C29",
+    "order": 1,
+    "depth": 1
+  },
+  {
+    "id": "DF50CC84-ECAD-4E51-8E07-4BCFA4AEC50A",
+    "name": "0 - 4 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 1,
+    "depth": 2
+  },
+  {
+    "id": "23499E91-4F1F-426C-B7AF-AE201125C016",
+    "name": "5 - 11 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 2,
+    "depth": 2
+  },
+  {
+    "id": "4A56638A-BD50-480D-9509-3A9E31A29409",
+    "name": "12 - 15 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 3,
+    "depth": 2
+  },
+  {
+    "id": "E6D7C576-D0D6-421B-8FFA-1178799C6C8D",
+    "name": "16 - 18 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 4,
+    "depth": 2
+  },
+  {
+    "id": "709CE9A9-4C54-435A-AE0B-FC12880BDBC8",
+    "name": "19 - 20 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 5,
+    "depth": 2
+  },
+  {
+    "id": "414485D5-DA0D-4E32-ACCC-346C77542761",
+    "name": "21 - 30 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 6,
+    "depth": 2
+  },
+  {
+    "id": "6532D746-5060-4F04-AE6C-AF3A76FF0567",
+    "name": "31 - 40 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 7,
+    "depth": 2
+  },
+  {
+    "id": "9129F008-8A09-49D6-B758-6A58A2792023",
+    "name": "41 - 50 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 8,
+    "depth": 2
+  },
+  {
+    "id": "6B3F4B69-621B-43E4-B08E-615EE898AC4E",
+    "name": "51 - 60 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 9,
+    "depth": 2
+  },
+  {
+    "id": "A01F83D0-0CF5-4F4C-ACEF-849AA233B581",
+    "name": "61 - 64 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 10,
+    "depth": 2
+  },
+  {
+    "id": "67A544D7-CDD3-4115-AB33-CEE3E1132AA4",
+    "name": "65 - 69 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 11,
+    "depth": 2
+  },
+  {
+    "id": "AABC5EA0-46F0-4DFC-983E-AE7BB8B485E5",
+    "name": "70 - 79 years",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 12,
+    "depth": 2
+  },
+  {
+    "id": "1AC8E5A7-9749-433D-89E9-9474F2709C5A",
+    "name": "80+",
+    "parent_id": "7608AE50-8F4D-4C6A-9D20-C0B6D88B41C4",
+    "order": 13,
+    "depth": 2
+  },
+  {
+    "id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "name": "Disability",
+    "parent_id": "AFC14A10-3C3F-4AB1-B23B-0F1D013C8C29",
+    "order": 2,
+    "depth": 1
+  },
+  {
+    "id": "F681F7FC-8875-4C3E-8826-AB37579DECC0",
+    "name": "Acquired brain injury",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 1,
+    "depth": 2
+  },
+  {
+    "id": "EB460291-DAF1-424D-A539-D26DC67644DE",
+    "name": "Anxiety disorders and stress",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 2,
+    "depth": 2
+  },
+  {
+    "id": "F31ABE19-7E47-4CFD-B079-0E533B6FD50C",
+    "name": "Autism spectrum disorder",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 3,
+    "depth": 2
+  },
+  {
+    "id": "A8D6DC8A-8734-430F-A206-1FCBF936EDFE",
+    "name": "Bipolar disorder",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 4,
+    "depth": 2
+  },
+  {
+    "id": "49C8C169-AEAC-4A18-845D-B1BF75B90B54",
+    "name": "Cancer",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 5,
+    "depth": 2
+  },
+  {
+    "id": "094E4C74-2A17-4725-8A82-0125C873C638",
+    "name": "Chronic pain",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 6,
+    "depth": 2
+  },
+  {
+    "id": "95D60704-3F66-40B2-9335-A88B36F5F2E3",
+    "name": "Dementia",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 7,
+    "depth": 2
+  },
+  {
+    "id": "7FC7ED67-9F69-41E9-9534-819C769A901B",
+    "name": "Depression",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 8,
+    "depth": 2
+  },
+  {
+    "id": "BAED968A-305B-4063-B379-1C7E2AB8E36B",
+    "name": "Diabetes",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 9,
+    "depth": 2
+  },
+  {
+    "id": "5F7CFBB4-7048-4341-8884-6CFA1F1160DE",
+    "name": "Disability etiquette",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 10,
+    "depth": 2
+  },
+  {
+    "id": "F6BA0B3D-50DE-482D-A415-BA9F95D359A2",
+    "name": "Dyslexia",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 11,
+    "depth": 2
+  },
+  {
+    "id": "5C1D04B7-6514-4A8C-AB62-7AD27175D3CF",
+    "name": "Dyspraxia",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 12,
+    "depth": 2
+  },
+  {
+    "id": "FDD31036-519A-4939-847F-52936CFE48FA",
+    "name": "Epilepsy",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 13,
+    "depth": 2
+  },
+  {
+    "id": "CF524A3E-26F6-4593-8AFC-9AD19EFE3010",
+    "name": "Hearing Impairment (deafness)",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 14,
+    "depth": 2
+  },
+  {
+    "id": "741E08FC-0E7B-4929-BEC4-9ECFAFE0A3DF",
+    "name": "Learning disability",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 15,
+    "depth": 2
+  },
+  {
+    "id": "DE129145-0CF0-4C85-978E-AD543C1130C6",
+    "name": "Limb loss",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 16,
+    "depth": 2
+  },
+  {
+    "id": "8E4C9A78-82A1-4BC7-987B-AEF6B454DAA2",
+    "name": "Mental health",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 17,
+    "depth": 2
+  },
+  {
+    "id": "423A47C7-0073-4A75-8702-3D87FAD4C33F",
+    "name": "Migraine",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 18,
+    "depth": 2
+  },
+  {
+    "id": "AAED604D-0F80-4537-8302-5080BB5681AD",
+    "name": "Multiple sclerosis",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 19,
+    "depth": 2
+  },
+  {
+    "id": "05A6C8BC-520D-4B33-B154-04F424865624",
+    "name": "Musculoskeletal disorders",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 20,
+    "depth": 2
+  },
+  {
+    "id": "C9461ECF-520A-44A8-A400-6021FB200596",
+    "name": "Schizophrenia",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 21,
+    "depth": 2
+  },
+  {
+    "id": "CCA04A44-8151-4A72-A6C9-FBADEBC648CE",
+    "name": "Visual impairment (blindness).",
+    "parent_id": "8170420E-C04B-46B1-8440-ADAA4B79DE51",
+    "order": 22,
+    "depth": 2
+  },
+  {
+    "id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "name": "Gender",
+    "parent_id": "AFC14A10-3C3F-4AB1-B23B-0F1D013C8C29",
+    "order": 3,
+    "depth": 1
+  },
+  {
+    "id": "464A8812-BA17-409A-BA5F-AB404F26FCEB",
+    "name": "Female",
+    "parent_id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "order": 1,
+    "depth": 2
+  },
+  {
+    "id": "BB009F16-22DC-4B16-826C-EC38D2012D00",
+    "name": "Male",
+    "parent_id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "order": 2,
+    "depth": 2
+  },
+  {
+    "id": "C759F68A-DCB2-4B90-ADC3-A82D6CAA117A",
+    "name": "Non-binary",
+    "parent_id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "order": 3,
+    "depth": 2
+  },
+  {
+    "id": "0F5E24A5-C5A1-48CF-9A7E-3354F6A01F7F",
+    "name": "Transgender",
+    "parent_id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "order": 4,
+    "depth": 2
+  },
+  {
+    "id": "A36D7439-EA86-4466-B9A1-F22B6A44C9FF",
+    "name": "Transgender man",
+    "parent_id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "order": 5,
+    "depth": 2
+  },
+  {
+    "id": "0AF23D56-BD65-43EE-B34C-C48D2BA42F8A",
+    "name": "Transgender woman",
+    "parent_id": "AE73C43D-F74F-4C26-8E6C-A1F442C80347",
+    "order": 6,
+    "depth": 2
+  },
+  {
+    "id": "3DAD492A-0692-4E7A-884D-018CA2390CD8",
+    "name": "Income",
+    "parent_id": "AFC14A10-3C3F-4AB1-B23B-0F1D013C8C29",
+    "order": 4,
+    "depth": 1
+  },
+  {
+    "id": "C882F9E9-E14B-4E70-B2FF-229EB7B4C1C3",
+    "name": "Low Income",
+    "parent_id": "3DAD492A-0692-4E7A-884D-018CA2390CD8",
+    "order": 1,
+    "depth": 2
+  },
+  {
+    "id": "93E0FB4E-A328-404F-8748-6002CFA1E2E9",
+    "name": "In receipt of Universal Credit (or similar)",
+    "parent_id": "3DAD492A-0692-4E7A-884D-018CA2390CD8",
+    "order": 2,
+    "depth": 2
+  },
+  {
+    "id": "C596C6B9-AE4C-4715-AA8A-870E201793DF",
+    "name": "Language",
+    "parent_id": "AFC14A10-3C3F-4AB1-B23B-0F1D013C8C29",
+    "order": 5,
+    "depth": 1
+  },
+  {
+    "id": "06C1F29E-68FB-49D1-BDEA-0529DC2CE7CC",
+    "name": "English is not your first language",
+    "parent_id": "C596C6B9-AE4C-4715-AA8A-870E201793DF",
+    "order": 1,
+    "depth": 2
+  },
+  {
+    "id": "BC9B8B26-B8EE-4922-B023-A3B654997F25",
+    "name": "Ethnicity",
+    "parent_id": "AFC14A10-3C3F-4AB1-B23B-0F1D013C8C29",
+    "order": 6,
+    "depth": 1
+  },
+  {
+    "id": "D406212A-8BC4-4144-8BFA-CFA93B687398",
+    "name": "British, White Other",
+    "parent_id": "BC9B8B26-B8EE-4922-B023-A3B654997F25",
+    "order": 1,
+    "depth": 2
+  },
+  {
+    "id": "7440A573-2BCE-4C82-84A8-E6450FB9C6CB",
+    "name": "Asian or Asian British",
+    "parent_id": "BC9B8B26-B8EE-4922-B023-A3B654997F25",
+    "order": 2,
+    "depth": 2
+  },
+  {
+    "id": "FFD21040-976B-4FE3-8D76-5DC0B506A12B",
+    "name": "Black, African, Caribbean or Black British",
+    "parent_id": "BC9B8B26-B8EE-4922-B023-A3B654997F25",
+    "order": 3,
+    "depth": 2
+  }
+]

@@ -150,7 +150,8 @@ class BatchUploader
         EloquentCollection $collections
     ): EloquentCollection {
         $collectionTaxonomies = new EloquentCollection($collectionTaxonomies);
-        $collectionTaxonomies = $collectionTaxonomies->map(function (array $collectionTaxonomyArray) use ($collections
+        $collectionTaxonomies = $collectionTaxonomies->map(function (array $collectionTaxonomyArray) use (
+            $collections
         ): CollectionTaxonomy {
             // Get the collection ID.
             $collectionId = $collections->first(function (Collection $collection) use ($collectionTaxonomyArray): bool {
@@ -468,7 +469,7 @@ class BatchUploader
 
         $services->each(function (Service $service) use ($taxonomies) {
             if ($taxonomies->has($service->_id)) {
-                $service->syncServiceTaxonomies($taxonomies[$service->_id]);
+                $service->syncTaxonomyRelationships($taxonomies[$service->_id]);
             }
         });
 

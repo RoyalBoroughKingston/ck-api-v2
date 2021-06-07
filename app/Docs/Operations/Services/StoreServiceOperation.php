@@ -25,7 +25,9 @@ class StoreServiceOperation extends Operation
             ->action(static::ACTION_POST)
             ->tags(ServicesTag::create())
             ->summary('Create a service')
-            ->description('**Permission:** `Organisation Admin`')
+            ->description('**Permission:** `Organisation Admin` The HTTP response code is `200 OK` if an 
+            update request is created and must be approved for the changes to take place, 
+            or `201 Created` if the service was created immediately (only for Global Admins and above)')
             ->requestBody(
                 RequestBody::create()
                     ->required()
@@ -35,6 +37,11 @@ class StoreServiceOperation extends Operation
             )
             ->responses(
                 Response::created()->content(
+                    MediaType::json()->schema(
+                        ResourceSchema::create(null, ServiceSchema::create())
+                    )
+                ),
+                Response::ok()->content(
                     MediaType::json()->schema(
                         ResourceSchema::create(null, ServiceSchema::create())
                     )

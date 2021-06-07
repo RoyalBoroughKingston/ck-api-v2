@@ -39,12 +39,16 @@ class CollectionPersonaController extends Controller
         $baseQuery = Collection::personas()
             ->orderBy('order');
 
-        $personas = QueryBuilder::for($baseQuery)
-            ->allowedFilters([
+        $personaQuery = QueryBuilder::for($baseQuery)
+            ->with('taxonomies');
+        if ($request->is('*/all')) {
+            $personas = $personaQuery->get();
+        } else {
+            $personas = $personaQuery->allowedFilters([
                 Filter::exact('id'),
             ])
-            ->with('taxonomies')
-            ->paginate(per_page($request->per_page));
+                ->paginate(per_page($request->per_page));
+        }
 
         event(EndpointHit::onRead($request, 'Viewed all collection personas'));
 

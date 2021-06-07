@@ -26,7 +26,17 @@ class SettingSchema extends Schema
             Schema::string('search_title'),
             Schema::string('categories_title'),
             Schema::string('personas_title'),
-            Schema::string('personas_content')->format('markdown')
+            Schema::string('personas_content')->format('markdown'),
+            Schema::array('banners')
+                ->items(
+                    Schema::object()
+                        ->properties(
+                            Schema::string('title'),
+                            Schema::string('content')->format('markdown'),
+                            Schema::string('button_text'),
+                            Schema::string('button_url')
+                        )
+                )
         );
 
         $termsAndConditions = Schema::object('terms_and_conditions')->properties(
@@ -42,7 +52,7 @@ class SettingSchema extends Schema
         $about = Schema::object('about')->properties(
             Schema::string('title'),
             Schema::string('content')->format('markdown'),
-            Schema::string('video_url')
+            Schema::string('video_url')->nullable()
         );
 
         $contact = Schema::object('contact')->properties(

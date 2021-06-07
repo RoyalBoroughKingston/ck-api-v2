@@ -9,7 +9,8 @@ use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
-use App\Rules\CanUpdateServiceCategoryTaxonomies;
+use App\Rules\CanUpdateCategoryTaxonomyRelationships;
+use App\Rules\CanUpdateServiceEligibilityTaxonomyRelationships;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use App\Rules\InOrder;
@@ -280,6 +281,22 @@ class UpdateRequest extends FormRequest
                 new RootTaxonomyIs(Taxonomy::NAME_CATEGORY),
             ],
 
+            'eligibility_types' => $this->serviceEligibilityRules(),
+            'eligibility_types.taxonomies' => ['array'],
+            'eligibility_types.taxonomies.*' => [
+                'uuid',
+                'exists:taxonomies,id',
+                new RootTaxonomyIs(Taxonomy::NAME_SERVICE_ELIGIBILITY),
+            ],
+
+            'eligibility_types.custom.age_group' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.disability' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.gender' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.income' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.language' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.ethnicity' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.other' => ['nullable', 'string', 'min:1', 'max:255'],
+
             'logo_file_id' => [
                 'nullable',
                 'exists:files,id',
@@ -312,14 +329,22 @@ class UpdateRequest extends FormRequest
                     return $this->service->serviceTaxonomies()->doesntExist();
                 }),
                 'array',
-                new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
+                new CanUpdateCategoryTaxonomyRelationships($this->user(), $this->service),
             ];
         }
 
         // If not a global admin.
         return [
             'array',
-            new CanUpdateServiceCategoryTaxonomies($this->user(), $this->service),
+            new CanUpdateCategoryTaxonomyRelationships($this->user(), $this->service),
+        ];
+    }
+
+    protected function serviceEligibilityRules(): array
+    {
+        return [
+            'array',
+            new CanUpdateServiceEligibilityTaxonomyRelationships($this->user(), $this->service),
         ];
     }
 

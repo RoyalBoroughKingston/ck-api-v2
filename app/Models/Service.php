@@ -12,10 +12,13 @@ use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
 use App\Rules\FileIsMimeType;
 use App\Sms\Sms;
+use App\TaxonomyRelationships\HasTaxonomyRelationships;
+use App\TaxonomyRelationships\UpdateServiceEligibilityTaxonomyRelationships;
+use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
@@ -24,7 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use ScoutElastic\Searchable;
 
-class Service extends Model implements AppliesUpdateRequests, Notifiable
+class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
 {
     use DispatchesJobs;
     use Notifications;
@@ -33,6 +36,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     use ServiceRelationships;
     use ServiceScopes;
     use UpdateRequests;
+    use UpdateTaxonomyRelationships;
+    use UpdateServiceEligibilityTaxonomyRelationships;
 
     const TYPE_SERVICE = 'service';
     const TYPE_ACTIVITY = 'activity';
@@ -159,6 +164,16 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
     }
 
     /**
+     * Return the ServiceTaxonomy relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function taxonomyRelationship(): HasMany
+    {
+        return $this->serviceTaxonomies();
+    }
+
+    /**
      * Check if the update request is valid.
      *
      * @param \App\Models\UpdateRequest $updateRequest
@@ -228,6 +243,15 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
             'logo_file_id' => Arr::get($data, 'logo_file_id', $this->logo_file_id),
             // This must always be updated regardless of the fields changed.
             'last_modified_at' => Date::now(),
+            'eligibility_age_group_custom' => Arr::get($data, 'eligibility_types.custom.age_group', $this->eligibility_age_group_custom),
+            'eligibility_disability_custom' => Arr::get($data, 'eligibility_types.custom.disability', $this->eligibility_disability_custom),
+            'eligibility_employment_custom' => Arr::get($data, 'eligibility_types.custom.employment', $this->eligibility_employment_custom),
+            'eligibility_gender_custom' => Arr::get($data, 'eligibility_types.custom.gender', $this->eligibility_gender_custom),
+            'eligibility_housing_custom' => Arr::get($data, 'eligibility_types.custom.housing', $this->eligibility_housing_custom),
+            'eligibility_income_custom' => Arr::get($data, 'eligibility_types.custom.income', $this->eligibility_income_custom),
+            'eligibility_language_custom' => Arr::get($data, 'eligibility_types.custom.language', $this->eligibility_language_custom),
+            'eligibility_ethnicity_custom' => Arr::get($data, 'eligibility_types.custom.ethnicity', $this->eligibility_ethnicity_custom),
+            'eligibility_other_custom' => Arr::get($data, 'eligibility_types.custom.other', $this->eligibility_other_custom),
         ]);
 
         // Update the service criterion record.
@@ -304,7 +328,15 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
         // Update the category taxonomy records.
         if (array_key_exists('category_taxonomies', $data)) {
             $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
-            $this->syncServiceTaxonomies($taxonomies);
+            $this->syncTaxonomyRelationships($taxonomies);
+        }
+
+        if (array_key_exists('eligibility_types', $data)) {
+            // Update the custom eligibility fields.
+            if (array_key_exists('taxonomies', $data['eligibility_types'])) {
+                $eligibilityTaxonomies = Taxonomy::whereIn('id', $data['eligibility_types']['taxonomies'])->get();
+                $this->syncEligibilityRelationships($eligibilityTaxonomies);
+            }
         }
 
         // Ensure conditional fields are reset if needed.
@@ -363,34 +395,34 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable
      * @param \Illuminate\Database\Eloquent\Collection $taxonomies
      * @return \App\Models\Service
      */
-    public function syncServiceTaxonomies(EloquentCollection $taxonomies): Service
-    {
-        // Delete all existing service taxonomies.
-        $this->serviceTaxonomies()->delete();
+    // public function syncServiceTaxonomies(EloquentCollection $taxonomies): Service
+    // {
+    //     // Delete all existing service taxonomies.
+    //     $this->serviceTaxonomies()->delete();
 
-        // Create a service taxonomy record for each taxonomy and their parents.
-        foreach ($taxonomies as $taxonomy) {
-            $this->createServiceTaxonomy($taxonomy);
-        }
+    //     // Create a service taxonomy record for each taxonomy and their parents.
+    //     foreach ($taxonomies as $taxonomy) {
+    //         $this->createServiceTaxonomy($taxonomy);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @param \App\Models\Taxonomy $taxonomy
      * @return \App\Models\ServiceTaxonomy
      */
-    protected function createServiceTaxonomy(Taxonomy $taxonomy): ServiceTaxonomy
-    {
-        $hasParent = $taxonomy->parent !== null;
-        $parentIsNotTopLevel = $taxonomy->parent->id !== Taxonomy::category()->id;
+    // protected function createServiceTaxonomy(Taxonomy $taxonomy): ServiceTaxonomy
+    // {
+    //     $hasParent = $taxonomy->parent !== null;
+    //     $parentIsNotTopLevel = $taxonomy->parent->id !== Taxonomy::category()->id;
 
-        if ($hasParent && $parentIsNotTopLevel) {
-            $this->createServiceTaxonomy($taxonomy->parent);
-        }
+    //     if ($hasParent && $parentIsNotTopLevel) {
+    //         $this->createServiceTaxonomy($taxonomy->parent);
+    //     }
 
-        return $this->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
-    }
+    //     return $this->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
+    // }
 
     /**
      * @param \App\Emails\Email $email

@@ -42,7 +42,22 @@ class UpdateSettingSchema extends Schema
                 Schema::string('search_title'),
                 Schema::string('categories_title'),
                 Schema::string('personas_title'),
-                Schema::string('personas_content')->format('markdown')
+                Schema::string('personas_content')->format('markdown'),
+                Schema::array('banners')->items(
+                    Schema::object()
+                        ->required(
+                            'title',
+                            'content',
+                            'button_text',
+                            'button_url'
+                        )
+                        ->properties(
+                            Schema::string('title'),
+                            Schema::string('content')->format('markdown'),
+                            Schema::string('button_text'),
+                            Schema::string('button_url')
+                        )
+                )
             );
 
         $termsAndConditions = Schema::object('terms_and_conditions')
@@ -53,7 +68,7 @@ class UpdateSettingSchema extends Schema
             ->properties(
                 Schema::string('title'),
                 Schema::string('content')->format('markdown')
-        );
+            );
 
         $privacyPolicy = Schema::object('privacy_policy')
             ->required(
@@ -68,8 +83,7 @@ class UpdateSettingSchema extends Schema
         $about = Schema::object('about')
             ->required(
                 'title',
-                'content',
-                'video_url'
+                'content'
             )
             ->properties(
                 Schema::string('title'),

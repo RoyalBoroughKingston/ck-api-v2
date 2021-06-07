@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Date;
@@ -63,6 +64,8 @@ class ServiceLocationsTest extends TestCase
 
     public function test_guest_can_list_them_with_opening_hours()
     {
+        Date::setTestNow(Date::now()->setTime(18, 0));
+
         $location = factory(Location::class)->create();
         $service = factory(Service::class)->create();
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
@@ -298,6 +301,8 @@ class ServiceLocationsTest extends TestCase
 
     public function test_guest_can_view_one_with_opening_hours()
     {
+        Date::setTestNow(Date::now()->setTime(18, 0));
+
         $location = factory(Location::class)->create();
         $service = factory(Service::class)->create();
         $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
@@ -671,5 +676,55 @@ class ServiceLocationsTest extends TestCase
         $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $serviceLocation->id]);
         $updateRequest = UpdateRequest::where('updateable_id', $serviceLocation->id)->firstOrFail();
         $this->assertEquals(null, $updateRequest->data['image_file_id']);
+    }
+
+    public function test_global_admin_can_update_one_with_auto_approval()
+    {
+        $serviceLocation = factory(ServiceLocation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'name' => 'New Company Name',
+            'regular_opening_hours' => [
+                [
+                    'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
+                    'day_of_month' => 10,
+                    'opens_at' => '10:00:00',
+                    'closes_at' => '14:00:00',
+                ],
+            ],
+            'holiday_opening_hours' => [
+                [
+                    'is_closed' => true,
+                    'starts_at' => '2018-01-01',
+                    'ends_at' => '2018-01-01',
+                    'opens_at' => '00:00:00',
+                    'closes_at' => '00:00:00',
+                ],
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/service-locations/{$serviceLocation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $data = $serviceLocation->updateRequests()->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = json_decode($response->getContent())->id;
+        Passport::actingAs($user);
+
+        $updateRequestCheckResponse = $this->get(
+            route('core.v1.update-requests.show',
+                ['update_request' => $updateRequestId])
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
+
+        // Update request should already have been approved.
+        $this->assertNotNull($updateRequestResponseData->approved_at);
     }
 }

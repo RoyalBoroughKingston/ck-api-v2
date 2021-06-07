@@ -25,7 +25,7 @@ class IndexCollectionPersonaOperation extends Operation
         return parent::create($objectId)
             ->action(static::ACTION_GET)
             ->tags(CollectionPersonasTag::create())
-            ->summary('List all the persona collections')
+            ->summary('List all the persona collections with pagination')
             ->description(
                 <<<'EOT'
 **Permission:** `Open`

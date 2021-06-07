@@ -55,6 +55,11 @@ class SettingController extends Controller
                                 'categories_title' => $request->input('cms.frontend.home.categories_title'),
                                 'personas_title' => $request->input('cms.frontend.home.personas_title'),
                                 'personas_content' => sanitize_markdown($request->input('cms.frontend.home.personas_content')),
+                                'banners' => array_map(function ($banner) {
+                                    $banner['content'] = sanitize_markdown($banner['content']);
+
+                                    return $banner;
+                                }, $request->input('cms.frontend.home.banners', [])),
                             ],
                             'terms_and_conditions' => [
                                 'title' => $request->input('cms.frontend.terms_and_conditions.title'),
@@ -84,8 +89,8 @@ class SettingController extends Controller
                             'banner' => [
                                 'title' => $request->input('cms.frontend.banner.title'),
                                 'content' => $request->filled('cms.frontend.banner.content')
-                                    ? sanitize_markdown($request->input('cms.frontend.banner.content'))
-                                    : null,
+                                ? sanitize_markdown($request->input('cms.frontend.banner.content'))
+                                : null,
                                 'button_text' => $request->input('cms.frontend.banner.button_text'),
                                 'button_url' => $request->input('cms.frontend.banner.button_url'),
                                 'image_file_id' => $request->input(

@@ -2,15 +2,13 @@
 
 namespace App\Models\Relationships;
 
-use App\Models\Service;
-
 trait SocialMediaRelationships
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function service()
+    public function sociable()
     {
-        return $this->belongsTo(Service::class);
+        return $this->morphTo();
     }
 }

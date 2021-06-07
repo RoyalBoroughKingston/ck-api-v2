@@ -25,7 +25,7 @@ class IndexCollectionCategoryOperation extends Operation
         return parent::create($objectId)
             ->action(static::ACTION_GET)
             ->tags(CollectionCategoriesTag::create())
-            ->summary('List all the category collections')
+            ->summary('List all the category collections with pagination')
             ->description(
                 <<<'EOT'
 **Permission:** `Open`

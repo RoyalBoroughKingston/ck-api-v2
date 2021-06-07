@@ -17,6 +17,7 @@ use App\Models\UpdateRequest;
 use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Date;
@@ -74,10 +75,11 @@ class UpdateRequestsTest extends TestCase
 
     public function test_global_admin_can_list_them()
     {
-        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $organisation = factory(Organisation::class)->create();
+        $orgAdminUser = factory(User::class)->create()->makeOrganisationAdmin($organisation);
         $location = factory(Location::class)->create();
         $updateRequest = $location->updateRequests()->create([
-            'user_id' => $user->id,
+            'user_id' => $orgAdminUser->id,
             'data' => [
                 'address_line_1' => $this->faker->streetAddress,
                 'address_line_2' => null,
@@ -90,13 +92,15 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        Passport::actingAs($user);
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($globalAdminUser);
         $response = $this->json('GET', '/core/v1/update-requests');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $updateRequest->id,
-            'user_id' => $user->id,
+            'user_id' => $orgAdminUser->id,
             'actioning_user_id' => null,
             'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
@@ -115,10 +119,23 @@ class UpdateRequestsTest extends TestCase
 
     public function test_can_list_them_for_location()
     {
-        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $organisation = factory(Organisation::class)->create();
+        $orgAdminUser = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        $organisationUpdateRequest = $organisation->updateRequests()->create([
+            'user_id' => $orgAdminUser->id,
+            'data' => [
+                'name' => 'Test Name',
+                'description' => 'Lorem ipsum',
+                'url' => 'https://example.com',
+                'email' => 'phpunit@example.com',
+                'phone' => '07700000000',
+            ],
+        ]);
+
         $location = factory(Location::class)->create();
         $locationUpdateRequest = $location->updateRequests()->create([
-            'user_id' => $user->id,
+            'user_id' => $orgAdminUser->id,
             'data' => [
                 'address_line_1' => $this->faker->streetAddress,
                 'address_line_2' => null,
@@ -130,19 +147,10 @@ class UpdateRequestsTest extends TestCase
                 'accessibility_info' => null,
             ],
         ]);
-        $organisation = factory(Organisation::class)->create();
-        $organisationUpdateRequest = $organisation->updateRequests()->create([
-            'user_id' => $user->id,
-            'data' => [
-                'name' => 'Test Name',
-                'description' => 'Lorem ipsum',
-                'url' => 'https://example.com',
-                'email' => 'phpunit@example.com',
-                'phone' => '07700000000',
-            ],
-        ]);
 
-        Passport::actingAs($user);
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($globalAdminUser);
+
         $response = $this->json('GET', "/core/v1/update-requests?filter[location_id]={$location->id}");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -167,10 +175,13 @@ class UpdateRequestsTest extends TestCase
 
     public function test_can_filter_by_entry()
     {
-        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $organisation = factory(Organisation::class)->create([
+            'name' => 'Name with, comma',
+        ]);
+        $creatingUser = factory(User::class)->create()->makeOrganisationAdmin($organisation);
         $location = factory(Location::class)->create();
         $locationUpdateRequest = $location->updateRequests()->create([
-            'user_id' => $user->id,
+            'user_id' => $creatingUser->id,
             'data' => [
                 'address_line_1' => $this->faker->streetAddress,
                 'address_line_2' => null,
@@ -182,11 +193,9 @@ class UpdateRequestsTest extends TestCase
                 'accessibility_info' => null,
             ],
         ]);
-        $organisation = factory(Organisation::class)->create([
-            'name' => 'Name with, comma',
-        ]);
+
         $organisationUpdateRequest = $organisation->updateRequests()->create([
-            'user_id' => $user->id,
+            'user_id' => $creatingUser->id,
             'data' => [
                 'name' => 'Test Name',
                 'description' => 'Lorem ipsum',
@@ -196,7 +205,8 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        Passport::actingAs($user);
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($globalAdminUser);
         $response = $this->json('GET', "/core/v1/update-requests?filter[entry]={$organisation->name}");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -206,12 +216,15 @@ class UpdateRequestsTest extends TestCase
 
     public function test_can_sort_by_entry()
     {
-        $user = factory(User::class)->create()->makeGlobalAdmin();
         $location = factory(Location::class)->create([
             'address_line_1' => 'Entry A',
         ]);
+        $organisation = factory(Organisation::class)->create([
+            'name' => 'Entry B',
+        ]);
+        $creatingUser = factory(User::class)->create()->makeOrganisationAdmin($organisation);
         $locationUpdateRequest = $location->updateRequests()->create([
-            'user_id' => $user->id,
+            'user_id' => $creatingUser->id,
             'data' => [
                 'address_line_1' => 'Entry A',
                 'address_line_2' => null,
@@ -223,11 +236,9 @@ class UpdateRequestsTest extends TestCase
                 'accessibility_info' => null,
             ],
         ]);
-        $organisation = factory(Organisation::class)->create([
-            'name' => 'Entry B',
-        ]);
+
         $organisationUpdateRequest = $organisation->updateRequests()->create([
-            'user_id' => $user->id,
+            'user_id' => $creatingUser->id,
             'data' => [
                 'name' => 'Entry B',
                 'description' => 'Lorem ipsum',
@@ -237,7 +248,7 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        Passport::actingAs($user);
+        Passport::actingAs(factory(User::class)->create()->makeGlobalAdmin());
         $response = $this->json('GET', '/core/v1/update-requests?sort=-entry');
         $data = $this->getResponseContent($response);
 
@@ -720,6 +731,101 @@ class UpdateRequestsTest extends TestCase
             'id' => $service->id,
             'name' => 'Test Name',
         ]);
+    }
+
+    public function test_global_admin_can_approve_one_for_new_service()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        //Given an organisation admin is logged in
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'criteria' => [
+                'age_group' => '18+',
+                'disability' => null,
+                'employment' => null,
+                'gender' => null,
+                'housing' => null,
+                'income' => null,
+                'language' => null,
+                'other' => null,
+            ],
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+
+        //Then an update request should be created for the new service
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE)
+            ->where('updateable_id', null)
+            ->firstOrFail();
+
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($globalAdminUser);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $globalAdminUser->id,
+            'approved_at' => $now,
+        ]);
+
+        $this->assertNotEmpty(Service::all());
+        $this->assertEquals(1, Service::all()->count());
     }
 
     public function test_global_admin_can_approve_one_for_organisation_sign_up_form()

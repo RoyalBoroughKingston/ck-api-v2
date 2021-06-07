@@ -8,6 +8,7 @@ use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Referral;
 use App\Models\ServiceCriterion;
+use App\Models\ServiceEligibility;
 use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
 use App\Models\ServiceRefreshToken;
@@ -17,6 +18,7 @@ use App\Models\Taxonomy;
 use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait ServiceRelationships
@@ -70,11 +72,11 @@ trait ServiceRelationships
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function socialMedias()
     {
-        return $this->hasMany(SocialMedia::class);
+        return $this->morphMany(SocialMedia::class, 'sociable');
     }
 
     /**
@@ -101,10 +103,15 @@ trait ServiceRelationships
         return $this->hasMany(ServiceTaxonomy::class);
     }
 
+    public function serviceEligibilities()
+    {
+        return $this->hasMany(ServiceEligibility::class);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function taxonomies()
+    public function taxonomies(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new ServiceTaxonomy())->getTable());
     }

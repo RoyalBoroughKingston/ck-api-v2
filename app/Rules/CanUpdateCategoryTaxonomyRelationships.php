@@ -67,8 +67,8 @@ class CanUpdateCategoryTaxonomyRelationships implements Rule
             ->taxonomies()
             ->pluck(table(Taxonomy::class, 'id'))
             ->toArray();
-        $existingTaxonomies = Arr::sort($existingTaxonomyIds);
-        $newTaxonomies = Arr::sort($value);
+        $existingTaxonomies = array_values(Arr::sort($existingTaxonomyIds));
+        $newTaxonomies = array_values(Arr::sort($value));
         $taxonomiesUnchanged = $existingTaxonomies === $newTaxonomies;
 
         return $taxonomiesUnchanged;

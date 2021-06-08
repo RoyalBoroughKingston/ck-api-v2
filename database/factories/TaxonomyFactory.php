@@ -8,7 +8,7 @@ $factory->define(Taxonomy::class, function (Faker $faker) {
 
     return [
         'name' => $name,
-        'parent_id' => Taxonomy::category()->id,
+        'parent_id' => Taxonomy::category()->children()->first()->id,
         'order' => 0,
         'depth' => 1,
     ];

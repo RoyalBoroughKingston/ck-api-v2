@@ -704,8 +704,8 @@ class OrganisationsTest extends TestCase
     public function test_organisation_admin_can_update_organisation_taxonomies()
     {
         $organisation = factory(Organisation::class)->create();
-        $taxonomy1 = Taxonomy::category()->children()->firstOrFail()->children->get(0);
-        $taxonomy2 = Taxonomy::category()->children()->firstOrFail()->children->get(1);
+        $taxonomy1 = factory(Taxonomy::class)->create();
+        $taxonomy2 = factory(Taxonomy::class)->create();
         $organisation->syncTaxonomyRelationships(collect([$taxonomy1]));
         $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
         $payload = [
@@ -750,9 +750,9 @@ class OrganisationsTest extends TestCase
     public function test_global_admin_can_update_organisation_taxonomies()
     {
         $organisation = factory(Organisation::class)->create();
-        $taxonomy1 = Taxonomy::category()->children()->firstOrFail()->children->get(0);
-        $taxonomy2 = Taxonomy::category()->children()->firstOrFail()->children->get(1);
-        $taxonomy3 = Taxonomy::category()->children()->firstOrFail()->children->get(2);
+        $taxonomy1 = factory(Taxonomy::class)->create();
+        $taxonomy2 = factory(Taxonomy::class)->create();
+        $taxonomy3 = factory(Taxonomy::class)->create();
         $organisation->syncTaxonomyRelationships(collect([$taxonomy1]));
 
         $this->assertDatabaseHas(table(OrganisationTaxonomy::class), [

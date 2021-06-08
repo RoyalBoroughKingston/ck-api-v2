@@ -138,9 +138,9 @@ class TaxonomyCategoriesTest extends TestCase
     public function test_order_is_updated_when_created_at_beginning()
     {
         $user = factory(User::class)->create()->makeSuperAdmin();
-        $topLevelCategories = Taxonomy::category()->children()->orderBy('order')->get();
+        $topLevelCategories = Taxonomy::category()->children()->first()->children()->orderBy('order')->get();
         $payload = [
-            'parent_id' => null,
+            'parent_id' => $topLevelCategories->first()->parent_id,
             'name' => 'PHPUnit Taxonomy Category Test',
             'order' => 1,
         ];
@@ -159,9 +159,9 @@ class TaxonomyCategoriesTest extends TestCase
     public function test_order_is_updated_when_created_at_middle()
     {
         $user = factory(User::class)->create()->makeSuperAdmin();
-        $topLevelCategories = Taxonomy::category()->children()->orderBy('order')->get();
+        $topLevelCategories = Taxonomy::category()->children()->first()->children()->orderBy('order')->get();
         $payload = [
-            'parent_id' => null,
+            'parent_id' => $topLevelCategories->first()->parent_id,
             'name' => 'PHPUnit Taxonomy Category Test',
             'order' => 2,
         ];
@@ -185,9 +185,9 @@ class TaxonomyCategoriesTest extends TestCase
     public function test_order_is_updated_when_created_at_end()
     {
         $user = factory(User::class)->create()->makeSuperAdmin();
-        $topLevelCategories = Taxonomy::category()->children()->orderBy('order')->get();
+        $topLevelCategories = Taxonomy::category()->children()->first()->children()->orderBy('order')->get();
         $payload = [
-            'parent_id' => null,
+            'parent_id' => $topLevelCategories->first()->parent_id,
             'name' => 'PHPUnit Taxonomy Category Test',
             'order' => $topLevelCategories->count() + 1,
         ];

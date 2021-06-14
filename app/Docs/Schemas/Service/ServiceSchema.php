@@ -72,25 +72,6 @@ class ServiceSchema extends Schema
                     ->nullable(),
                 Schema::string('referral_url')
                     ->nullable(),
-                Schema::object('criteria')
-                    ->properties(
-                        Schema::string('age_group')
-                            ->nullable(),
-                        Schema::string('disability')
-                            ->nullable(),
-                        Schema::string('employment')
-                            ->nullable(),
-                        Schema::string('gender')
-                            ->nullable(),
-                        Schema::string('housing')
-                            ->nullable(),
-                        Schema::string('income')
-                            ->nullable(),
-                        Schema::string('language')
-                            ->nullable(),
-                        Schema::string('other')
-                            ->nullable()
-                    ),
                 Schema::array('useful_infos')
                     ->items(UsefulInfoSchema::create()),
                 Schema::array('offerings')

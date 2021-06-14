@@ -95,7 +95,6 @@ class ServiceObserver
         $service->userRoles->each->delete();
         $service->referrals->each->delete();
         $service->serviceLocations->each->delete();
-        $service->serviceCriterion->delete();
         $service->socialMedias->each->delete();
         $service->usefulInfos->each->delete();
         $service->serviceGalleryItems->each->delete();

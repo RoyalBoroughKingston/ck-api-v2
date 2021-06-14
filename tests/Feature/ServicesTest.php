@@ -65,30 +65,12 @@ class ServicesTest extends TestCase
             'referral_url',
             'show_referral_disclaimer',
             'referral_button_text',
-            'criteria_age_group',
-            'criteria_disability',
-            'criteria_employment',
-            'criteria_gender',
-            'criteria_housing',
-            'criteria_income',
-            'criteria_language',
-            'criteria_other',
         ];
 
         $services = $services->map(function ($service) use ($faker) {
             $serviceAttributes = $service->getAttributes();
             $serviceAttributes['id'] = $service->id ?: uuid();
-            $criteria = [
-                'criteria_age_group' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_disability' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_employment' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_gender' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_housing' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_income' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_language' => $faker->boolean() ? $faker->sentence() : '',
-                'criteria_other' => $faker->boolean() ? $faker->sentence() : '',
-            ];
-            return array_merge($serviceAttributes, $criteria);
+            return $serviceAttributes;
         });
 
         $spreadsheet = \Tests\Integration\SpreadsheetParserTest::createSpreadsheets($services->all(), $headers);
@@ -148,16 +130,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => $service->serviceCriterion->age_group,
-                'disability' => $service->serviceCriterion->disability,
-                'employment' => $service->serviceCriterion->employment,
-                'gender' => $service->serviceCriterion->gender,
-                'housing' => $service->serviceCriterion->housing,
-                'income' => $service->serviceCriterion->income,
-                'language' => $service->serviceCriterion->language,
-                'other' => $service->serviceCriterion->other,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -360,16 +332,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -540,16 +502,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -641,16 +593,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -978,16 +920,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1057,16 +989,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1432,16 +1354,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -1525,16 +1437,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -1658,16 +1560,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1736,16 +1628,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1814,16 +1696,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -3021,16 +2893,6 @@ class ServicesTest extends TestCase
                     'referral_button_text',
                     'referral_email',
                     'referral_url',
-                    'criteria' => [
-                        'age_group',
-                        'disability',
-                        'employment',
-                        'gender',
-                        'housing',
-                        'income',
-                        'language',
-                        'other',
-                    ],
                     'useful_infos' => [
                         [
                             'title',
@@ -3296,16 +3158,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => $service->serviceCriterion->age_group,
-                'disability' => $service->serviceCriterion->disability,
-                'employment' => $service->serviceCriterion->employment,
-                'gender' => $service->serviceCriterion->gender,
-                'housing' => $service->serviceCriterion->housing,
-                'income' => $service->serviceCriterion->income,
-                'language' => $service->serviceCriterion->language,
-                'other' => $service->serviceCriterion->other,
-            ],
             'useful_infos' => [],
             'social_medias' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
@@ -4267,41 +4119,6 @@ class ServicesTest extends TestCase
             'data' => [
                 'imported_row_count' => 5000,
             ],
-        ]);
-    }
-
-    public function test_service_criterions_created_on_import()
-    {
-        Storage::fake('local');
-
-        $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
-
-        Passport::actingAs($user);
-
-        $services = factory(Service::class, 2)->make([
-            'status' => Service::STATUS_INACTIVE,
-            'organisation_id' => $organisation->id,
-        ]);
-
-        $this->createServiceSpreadsheets($services);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
-        ];
-
-        $response = $this->json('POST', "/core/v1/services/import", $data);
-        $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJson([
-            'data' => [
-                'imported_row_count' => 2,
-            ],
-        ]);
-
-        $serviceId = \DB::table('services')->latest()->pluck('id');
-
-        $this->assertDatabaseHas('service_criteria', [
-            'service_id' => $serviceId,
         ]);
     }
 

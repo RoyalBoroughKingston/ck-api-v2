@@ -7,7 +7,6 @@ use App\Models\CollectionTaxonomy;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\Service;
-use App\Models\ServiceCriterion;
 use App\Models\ServiceLocation;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
@@ -292,7 +291,6 @@ class BatchUploader
 
             $service->_id = $serviceArray['ID*'];
 
-            $service->criteria = $this->processCriteria($serviceArray, $service);
             $service->social_medias = $this->processSocialMedia($serviceArray, $service);
 
             return $service;
@@ -320,25 +318,6 @@ class BatchUploader
             default:
                 return null;
         }
-    }
-
-    /**
-     * @param array $serviceArray
-     * @param \App\Models\Service $service
-     * @return \App\Models\ServiceCriterion
-     */
-    protected function processCriteria(array $serviceArray, Service $service): ServiceCriterion
-    {
-        return $service->serviceCriterion()->create([
-            'age_group' => $serviceArray['Critera - Age Group'],
-            'disability' => $serviceArray['Criteria - Disability'],
-            'employment' => $serviceArray['Criteria Employment'],
-            'gender' => $serviceArray['Criteria - Gender'],
-            'housing' => $serviceArray['Criteria - Housing'],
-            'income' => $serviceArray['Criteria - Income'],
-            'language' => $serviceArray['Criteria - Language'],
-            'other' => $serviceArray['Criteria - Other'],
-        ]);
     }
 
     /**

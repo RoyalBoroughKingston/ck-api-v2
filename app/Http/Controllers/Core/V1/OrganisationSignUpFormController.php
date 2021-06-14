@@ -73,16 +73,6 @@ class OrganisationSignUpFormController extends Controller
                     'contact_name' => $request->input('service.contact_name'),
                     'contact_phone' => $request->input('service.contact_phone'),
                     'contact_email' => $request->input('service.contact_email'),
-                    'criteria' => [
-                        'age_group' => $request->input('service.criteria.age_group'),
-                        'disability' => $request->input('service.criteria.disability'),
-                        'employment' => $request->input('service.criteria.employment'),
-                        'gender' => $request->input('service.criteria.gender'),
-                        'housing' => $request->input('service.criteria.housing'),
-                        'income' => $request->input('service.criteria.income'),
-                        'language' => $request->input('service.criteria.language'),
-                        'other' => $request->input('service.criteria.other'),
-                    ],
                     'useful_infos' => array_map(
                         function (array $usefulInfo) {
                             return Arr::only($usefulInfo, [

@@ -7,7 +7,6 @@ use App\Models\Location;
 use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Referral;
-use App\Models\ServiceCriterion;
 use App\Models\ServiceEligibility;
 use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
@@ -61,14 +60,6 @@ trait ServiceRelationships
     public function locations()
     {
         return $this->belongsToMany(Location::class, (new ServiceLocation())->getTable());
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function serviceCriterion()
-    {
-        return $this->hasOne(ServiceCriterion::class);
     }
 
     /**

@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\ImportRequest;
 use App\Models\Role;
 use App\Models\Service;
-use App\Models\ServiceCriterion;
 use App\Models\UserRole;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\MarkdownMaxLength;
@@ -215,14 +214,6 @@ class ImportController extends Controller
                         null
                     ),
                 ],
-                'criteria_age_group' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_disability' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_employment' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_gender' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_housing' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_income' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_language' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-                'criteria_other' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             ]);
 
             if ($validator->fails()) {
@@ -273,17 +264,8 @@ class ImportController extends Controller
             $serviceWorkerRoleId = Role::serviceWorker()->id;
             $organisationAdminRoleId = Role::organisationAdmin()->id;
 
-            $serviceRowBatch = $criteriaRowBatch = $userRoleBatch = [];
-            $criteriaFields = [
-                'age_group',
-                'disability',
-                'employment',
-                'gender',
-                'housing',
-                'income',
-                'language',
-                'other',
-            ];
+            $serviceRowBatch = $userRoleBatch = [];
+
             foreach ($spreadsheetParser->readRows() as $serviceRow) {
                 /**
                  * Cast Boolean rows to boolean value.
@@ -320,29 +302,6 @@ class ImportController extends Controller
                 }
 
                 /**
-                 * Check for Criteria fields.
-                 * Build a row of passed Criteria fields.
-                 * Remove Criteria fields from the Service row.
-                 */
-                $criteriaRow = [
-                    'id' => (string)Str::uuid(),
-                    'service_id' => $serviceRow['id'],
-                    'created_at' => Date::now(),
-                    'updated_at' => Date::now(),
-                ];
-                foreach ($criteriaFields as $criteriaField) {
-                    if (array_key_exists('criteria_' . $criteriaField, $serviceRow)) {
-                        $criteriaRow[$criteriaField] = $serviceRow['criteria_' . $criteriaField];
-                        unset($serviceRow['criteria_' . $criteriaField]);
-                    }
-                }
-
-                /**
-                 * Add the Criteria row to a batch array.
-                 */
-                $criteriaRowBatch[] = $criteriaRow;
-
-                /**
                  * Add the meta fields to the Service row.
                  */
                 $serviceRow['slug'] = Str::slug(uniqid($serviceRow['name'] . '-'));
@@ -355,10 +314,9 @@ class ImportController extends Controller
                  */
                 if (count($serviceRowBatch) === self::ROW_IMPORT_BATCH_SIZE) {
                     DB::table((new Service())->getTable())->insert($serviceRowBatch);
-                    DB::table((new ServiceCriterion())->getTable())->insert($criteriaRowBatch);
                     DB::table((new UserRole())->getTable())->insert($userRoleBatch);
                     $importedRows += self::ROW_IMPORT_BATCH_SIZE;
-                    $serviceRowBatch = $criteriaRowBatch = $userRoleBatch = [];
+                    $serviceRowBatch = $userRoleBatch = [];
                 }
             }
 
@@ -367,7 +325,6 @@ class ImportController extends Controller
              */
             if (count($serviceRowBatch) && count($serviceRowBatch) !== self::ROW_IMPORT_BATCH_SIZE) {
                 DB::table((new Service())->getTable())->insert($serviceRowBatch);
-                DB::table((new ServiceCriterion())->getTable())->insert($criteriaRowBatch);
                 DB::table((new UserRole())->getTable())->insert($userRoleBatch);
                 $importedRows += count($serviceRowBatch);
             }

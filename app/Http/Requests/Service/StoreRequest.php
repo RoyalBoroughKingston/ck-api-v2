@@ -171,15 +171,6 @@ class StoreRequest extends FormRequest
                     null
                 ),
             ],
-            'criteria' => ['required', 'array'],
-            'criteria.age_group' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.disability' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.employment' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.gender' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.housing' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.income' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.language' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
-            'criteria.other' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
 
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],

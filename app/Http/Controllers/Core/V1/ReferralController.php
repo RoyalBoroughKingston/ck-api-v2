@@ -57,7 +57,6 @@ class ReferralController extends Controller
             ->when($serviceIncluded, function (Builder $query): Builder {
                 // If service included, then make sure the service relationships are also eager loaded.
                 return $query->with([
-                    'service.serviceCriterion',
                     'service.usefulInfos',
                     'service.socialMedias',
                     'service.taxonomies',
@@ -148,7 +147,6 @@ class ReferralController extends Controller
             ->when($serviceIncluded, function (Builder $query): Builder {
                 // If service included, then make sure the service relationships are also eager loaded.
                 return $query->with([
-                    'service.serviceCriterion',
                     'service.usefulInfos',
                     'service.socialMedias',
                     'service.taxonomies',

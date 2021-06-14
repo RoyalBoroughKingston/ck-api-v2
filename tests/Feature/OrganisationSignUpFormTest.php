@@ -52,16 +52,6 @@ class OrganisationSignUpFormTest extends TestCase
                 'contact_name' => $this->faker->name,
                 'contact_phone' => random_uk_phone(),
                 'contact_email' => $this->faker->safeEmail,
-                'criteria' => [
-                    'age_group' => '18+',
-                    'disability' => null,
-                    'employment' => null,
-                    'gender' => null,
-                    'housing' => null,
-                    'income' => null,
-                    'language' => null,
-                    'other' => null,
-                ],
                 'useful_infos' => [
                     [
                         'title' => 'Did you know?',
@@ -121,16 +111,6 @@ class OrganisationSignUpFormTest extends TestCase
                 'contact_name' => $this->faker->name,
                 'contact_phone' => random_uk_phone(),
                 'contact_email' => null,
-                'criteria' => [
-                    'age_group' => '18+',
-                    'disability' => null,
-                    'employment' => null,
-                    'gender' => null,
-                    'housing' => null,
-                    'income' => null,
-                    'language' => null,
-                    'other' => null,
-                ],
                 'useful_infos' => [
                     [
                         'title' => 'Did you know?',
@@ -405,16 +385,6 @@ class OrganisationSignUpFormTest extends TestCase
                 'contact_name' => $this->faker->name,
                 'contact_phone' => random_uk_phone(),
                 'contact_email' => $this->faker->safeEmail,
-                'criteria' => [
-                    'age_group' => '18+',
-                    'disability' => null,
-                    'employment' => null,
-                    'gender' => null,
-                    'housing' => null,
-                    'income' => null,
-                    'language' => null,
-                    'other' => null,
-                ],
                 'useful_infos' => [
                     [
                         'title' => 'Did you know?',

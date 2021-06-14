@@ -32,6 +32,9 @@ class Taxonomy extends Model
         return static::whereNull('parent_id')->where('name', static::NAME_ORGANISATION)->firstOrFail();
     }
 
+    /**
+     * @return \App\Models\Taxonomy
+     */
     public static function serviceEligibility(): self
     {
         return static::whereNull('parent_id')->where('name', static::NAME_SERVICE_ELIGIBILITY)->firstOrFail();
@@ -95,5 +98,28 @@ class Taxonomy extends Model
         });
 
         return $this;
+    }
+
+    /**
+     * Return an array of all Taxonomies below the Service Eligibility root.
+     *
+     * @param App\Models\Taxonomy $taxonomy
+     * @param mixed $allTaxonomies
+     * @return Illuminate\Support\Collection
+     */
+    public function getAllServiceEligibilities($taxonomy = null, &$allTaxonomies = [])
+    {
+        if (!$taxonomy) {
+            $taxonomy = self::serviceEligibility();
+            $allTaxonomies = collect($allTaxonomies);
+        }
+
+        $allTaxonomies = $allTaxonomies->merge($taxonomy->children);
+
+        foreach ($taxonomy->children as $childTaxonomy) {
+            $this->getAllServiceEligibilities($childTaxonomy, $allTaxonomies);
+        }
+
+        return $allTaxonomies;
     }
 }

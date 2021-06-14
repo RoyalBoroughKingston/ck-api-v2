@@ -414,16 +414,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -626,16 +616,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -690,16 +670,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -762,16 +732,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -815,16 +775,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1006,16 +956,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1070,16 +1010,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1139,16 +1069,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1674,16 +1594,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1743,16 +1653,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1815,16 +1715,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1884,16 +1774,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1952,16 +1832,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2008,16 +1878,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2064,16 +1924,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2120,16 +1970,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2176,16 +2016,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2234,16 +2064,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2295,16 +2115,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2962,16 +2772,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4236,16 +4036,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4316,16 +4106,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4409,16 +4189,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4793,16 +4563,6 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => null,
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4866,16 +4626,6 @@ class ServicesTest extends TestCase
                 'referral_button_text' => $service->referral_button_text,
                 'referral_email' => $service->referral_email,
                 'referral_url' => $service->referral_url,
-                'criteria' => [
-                    'age_group' => $service->serviceCriterion->age_group,
-                    'disability' => $service->serviceCriterion->disability,
-                    'employment' => $service->serviceCriterion->employment,
-                    'gender' => $service->serviceCriterion->gender,
-                    'housing' => $service->serviceCriterion->housing,
-                    'income' => $service->serviceCriterion->income,
-                    'language' => $service->serviceCriterion->language,
-                    'other' => $service->serviceCriterion->other,
-                ],
                 'useful_infos' => [],
                 'social_medias' => [
                     [

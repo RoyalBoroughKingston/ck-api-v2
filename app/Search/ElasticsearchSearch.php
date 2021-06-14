@@ -8,6 +8,7 @@ use App\Models\Collection as CollectionModel;
 use App\Models\SearchHistory;
 use App\Models\Service;
 use App\Models\ServiceLocation;
+use App\Models\Taxonomy;
 use App\Support\Coordinate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -275,6 +276,28 @@ class ElasticsearchSearch implements Search
                 ],
             ],
         ];
+
+        return $this;
+    }
+
+    public function applyEligibilities(array $eligibilityNames): Search
+    {
+        $otherEligibilityNames = (new Taxonomy())->getAllServiceEligibilities()
+            ->pluck('name')
+            ->diff($eligibilityNames)
+            ->all();
+
+        foreach ($eligibilityNames as $eligibilityName) {
+            $this->query['query']['bool']['must']['bool']['should'][] = $this->matchPhrase('service_eligibilities', $eligibilityName);
+        }
+
+        $this->query['query']['bool']['must']['bool']['should'][] = [
+            'bool' => ['must_not' => ['exists' => ['field' => 'service_eligibilities']]],
+        ];
+
+        foreach ($otherEligibilityNames as $otherEligibilityName) {
+            $this->query['query']['bool']['must']['bool']['must_not'][] = $this->matchPhrase('service_eligibilities', $otherEligibilityName);
+        }
 
         return $this;
     }

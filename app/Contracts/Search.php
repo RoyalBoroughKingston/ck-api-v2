@@ -73,4 +73,6 @@ interface Search
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function get(int $perPage = null): AnonymousResourceCollection;
+
+    public function applyEligibilities(array $eligibilityNames): Search;
 }

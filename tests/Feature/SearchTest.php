@@ -602,4 +602,264 @@ class SearchTest extends TestCase implements UsesElasticsearch
         $this->assertEquals($service2->id, $content[1]['id']);
         $this->assertEquals($service3->id, $content[2]['id']);
     }
+
+    public function test_query_matches_eligibility_name()
+    {
+        // Given a service has an eligibility age group taxonomy of 12 - 15 years
+        $service = factory(Service::class)
+            ->create();
+
+        $parentTaxonomy = Taxonomy::serviceEligibility()
+            ->children()
+            ->where(['name' => 'Age Group'])
+            ->first();
+
+        $taxonomy = $parentTaxonomy->children()
+            ->where(['name' => '12 - 15 years'])
+            ->first();
+
+        $service->serviceEligibilities()->create(['taxonomy_id' => $taxonomy->id]);
+
+        // Trigger a reindex
+        $service->save();
+
+        // When a search is performed with the age group taxonomies of 12 - 15 years and 16 - 18 years
+        $response = $this->json('POST', '/core/v1/search', [
+            'eligibilities' => [
+                '12 - 15 years',
+                '16 - 18 years',
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        // Then the results should include the service
+        $response->assertJsonFragment(['id' => $service->id]);
+    }
+
+    public function test_no_results_when_query_does_not_match_eligibility_name()
+    {
+        // Given a service has an eligibility age group taxonomy of 12 - 15 years
+        $service = factory(Service::class)
+            ->create();
+
+        $parentTaxonomy = Taxonomy::serviceEligibility()
+            ->children()
+            ->where(['name' => 'Age Group'])
+            ->first();
+
+        $taxonomy = $parentTaxonomy->children()
+            ->where(['name' => '12 - 15 years'])
+            ->first();
+
+        $service->serviceEligibilities()->create(['taxonomy_id' => $taxonomy->id]);
+
+        // Trigger a reindex
+        $service->save();
+
+        // When a search is performed with the age group taxonomies of 16 - 18 years and 19 - 20 years
+        $response = $this->json('POST', '/core/v1/search', [
+            'eligibilities' => [
+                '16 - 18 years',
+                '19 - 20 years',
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonMissing(['id' => $service->id]);
+    }
+
+    public function test_service_returned_in_result_if_it_has_no_eligibility_taxonomies_related_to_parent_of_searched_eligibility()
+    {
+        $service = factory(Service::class)
+            ->create();
+
+        $service->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'eligibilities' => [
+                '16 - 18 years',
+                '19 - 20 years',
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service->id]);
+    }
+
+    public function test_service_ranks_higher_if_eligibility_match()
+    {
+        // Given a service called Alpha Ltd has no eligibility age group taxonomies specified
+        $serviceA = factory(Service::class)
+            ->create([
+                'name' => 'Alpha Ltd',
+            ]);
+
+        // And a service called Beta Ltd has an eligibility age group taxonomy of 12 - 15 years
+        $serviceB = factory(Service::class)
+            ->create([
+                'name' => 'Beta Ltd',
+            ]);
+
+        $parentTaxonomy = Taxonomy::serviceEligibility()
+            ->children()
+            ->where(['name' => 'Age Group'])
+            ->first();
+
+        $taxonomyB = $parentTaxonomy->children()
+            ->where(['name' => '12 - 15 years'])
+            ->first();
+
+        $serviceB->serviceEligibilities()->create([
+            'taxonomy_id' => $taxonomyB->id,
+        ]);
+
+        // Trigger a reindex
+        $serviceA->save();
+        $serviceB->save();
+
+        // When a search is performed with the age group taxonomies of 12 - 15 years and 16 - 18 years
+        $response = $this->json('POST', '/core/v1/search', [
+            'eligibilities' => [
+                '12 - 15 years',
+                '16 - 18 years',
+            ],
+        ]);
+
+        $data = $this->getResponseContent($response)['data'];
+
+        // Then the results should include both services
+        $this->assertEquals(2, count($data));
+
+        // And Beta Ltd should rank higher in the results
+        $this->assertEquals($serviceB->id, $data[0]['id']);
+        $this->assertEquals($serviceA->id, $data[1]['id']);
+    }
+
+    public function test_search_ranking_given_more_relevant_matches_versus_less_hits_or_no_eligibilities_attached()
+    {
+        $parentTaxonomy = Taxonomy::serviceEligibility()
+            ->children()
+            ->where(['name' => 'Disability'])
+            ->first();
+
+        // Given a service called Alpha Ltd has no eligibility taxonomies specified
+        $serviceA = factory(Service::class)
+            ->create([
+                'name' => 'Alpha Ltd',
+            ]);
+
+        // And a service called Bravo Ltd has matches one of the eligibility taxonomy terms that we will search for
+        $serviceB = factory(Service::class)
+            ->create([
+                'name' => 'Bravo Ltd',
+            ]);
+
+        $taxonomyIdsB = $parentTaxonomy
+            ->children()
+            ->where(['name' => 'Bipolar disorder'])
+            ->first()
+            ->id;
+
+        $serviceB->serviceEligibilities()->create(['taxonomy_id' => $taxonomyIdsB]);
+
+        // And a service called Charlie Ltd matches two of the eligibility taxonomy terms that we will search for
+        $serviceC = factory(Service::class)
+            ->create([
+                'name' => 'Charlie Ltd',
+            ]);
+
+        $taxonomyIdsC = $parentTaxonomy->children()
+            ->whereIn('name', ['Bipolar disorder', 'Multiple sclerosis'])
+            ->get()
+            ->map(function($taxonomy) {
+                return ['taxonomy_id' => $taxonomy->id];
+            });
+
+        $serviceC->serviceEligibilities()->createMany($taxonomyIdsC->toArray());
+
+        // And a service called Delta Ltd matches all of the eligibility taxonomy terms that we will search for
+        $serviceD = factory(Service::class)
+            ->create([
+                'name' => 'Delta Ltd',
+            ]);
+
+        $taxonomyIdsD = $parentTaxonomy->children()
+            ->whereIn('name', ['Bipolar disorder', 'Multiple sclerosis', 'Schizophrenia'])
+            ->get()
+            ->map(function($taxonomy) {
+                return ['taxonomy_id' => $taxonomy->id];
+            });
+
+        $serviceD->serviceEligibilities()->createMany($taxonomyIdsD->toArray());
+
+        // And a Service called Inactive Service that matches all of the eligiblity taxonomies but is inactive
+        $serviceIA = factory(Service::class)
+            ->create([
+                'name' => 'Inactive Service',
+                'status' => Service::STATUS_INACTIVE,
+            ]);
+
+        $serviceIA->serviceEligibilities()->createMany($taxonomyIdsD->toArray());
+
+
+        // Trigger reindex in a different order to ensure it's not just sorted by updated_at or something
+        $serviceB->save();
+        $serviceA->save();
+        $serviceD->save();
+        $serviceC->save();
+        $serviceIA->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'eligibilities' => ['Bipolar disorder', 'Multiple sclerosis', 'Schizophrenia']
+        ]);
+
+        $data = $this->getResponseContent($response)['data'];
+
+        // There should be 4 results
+        $this->assertEquals(4, count($data));
+
+        // In this order
+        $this->assertEquals($serviceD->id, $data[0]['id']);
+        $this->assertEquals($serviceC->id, $data[1]['id']);
+        $this->assertEquals($serviceB->id, $data[2]['id']);
+        $this->assertEquals($serviceA->id, $data[3]['id']);
+
+        // And the inactive one is filtered out
+        $response->assertJsonMissing(['id' => $serviceIA->id]);
+    }
+
+    public function test_search_works_when_combining_eligibility_search_with_query_field()
+    {
+        // Given a service has an eligibility age group taxonomy of 12 - 15 years
+        $serviceWithEligibility = factory(Service::class)
+            ->create();
+
+        $parentTaxonomy = Taxonomy::serviceEligibility()
+            ->children()
+            ->where(['name' => 'Age Group'])
+            ->first();
+
+        $taxonomy = $parentTaxonomy->children()
+            ->where(['name' => '12 - 15 years'])
+            ->first();
+
+        $serviceWithEligibility->serviceEligibilities()->create(['taxonomy_id' => $taxonomy->id]);
+
+        // Trigger a reindex
+        $serviceWithEligibility->save();
+
+        $serviceWithSearchTermMatch = factory(Service::class)->create();
+
+        // When a search is performed with the age group taxonomies of 12 - 15 years and a query string
+        $response = $this->json('POST', '/core/v1/search', [
+            'eligibilities' => [
+                '12 - 15 years',
+            ],
+            'query' => $serviceWithSearchTermMatch->name,
+        ]);
+
+        // The search works
+        $response->assertStatus(Response::HTTP_OK);
+    }
 }

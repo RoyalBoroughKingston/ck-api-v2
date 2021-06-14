@@ -126,6 +126,9 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                     'location' => ['type' => 'geo_point'],
                 ],
             ],
+            'service_eligibilities' => [
+                'type' => 'keyword',
+            ],
         ],
     ];
 
@@ -160,6 +163,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                         ],
                     ];
                 })->toArray(),
+            'service_eligibilities' => $this->eligibilities()->pluck('name')->toArray(),
         ];
     }
 

@@ -41,7 +41,6 @@ class UpdateServiceSchema extends Schema
                 'referral_url',
                 'useful_infos',
                 'offerings',
-                'social_medias',
                 'gallery_items',
                 'category_taxonomies'
             )
@@ -108,11 +107,6 @@ class UpdateServiceSchema extends Schema
                     ->items(
                         OfferingSchema::create()
                             ->required('offering', 'order')
-                    ),
-                Schema::array('social_medias')
-                    ->items(
-                        SocialMediaSchema::create()
-                            ->required('type', 'url')
                     ),
                 Schema::array('gallery_items')
                     ->items(

@@ -97,17 +97,6 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
             }
         }
 
-        // Update the social media records.
-        if (array_key_exists('social_medias', $updateRequest->data)) {
-            $service->socialMedias()->delete();
-            foreach ($data['social_medias'] as $socialMedia) {
-                $service->socialMedias()->create([
-                    'type' => $socialMedia['type'],
-                    'url' => $socialMedia['url'],
-                ]);
-            }
-        }
-
         // Update the gallery item records.
         if (array_key_exists('gallery_items', $updateRequest->data)) {
             $service->serviceGalleryItems()->delete();

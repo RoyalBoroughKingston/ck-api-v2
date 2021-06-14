@@ -108,7 +108,6 @@ class UpdateRequestObserverTest extends TestCase
                     ],
                     'useful_infos' => [],
                     'offerings' => [],
-                    'social_medias' => [],
                 ],
             ],
         ]);

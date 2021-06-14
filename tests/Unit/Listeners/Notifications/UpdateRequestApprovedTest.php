@@ -103,7 +103,6 @@ class UpdateRequestApprovedTest extends TestCase
                     ],
                     'useful_infos' => [],
                     'offerings' => [],
-                    'social_medias' => [],
                 ],
             ],
         ]);

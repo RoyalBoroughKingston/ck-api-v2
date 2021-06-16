@@ -363,7 +363,6 @@ class UpdateRequest extends FormRequest
             'contact_email.email' => "Additional Info tab -  Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
             'useful_infos.*.title.required_with' => 'Good to know tab - Please select a title.',
             'useful_infos.*.description.required_with' => 'Good to know tab - Please enter a description.',
-            'social_medias' => 'This field is no longer accepted for services and should be set in the Organisation.',
         ];
     }
 }

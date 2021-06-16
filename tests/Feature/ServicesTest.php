@@ -4531,6 +4531,7 @@ class ServicesTest extends TestCase
         // Create the update request as service admin
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
         $response->assertStatus(422);
+        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
     }
 
     public function test_service_creation_rejected_if_social_medias_field_is_populated()
@@ -4588,6 +4589,8 @@ class ServicesTest extends TestCase
         $response = $this->json('POST', '/core/v1/services', $payload);
 
         $response->assertStatus(422);
+        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
+
     }
 
     public function test_service_update_request_approval_rejected_if_social_medias_field_is_populated()
@@ -4640,5 +4643,7 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(422);
+        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
+
     }
 }

@@ -309,7 +309,7 @@ class OrganisationsTest extends TestCase
         $user = factory(User::class)->create();
         $user->makeGlobalAdmin();
 
-        $taxonomy = Taxonomy::category()->children()->firstOrFail()->children()->firstOrFail();
+        $taxonomy = factory(Taxonomy::class)->states('lga-standards')->create();
 
         $payload = [
             'slug' => 'test-org',

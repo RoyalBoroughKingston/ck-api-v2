@@ -18,6 +18,8 @@ $factory->define(Organisation::class, function (Faker $faker) {
     ];
 });
 
+$factory->state(Organisation::class, 'social-media', []);
+
 $factory->afterCreatingState(Organisation::class, 'social-media', function ($organisation, $faker) {
     $organisation->socialMedias()->create([
         'type' => SocialMedia::TYPE_TWITTER,

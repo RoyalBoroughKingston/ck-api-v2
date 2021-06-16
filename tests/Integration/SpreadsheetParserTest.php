@@ -2,7 +2,7 @@
 
 namespace Tests\Integration;
 
-use App\BatchUpload\SpreadsheetParser;
+use App\BatchImport\SpreadsheetParser;
 use App\Models\Organisation;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

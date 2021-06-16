@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BatchUpload;
+namespace App\BatchImport;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 

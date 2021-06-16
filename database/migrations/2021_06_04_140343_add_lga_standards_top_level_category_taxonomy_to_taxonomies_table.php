@@ -33,7 +33,7 @@ class AddLgaStandardsTopLevelCategoryTaxonomyToTaxonomiesTable extends Migration
         // Move all direct children of Category to LGA Standards
         DB::table((new Taxonomy())->getTable())
             ->where('parent_id', $categoryId)
-            ->where('id', '<>', $lgaStandardsId)
+            ->whereIn('name', ['Functions', 'Services'])
             ->update(['parent_id' => $lgaStandardsId]);
 
         Taxonomy::category()->updateDepth();

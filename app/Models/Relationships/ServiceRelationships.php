@@ -7,7 +7,6 @@ use App\Models\Location;
 use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Referral;
-use App\Models\ServiceCriterion;
 use App\Models\ServiceEligibility;
 use App\Models\ServiceGalleryItem;
 use App\Models\ServiceLocation;
@@ -64,14 +63,6 @@ trait ServiceRelationships
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function serviceCriterion()
-    {
-        return $this->hasOne(ServiceCriterion::class);
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function socialMedias()
@@ -103,6 +94,14 @@ trait ServiceRelationships
         return $this->hasMany(ServiceTaxonomy::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function taxonomies(): BelongsToMany
+    {
+        return $this->belongsToMany(Taxonomy::class, (new ServiceTaxonomy())->getTable());
+    }
+
     public function serviceEligibilities()
     {
         return $this->hasMany(ServiceEligibility::class);
@@ -111,9 +110,9 @@ trait ServiceRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function taxonomies(): BelongsToMany
+    public function eligibilities(): BelongsToMany
     {
-        return $this->belongsToMany(Taxonomy::class, (new ServiceTaxonomy())->getTable());
+        return $this->belongsToMany(Taxonomy::class, (new ServiceEligibility())->getTable());
     }
 
     /**

@@ -31,20 +31,6 @@ $factory->define(Service::class, function (Faker $faker) {
     ];
 });
 
-$factory->afterCreating(Service::class, function (Service $service, Faker $faker) {
-    \App\Models\ServiceCriterion::create([
-        'service_id' => $service->id,
-        'age_group' => null,
-        'disability' => null,
-        'employment' => null,
-        'gender' => null,
-        'housing' => null,
-        'income' => null,
-        'language' => null,
-        'other' => null,
-    ]);
-});
-
 $factory->afterCreatingState(Service::class, 'withOfferings', function (Service $service, Faker $faker) {
     $service->offerings()->create([
         'offering' => 'Weekly club',
@@ -89,5 +75,5 @@ $factory->afterCreatingState(Service::class, 'withEligibilityTaxonomies', functi
 });
 
 $factory->afterCreatingState(Service::class, 'withCategoryTaxonomies', function (Service $service) {
-    $service->syncTaxonomyRelationships(collect([Taxonomy::category()->children()->firstOrFail()]));
+    $service->syncTaxonomyRelationships(collect([factory(Taxonomy::class)->create()]));
 });

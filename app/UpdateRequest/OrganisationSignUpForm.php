@@ -95,18 +95,6 @@ class OrganisationSignUpForm implements AppliesUpdateRequests
                 'last_modified_at' => Date::now(),
             ]);
 
-            // Create the service criterion record.
-            $service->serviceCriterion()->create([
-                'age_group' => Arr::get($data, 'service.criteria.age_group'),
-                'disability' => Arr::get($data, 'service.criteria.disability'),
-                'employment' => Arr::get($data, 'service.criteria.employment'),
-                'gender' => Arr::get($data, 'service.criteria.gender'),
-                'housing' => Arr::get($data, 'service.criteria.housing'),
-                'income' => Arr::get($data, 'service.criteria.income'),
-                'language' => Arr::get($data, 'service.criteria.language'),
-                'other' => Arr::get($data, 'service.criteria.other'),
-            ]);
-
             // Create the useful info records.
             foreach (Arr::get($data, 'service.useful_infos') as $usefulInfo) {
                 $service->usefulInfos()->create([

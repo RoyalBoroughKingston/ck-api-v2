@@ -50,6 +50,10 @@ class SearchController extends Controller
             $search->applyRadius($location, $request->radius ?? config('ck.search_distance'));
         }
 
+        if ($request->has('eligibilities')) {
+            $search->applyEligibilities($request->input('eligibilities'));
+        }
+
         // Apply order.
         $search->applyOrder($request->order ?? 'relevance', $location ?? null);
 

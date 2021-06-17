@@ -125,8 +125,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'social_medias' => [
+            'size' => 'This field is no longer accepted for services and should be set in the Organisation.',
         ],
     ],
 

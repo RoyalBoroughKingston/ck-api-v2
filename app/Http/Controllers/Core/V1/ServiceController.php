@@ -44,7 +44,6 @@ class ServiceController extends Controller
     {
         $baseQuery = Service::query()
             ->with(
-                'serviceCriterion',
                 'usefulInfos',
                 'offerings',
                 'socialMedias',
@@ -118,7 +117,6 @@ class ServiceController extends Controller
     {
         $baseQuery = Service::query()
             ->with(
-                'serviceCriterion',
                 'usefulInfos',
                 'offerings',
                 'socialMedias',

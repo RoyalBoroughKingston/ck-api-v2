@@ -55,21 +55,8 @@ class ServicePersistenceService implements DataPersistenceService
                 'referral_button_text' => $request->missing('referral_button_text'),
                 'referral_email' => $request->missing('referral_email'),
                 'referral_url' => $request->missing('referral_url'),
-                'criteria' => $request->has('criteria')
-                    ? array_filter_missing([
-                        'age_group' => $request->missing('criteria.age_group'),
-                        'disability' => $request->missing('criteria.disability'),
-                        'employment' => $request->missing('criteria.employment'),
-                        'gender' => $request->missing('criteria.gender'),
-                        'housing' => $request->missing('criteria.housing'),
-                        'income' => $request->missing('criteria.income'),
-                        'language' => $request->missing('criteria.language'),
-                        'other' => $request->missing('criteria.other'),
-                    ])
-                    : new MissingValue(),
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'offerings' => $request->has('offerings') ? [] : new MissingValue(),
-                'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
                 'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'eligibility_types' => $request->filled('eligibility_types') ? $request->eligibility_types : new MissingValue(),
@@ -112,14 +99,6 @@ class ServicePersistenceService implements DataPersistenceService
                 $data['offerings'][] = [
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
-                ];
-            }
-
-            // Loop through each social media.
-            foreach ($request->input('social_medias', []) as $socialMedia) {
-                $data['social_medias'][] = [
-                    'type' => $socialMedia['type'],
-                    'url' => $socialMedia['url'],
                 ];
             }
 
@@ -212,18 +191,6 @@ class ServicePersistenceService implements DataPersistenceService
                 }
             }
 
-            // Create the service criterion record.
-            $service->serviceCriterion()->create([
-                'age_group' => $request->criteria['age_group'],
-                'disability' => $request->criteria['disability'],
-                'employment' => $request->criteria['employment'],
-                'gender' => $request->criteria['gender'],
-                'housing' => $request->criteria['housing'],
-                'income' => $request->criteria['income'],
-                'language' => $request->criteria['language'],
-                'other' => $request->criteria['other'],
-            ]);
-
             // Create the useful info records.
             foreach ($request->useful_infos as $usefulInfo) {
                 $service->usefulInfos()->create([
@@ -238,14 +205,6 @@ class ServicePersistenceService implements DataPersistenceService
                 $service->offerings()->create([
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
-                ]);
-            }
-
-            // Create the social media records.
-            foreach ($request->social_medias as $socialMedia) {
-                $service->socialMedias()->create([
-                    'type' => $socialMedia['type'],
-                    'url' => $socialMedia['url'],
                 ]);
             }
 

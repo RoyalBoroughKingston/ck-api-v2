@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Core\V1\Organisation;
 
-use App\BatchUpload\SpreadsheetParser;
-use App\BatchUpload\StoresSpreadsheets;
+use App\BatchImport\SpreadsheetParser;
+use App\BatchImport\StoresSpreadsheets;
 use App\Exceptions\DuplicateContentException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organisation\ImportRequest;

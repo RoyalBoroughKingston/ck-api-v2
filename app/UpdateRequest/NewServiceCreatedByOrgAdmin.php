@@ -74,35 +74,6 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
         ];
 
         $service = Service::create($insert);
-        $service->serviceCriterion()->create();
-
-        // Update the service criterion record.
-        if ($data->has('criteria.age_group')) {
-            $service->serviceCriterion->age_group = $data->get('criteria.age_group');
-        }
-        if ($data->has('criteria.disability')) {
-            $service->serviceCriterion->disability = $data->get('criteria.disability');
-        }
-        if ($data->has('criteria.employment')) {
-            $service->serviceCriterion->employment = $data->get('criteria.employment');
-        }
-        if ($data->has('criteria.gender')) {
-            $service->serviceCriterion->gender = $data->get('criteria.gender');
-        }
-        if ($data->has('criteria.housing')) {
-            $service->serviceCriterion->housing = $data->get('criteria.housing');
-        }
-        if ($data->has('criteria.income')) {
-            $service->serviceCriterion->income = $data->get('criteria.income');
-        }
-        if ($data->has('criteria.language')) {
-            $service->serviceCriterion->language = $data->get('criteria.language');
-        }
-        if ($data->has('criteria.other')) {
-            $service->serviceCriterion->other = $data->get('criteria.other');
-        }
-
-        $service->serviceCriterion->save();
 
         if (array_key_exists('useful_infos', $data)) {
             $service->usefulInfos()->delete();
@@ -122,17 +93,6 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
                 $service->offerings()->create([
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
-                ]);
-            }
-        }
-
-        // Update the social media records.
-        if (array_key_exists('social_medias', $updateRequest->data)) {
-            $service->socialMedias()->delete();
-            foreach ($data['social_medias'] as $socialMedia) {
-                $service->socialMedias()->create([
-                    'type' => $socialMedia['type'],
-                    'url' => $socialMedia['url'],
                 ]);
             }
         }

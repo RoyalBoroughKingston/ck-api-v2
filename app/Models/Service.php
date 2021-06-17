@@ -126,6 +126,9 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                     'location' => ['type' => 'geo_point'],
                 ],
             ],
+            'service_eligibilities' => [
+                'type' => 'keyword',
+            ],
         ],
     ];
 
@@ -160,6 +163,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                         ],
                     ];
                 })->toArray(),
+            'service_eligibilities' => $this->eligibilities()->pluck('name')->toArray(),
         ];
     }
 
@@ -254,33 +258,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             'eligibility_other_custom' => Arr::get($data, 'eligibility_types.custom.other', $this->eligibility_other_custom),
         ]);
 
-        // Update the service criterion record.
-        if (array_key_exists('criteria.age_group', Arr::dot($data))) {
-            $this->serviceCriterion->age_group = Arr::get($data, 'criteria.age_group');
-        }
-        if (array_key_exists('criteria.disability', Arr::dot($data))) {
-            $this->serviceCriterion->disability = Arr::get($data, 'criteria.disability');
-        }
-        if (array_key_exists('criteria.employment', Arr::dot($data))) {
-            $this->serviceCriterion->employment = Arr::get($data, 'criteria.employment');
-        }
-        if (array_key_exists('criteria.gender', Arr::dot($data))) {
-            $this->serviceCriterion->gender = Arr::get($data, 'criteria.gender');
-        }
-        if (array_key_exists('criteria.housing', Arr::dot($data))) {
-            $this->serviceCriterion->housing = Arr::get($data, 'criteria.housing');
-        }
-        if (array_key_exists('criteria.income', Arr::dot($data))) {
-            $this->serviceCriterion->income = Arr::get($data, 'criteria.income');
-        }
-        if (array_key_exists('criteria.language', Arr::dot($data))) {
-            $this->serviceCriterion->language = Arr::get($data, 'criteria.language');
-        }
-        if (array_key_exists('criteria.other', Arr::dot($data))) {
-            $this->serviceCriterion->other = Arr::get($data, 'criteria.other');
-        }
-        $this->serviceCriterion->save();
-
         // Update the useful info records.
         if (array_key_exists('useful_infos', $data)) {
             $this->usefulInfos()->delete();
@@ -300,17 +277,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                 $this->offerings()->create([
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
-                ]);
-            }
-        }
-
-        // Update the social media records.
-        if (array_key_exists('social_medias', $updateRequest->data)) {
-            $this->socialMedias()->delete();
-            foreach ($data['social_medias'] as $socialMedia) {
-                $this->socialMedias()->create([
-                    'type' => $socialMedia['type'],
-                    'url' => $socialMedia['url'],
                 ]);
             }
         }
@@ -390,39 +356,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
         return $this;
     }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Collection $taxonomies
-     * @return \App\Models\Service
-     */
-    // public function syncServiceTaxonomies(EloquentCollection $taxonomies): Service
-    // {
-    //     // Delete all existing service taxonomies.
-    //     $this->serviceTaxonomies()->delete();
-
-    //     // Create a service taxonomy record for each taxonomy and their parents.
-    //     foreach ($taxonomies as $taxonomy) {
-    //         $this->createServiceTaxonomy($taxonomy);
-    //     }
-
-    //     return $this;
-    // }
-
-    /**
-     * @param \App\Models\Taxonomy $taxonomy
-     * @return \App\Models\ServiceTaxonomy
-     */
-    // protected function createServiceTaxonomy(Taxonomy $taxonomy): ServiceTaxonomy
-    // {
-    //     $hasParent = $taxonomy->parent !== null;
-    //     $parentIsNotTopLevel = $taxonomy->parent->id !== Taxonomy::category()->id;
-
-    //     if ($hasParent && $parentIsNotTopLevel) {
-    //         $this->createServiceTaxonomy($taxonomy->parent);
-    //     }
-
-    //     return $this->serviceTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
-    // }
 
     /**
      * @param \App\Emails\Email $email

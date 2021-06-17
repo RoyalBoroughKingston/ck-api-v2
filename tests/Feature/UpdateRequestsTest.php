@@ -703,18 +703,7 @@ class UpdateRequestsTest extends TestCase
                 'referral_button_text' => $service->referral_button_text,
                 'referral_email' => $service->referral_email,
                 'referral_url' => $service->referral_url,
-                'criteria' => [
-                    'age_group' => $service->serviceCriterion->age_group,
-                    'disability' => $service->serviceCriterion->disability,
-                    'employment' => $service->serviceCriterion->employment,
-                    'gender' => $service->serviceCriterion->gender,
-                    'housing' => $service->serviceCriterion->housing,
-                    'income' => $service->serviceCriterion->income,
-                    'language' => $service->serviceCriterion->language,
-                    'other' => $service->serviceCriterion->other,
-                ],
                 'useful_infos' => [],
-                'social_medias' => [],
                 'category_taxonomies' => $service->taxonomies()->pluck('taxonomies.id')->toArray(),
             ],
         ]);
@@ -767,16 +756,6 @@ class UpdateRequestsTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'criteria' => [
-                'age_group' => '18+',
-                'disability' => null,
-                'employment' => null,
-                'gender' => null,
-                'housing' => null,
-                'income' => null,
-                'language' => null,
-                'other' => null,
-            ],
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -788,12 +767,6 @@ class UpdateRequestsTest extends TestCase
                 [
                     'offering' => 'Weekly club',
                     'order' => 1,
-                ],
-            ],
-            'social_medias' => [
-                [
-                    'type' => SocialMedia::TYPE_INSTAGRAM,
-                    'url' => 'https://www.instagram.com/ayupdigital',
                 ],
             ],
             'gallery_items' => [],
@@ -871,16 +844,6 @@ class UpdateRequestsTest extends TestCase
                     'contact_name' => 'Foo Bar',
                     'contact_phone' => '01130000000',
                     'contact_email' => 'foo.bar@example.com',
-                    'criteria' => [
-                        'age_group' => '18+',
-                        'disability' => null,
-                        'employment' => null,
-                        'gender' => null,
-                        'housing' => null,
-                        'income' => null,
-                        'language' => null,
-                        'other' => null,
-                    ],
                     'useful_infos' => [
                         [
                             'title' => 'Did you know?',
@@ -942,16 +905,6 @@ class UpdateRequestsTest extends TestCase
             'contact_name' => 'Foo Bar',
             'contact_phone' => '01130000000',
             'contact_email' => 'foo.bar@example.com',
-        ]);
-        $this->assertDatabaseHas((new ServiceCriterion())->getTable(), [
-            'age_group' => '18+',
-            'disability' => null,
-            'employment' => null,
-            'gender' => null,
-            'housing' => null,
-            'income' => null,
-            'language' => null,
-            'other' => null,
         ]);
         $this->assertDatabaseHas((new UsefulInfo())->getTable(), [
             'title' => 'Did you know?',

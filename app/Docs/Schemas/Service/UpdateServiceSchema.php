@@ -39,10 +39,8 @@ class UpdateServiceSchema extends Schema
                 'referral_button_text',
                 'referral_email',
                 'referral_url',
-                'criteria',
                 'useful_infos',
                 'offerings',
-                'social_medias',
                 'gallery_items',
                 'category_taxonomies'
             )
@@ -100,35 +98,6 @@ class UpdateServiceSchema extends Schema
                     ->format(Schema::FORMAT_UUID)
                     ->description('The ID of the file uploaded')
                     ->nullable(),
-                Schema::object('criteria')
-                    ->required(
-                        'age_group',
-                        'disability',
-                        'employment',
-                        'gender',
-                        'housing',
-                        'income',
-                        'language',
-                        'other'
-                    )
-                    ->properties(
-                        Schema::string('age_group')
-                            ->nullable(),
-                        Schema::string('disability')
-                            ->nullable(),
-                        Schema::string('employment')
-                            ->nullable(),
-                        Schema::string('gender')
-                            ->nullable(),
-                        Schema::string('housing')
-                            ->nullable(),
-                        Schema::string('income')
-                            ->nullable(),
-                        Schema::string('language')
-                            ->nullable(),
-                        Schema::string('other')
-                            ->nullable()
-                    ),
                 Schema::array('useful_infos')
                     ->items(
                         UsefulInfoSchema::create()
@@ -138,11 +107,6 @@ class UpdateServiceSchema extends Schema
                     ->items(
                         OfferingSchema::create()
                             ->required('offering', 'order')
-                    ),
-                Schema::array('social_medias')
-                    ->items(
-                        SocialMediaSchema::create()
-                            ->required('type', 'url')
                     ),
                 Schema::array('gallery_items')
                     ->items(

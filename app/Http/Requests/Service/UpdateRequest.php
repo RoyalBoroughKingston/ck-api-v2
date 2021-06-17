@@ -6,7 +6,6 @@ use App\Http\Requests\HasMissingValues;
 use App\Models\File;
 use App\Models\Role;
 use App\Models\Service;
-use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
 use App\Rules\CanUpdateCategoryTaxonomyRelationships;
@@ -210,15 +209,6 @@ class UpdateRequest extends FormRequest
                     $this->service->referral_url
                 ),
             ],
-            'criteria' => ['array'],
-            'criteria.age_group' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.disability' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.employment' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.gender' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.housing' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.income' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.language' => ['nullable', 'string', 'min:1', 'max:255'],
-            'criteria.other' => ['nullable', 'string', 'min:1', 'max:255'],
 
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
@@ -247,19 +237,7 @@ class UpdateRequest extends FormRequest
                 )),
             ],
 
-            'social_medias' => ['array'],
-            'social_medias.*' => ['array'],
-            'social_medias.*.type' => [
-                'required_with:social_medias.*',
-                Rule::in([
-                    SocialMedia::TYPE_TWITTER,
-                    SocialMedia::TYPE_FACEBOOK,
-                    SocialMedia::TYPE_INSTAGRAM,
-                    SocialMedia::TYPE_YOUTUBE,
-                    SocialMedia::TYPE_OTHER,
-                ]),
-            ],
-            'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
+            'social_medias' => ['nullable', 'size:0'],
 
             'gallery_items' => ['array'],
             'gallery_items.*' => ['array'],
@@ -385,7 +363,6 @@ class UpdateRequest extends FormRequest
             'contact_email.email' => "Additional Info tab -  Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
             'useful_infos.*.title.required_with' => 'Good to know tab - Please select a title.',
             'useful_infos.*.description.required_with' => 'Good to know tab - Please enter a description.',
-            'social_medias.*.url.url' => 'Additional info tab - Please enter a valid social media web address (eg. https://www.youtube.com/watch?v=h-2sgpokvGI).',
         ];
     }
 }

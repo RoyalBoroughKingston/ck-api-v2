@@ -68,29 +68,7 @@ class ImportServicesResponseSchema extends Schema
                                         Service::REFERRAL_METHOD_INTERNAL,
                                         Service::REFERRAL_METHOD_EXTERNAL,
                                         Service::REFERRAL_METHOD_NONE
-                                    ),
-                                Schema::string('referral_button_text')
-                                    ->nullable(),
-                                Schema::string('referral_email')
-                                    ->nullable(),
-                                Schema::string('referral_url')
-                                    ->nullable(),
-                                Schema::string('criteria_age_group')
-                                    ->nullable(),
-                                Schema::string('criteria_disability')
-                                    ->nullable(),
-                                Schema::string('criteria_employment')
-                                    ->nullable(),
-                                Schema::string('criteria_gender')
-                                    ->nullable(),
-                                Schema::string('criteria_housing')
-                                    ->nullable(),
-                                Schema::string('criteria_income')
-                                    ->nullable(),
-                                Schema::string('criteria_language')
-                                    ->nullable(),
-                                Schema::string('criteria_other')
-                                    ->nullable()
+                                    )
                             ),
                             Schema::object('errors')->properties(
                                 Schema::string('id')
@@ -144,22 +122,6 @@ class ImportServicesResponseSchema extends Schema
                                 Schema::string('referral_email')
                                     ->nullable(),
                                 Schema::string('referral_url')
-                                    ->nullable(),
-                                Schema::string('criteria_age_group')
-                                    ->nullable(),
-                                Schema::string('criteria_disability')
-                                    ->nullable(),
-                                Schema::string('criteria_employment')
-                                    ->nullable(),
-                                Schema::string('criteria_gender')
-                                    ->nullable(),
-                                Schema::string('criteria_housing')
-                                    ->nullable(),
-                                Schema::string('criteria_income')
-                                    ->nullable(),
-                                Schema::string('criteria_language')
-                                    ->nullable(),
-                                Schema::string('criteria_other')
                                     ->nullable()
                             )
                         )

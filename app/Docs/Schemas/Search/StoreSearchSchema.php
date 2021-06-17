@@ -46,7 +46,11 @@ class StoreSearchSchema extends Schema
                             ->type(Schema::FORMAT_FLOAT)
                     ),
                 Schema::integer('distance')
-                    ->default(config('ck.search_distance'))
+                    ->default(config('ck.search_distance')),
+                Schema::array('eligibilities')
+                    ->items(
+                        Schema::string()
+                    )
             );
     }
 }

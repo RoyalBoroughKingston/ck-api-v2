@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Geocode\AddressNotFoundException;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -45,6 +46,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof AddressNotFoundException) {
+            return response()->json([
+                'errors' => [
+                    'address_not_found' => [__('validation.custom.address.not_found', ['address' => $exception->getMessage()])],
+                ],
+            ], 422);
+        }
+
         return parent::render($request, $exception);
     }
 }

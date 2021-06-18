@@ -148,6 +148,39 @@ class LocationsTest extends TestCase
         ]);
     }
 
+    public function test_invalid_address_error_returned_when_creating_one()
+    {
+        /**
+         * @var \App\Models\Service $service
+         * @var \App\Models\User $user
+         */
+        $service = factory(Service::class)->create();
+        $user = factory(User::class)->create();
+        $user->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/locations', [
+            'address_line_1' => 'Test',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Test',
+            'county' => 'Test',
+            'postcode' => 'xx12 3xx',
+            'country' => 'United Kingdom',
+            'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'errors' => [
+                'address_not_found' => ['Address not found: xx12 3xx, united kingdom'],
+            ],
+        ]);
+    }
+
     public function test_audit_created_when_created()
     {
         $this->fakeEvents();

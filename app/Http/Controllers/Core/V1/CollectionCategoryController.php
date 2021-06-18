@@ -81,6 +81,7 @@ class CollectionCategoryController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'enabled' => $request->enabled,
             ]);
 
             // Create all of the pivot records.
@@ -143,6 +144,7 @@ class CollectionCategoryController extends Controller
                     'sideboxes' => $sideboxes,
                 ],
                 'order' => $request->order,
+                'enabled' => $request->enabled,
             ]);
 
             // Update or create all of the pivot records.

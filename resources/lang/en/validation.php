@@ -131,6 +131,9 @@ return [
         'address' => [
             'not_found' => 'Address not found: :address',
         ],
+        'service_eligibilities' => [
+            'not_found' => ':ids is not a Service Eligibility Taxonomy |:ids are not Service Eligibility Taxonomies',
+        ],
     ],
 
     /*

@@ -8,10 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\ImportRequest;
 use App\Models\Role;
 use App\Models\Service;
+use App\Models\ServiceEligibility;
+use App\Models\Taxonomy;
 use App\Models\UserRole;
 use App\Rules\IsOrganisationAdmin;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
+use App\Rules\RootTaxonomyIs;
 use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
 use Illuminate\Support\Facades\Date;
@@ -214,6 +217,32 @@ class ImportController extends Controller
                         null
                     ),
                 ],
+                'eligibility_age_group_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_disability_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_employment_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_gender_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_housing_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_income_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_language_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_ethnicity_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_other_custom' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
+                'eligibility_taxonomies' => ['present', 'nullable', 'string', function ($att, $value, $fail) {
+                    $isServiceEligibility = new RootTaxonomyIs(Taxonomy::NAME_SERVICE_ELIGIBILITY);
+                    $eligibilityTaxonomyIds = explode(',', $value);
+                    $invalidEligibilityTaxonomyIds = [];
+                    foreach ($eligibilityTaxonomyIds as $eligibilityTaxonomyId) {
+                        if (!$isServiceEligibility->passes($att, $eligibilityTaxonomyId)) {
+                            $invalidEligibilityTaxonomyIds[] = $eligibilityTaxonomyId;
+                        }
+                    }
+                    if (count($invalidEligibilityTaxonomyIds)) {
+                        $fail(trans_choice(
+                            'validation.custom.service_eligibilities.not_found',
+                            count($invalidEligibilityTaxonomyIds),
+                            ['ids' => implode(', ', $invalidEligibilityTaxonomyIds)]
+                        ));
+                    }
+                }],
             ]);
 
             if ($validator->fails()) {
@@ -263,8 +292,9 @@ class ImportController extends Controller
             $serviceAdminRoleId = Role::serviceAdmin()->id;
             $serviceWorkerRoleId = Role::serviceWorker()->id;
             $organisationAdminRoleId = Role::organisationAdmin()->id;
+            $now = Date::now();
 
-            $serviceRowBatch = $userRoleBatch = [];
+            $serviceRowBatch = $userRoleBatch = $serviceEligibilityBatch = [];
 
             foreach ($spreadsheetParser->readRows() as $serviceRow) {
                 /**
@@ -280,6 +310,25 @@ class ImportController extends Controller
                     ->where('organisation_id', $serviceRow['organisation_id'])
                     ->pluck('user_id');
 
+                /**
+                 * Create the Service Eligibility relationships.
+                 */
+                if (!empty($serviceRow['eligibility_taxonomies'])) {
+                    $serviceEligibilityTaxonomyIds = explode(',', $serviceRow['eligibility_taxonomies']);
+
+                    foreach ($serviceEligibilityTaxonomyIds as $serviceEligibilityTaxonomyId) {
+                        $serviceEligibilityBatch[] = [
+                            'id' => uuid(),
+                            'service_id' => $serviceRow['id'],
+                            'taxonomy_id' => $serviceEligibilityTaxonomyId,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+                }
+
+                unset($serviceRow['eligibility_taxonomies']);
+
                 foreach ($organisationAdminIds as $organisationAdminId) {
                     $userRoleBatch[] = [
                         'id' => uuid(),
@@ -287,8 +336,8 @@ class ImportController extends Controller
                         'role_id' => $serviceWorkerRoleId,
                         'service_id' => $serviceRow['id'],
                         'organisation_id' => $serviceRow['organisation_id'],
-                        'created_at' => Date::now(),
-                        'updated_at' => Date::now(),
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ];
                     $userRoleBatch[] = [
                         'id' => uuid(),
@@ -296,8 +345,8 @@ class ImportController extends Controller
                         'role_id' => $serviceAdminRoleId,
                         'service_id' => $serviceRow['id'],
                         'organisation_id' => $serviceRow['organisation_id'],
-                        'created_at' => Date::now(),
-                        'updated_at' => Date::now(),
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ];
                 }
 
@@ -305,8 +354,8 @@ class ImportController extends Controller
                  * Add the meta fields to the Service row.
                  */
                 $serviceRow['slug'] = Str::slug(uniqid($serviceRow['name'] . '-'));
-                $serviceRow['created_at'] = Date::now();
-                $serviceRow['updated_at'] = Date::now();
+                $serviceRow['created_at'] = $now;
+                $serviceRow['updated_at'] = $now;
                 $serviceRowBatch[] = $serviceRow;
 
                 /**
@@ -315,6 +364,7 @@ class ImportController extends Controller
                 if (count($serviceRowBatch) === self::ROW_IMPORT_BATCH_SIZE) {
                     DB::table((new Service())->getTable())->insert($serviceRowBatch);
                     DB::table((new UserRole())->getTable())->insert($userRoleBatch);
+                    DB::table((new ServiceEligibility())->getTable())->insert($serviceEligibilityBatch);
                     $importedRows += self::ROW_IMPORT_BATCH_SIZE;
                     $serviceRowBatch = $userRoleBatch = [];
                 }
@@ -326,6 +376,7 @@ class ImportController extends Controller
             if (count($serviceRowBatch) && count($serviceRowBatch) !== self::ROW_IMPORT_BATCH_SIZE) {
                 DB::table((new Service())->getTable())->insert($serviceRowBatch);
                 DB::table((new UserRole())->getTable())->insert($userRoleBatch);
+                DB::table((new ServiceEligibility())->getTable())->insert($serviceEligibilityBatch);
                 $importedRows += count($serviceRowBatch);
             }
         }, 5);

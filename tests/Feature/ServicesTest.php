@@ -36,9 +36,10 @@ class ServicesTest extends TestCase
      * Create spreadsheets of services
      *
      * @param Illuminate\Support\Collection $services
+     * @param array $serviceEligibilities
      * @return null
      **/
-    public function createServiceSpreadsheets(\Illuminate\Support\Collection $services)
+    public function createServiceSpreadsheets(\Illuminate\Support\Collection $services, $serviceEligibilities = null)
     {
         $faker = Faker::create('en_GB');
 
@@ -65,11 +66,25 @@ class ServicesTest extends TestCase
             'referral_url',
             'show_referral_disclaimer',
             'referral_button_text',
+            'eligibility_age_group_custom',
+            'eligibility_disability_custom',
+            'eligibility_employment_custom',
+            'eligibility_gender_custom',
+            'eligibility_housing_custom',
+            'eligibility_income_custom',
+            'eligibility_language_custom',
+            'eligibility_ethnicity_custom',
+            'eligibility_other_custom',
+            'eligibility_taxonomies',
         ];
 
-        $services = $services->map(function ($service) use ($faker) {
+        $services = $services->map(function ($service) use ($faker, $serviceEligibilities) {
             $serviceAttributes = $service->getAttributes();
             $serviceAttributes['id'] = $service->id ?: uuid();
+
+            if (is_array($serviceEligibilities) && !empty($serviceEligibilities[$serviceAttributes['id']])) {
+                $serviceAttributes['eligibility_taxonomies'] = implode(',', $serviceEligibilities[$serviceAttributes['id']]);
+            }
             return $serviceAttributes;
         });
 
@@ -3698,6 +3713,150 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
+    /**
+     * @test
+     */
+    public function service_file_import_creates_service_eligibility_relations()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $serviceId = uuid();
+
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->states(['withCustomEligibilities'])->make([
+            'id' => $serviceId,
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $serviceEligibilityTaxonomyIds = Taxonomy::serviceEligibility()->children->map(function ($serviceEligibility) {
+            return $serviceEligibility->children->first()->id;
+        });
+
+        $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $serviceEligibilityTaxonomyIds->all()]);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJson([
+            'data' => [
+                'imported_row_count' => 1,
+            ],
+        ]);
+
+        foreach ($serviceEligibilityTaxonomyIds as $serviceEligibilityId) {
+            $this->assertDatabaseHas('service_eligibilities', [
+                'service_id' => $serviceId,
+                'taxonomy_id' => $serviceEligibilityId,
+            ]);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function service_file_import_rejects_invalid_service_eligibility_relations()
+    {
+        Storage::fake('local');
+
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+        $serviceId = uuid();
+
+        Passport::actingAs($user);
+
+        $service = factory(Service::class)->states(['withCustomEligibilities'])->make([
+            'id' => $serviceId,
+            'status' => Service::STATUS_INACTIVE,
+            'organisation_id' => $organisation->id,
+        ]);
+
+        $invalidServiceEligibilityTaxonomyIds = [uuid(), uuid(), uuid()];
+
+        $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $invalidServiceEligibilityTaxonomyIds]);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'eligibility_taxonomies' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        foreach ($invalidServiceEligibilityTaxonomyIds as $invalidServiceEligibilityId) {
+            $this->assertDatabaseMissing('service_eligibilities', [
+                'service_id' => $serviceId,
+                'taxonomy_id' => $invalidServiceEligibilityId,
+            ]);
+        }
+
+        $categoryTaxonomyIds = [];
+        foreach (Taxonomy::category()->children as $taxonomyCategory) {
+            if (!$taxonomyCategory->children->isEmpty()) {
+                $categoryTaxonomyIds[] = $taxonomyCategory->children->first()->id;
+            }
+        }
+
+        $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $categoryTaxonomyIds]);
+
+        $data = [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ];
+
+        $response = $this->json('POST', "/core/v1/services/import", $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'eligibility_taxonomies' => [
+                                    trans_choice(
+                                        'validation.custom.service_eligibilities.not_found',
+                                        count($categoryTaxonomyIds),
+                                        ['ids' => implode(', ', $categoryTaxonomyIds)]
+                                    ),
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        foreach ($categoryTaxonomyIds as $categoryTaxonomyId) {
+            $this->assertDatabaseMissing('service_eligibilities', [
+                'service_id' => $serviceId,
+                'taxonomy_id' => $categoryTaxonomyId,
+            ]);
+        }
+    }
+
     public function test_services_file_import_100rows()
     {
         Storage::fake('local');
@@ -3832,6 +3991,10 @@ class ServicesTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * Service Eligibilities
+     */
 
     public function test_service_eligiblity_taxonomy_id_schema_on_index()
     {

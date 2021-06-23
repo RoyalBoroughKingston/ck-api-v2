@@ -161,6 +161,8 @@ class ServiceController extends Controller
         return DB::transaction(function () use ($request, $service) {
             event(EndpointHit::onDelete($request, "Deleted service [{$service->id}]", $service));
 
+            $service->serviceEligibilities()->delete();
+
             $service->delete();
 
             return new ResourceDeleted('service');

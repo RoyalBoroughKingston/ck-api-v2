@@ -2478,6 +2478,22 @@ class ServicesTest extends TestCase
         $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
+    public function test_service_can_be_deleted_when_disabled()
+    {
+        $service = factory(Service::class)->create([
+            'status' => Service::STATUS_INACTIVE
+        ]);
+
+        $user = factory(User::class)->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/services/{$service->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
+    }
+
     /*
      * Refresh service.
      */

@@ -75,3 +75,7 @@ def create_api_name_variable():
 
 def create_elasticsearch_domain_name_variable(environment_parameter):
     return Join('-', ['search', Ref(environment_parameter)])
+
+
+def create_elasticsearch_log_access_policy_lambda_name_variable(environment_parameter):
+    return Join('-', ['search', 'lambda', Ref(environment_parameter)])

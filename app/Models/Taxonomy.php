@@ -101,25 +101,45 @@ class Taxonomy extends Model
     }
 
     /**
-     * Return an array of all Taxonomies below the Service Eligibility root.
+     * Return an array of all Taxonomies below the provided Taxonomy root.
      *
      * @param App\Models\Taxonomy $taxonomy
      * @param mixed $allTaxonomies
      * @return Illuminate\Support\Collection
      */
-    public function getAllServiceEligibilities($taxonomy = null, &$allTaxonomies = [])
+    public function getAllDescendantTaxonomies(self $taxonomy, &$allTaxonomies = [])
     {
         if (!$taxonomy) {
             $taxonomy = self::serviceEligibility();
+        }
+
+        if (is_array($allTaxonomies)) {
             $allTaxonomies = collect($allTaxonomies);
         }
 
         $allTaxonomies = $allTaxonomies->merge($taxonomy->children);
 
         foreach ($taxonomy->children as $childTaxonomy) {
-            $this->getAllServiceEligibilities($childTaxonomy, $allTaxonomies);
+            $this->getAllDescendantTaxonomies($childTaxonomy, $allTaxonomies);
         }
 
         return $allTaxonomies;
+    }
+
+    /**
+     * Filter the passed taxonomy IDs for descendants of this taxonomy.
+     *
+     * @param array $taxonomyIds
+     * @return array|bool
+     */
+    public function filterDescendants(array $taxonomyIds)
+    {
+        $descendantTaxonomyIds = $this
+            ->getAllDescendantTaxonomies($this)
+            ->pluck('id')
+            ->toArray();
+        $taxonomyIds = array_intersect($descendantTaxonomyIds, $taxonomyIds);
+
+        return count($taxonomyIds) ? $taxonomyIds : false;
     }
 }

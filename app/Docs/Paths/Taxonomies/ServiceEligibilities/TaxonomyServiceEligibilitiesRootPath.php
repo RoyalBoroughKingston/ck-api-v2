@@ -3,6 +3,7 @@
 namespace App\Docs\Paths\Taxonomies\ServiceEligibilities;
 
 use App\Docs\Operations\Taxonomies\ServiceEligibilities\IndexTaxonomyServiceEligibilityOperation;
+use App\Docs\Operations\Taxonomies\ServiceEligibilities\StoreTaxonomyServiceEligibilityOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 
@@ -18,7 +19,8 @@ class TaxonomyServiceEligibilitiesRootPath extends PathItem
         return parent::create($objectId)
             ->route('/taxonomies/service-eligibilities')
             ->operations(
-                IndexTaxonomyServiceEligibilityOperation::create()
+                IndexTaxonomyServiceEligibilityOperation::create(),
+                StoreTaxonomyServiceEligibilityOperation::create()
             );
     }
 }

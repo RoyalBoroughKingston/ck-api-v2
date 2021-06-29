@@ -772,7 +772,7 @@ class SearchTest extends TestCase implements UsesElasticsearch
         $taxonomyIdsC = $parentTaxonomy->children()
             ->whereIn('name', ['Bipolar disorder', 'Multiple sclerosis'])
             ->get()
-            ->map(function($taxonomy) {
+            ->map(function ($taxonomy) {
                 return ['taxonomy_id' => $taxonomy->id];
             });
 
@@ -787,7 +787,7 @@ class SearchTest extends TestCase implements UsesElasticsearch
         $taxonomyIdsD = $parentTaxonomy->children()
             ->whereIn('name', ['Bipolar disorder', 'Multiple sclerosis', 'Schizophrenia'])
             ->get()
-            ->map(function($taxonomy) {
+            ->map(function ($taxonomy) {
                 return ['taxonomy_id' => $taxonomy->id];
             });
 
@@ -802,7 +802,6 @@ class SearchTest extends TestCase implements UsesElasticsearch
 
         $serviceIA->serviceEligibilities()->createMany($taxonomyIdsD->toArray());
 
-
         // Trigger reindex in a different order to ensure it's not just sorted by updated_at or something
         $serviceB->save();
         $serviceA->save();
@@ -811,7 +810,7 @@ class SearchTest extends TestCase implements UsesElasticsearch
         $serviceIA->save();
 
         $response = $this->json('POST', '/core/v1/search', [
-            'eligibilities' => ['Bipolar disorder', 'Multiple sclerosis', 'Schizophrenia']
+            'eligibilities' => ['Bipolar disorder', 'Multiple sclerosis', 'Schizophrenia'],
         ]);
 
         $data = $this->getResponseContent($response)['data'];
@@ -832,8 +831,11 @@ class SearchTest extends TestCase implements UsesElasticsearch
     public function test_search_works_when_combining_eligibility_search_with_query_field()
     {
         // Given a service has an eligibility age group taxonomy of 12 - 15 years
-        $serviceWithEligibility = factory(Service::class)
-            ->create();
+        $serviceWithEligibility = factory(Service::class)->create();
+        $serviceWithSearchTerm = factory(Service::class)->create([
+            'name' => 'Search Term',
+            'slug' => 'search-term',
+        ]);
 
         $parentTaxonomy = Taxonomy::serviceEligibility()
             ->children()
@@ -846,20 +848,61 @@ class SearchTest extends TestCase implements UsesElasticsearch
 
         $serviceWithEligibility->serviceEligibilities()->create(['taxonomy_id' => $taxonomy->id]);
 
+        $services = factory(Service::class, 10)->create();
+
         // Trigger a reindex
         $serviceWithEligibility->save();
 
-        $serviceWithSearchTermMatch = factory(Service::class)->create();
-
         // When a search is performed with the age group taxonomies of 12 - 15 years and a query string
-        $response = $this->json('POST', '/core/v1/search', [
+        $response = $this->json('POST', '/core/v1/search?page=1&per_page=9', [
             'eligibilities' => [
                 '12 - 15 years',
             ],
-            'query' => $serviceWithSearchTermMatch->name,
+            'query' => $serviceWithSearchTerm->name,
         ]);
 
         // The search works
         $response->assertStatus(Response::HTTP_OK);
+
+        $data = $this->getResponseContent($response)['data'];
+
+        // There should be 9 results
+        $this->assertEquals(9, count($data));
+
+        // In this order
+        $this->assertEquals($serviceWithSearchTerm->id, $data[0]['id']);
+        $this->assertEquals($serviceWithEligibility->id, $data[1]['id']);
+    }
+
+    public function test_empty_eligibility_results_should_not_exclude_query_results()
+    {
+        $serviceWithSearchTerm = factory(Service::class)->create([
+            'name' => 'Search Term',
+            'slug' => 'search-term',
+        ]);
+
+        $services = factory(Service::class, 10)->create();
+
+        // Trigger a reindex
+        $serviceWithSearchTerm->save();
+
+        // When a search is performed with the age group taxonomies of 12 - 15 years and a query string
+        $response = $this->json('POST', '/core/v1/search?page=1&per_page=9', [
+            'eligibilities' => [
+                '12 - 15 years',
+            ],
+            'query' => $serviceWithSearchTerm->name,
+        ]);
+
+        // The search works
+        $response->assertStatus(Response::HTTP_OK);
+
+        $data = $this->getResponseContent($response)['data'];
+
+        // There should be 9 results
+        $this->assertEquals(9, count($data));
+
+        // In this order
+        $this->assertEquals($serviceWithSearchTerm->id, $data[0]['id']);
     }
 }

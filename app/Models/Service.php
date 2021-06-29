@@ -127,7 +127,10 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                 ],
             ],
             'service_eligibilities' => [
-                'type' => 'keyword',
+                'type' => 'text',
+                'fields' => [
+                    'keyword' => ['type' => 'keyword'],
+                ],
             ],
         ],
     ];
@@ -139,6 +142,16 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
      */
     public function toSearchableArray()
     {
+        $serviceEligibilities = $this->eligibilities;
+        $serviceEligibilityIds = $serviceEligibilities->pluck('id')->toArray();
+        $serviceEligibilityNames = $serviceEligibilities->pluck('name')->toArray();
+        $serviceEligibilityRoot = Taxonomy::serviceEligibility();
+        foreach ($serviceEligibilityRoot->children as $serviceEligibilityType) {
+            if (!$serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
+                $serviceEligibilityNames[] = $serviceEligibilityType->name . ' All';
+            }
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -163,7 +176,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                         ],
                     ];
                 })->toArray(),
-            'service_eligibilities' => $this->eligibilities()->pluck('name')->toArray(),
+            'service_eligibilities' => $serviceEligibilityNames,
         ];
     }
 

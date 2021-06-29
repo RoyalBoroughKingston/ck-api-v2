@@ -671,7 +671,6 @@ class OrganisationsTest extends TestCase
             'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
             'updateable_id' => $organisation->id,
         ]);
-
         $data = UpdateRequest::query()
             ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
             ->where('updateable_id', $organisation->id)

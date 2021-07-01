@@ -130,6 +130,7 @@ class UpdateServiceSchema extends Schema
                                 Schema::string('gender')->nullable(),
                                 Schema::string('income')->nullable(),
                                 Schema::string('language')->nullable(),
+                                Schema::string('housing')->nullable(),
                                 Schema::string('other')->nullable()
                             ),
                         Schema::array('taxonomies')

@@ -46,7 +46,6 @@ class ServiceController extends Controller
             ->with(
                 'usefulInfos',
                 'offerings',
-                'socialMedias',
                 'serviceGalleryItems.file',
                 'taxonomies'
             )
@@ -101,7 +100,7 @@ class ServiceController extends Controller
 
         event(EndpointHit::onCreate($request, "Created service [{$entity->id}]", $entity));
 
-        $entity->load('usefulInfos', 'offerings', 'socialMedias', 'taxonomies', 'serviceEligibilities');
+        $entity->load('usefulInfos', 'offerings', 'taxonomies', 'serviceEligibilities');
 
         return new ServiceResource($entity);
     }
@@ -119,7 +118,6 @@ class ServiceController extends Controller
             ->with(
                 'usefulInfos',
                 'offerings',
-                'socialMedias',
                 'serviceGalleryItems.file',
                 'taxonomies'
             )

@@ -16,6 +16,7 @@ trait ServiceMutators
                 'gender' => $this->eligibility_gender_custom,
                 'income' => $this->eligibility_income_custom,
                 'language' => $this->eligibility_language_custom,
+                'housing' => $this->eligibility_housing_custom,
                 'other' => $this->eligibility_other_custom,
             ],
             'taxonomies' => $this->serviceEligibilities()->pluck('taxonomy_id')->all(),

@@ -215,6 +215,7 @@ class StoreRequest extends FormRequest
             'eligibility_types.custom.income' => ['nullable', 'string', 'min:1', 'max:255'],
             'eligibility_types.custom.language' => ['nullable', 'string', 'min:1', 'max:255'],
             'eligibility_types.custom.ethnicity' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.housing' => ['nullable', 'string', 'min:1', 'max:255'],
             'eligibility_types.custom.other' => ['nullable', 'string', 'min:1', 'max:255'],
         ];
     }

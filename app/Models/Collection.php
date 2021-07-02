@@ -19,6 +19,15 @@ class Collection extends Model
     const TYPE_PERSONA = 'persona';
 
     /**
+     * Attributes that need to be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'enabled' => 'boolean',
+    ];
+
+    /**
      * @return \App\Models\Collection
      */
     public function touchServices(): Collection
@@ -61,5 +70,29 @@ class Collection extends Model
             Response::HTTP_OK,
             ['Content-Type' => File::MIME_TYPE_PNG]
         );
+    }
+
+    /**
+     * Enable the Collection.
+     *
+     * @return \App\Models\Collection
+     */
+    public function enable()
+    {
+        $this->enabled = true;
+
+        return $this;
+    }
+
+    /**
+     * Disable the Collection.
+     *
+     * @return \App\Models\Collection
+     */
+    public function disable()
+    {
+        $this->enabled = false;
+
+        return $this;
     }
 }

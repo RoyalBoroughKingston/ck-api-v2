@@ -21,6 +21,7 @@ class UpdateCollectionCategorySchema extends Schema
                 'intro',
                 'icon',
                 'order',
+                'enabled',
                 'sideboxes',
                 'category_taxonomies'
             )
@@ -29,6 +30,7 @@ class UpdateCollectionCategorySchema extends Schema
                 Schema::string('intro'),
                 Schema::string('icon'),
                 Schema::integer('order'),
+                Schema::boolean('enabled'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(

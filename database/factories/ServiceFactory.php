@@ -60,6 +60,7 @@ $factory->afterCreatingState(Service::class, 'withCustomEligibilities', function
     $service->eligibility_income_custom = 'custom income';
     $service->eligibility_language_custom = 'custom language';
     $service->eligibility_ethnicity_custom = 'custom ethnicity';
+    $service->eligibility_housing_custom = 'custom housing';
     $service->eligibility_other_custom = 'custom other';
     $service->save();
 });

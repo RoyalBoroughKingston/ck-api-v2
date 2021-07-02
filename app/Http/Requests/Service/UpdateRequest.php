@@ -168,7 +168,7 @@ class UpdateRequest extends FormRequest
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
 
                     return $referralMethod === Service::REFERRAL_METHOD_INTERNAL
-                        && $this->service->referral_email === null;
+                    && $this->service->referral_email === null;
                 }),
                 new NullableIf(function () {
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
@@ -191,7 +191,7 @@ class UpdateRequest extends FormRequest
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
 
                     return $referralMethod === Service::REFERRAL_METHOD_EXTERNAL
-                        && $this->service->referral_url === null;
+                    && $this->service->referral_url === null;
                 }),
                 new NullableIf(function () {
                     $referralMethod = $this->input('referral_method', $this->service->referral_method);
@@ -273,6 +273,7 @@ class UpdateRequest extends FormRequest
             'eligibility_types.custom.income' => ['nullable', 'string', 'min:1', 'max:255'],
             'eligibility_types.custom.language' => ['nullable', 'string', 'min:1', 'max:255'],
             'eligibility_types.custom.ethnicity' => ['nullable', 'string', 'min:1', 'max:255'],
+            'eligibility_types.custom.housing' => ['nullable', 'string', 'min:1', 'max:255'],
             'eligibility_types.custom.other' => ['nullable', 'string', 'min:1', 'max:255'],
 
             'logo_file_id' => [

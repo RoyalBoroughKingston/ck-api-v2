@@ -86,6 +86,7 @@ class OpenApi extends BaseOpenApi implements Responsable
                 Paths\Taxonomies\Organisations\TaxonomyOrganisationsIndexPath::create(),
                 Paths\Taxonomies\Organisations\TaxonomyOrganisationsNestedPath::create(),
                 Paths\Taxonomies\ServiceEligibilities\TaxonomyServiceEligibilitiesRootPath::create(),
+                Paths\Taxonomies\ServiceEligibilities\TaxonomyServiceEligibilitiesNestedPath::create(),
                 Paths\Thesaurus\ThesaurusRootPath::create(),
                 Paths\UpdateRequests\UpdateRequestsRootPath::create(),
                 Paths\UpdateRequests\UpdateRequestsIndexPath::create(),

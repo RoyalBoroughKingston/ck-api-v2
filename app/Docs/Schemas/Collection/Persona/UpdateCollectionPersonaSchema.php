@@ -21,6 +21,7 @@ class UpdateCollectionPersonaSchema extends Schema
                 'intro',
                 'subtitle',
                 'order',
+                'enabled',
                 'sideboxes',
                 'category_taxonomies'
             )
@@ -29,6 +30,7 @@ class UpdateCollectionPersonaSchema extends Schema
                 Schema::string('intro'),
                 Schema::string('subtitle'),
                 Schema::integer('order'),
+                Schema::boolean('enabled'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(

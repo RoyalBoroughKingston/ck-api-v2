@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Requests\TaxonomyServiceEligibility;
+
+use App\Models\Taxonomy;
+use App\Rules\RootTaxonomyIs;
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return $this->user()->isGlobalAdmin();
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        $parentId = $this->parent_id ?? Taxonomy::serviceEligibility()->id;
+        $siblingTaxonomiesCount = Taxonomy::where('parent_id', $parentId)->count() + 1;
+
+        return [
+            'parent_id' => ['present', 'nullable', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_SERVICE_ELIGIBILITY)],
+            'name' => ['required', 'string', 'min:1', 'max:255'],
+            'order' => ['required', 'integer', 'min:1', "max:$siblingTaxonomiesCount"],
+        ];
+    }
+}

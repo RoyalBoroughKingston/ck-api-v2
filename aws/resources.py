@@ -1,4 +1,5 @@
 from troposphere import GetAtt, Ref, Base64, Join, Sub, Select
+from troposphere.cloudformation import AWSCustomObject
 import troposphere.ec2 as ec2
 import troposphere.rds as rds
 import troposphere.elasticache as elasticache
@@ -11,6 +12,16 @@ import troposphere.logs as logs
 import troposphere.elasticloadbalancingv2 as elb
 import troposphere.autoscaling as autoscaling
 import troposphere.elasticsearch as elasticsearch
+import troposphere.awslambda as awslambda
+
+
+class CustomLogGroupPolicy(AWSCustomObject):
+    resource_type = "Custom::LogGroupPolicy"
+    props = {
+        "ServiceToken": (str, True),
+        "CWLOGS_NAME": (str, True),
+        "CWLOGS_ARN": (str, True)
+    }
 
 
 def create_load_balancer_security_group_resource(template):
@@ -311,6 +322,17 @@ def create_elasticsearch_log_group_resource(template, elasticsearch_log_group_na
         logs.LogGroup(
             'SearchLogGroup',
             LogGroupName=elasticsearch_log_group_name_variable,
+            RetentionInDays=7
+        )
+    )
+
+
+def create_elasticsearch_lambda_log_group_resource(template, elasticsearch_log_access_policy_lambda_name_variable):
+    return template.add_resource(
+        logs.LogGroup(
+            'SearchLambdaLogGroup',
+            LogGroupName=Sub('/aws/lambda/${LambdaFunctionName}',
+                             LambdaFunctionName=elasticsearch_log_access_policy_lambda_name_variable),
             RetentionInDays=7
         )
     )
@@ -730,6 +752,70 @@ def create_ci_user_resource(template, ci_user_name_variable):
     )
 
 
+def create_elasticsearch_lambda_execution_role_resource(template, lambda_function_name_variable, elasticsearch_log_group_name_variable):
+    return template.add_resource(
+        iam.Role(
+            'LambdaExecutionRole',
+            AssumeRolePolicyDocument={
+                'Version': '2012-10-17',
+                'Statement': [
+                    {
+                        'Action': 'sts:AssumeRole',
+                        'Effect': 'Allow',
+                        'Principal': {
+                            'Service': 'lambda.amazonaws.com'
+                        }
+                    }
+                ]
+            },
+            Policies=[
+                iam.Policy(
+                    PolicyName='LambdaExecutionRoleCreateLogStreamPolicy',
+                    PolicyDocument={
+                        'Statement': [
+                            {
+                                'Effect': 'Allow',
+                                'Action': [
+                                    'logs:CreateLogStream',
+                                    'logs:PutLogEvents',
+                                ],
+                                'Resource': Sub('arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${LambdaFunctionName}:log-stream:*', LambdaFunctionName=lambda_function_name_variable)
+                            },
+                        ]
+                    }
+                ),
+                iam.Policy(
+                    PolicyName='LambdaExecutionRoleCreateLogGroupPolicy',
+                    PolicyDocument={
+                        'Statement': [
+                            {
+                                'Effect': 'Allow',
+                                'Action': [
+                                    'logs:CreateLogGroup',
+                                ],
+                                'Resource': [
+                                    Sub('arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${LambdaFunctionName}',
+                                        LambdaFunctionName=lambda_function_name_variable),
+                                    Sub('arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupName}',
+                                        LogGroupName=elasticsearch_log_group_name_variable),
+                                ]
+                            },
+                            {
+                                'Effect': 'Allow',
+                                'Action': [
+                                    'logs:PutResourcePolicy',
+                                    'logs:DeleteResourcePolicy'
+                                ],
+                                'Resource': Sub('arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*')
+                            }
+                        ]
+                    }
+                )
+            ]
+        )
+    )
+
+
 def create_elasticsearch_security_group_resource(template, api_security_group_resource):
     return template.add_resource(
         ec2.SecurityGroup(
@@ -748,12 +834,115 @@ def create_elasticsearch_security_group_resource(template, api_security_group_re
     )
 
 
+def create_elasticsearch_lambda_log_group_policy_function_resource(template, lambda_function_name_variable, elasticsearch_lambda_log_group_resource, elasticsearch_lambda_execution_role_resource):
+    return template.add_resource(
+        awslambda.Function(
+            "ElasticsearchLambdaLogGroupPolicyFunction",
+            FunctionName=lambda_function_name_variable,
+            DependsOn=elasticsearch_lambda_log_group_resource,
+            Code=awslambda.Code(ZipFile=Join("\n", [
+                "import urllib3",
+                "import json",
+                "import boto3",
+                "http = urllib3.PoolManager()",
+                "SUCCESS = 'SUCCESS'",
+                "FAILED = 'FAILED'",
+                "def send(event, context, responseStatus, responseData, physicalResourceId=None, noEcho=False):",
+                "    responseUrl = event['ResponseURL']",
+                "    print(responseUrl)",
+                "    responseBody = {}",
+                "    responseBody['Status'] = responseStatus",
+                "    responseBody['Reason'] = 'See the details in CloudWatch Log Stream: ' + context.log_stream_name",
+                "    responseBody['PhysicalResourceId'] = physicalResourceId or context.log_stream_name",
+                "    responseBody['StackId'] = event['StackId']",
+                "    responseBody['RequestId'] = event['RequestId']",
+                "    responseBody['LogicalResourceId'] = event['LogicalResourceId']",
+                "    responseBody['NoEcho'] = noEcho",
+                "    responseBody['Data'] = responseData",
+                "    json_responseBody = json.dumps(responseBody)",
+                "    print(\"Response body:\\n\" + json_responseBody)",
+                "    headers = {",
+                "        'content-type' : '',",
+                "        'content-length' : str(len(json_responseBody))",
+                "    }",
+                "    try:",
+                "        response = http.request('PUT',responseUrl,body=json_responseBody.encode('utf-8'),headers=headers)",
+                "        print('Status code: ' + response.reason)",
+                "    except Exception as e:",
+                "        print('send(..) failed executing requests.put(..): ' + str(e))",
+                "def handler(event, context):",
+                "    logsgroup_policy_name=event['ResourceProperties']['CWLOGS_NAME']",
+                "    cw_log_group_arn=event['ResourceProperties']['CWLOGS_ARN']",
+                "    cwlogs = boto3.client('logs')",
+                "    loggroup_policy={",
+                "        'Version': '2012-10-17',",
+                "        'Statement': [{",
+                "        'Sid': '',",
+                "        'Effect': 'Allow',",
+                "        'Principal': { 'Service': 'es.amazonaws.com'},",
+                "        'Action':[",
+                "        'logs:PutLogEvents',",
+                "        'logs:PutLogEventsBatch',",
+                "        'logs:CreateLogStream'",
+                "            ],",
+                "        'Resource': f'{cw_log_group_arn}'",
+                "        }]",
+                "        }",
+                "    loggroup_policy = json.dumps(loggroup_policy)",
+                "    if(event['RequestType'] == 'Delete'):",
+                "        print('Request Type:',event['RequestType'])",
+                "        cwlogs.delete_resource_policy(",
+                "        policyName=logsgroup_policy_name",
+                "        )",
+                "        responseData={}",
+                "        send(event, context, SUCCESS, responseData)",
+                "    elif(event['RequestType'] == 'Create'):",
+                "        try:",
+                "            cwlogs.put_resource_policy(",
+                "            policyName = logsgroup_policy_name,",
+                "            policyDocument = loggroup_policy",
+                "            )",
+                "            responseData={}",
+                "            print('Sending response to custom resource')",
+                "            send(event, context, SUCCESS, responseData)",
+                "        except Exception as  e:",
+                "            print('Failed to process:', e)",
+                "            send(event, context, FAILED, responseData)",
+                "    elif(event['RequestType'] == 'Update'):",
+                "        try:",
+                "            responseData={}",
+                "            print('Update is not supported on this resource')",
+                "            send(event, context, SUCCESS, responseData)",
+                "        except Exception as  e:",
+                "            print('Failed to process:', e)",
+                "            send(event, context, FAILED, responseData)",
+            ])),
+            Handler="index.handler",
+            Role=GetAtt(elasticsearch_lambda_execution_role_resource, 'Arn'),
+            Runtime="python3.6"
+        )
+    )
+
+
+def create_elasticsearch_log_group_policy_custom_resource(template, elasticsearch_lambda_log_group_policy_function_resource, elasticsearch_log_group_name_variable, elasticsearch_log_group_resource):
+    return template.add_resource(
+        CustomLogGroupPolicy(
+            'ElasticsearchCustomLogGroupPolicy',
+            ServiceToken=GetAtt(
+                elasticsearch_lambda_log_group_policy_function_resource, 'Arn'),
+            CWLOGS_NAME=elasticsearch_log_group_name_variable,
+            CWLOGS_ARN=GetAtt(elasticsearch_log_group_resource, 'Arn')
+        )
+    )
+
+
 def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                                   elasticsearch_instance_count_parameter, elasticsearch_instance_class_parameter,
-                                  elasticsearch_security_group_resource, subnets_parameter, elasticsearch_log_group_resource):
+                                  elasticsearch_security_group_resource, subnets_parameter):
     return template.add_resource(
         elasticsearch.Domain(
             'Elasticsearch',
+            DependsOn='ElasticsearchCustomLogGroupPolicy',
             AccessPolicies={
                 'Version': '2012-10-17',
                 'Statement': [
@@ -765,17 +954,6 @@ def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                         'Action': 'es:*',
                         'Resource': Sub('arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*',
                                         DomainName=elasticsearch_domain_name_variable)
-                    },
-                    {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": "es.amazonaws.com"
-                        },
-                        "Action": [
-                            "logs:PutLogEvents",
-                            "logs:CreateLogStream"
-                        ],
-                        "Resource": GetAtt(elasticsearch_log_group_resource, 'Arn')
                     }
                 ]
             },

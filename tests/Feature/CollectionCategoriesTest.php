@@ -33,6 +33,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'enabled',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -72,6 +73,7 @@ class CollectionCategoriesTest extends TestCase
                     'intro',
                     'icon',
                     'order',
+                    'enabled',
                     'sideboxes' => [
                         '*' => [
                             'title',
@@ -93,6 +95,54 @@ class CollectionCategoriesTest extends TestCase
             ],
         ]);
         $response->assertJsonCount($collectionCategoryCount, 'data');
+    }
+
+    public function test_guest_can_list_enabled_and_disabled_collections()
+    {
+        $disabledCollection = Collection::where('type', 'category')->first();
+
+        $disabledCollection->disable()->save();
+
+        $enabledCollection = Collection::where('type', 'category')->latest()->first();
+
+        $enabledCollection->enable()->save();
+
+        $response = $this->json('GET', '/core/v1/collections/categories');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $disabledCollection->id,
+            'enabled' => false,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $enabledCollection->id,
+            'enabled' => true,
+        ]);
+    }
+
+    public function test_guest_can_list_all_enabled_and_disabled_collections()
+    {
+        $disabledCollection = Collection::where('type', 'category')->first();
+
+        $disabledCollection->disable()->save();
+
+        $enabledCollection = Collection::where('type', 'category')->latest()->first();
+
+        $enabledCollection->enable()->save();
+
+        $response = $this->json('GET', '/core/v1/collections/categories/all');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $disabledCollection->id,
+            'enabled' => false,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $enabledCollection->id,
+            'enabled' => true,
+        ]);
     }
 
     public function test_audit_created_when_listed()
@@ -199,6 +249,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -215,6 +266,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'enabled',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -238,6 +290,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -247,6 +300,49 @@ class CollectionCategoriesTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $randomCategory->id,
+        ]);
+    }
+
+    public function test_super_admin_can_create_a_disabled_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/categories', [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'enabled' => false,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment([
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'enabled' => false,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
         ]);
     }
 
@@ -264,6 +360,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -274,6 +371,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -284,6 +382,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -298,6 +397,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -323,6 +423,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -333,6 +434,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -343,6 +445,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -357,6 +460,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 2,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -382,6 +486,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -392,6 +497,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -402,6 +508,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -416,6 +523,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 4,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -445,6 +553,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 0,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -466,6 +575,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -476,6 +586,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -490,6 +601,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 4,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -515,6 +627,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
@@ -543,6 +656,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'enabled',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -567,6 +681,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => $collectionCategory->meta['intro'],
             'icon' => $collectionCategory->meta['icon'],
             'order' => $collectionCategory->order,
+            'enabled' => $collectionCategory->enabled,
             'sideboxes' => $collectionCategory->meta['sideboxes'],
             'created_at' => $collectionCategory->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $collectionCategory->updated_at->format(CarbonImmutable::ISO8601),
@@ -671,6 +786,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -682,6 +798,7 @@ class CollectionCategoriesTest extends TestCase
             'intro',
             'icon',
             'order',
+            'enabled',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -705,6 +822,97 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+        ]);
+        $response->assertJsonFragment([
+            'id' => $taxonomy->id,
+        ]);
+    }
+
+    public function test_global_admin_cannot_update_status()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $category->enable()->save();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_super_admin_can_update_status()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $category = Collection::categories()->inRandomOrder()->firstOrFail();
+        $category->enable()->save();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/categories/{$category->id}", [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'icon',
+            'order',
+            'enabled',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'icon' => 'info',
+            'order' => 1,
+            'enabled' => false,
             'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
@@ -726,6 +934,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -736,6 +945,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -746,6 +956,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -760,6 +971,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -784,6 +996,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -794,6 +1007,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -804,6 +1018,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -818,6 +1033,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 2,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -842,6 +1058,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -852,6 +1069,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -862,6 +1080,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -876,6 +1095,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 3,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -900,6 +1120,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -914,6 +1135,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 0,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -935,6 +1157,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -949,6 +1172,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 2,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -975,6 +1199,7 @@ class CollectionCategoriesTest extends TestCase
             'intro' => 'Lorem ipsum',
             'icon' => 'info',
             'order' => 1,
+            'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1101,6 +1326,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1111,6 +1337,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1121,6 +1348,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1152,6 +1380,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1162,6 +1391,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1172,6 +1402,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1203,6 +1434,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'First',
             'order' => 1,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1213,6 +1445,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Second',
             'order' => 2,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',
@@ -1223,6 +1456,7 @@ class CollectionCategoriesTest extends TestCase
             'type' => Collection::TYPE_CATEGORY,
             'name' => 'Third',
             'order' => 3,
+            'enabled' => true,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'icon' => 'info',

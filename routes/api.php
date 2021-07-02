@@ -173,6 +173,15 @@ Route::prefix('/core/v1')
 
             // Taxonomy Service Eligibility.
             Route::get('/taxonomies/service-eligibilities', 'TaxonomyServiceEligibilityController@index');
+            Route::apiResource('/taxonomies/service-eligibilities', 'TaxonomyServiceEligibilityController')
+                ->parameter('service-eligibilities', 'taxonomy')
+                ->names([
+                    'index' => 'taxonomy-service-eligibilities.index',
+                    'store' => 'taxonomy-service-eligibilities.store',
+                    'show' => 'taxonomy-service-eligibilities.show',
+                    'update' => 'taxonomy-service-eligibilities.update',
+                    'destroy' => 'taxonomy-service-eligibilities.destroy',
+                ]);
 
             // Thesaurus.
             Route::get('/thesaurus', 'ThesaurusController@index')

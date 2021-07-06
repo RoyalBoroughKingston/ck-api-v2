@@ -202,56 +202,6 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_global_admin_can_update_one_with_auto_approval()
-    {
-        $organisation = factory(Organisation::class)->create();
-        $user = factory(User::class)->create()->makeGlobalAdmin();
-        $payload = [
-            'slug' => 'test-org',
-            'name' => 'Test Org',
-            'description' => 'Test description',
-            'url' => 'http://test-org.example.com',
-            'email' => 'info@test-org.example.com',
-            'phone' => '07700000000',
-            'category_taxonomies' => [],
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['data' => $payload]);
-        $response->assertJsonFragment(['message' => __('updates.pre-approved')]);
-
-        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
-            'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
-            'updateable_id' => $organisation->id,
-        ]);
-
-        $data = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
-            ->where('updateable_id', $organisation->id)
-            ->firstOrFail()->data;
-        $this->assertEquals($data, $payload);
-
-        // Simulate frontend check by making call with UpdateRequest ID.
-        $updateRequestId = json_decode($response->getContent())->id;
-        Passport::actingAs($user);
-
-        $updateRequestCheckResponse = $this->get(
-            route('core.v1.update-requests.show',
-                ['update_request' => $updateRequestId])
-        );
-
-        $updateRequestCheckResponse->assertSuccessful();
-        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
-
-        // Update request should already have been approved.
-        $this->assertNotNull($updateRequestResponseData->approved_at);
-    }
-
     public function test_global_admin_can_create_one_with_single_form_of_contact()
     {
         /**
@@ -277,7 +227,7 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_global_admin_cannot_create_one_with_no_form_of_contact()
+    public function test_global_admin_can_create_one_without_contact_details()
     {
         /**
          * @var \App\Models\User $user
@@ -288,7 +238,7 @@ class OrganisationsTest extends TestCase
             'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
-            'url' => 'http://test-org.example.com',
+            'url' => null,
             'email' => null,
             'phone' => null,
             'category_taxonomies' => [],
@@ -298,7 +248,9 @@ class OrganisationsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisations', $payload);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment($payload);
     }
 
     public function test_global_admin_can_create_one_with_taxonomies()
@@ -540,6 +492,56 @@ class OrganisationsTest extends TestCase
         $this->assertEquals($data, $payload);
     }
 
+    public function test_global_admin_can_update_one_with_auto_approval()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+            'category_taxonomies' => [],
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+        $response->assertJsonFragment(['message' => __('updates.pre-approved')]);
+
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_ORGANISATION,
+            'updateable_id' => $organisation->id,
+        ]);
+
+        $data = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_ORGANISATION)
+            ->where('updateable_id', $organisation->id)
+            ->firstOrFail()->data;
+        $this->assertEquals($data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = json_decode($response->getContent())->id;
+        Passport::actingAs($user);
+
+        $updateRequestCheckResponse = $this->get(
+            route('core.v1.update-requests.show',
+                ['update_request' => $updateRequestId])
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
+
+        // Update request should already have been approved.
+        $this->assertNotNull($updateRequestResponseData->approved_at);
+    }
+
     public function test_organisation_admin_can_add_social_media_to_one()
     {
         $organisation = factory(Organisation::class)->create();
@@ -698,6 +700,33 @@ class OrganisationsTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_global_admin_can_update_without_contact_details()
+    {
+        $organisation = factory(Organisation::class)->create([
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '01234567890',
+        ]);
+        $user = factory(User::class)->create()->makeGlobalAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => null,
+            'email' => null,
+            'phone' => null,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
     }
 
     public function test_organisation_admin_can_update_organisation_taxonomies()

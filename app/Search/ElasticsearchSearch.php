@@ -70,15 +70,11 @@ class ElasticsearchSearch implements Search
     {
         $should = &$this->query['query']['bool']['must']['bool']['should'];
 
-        $should[] = $this->match('name', $term, 3);
-        $should[] = $this->match('organisation_name', $term, 3);
-        $should[] = $this->match('intro', $term, 2);
-        $should[] = $this->matchPhrase('description', $term, 1.5);
-        $should[] = $this->match('taxonomy_categories', $term);
-
-        if (empty($this->query['query']['bool']['must']['bool']['minimum_should_match'])) {
-            $this->query['query']['bool']['must']['bool']['minimum_should_match'] = 1;
-        }
+        $should[] = $this->match('name', $term, 4);
+        $should[] = $this->match('intro', $term, 3);
+        $should[] = $this->matchPhrase('description', $term, 3);
+        $should[] = $this->match('taxonomy_categories', $term, 2);
+        $should[] = $this->match('organisation_name', $term);
 
         return $this;
     }
@@ -301,12 +297,6 @@ class ElasticsearchSearch implements Search
                     ],
                 ];
 
-                if (empty($this->query['query']['bool']['must']['bool']['minimum_should_match'])) {
-                    $this->query['query']['bool']['must']['bool']['minimum_should_match'] = 1;
-                } else {
-                    $this->query['query']['bool']['must']['bool']['minimum_should_match']++;
-                }
-
                 foreach ($serviceEligibilityTypeNames as $serviceEligibilityTypeName) {
                     $this->query['query']['bool']['must']['bool']['should'][] = [
                         'term' => [
@@ -321,7 +311,7 @@ class ElasticsearchSearch implements Search
                     'match' => [
                         'service_eligibilities' => [
                             'query' => $serviceEligibilityTypeAllName,
-                            'boost' => 0,
+                            'boost' => 0.2,
                         ],
                     ],
                 ];

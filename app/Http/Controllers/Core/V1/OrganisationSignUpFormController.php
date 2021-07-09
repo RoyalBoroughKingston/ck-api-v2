@@ -6,6 +6,7 @@ use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganisationSignUpForm\StoreRequest;
 use App\Http\Responses\UpdateRequestReceived;
+use App\Models\Organisation;
 use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
@@ -40,7 +41,10 @@ class OrganisationSignUpFormController extends Controller
 
             $updateData['organisation'] = [];
             if ($request->filled('organisation.id')) {
-                $updateData['organisation']['id'] = $request->input('organisation.id');
+                $organisation = Organisation::find($request->input('organisation.id'));
+                $updateData['organisation'] = array_filter($organisation->attributesToArray(), function ($key) {
+                    return in_array($key, ['id', 'slug', 'name', 'description', 'url', 'email', 'phone']);
+                }, ARRAY_FILTER_USE_KEY);
             } else {
                 $updateData['organisation'] = [
                     'slug' => $request->input('organisation.slug'),

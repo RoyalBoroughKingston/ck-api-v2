@@ -164,6 +164,12 @@ class OrganisationSignUpFormTest extends TestCase
 
         $this->assertEquals($userSubmission['email'], $this->getResponseContent($response, 'data.user.email'));
         $this->assertEquals($organisation->id, $this->getResponseContent($response, 'data.organisation.id'));
+        $this->assertEquals($organisation->slug, $this->getResponseContent($response, 'data.organisation.slug'));
+        $this->assertEquals($organisation->name, $this->getResponseContent($response, 'data.organisation.name'));
+        $this->assertEquals($organisation->description, $this->getResponseContent($response, 'data.organisation.description'));
+        $this->assertEquals($organisation->url, $this->getResponseContent($response, 'data.organisation.url'));
+        $this->assertEquals($organisation->email, $this->getResponseContent($response, 'data.organisation.email'));
+        $this->assertEquals($organisation->phone, $this->getResponseContent($response, 'data.organisation.phone'));
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
             /** @var \App\Models\UpdateRequest $updateRequest */
@@ -229,7 +235,7 @@ class OrganisationSignUpFormTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
 
         $this->assertEquals($userSubmission['email'], $this->getResponseContent($response, 'data.user.email'));
-        $this->assertEquals($organisationSubmission['email'], $this->getResponseContent($response, 'data.organisation.email'));
+        $this->assertEquals($organisationSubmission, $this->getResponseContent($response, 'data.organisation'));
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {
             /** @var \App\Models\UpdateRequest $updateRequest */

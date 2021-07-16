@@ -231,6 +231,17 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     {
         $data = $updateRequest->data;
 
+        // Update the Logo File entity if new
+        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && !empty($data['logo_file_id'])) {
+            /** @var \App\Models\File $file */
+            $file = File::findOrFail($data['logo_file_id'])->assigned();
+
+            // Create resized version for common dimensions.
+            foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                $file->resizedVersion($maxDimension);
+            }
+        }
+
         // Update the service record.
         $this->update([
             'organisation_id' => Arr::get($data, 'organisation_id', $this->organisation_id),
@@ -295,9 +306,16 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         }
 
         // Update the gallery item records.
-        if (array_key_exists('gallery_items', $updateRequest->data)) {
+        if (array_key_exists('gallery_items', $data)) {
             $this->serviceGalleryItems()->delete();
             foreach ($data['gallery_items'] as $galleryItem) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($galleryItem['file_id'])->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
                 $this->serviceGalleryItems()->create([
                     'file_id' => $galleryItem['file_id'],
                 ]);

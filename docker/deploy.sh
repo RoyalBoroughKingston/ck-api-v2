@@ -11,9 +11,17 @@
 # Bail out on first error.
 set -e
 
+# Set the deploy variables
+OLD_IFS=$IFS
+IFS='/'
+read AWS_DOCKER_REGISTRY AWS_DOCKER_REPO <<< "${REPO_URI}"
+IFS=$OLD_IFS
+export AWS_DOCKER_REGISTRY=${AWS_DOCKER_REGISTRY}
+export AWS_DOCKER_REPO=${AWS_DOCKER_REPO}
+
 # Login to the ECR.
-echo "Logging in to ECR..."
-$(aws ecr get-login-password)
+echo "Logging in to ECR docker registry: $AWS_DOCKER_REGISTRY in region $AWS_DEFAULT_REGION"
+aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_DOCKER_REGISTRY}
 
 # Push the Docker image to ECR.
 echo "Pushing images to ECR..."

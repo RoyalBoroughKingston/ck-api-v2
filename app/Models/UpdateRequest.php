@@ -123,8 +123,8 @@ class UpdateRequest extends Model
     public function getUpdateable(): AppliesUpdateRequests
     {
         return $this->isExisting()
-            ? $this->updateable
-            : $this->createUpdateableInstance();
+        ? $this->updateable
+        : $this->createUpdateableInstance();
     }
 
     /**

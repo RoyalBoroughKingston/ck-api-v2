@@ -13,7 +13,7 @@ set -e
 
 # Login to the ECR.
 echo "Logging in to ECR..."
-$(aws ecr get-login --no-include-email)
+$(aws ecr get-login-password)
 
 # Push the Docker image to ECR.
 echo "Pushing images to ECR..."

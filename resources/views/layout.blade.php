@@ -23,7 +23,7 @@
             <div class="govuk-header__logo">
                 <a href="{{ route('home') }}" class="govuk-header__link govuk-header__link--homepage">
                     <span class="govuk-header__logotype">
-                      <img src="{{ asset('/img/logo-white.png') . '?' . filemtime(public_path('img/logo-white.png')) }}" class="govuk-header__logotype-crown" alt="One Hounslow Connect logo" title="One Hounslow Connect" />
+                      <img src="{{ asset('/img/logo-white.png') . '?' . filemtime(public_path('img/logo-white.png')) }}" class="govuk-header__logotype-crown" alt="Hounslow Connect logo" title="Hounslow Connect" />
                     </span>
                 </a>
             </div>

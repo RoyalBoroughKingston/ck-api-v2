@@ -72,7 +72,8 @@ class StoreRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                'unique:' . table(Organisation::class) . ',slug',
+                Rule::unique(table(Organisation::class), 'slug')
+                    ->ignore($this->input('organisation.id')),
                 new Slug(),
             ],
             'organisation.name' => ['required_without:organisation.id', 'nullable', 'string', 'min:1', 'max:255'],

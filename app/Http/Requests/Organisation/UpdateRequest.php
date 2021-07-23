@@ -52,17 +52,22 @@ class UpdateRequest extends FormRequest
             ],
             'name' => ['string', 'min:1', 'max:255'],
             'description' => ['string', 'min:1', 'max:10000'],
-            'url' => ['url', 'max:255'],
+            'url' => [
+                new NullableIf(function () {
+                    return $this->user()->isGlobalAdmin();
+                }),
+                'url',
+                'max:255', ],
             'email' => [
                 new NullableIf(function () {
-                    return $this->input('phone', $this->organisation->phone) !== null;
+                    return $this->user()->isGlobalAdmin() || $this->input('phone', $this->organisation->phone) !== null;
                 }),
                 'email',
                 'max:255',
             ],
             'phone' => [
                 new NullableIf(function () {
-                    return $this->input('email', $this->organisation->email) !== null;
+                    return $this->user()->isGlobalAdmin() || $this->input('email', $this->organisation->email) !== null;
                 }),
                 'string',
                 'min:1',

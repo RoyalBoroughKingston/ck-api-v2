@@ -9,7 +9,6 @@ use App\Models\Offering;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
-use App\Models\ServiceCriterion;
 use App\Models\ServiceLocation;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
@@ -17,7 +16,6 @@ use App\Models\UpdateRequest;
 use App\Models\UsefulInfo;
 use App\Models\User;
 use App\Models\UserRole;
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Date;
@@ -733,6 +731,21 @@ class UpdateRequestsTest extends TestCase
         //Given an organisation admin is logged in
         Passport::actingAs($user);
 
+        $imagePayload = [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'file' => 'data:image/png;base64,' . self::BASE64_ENCODED_PNG,
+        ];
+
+        $response = $this->json('POST', '/core/v1/files', $imagePayload);
+        $logoImage = $this->getResponseContent($response, 'data');
+
+        $response = $this->json('POST', '/core/v1/files', $imagePayload);
+        $galleryImage1 = $this->getResponseContent($response, 'data');
+
+        $response = $this->json('POST', '/core/v1/files', $imagePayload);
+        $galleryImage2 = $this->getResponseContent($response, 'data');
+
         $payload = [
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
@@ -769,7 +782,15 @@ class UpdateRequestsTest extends TestCase
                     'order' => 1,
                 ],
             ],
-            'gallery_items' => [],
+            'logo_file_id' => $logoImage['id'],
+            'gallery_items' => [
+                [
+                    'file_id' => $galleryImage1['id'],
+                ],
+                [
+                    'file_id' => $galleryImage2['id'],
+                ],
+            ],
             'category_taxonomies' => [],
         ];
 

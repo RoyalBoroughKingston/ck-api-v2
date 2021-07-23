@@ -1905,7 +1905,7 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_cannot_update_status()
+    public function test_global_admin_can_update_status()
     {
         $service = factory(Service::class)->create([
             'slug' => 'test-service',
@@ -2140,6 +2140,57 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /*
+     * Delete a specific service's logo.
+     */
+
+    public function test_service_admin_can_delete_logo()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $service = factory(Service::class)->create([
+            'logo_file_id' => factory(File::class)->create()->id,
+        ]);
+        $user->makeServiceAdmin($service);
+        $payload = [
+            'slug' => $service->slug,
+            'name' => $service->name,
+            'status' => $service->status,
+            'intro' => $service->intro,
+            'description' => $service->description,
+            'wait_time' => $service->wait_time,
+            'is_free' => $service->is_free,
+            'fees_text' => $service->fees_text,
+            'fees_url' => $service->fees_url,
+            'testimonial' => $service->testimonial,
+            'video_embed' => $service->video_embed,
+            'url' => $service->url,
+            'contact_name' => $service->contact_name,
+            'contact_phone' => $service->contact_phone,
+            'contact_email' => $service->contact_email,
+            'show_referral_disclaimer' => $service->show_referral_disclaimer,
+            'referral_method' => $service->referral_method,
+            'referral_button_text' => $service->referral_button_text,
+            'referral_email' => $service->referral_email,
+            'referral_url' => $service->referral_url,
+            'useful_infos' => [],
+
+            'category_taxonomies' => [],
+            'logo_file_id' => null,
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $service->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $service->id)->firstOrFail();
+        $this->assertEquals(null, $updateRequest->data['logo_file_id']);
     }
 
     public function test_service_admin_can_update_gallery_items()
@@ -2765,11 +2816,11 @@ class ServicesTest extends TestCase
      * Upload a specific service's logo.
      */
 
-    public function test_service_admin_can_upload_logo()
+    public function test_organisation_admin_can_upload_logo()
     {
         $organisation = factory(Organisation::class)->create();
         $user = factory(User::class)->create();
-        $user->makeGlobalAdmin();
+        $user->makeOrganisationAdmin($organisation);
         $image = Storage::disk('local')->get('/test-data/image.png');
 
         Passport::actingAs($user);
@@ -2785,7 +2836,7 @@ class ServicesTest extends TestCase
             'slug' => 'test-service',
             'name' => 'Test Service',
             'type' => Service::TYPE_SERVICE,
-            'status' => Service::STATUS_ACTIVE,
+            'status' => Service::STATUS_INACTIVE,
             'intro' => 'This is a test intro',
             'description' => 'Lorem ipsum',
             'wait_time' => null,
@@ -2798,10 +2849,10 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
-            'show_referral_disclaimer' => true,
-            'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => null,
             'referral_url' => null,
             'useful_infos' => [
                 [
@@ -2818,70 +2869,16 @@ class ServicesTest extends TestCase
             ],
 
             'gallery_items' => [],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+            'category_taxonomies' => [],
             'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
         ]);
+
         $serviceId = $this->getResponseContent($response, 'data.id');
 
-        $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas(table(Service::class), [
-            'id' => $serviceId,
-        ]);
-        $this->assertDatabaseMissing(table(Service::class), [
-            'id' => $serviceId,
-            'logo_file_id' => null,
-        ]);
-    }
-
-    /*
-     * Delete a specific service's logo.
-     */
-
-    public function test_service_admin_can_delete_logo()
-    {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = factory(User::class)->create();
-        $user->makeGlobalAdmin();
-        $service = factory(Service::class)->create([
-            'logo_file_id' => factory(File::class)->create()->id,
-        ]);
-        $payload = [
-            'slug' => $service->slug,
-            'name' => $service->name,
-            'status' => $service->status,
-            'intro' => $service->intro,
-            'description' => $service->description,
-            'wait_time' => $service->wait_time,
-            'is_free' => $service->is_free,
-            'fees_text' => $service->fees_text,
-            'fees_url' => $service->fees_url,
-            'testimonial' => $service->testimonial,
-            'video_embed' => $service->video_embed,
-            'url' => $service->url,
-            'contact_name' => $service->contact_name,
-            'contact_phone' => $service->contact_phone,
-            'contact_email' => $service->contact_email,
-            'show_referral_disclaimer' => $service->show_referral_disclaimer,
-            'referral_method' => $service->referral_method,
-            'referral_button_text' => $service->referral_button_text,
-            'referral_email' => $service->referral_email,
-            'referral_url' => $service->referral_url,
-            'useful_infos' => [],
-
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-            'logo_file_id' => null,
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $service->id]);
-        $updateRequest = UpdateRequest::where('updateable_id', $service->id)->firstOrFail();
-        $this->assertEquals(null, $updateRequest->data['logo_file_id']);
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $serviceId]);
+        $updateRequest = UpdateRequest::where('updateable_id', $serviceId)->firstOrFail();
+        $this->assertEquals($this->getResponseContent($imageResponse, 'data.id'), $updateRequest->data['logo_file_id']);
     }
 
     /*

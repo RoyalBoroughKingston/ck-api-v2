@@ -27,7 +27,8 @@ class UpdateOrganisationSchema extends Schema
                 Schema::string('name'),
                 Schema::string('slug'),
                 Schema::string('description'),
-                Schema::string('url'),
+                Schema::string('url')
+                    ->nullable(),
                 Schema::string('email')
                     ->nullable(),
                 Schema::string('phone')

@@ -70,7 +70,7 @@ def create_database_username_variable():
 
 
 def create_api_name_variable():
-    return 'One Hounslow Connect'
+    return 'Hounslow Connect'
 
 
 def create_elasticsearch_domain_name_variable(environment_parameter):

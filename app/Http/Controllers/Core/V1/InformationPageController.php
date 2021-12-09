@@ -33,22 +33,23 @@ class InformationPageController extends Controller
      */
     public function index(IndexRequest $request)
     {
+        $orderByCol = (new InformationPage())->getLftName();
         $baseQuery = InformationPage::query()
-            ->orderBy('order');
+            ->orderBy($orderByCol);
 
         if (! $request->user() || ! $request->user()->isGlobalAdmin()) {
             $baseQuery->where('enabled', true);
         }
 
-            $pages = QueryBuilder::for($baseQuery)
-                ->allowedFilters([
-                    Filter::exact('id'),
-                    Filter::exact('parent_id'),
-                    'title',
-                ])
-            ->allowedSorts('order', 'title')
-            ->defaultSort('order')
-            ->get();
+        $pages = QueryBuilder::for($baseQuery)
+            ->allowedFilters([
+                Filter::exact('id'),
+                Filter::exact('parent_uuid'),
+                'title',
+            ])
+        ->allowedSorts($orderByCol, 'title')
+        ->defaultSort($orderByCol)
+        ->get();
 
         event(EndpointHit::onRead($request, 'Viewed all information pages'));
 

@@ -11,9 +11,7 @@ $factory->define(InformationPage::class, function (Faker $faker) {
     return [
         'title' => $faker->sentence(),
         'content' => $faker->realText(),
-        'order' => 0,
         'enabled' => InformationPage::ENABLED,
-        'parent_id' => null,
     ];
 });
 
@@ -25,3 +23,17 @@ $factory->state(InformationPage::class, 'withImage', [
         ]);
     },
 ]);
+
+$factory->state(InformationPage::class, 'disabled', [
+    'enabled' => InformationPage::DISABLED,
+]);
+
+$factory->afterCreatingState(InformationPage::class, 'withParent', function (InformationPage $page, Faker $faker) {
+    factory(InformationPage::class)->create()->appendNode($page);
+});
+
+$factory->afterCreatingState(InformationPage::class, 'withChildren', function (InformationPage $page, Faker $faker) {
+    factory(InformationPage::class, 3)->create()->each(function (InformationPage $child) use ($page) {
+        $page->appendNode($child);
+    });
+});

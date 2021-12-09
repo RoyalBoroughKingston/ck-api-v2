@@ -41,8 +41,8 @@ class UpdateRequest extends FormRequest
                 'required',
                 'integer',
                 'min:1',
-                'max:' . ($this->informationPage->parent_id === $this->parent_id ?
-                    $this->informationPage->siblings->count() + 1 :
+                'max:' . ($this->information_page->parent_id === $this->parent_id ?
+                    $this->information_page->siblings->count() + 1 :
                     InformationPage::find($this->parent_id)->children->count()),
             ],
             'enabled' => [
@@ -54,7 +54,7 @@ class UpdateRequest extends FormRequest
                         'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
-                    $this->informationPage->enabled
+                    $this->information_page->enabled
                 ),
             ],
             'parent_id' => ['string', 'exists:information_pages,id'],

@@ -16,15 +16,15 @@ class CreateInformationPagesTable extends Migration
         Schema::create('information_pages', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title');
-            $table->text('content');
-            $table->unsignedInteger('order');
+            $table->text('content')->nullable();
             $table->boolean('enabled')->default(true);
+            $table->uuid('parent_uuid')->nullable();
             $table->timestamps();
+            $table->nestedSet();
         });
 
         Schema::table('information_pages', function (Blueprint $table) {
             $table->nullableForeignUuid('image_file_id', 'files');
-            $table->nullableForeignUuid('parent_id', 'information_pages');
         });
     }
 
@@ -36,8 +36,7 @@ class CreateInformationPagesTable extends Migration
     public function down()
     {
         Schema::table('information_pages', function (Blueprint $table) {
-            $table->dropForeign(['image_id']);
-            $table->dropForeign(['parent_id']);
+            $table->dropForeign(['image_file_id']);
         });
         Schema::dropIfExists('information_pages');
     }

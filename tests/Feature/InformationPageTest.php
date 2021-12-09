@@ -15,13 +15,8 @@ class InformationPageTest extends TestCase
      */
     public function listEnabledInformationPagesAsGuest200()
     {
-        $parentPage = factory(InformationPage::class)->states('withImage')->create();
-        $informationPage = factory(InformationPage::class)->states('withImage')->create([
-            'parent_id' => $parentPage->id,
-        ]);
-        $childPages = factory(InformationPage::class, 3)->states('withImage')->create([
-            'parent_id' => $informationPage->id,
-        ]);
+        $informationPage = factory(InformationPage::class)->states('withParent', 'withChildren')->create();
+
         $response = $this->json('GET', '/core/v1/information-pages/index');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
@@ -32,12 +27,7 @@ class InformationPageTest extends TestCase
                     'content',
                     'order',
                     'enabled',
-                    'image' => [
-                        'id',
-                        'mime_type',
-                        'created_at',
-                        'updated_at',
-                    ],
+                    'image',
                     'created_at',
                     'updated_at',
                 ],
@@ -50,20 +40,19 @@ class InformationPageTest extends TestCase
      */
     public function listMixedStateInformationPagesAsGuest200()
     {
-        $parentPage = factory(InformationPage::class)->states('withImage')->create();
-        $informationPage = factory(InformationPage::class)->states('withImage')->create([
-            'parent_id' => $parentPage->id,
-            'enabled' => InformationPage::DISABLED,
-        ]);
-        $childPages = factory(InformationPage::class, 3)->states('withImage')->create([
-            'parent_id' => $informationPage->id,
-        ]);
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'disabled')
+            ->create();
+
         $response = $this->json('GET', '/core/v1/information-pages/index');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $parentPage->id,
+            'id' => $informationPage->parent->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage->id,
         ]);
     }
 
@@ -80,18 +69,20 @@ class InformationPageTest extends TestCase
 
         Passport::actingAs($user);
 
-        $parentPage = factory(InformationPage::class)->states('withImage')->create();
-        $informationPage = factory(InformationPage::class)->states('withImage')->create([
-            'parent_id' => $parentPage->id,
-            'enabled' => InformationPage::DISABLED,
-        ]);
-        $childPages = factory(InformationPage::class, 3)->states('withImage')->create([
-            'parent_id' => $informationPage->id,
-        ]);
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'disabled')
+            ->create();
+
         $response = $this->json('GET', '/core/v1/information-pages/index');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(5, 'data');
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonFragment([
+            'id' => $informationPage->parent->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPage->id,
+        ]);
     }
 
     /**
@@ -99,15 +90,9 @@ class InformationPageTest extends TestCase
      */
     public function getEnabledInformationPageAsGuest200()
     {
-        $parentPage = factory(InformationPage::class)->states('withImage')->create();
-        $informationPage = factory(InformationPage::class)->states('withImage')->create([
-            'parent_id' => $parentPage->id,
-        ]);
-        $childPages = factory(InformationPage::class, 3)->states('withImage')->create([
-            'parent_id' => $informationPage->id,
-        ]);
+        $informationPage = factory(InformationPage::class)->states('withImage', 'withParent', 'withChildren')->create();
+
         $response = $this->json('GET', '/core/v1/information-pages/' . $informationPage->id);
-        dump($response->json());
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -153,14 +138,10 @@ class InformationPageTest extends TestCase
      */
     public function getDisabledInformationPageAsGuest403()
     {
-        $parentPage = factory(InformationPage::class)->states('withImage')->create();
-        $informationPage = factory(InformationPage::class)->states('withImage')->create([
-            'parent_id' => $parentPage->id,
-            'enabled' => InformationPage::DISABLED,
-        ]);
-        $childPages = factory(InformationPage::class, 3)->states('withImage')->create([
-            'parent_id' => $informationPage->id,
-        ]);
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'withChildren', 'disabled')
+            ->create();
+
         $response = $this->json('GET', '/core/v1/information-pages/' . $informationPage->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
@@ -179,14 +160,10 @@ class InformationPageTest extends TestCase
 
         Passport::actingAs($user);
 
-        $parentPage = factory(InformationPage::class)->states('withImage')->create();
-        $informationPage = factory(InformationPage::class)->states('withImage')->create([
-            'parent_id' => $parentPage->id,
-            'enabled' => InformationPage::DISABLED,
-        ]);
-        $childPages = factory(InformationPage::class, 3)->states('withImage')->create([
-            'parent_id' => $informationPage->id,
-        ]);
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'withChildren', 'disabled')
+            ->create();
+
         $response = $this->json('GET', '/core/v1/information-pages/' . $informationPage->id);
 
         $response->assertStatus(Response::HTTP_OK);

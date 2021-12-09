@@ -15,7 +15,7 @@ class ShowRequest extends FormRequest
     public function authorize()
     {
         if (!$this->user() || !$this->user()->isGlobalAdmin()) {
-            return InformationPage::find($this->route('information_page'))->enabled;
+            return $this->information_page->enabled;
         }
 
         return true;

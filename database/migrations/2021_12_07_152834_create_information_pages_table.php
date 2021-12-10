@@ -16,8 +16,8 @@ class CreateInformationPagesTable extends Migration
         Schema::create('information_pages', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title');
-            $table->text('content')->nullable();
-            $table->boolean('enabled')->default(true);
+            $table->text('content');
+            $table->boolean('enabled')->default(false);
             $table->uuid('parent_uuid')->nullable();
             $table->timestamps();
             $table->nestedSet();

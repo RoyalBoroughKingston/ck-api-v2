@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Models\File;
 use App\Events\EndpointHit;
 use Illuminate\Http\Request;
 use App\Models\InformationPage;
@@ -41,7 +42,7 @@ class InformationPageController extends Controller
             $baseQuery->where('enabled', true);
         }
 
-        $pages = QueryBuilder::for($baseQuery)
+        $informationPages = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
                 Filter::exact('parent_uuid'),
@@ -53,7 +54,7 @@ class InformationPageController extends Controller
 
         event(EndpointHit::onRead($request, 'Viewed all information pages'));
 
-        return InformationPageResource::collection($pages);
+        return InformationPageResource::collection($informationPages);
     }
 
     /**
@@ -64,7 +65,36 @@ class InformationPageController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        //
+        $informationPage = InformationPage::create(
+            [
+                'title' => $request->title,
+                'content' => sanitize_markdown($request->content),
+                'image_file_id' => $request->image_file_id,
+            ],
+            InformationPage::find($request->parent_id)
+        );
+
+        if ($request->filled('order')) {
+            $nextSibling = $informationPage->siblingAtIndex($request->order)->first();
+
+            $informationPage->insertBeforeNode($nextSibling);
+        }
+
+        if ($request->filled('image_file_id')) {
+            /** @var \App\Models\File $file */
+            $file = File::findOrFail($request->image_file_id)->assigned();
+
+            // Create resized version for common dimensions.
+            foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                $file->resizedVersion($maxDimension);
+            }
+        }
+
+        $informationPage->load('parent', 'children');
+
+        event(EndpointHit::onCreate($request, "Created information page [{$informationPage->id}]", $informationPage));
+
+        return new InformationPageResource($informationPage);
     }
 
     /**

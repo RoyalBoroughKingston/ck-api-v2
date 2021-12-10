@@ -31,20 +31,22 @@ class StoreRequest extends FormRequest
      */
     public function rules()
     {
+        $maxOrder = $this->parent_id ?
+        InformationPage::findOrFail($this->parent_id)->children->count() :
+        InformationPage::whereIsRoot()->count();
+
         return [
             'title' => ['required', 'string', 'min:1', 'max:255'],
             'content' => ['required', 'string', 'min:1', 'max:500'],
             'order' => [
-                'required',
                 'integer',
-                'min:1',
-                'max:' . (InformationPage::find($this->parent_id)->children->count()),
+                'min:0',
+                'max:' . $maxOrder,
             ],
-            'enabled' => ['required', 'boolean'],
-            'parent_id' => ['string', 'exists:information_pages,id'],
+            'parent_id' => ['required', 'string', 'exists:information_pages,id'],
             'image_file_id' => [
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),
                 new FileIsPendingAssignment(),
             ],
         ];

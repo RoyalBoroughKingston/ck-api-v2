@@ -34,16 +34,15 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
+        $parent = $this->parent_id ? InformationPage::find($this->parent_id) : $this->information_page->parent;
         return [
             'title' => ['required', 'string', 'min:1', 'max:255'],
             'content' => ['required', 'string', 'min:1', 'max:500'],
             'order' => [
                 'required',
                 'integer',
-                'min:1',
-                'max:' . ($this->information_page->parent_id === $this->parent_id ?
-                    $this->information_page->siblings->count() + 1 :
-                    InformationPage::find($this->parent_id)->children->count()),
+                'min:0',
+                'max:' . ($parent->children->count()),
             ],
             'enabled' => [
                 'required',
@@ -60,7 +59,7 @@ class UpdateRequest extends FormRequest
             'parent_id' => ['string', 'exists:information_pages,id'],
             'image_file_id' => [
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),
                 new FileIsPendingAssignment(),
             ],
         ];

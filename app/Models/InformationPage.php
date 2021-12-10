@@ -63,12 +63,4 @@ class InformationPage extends Model
     {
         return static::PARENT_KEY;
     }
-
-    /**
-     * Specify parent id attribute mutator
-     */
-    public function setParentAttribute($value)
-    {
-        $this->setParentIdAttribute($value);
-    }
 }

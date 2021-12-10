@@ -242,7 +242,7 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledInformationPageImageAsGuest200()
+    public function getEnabledInformationPageImagePNGAsGuest200()
     {
         /**
          * @var \App\Models\User $user
@@ -254,28 +254,55 @@ class InformationPageTest extends TestCase
 
         $parentPage = factory(InformationPage::class)->create();
 
-        $image = Storage::disk('local')->get('/test-data/image.png');
-
         $image = factory(File::class)->states('pending-assignment')->create([
             'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
         ]);
 
-        $imageResponse = $this->json('POST', '/core/v1/files', [
-            'is_private' => false,
-            'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
-        ]);
+        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
 
-        $imageId = $this->getResponseContent($imageResponse, 'data.id');
+        $image->uploadBase64EncodedFile($base64Image);
 
         $informationPage = factory(InformationPage::class)->create([
-            'image_file_id' => $imageId,
+            'image_file_id' => $image->id,
         ]);
 
         $response = $this->json('GET', '/core/v1/information-pages/' . $informationPage->id . '/image.png');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($image, $response->content());
+        $this->assertEquals($base64Image, 'data:image/jpeg;base64,' . base64_encode($response->content()));
+    }
+
+    /**
+     * @test
+     */
+    public function getEnabledInformationPageImageJPGAsGuest200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(InformationPage::class)->create();
+
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.jpg',
+            'mime_type' => 'image/jepg',
+        ]);
+
+        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
+
+        $image->uploadBase64EncodedFile($base64Image);
+
+        $informationPage = factory(InformationPage::class)->create([
+            'image_file_id' => $image->id,
+        ]);
+
+        $response = $this->json('GET', '/core/v1/information-pages/' . $informationPage->id . '/image.jpg');
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($base64Image, 'data:image/jpeg;base64,' . base64_encode($response->content()));
     }
 
     /**
@@ -587,8 +614,8 @@ class InformationPageTest extends TestCase
         $parentPage = factory(InformationPage::class)->create();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.png',
-            'mime_type' => 'image/png',
+            'filename' => Str::random() . '.jpg',
+            'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(

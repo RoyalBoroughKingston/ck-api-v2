@@ -84,7 +84,8 @@ Route::prefix('/core/v1')
             // Information Pages.
             Route::match(['GET', 'POST'], '/information-pages/index', 'InformationPageController@index');
             Route::apiResource('/information-pages', 'InformationPageController');
-            Route::get('/information-pages/{information_page}/image.png', 'InformationPage\\ImageController')
+            Route::get('/information-pages/{information_page}/image.{suffix}', 'InformationPage\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg')
                 ->name('information-pages.image');
 
             // Locations.

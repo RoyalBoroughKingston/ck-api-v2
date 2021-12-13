@@ -11,4 +11,16 @@ trait InformationPageMutators
     {
         $this->setParentIdAttribute($value);
     }
+
+    /**
+     * Get the order attribute
+     *
+     * @param type name
+     * @return int
+     * @author
+     **/
+    public function getOrderAttribute()
+    {
+        return $this->prevSiblings()->count();
+    }
 }

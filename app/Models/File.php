@@ -259,6 +259,7 @@ class File extends Model implements Responsable
     public static function extensionFromMime(string $mimeType, bool $withPeriod = true): string
     {
         $map = [
+            static::MIME_TYPE_JPG => '.jpg',
             static::MIME_TYPE_PNG => '.png',
             static::MIME_TYPE_SVG => '.svg',
             static::MIME_TYPE_JPG => '.jpg',

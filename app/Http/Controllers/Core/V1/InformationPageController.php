@@ -60,7 +60,7 @@ class InformationPageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Organisation\StoreRequest $request
+     * @param \App\Http\Requests\InformationPage\StoreRequest $request
      * @return \App\Http\Resources\OrganisationResource
      */
     public function store(StoreRequest $request)
@@ -100,7 +100,7 @@ class InformationPageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Organisation\ShowRequest $request
+     * @param \App\Http\Requests\InformationPage\ShowRequest $request
      * @param  \App\InformationPage  $informationPage
      * @return \App\Http\Resources\OrganisationResource
      */
@@ -121,13 +121,71 @@ class InformationPageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Organisation\UpdateRequest $request
+     * @param \App\Http\Requests\InformationPage\UpdateRequest $request
      * @param  \App\InformationPage  $informationPage
      * @return \App\Http\Resources\OrganisationResource
      */
     public function update(UpdateRequest $request, InformationPage $informationPage)
     {
-        //
+        // Core fields
+        $informationPage->title = $request->input('title', $informationPage->title);
+        $informationPage->content = $request->has('content') ?
+            sanitize_markdown($request->input('content')) :
+            $informationPage->content;
+
+        // Parent
+        if ($request->input('parent_id', $informationPage->parent_id) !== $informationPage->parent_id) {
+            $parent = InformationPage::find($request->input('parent_id'));
+            $informationPage->appendToNode($parent);
+        }
+
+        // Order
+        if ($request->has('order')) {
+            $siblingAtIndex = $informationPage->siblingAtIndex($request->order)->first();
+
+            $siblingAtIndex->getLft() > $informationPage->getLft() ?
+                $informationPage->afterNode($siblingAtIndex) :
+                $informationPage->beforeNode($siblingAtIndex);
+        }
+
+        // Enabled
+        $enabled = $request->input('enabled', $informationPage->enabled);
+        if ($enabled != $informationPage->enabled) {
+            $informationPage->enabled = $enabled;
+            InformationPage::whereIn('id', $informationPage->descendants->pluck('id'))
+                ->update(['enabled' => $enabled]);
+        }
+
+        // Update model so far
+        $informationPage->save();
+
+        // Image File
+        if ($request->input('image_file_id', $informationPage->image_file_id) !== $informationPage->image_file_id) {
+            $currentImage = $informationPage->image;
+
+            if ($request->input('image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->image_file_id)->assigned();
+
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
+            }
+
+            $informationPage->update([
+                'image_file_id' => $request->input('image_file_id'),
+            ]);
+
+            if ($currentImage) {
+                $currentImage->deleteFromDisk();
+                $currentImage->delete();
+            }
+        }
+
+        event(EndpointHit::onUpdate($request, "Updated information page [{$informationPage->id}]", $informationPage));
+
+        return new InformationpageResource($informationPage->fresh(['parent', 'children']));
     }
 
     /**

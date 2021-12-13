@@ -415,6 +415,9 @@ class InformationPageTest extends TestCase
             'order' => -1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
+        /**
+         * Assigned Images not allowed
+         */
         $image = factory(File::class)->create([
             'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
@@ -506,6 +509,10 @@ class InformationPageTest extends TestCase
         $page = InformationPage::find($response->json('data.id'));
 
         $this->assertEquals($childPage->id, $page->getNextSibling()->id);
+
+        $response->assertJsonFragment([
+            'order' => 1,
+        ]);
     }
 
     /**
@@ -539,6 +546,10 @@ class InformationPageTest extends TestCase
 
         $this->assertEquals($childPage->id, $page->getNextSibling()->id);
         $this->assertEquals(null, $page->getPrevSibling());
+
+        $response->assertJsonFragment([
+            'order' => 0,
+        ]);
     }
 
     /**
@@ -660,19 +671,17 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageAsGuest403()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'withChildren', 'disabled')
+            ->create();
 
-    /**
-     * @test
-     */
-    public function updateInformationPageAsAdminWithInvalidData422()
-    {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $data = [
+            'title' => 'New Title',
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -680,19 +689,97 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageAsAdmin200()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'withChildren', 'disabled')
+            ->create();
+
+        $data = [
+            'title' => 'New Title',
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'image',
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'title' => 'New Title',
+        ]);
     }
 
     /**
      * @test
      */
-    public function updateInformationPageStatus200()
+    public function updateInformationPageAsAdminWithInvalidData422()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)
+            ->states('withImage', 'withParent', 'withChildren', 'disabled')
+            ->create();
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'title' => '',
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'content' => '',
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'title' => '',
+            'content' => '',
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'parent_id' => $this->faker->uuid(),
+        ])->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'order' => $informationPage->siblingsAndSelf()->count() + 1,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'order' => -1,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        /**
+         * Assigned Images not allowed
+         */
+        $image = factory(File::class)->create([
+            'filename' => Str::random() . '.png',
+            'mime_type' => 'image/png',
+        ]);
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, [
+            'image_file_id' => $image->id,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -700,9 +787,56 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageAddImage200()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.jpg',
+            'mime_type' => 'image/jpeg',
+        ]);
+
+        $image->uploadBase64EncodedFile(
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
+
+        $informationPage = factory(InformationPage::class)
+            ->states('withParent', 'withChildren', 'disabled')
+            ->create();
+
+        $data = [
+            'image_file_id' => $image->id,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'image' => [
+                'id',
+                'mime_type',
+                'created_at',
+                'updated_at',
+            ],
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $image->id,
+        ]);
     }
 
     /**
@@ -710,9 +844,53 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageRemoveImage200()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $image = factory(File::class)->create([
+            'filename' => Str::random() . '.jpg',
+            'mime_type' => 'image/jpeg',
+        ]);
+
+        $image->uploadBase64EncodedFile(
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
+
+        $informationPage = factory(InformationPage::class)
+            ->states('withParent', 'withChildren', 'disabled')
+            ->create([
+                'image_file_id' => $image->id,
+            ]);
+
+        $data = [
+            'image_file_id' => null,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'image',
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonMissing([
+            'id' => $image->id,
+        ]);
     }
 
     /**
@@ -720,9 +898,71 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageChangeImage200()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $imageJpg = factory(File::class)->create([
+            'filename' => Str::random() . '.jpg',
+            'mime_type' => 'image/jpeg',
+        ]);
+
+        $imageJpg->uploadBase64EncodedFile(
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
+
+        $imagePng = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.png',
+            'mime_type' => 'image/png',
+        ]);
+
+        $imagePng->uploadBase64EncodedFile(
+            'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'))
+        );
+
+        $informationPage = factory(InformationPage::class)
+            ->states('withParent', 'withChildren', 'disabled')
+            ->create([
+                'image_file_id' => $imageJpg->id,
+            ]);
+
+        $data = [
+            'image_file_id' => $imagePng->id,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'image' => [
+                'id',
+                'mime_type',
+                'created_at',
+                'updated_at',
+            ],
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonMissing([
+            'id' => $imageJpg->id,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $imagePng->id,
+        ]);
     }
 
     /**
@@ -730,9 +970,38 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageChangeParent200()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage1 = factory(InformationPage::class)->states('withChildren')->create();
+        $parentPage2 = factory(InformationPage::class)->states('withChildren')->create();
+
+        $informationPage = factory(InformationPage::class)
+            ->states('withChildren')
+            ->create([
+                'parent_uuid' => $parentPage1->id,
+            ]);
+
+        $data = [
+            'parent_id' => $parentPage2->id,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonMissing([
+            'id' => $parentPage1->id,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $parentPage2->id,
+        ]);
     }
 
     /**
@@ -740,9 +1009,115 @@ class InformationPageTest extends TestCase
      */
     public function updateInformationPageChangeOrder200()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(InformationPage::class)->states('withChildren')->create();
+
+        $children = $parentPage->children()->defaultOrder()->get();
+
+        $data = [
+            'order' => 2,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $children->get(1)->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $children->get(2)->refreshNode();
+
+        $this->assertEquals($children->get(1)->id, $children->get(2)->getNextSibling()->id);
+
+        $response->assertJsonMissing([
+            'order' => 1,
+        ]);
+
+        $response->assertJsonFragment([
+            'order' => 2,
+        ]);
+
+        $data = [
+            'order' => 0,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $children->get(1)->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $children->get(1)->refreshNode();
+
+        $this->assertEquals($children->get(0)->id, $children->get(1)->getNextSibling()->id);
+
+        $response->assertJsonMissing([
+            'order' => 2,
+        ]);
+
+        $response->assertJsonFragment([
+            'order' => 0,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updateInformationPageEnabledCascadestoChildPages200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)->states('withParent', 'withChildren')->create();
+
+        $parent = $informationPage->parent;
+
+        $children = $informationPage->children()->defaultOrder()->get();
+
+        $data = [
+            'enabled' => 0,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $parent->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertFalse($informationPage->fresh()->enabled);
+        $this->assertFalse($children->get(0)->fresh()->enabled);
+
+        $response->assertJsonMissing([
+            'enabled' => true,
+        ]);
+
+        $response->assertJsonFragment([
+            'enabled' => false,
+        ]);
+
+        $data = [
+            'enabled' => 1,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/information-pages/' . $parent->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertTrue($informationPage->fresh()->enabled);
+        $this->assertTrue($children->get(0)->fresh()->enabled);
+
+        $response->assertJsonMissing([
+            'enabled' => false,
+        ]);
+
+        $response->assertJsonFragment([
+            'enabled' => true,
+        ]);
     }
 
     /**
@@ -750,9 +1125,11 @@ class InformationPageTest extends TestCase
      */
     public function deleteInformationPageAsGuest403()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $informationPage = factory(InformationPage::class)->create();
+
+        $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -760,9 +1137,21 @@ class InformationPageTest extends TestCase
      */
     public function deleteInformationPageAsAdmin204()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)->create();
+
+        $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseMissing('information_pages', ['id' => $informationPage->id]);
     }
 
     /**
@@ -770,8 +1159,28 @@ class InformationPageTest extends TestCase
      */
     public function deleteInformationPageWithChildren422()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)->states('withParent', 'withChildren')->create();
+
+        $parent = $informationPage->parent;
+
+        $children = $informationPage->children()->defaultOrder()->get();
+
+        $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseMissing('information_pages', ['id' => $informationPage->id]);
+        $this->assertDatabaseMissing('information_pages', ['id' => $children->get(0)->id]);
+        $this->assertDatabaseMissing('information_pages', ['id' => $children->get(1)->id]);
+        $this->assertDatabaseMissing('information_pages', ['id' => $children->get(2)->id]);
+        $this->assertDatabaseHas('information_pages', ['id' => $parent->id]);
     }
 }

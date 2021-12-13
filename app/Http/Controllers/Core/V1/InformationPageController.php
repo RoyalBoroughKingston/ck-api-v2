@@ -7,8 +7,10 @@ use App\Events\EndpointHit;
 use Illuminate\Http\Request;
 use App\Models\InformationPage;
 use Spatie\QueryBuilder\Filter;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Http\Responses\ResourceDeleted;
 use App\Http\Resources\InformationPageResource;
 use App\Http\Requests\InformationPage\ShowRequest;
 use App\Http\Requests\InformationPage\IndexRequest;
@@ -65,36 +67,38 @@ class InformationPageController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $informationPage = InformationPage::create(
-            [
-                'title' => $request->title,
-                'content' => sanitize_markdown($request->content),
-                'image_file_id' => $request->image_file_id,
-            ],
-            InformationPage::find($request->parent_id)
-        );
+        return DB::transaction(function () use ($request) {
+            $informationPage = InformationPage::create(
+                [
+                    'title' => $request->title,
+                    'content' => sanitize_markdown($request->content),
+                    'image_file_id' => $request->image_file_id,
+                ],
+                InformationPage::find($request->parent_id)
+            );
 
-        if ($request->filled('order')) {
-            $nextSibling = $informationPage->siblingAtIndex($request->order)->first();
+            if ($request->filled('order')) {
+                $nextSibling = $informationPage->siblingAtIndex($request->order)->first();
 
-            $informationPage->insertBeforeNode($nextSibling);
-        }
-
-        if ($request->filled('image_file_id')) {
-            /** @var \App\Models\File $file */
-            $file = File::findOrFail($request->image_file_id)->assigned();
-
-            // Create resized version for common dimensions.
-            foreach (config('ck.cached_image_dimensions') as $maxDimension) {
-                $file->resizedVersion($maxDimension);
+                $informationPage->insertBeforeNode($nextSibling);
             }
-        }
 
-        $informationPage->load('parent', 'children');
+            if ($request->filled('image_file_id')) {
+                /** @var \App\Models\File $file */
+                $file = File::findOrFail($request->image_file_id)->assigned();
 
-        event(EndpointHit::onCreate($request, "Created information page [{$informationPage->id}]", $informationPage));
+                // Create resized version for common dimensions.
+                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    $file->resizedVersion($maxDimension);
+                }
+            }
 
-        return new InformationPageResource($informationPage);
+            $informationPage->load('parent', 'children');
+
+            event(EndpointHit::onCreate($request, "Created information page [{$informationPage->id}]", $informationPage));
+
+            return new InformationPageResource($informationPage);
+        });
     }
 
     /**
@@ -127,65 +131,67 @@ class InformationPageController extends Controller
      */
     public function update(UpdateRequest $request, InformationPage $informationPage)
     {
-        // Core fields
-        $informationPage->title = $request->input('title', $informationPage->title);
-        $informationPage->content = $request->has('content') ?
+        return DB::transaction(function () use ($request, $informationPage) {
+            // Core fields
+            $informationPage->title = $request->input('title', $informationPage->title);
+            $informationPage->content = $request->has('content') ?
             sanitize_markdown($request->input('content')) :
             $informationPage->content;
 
-        // Parent
-        if ($request->input('parent_id', $informationPage->parent_id) !== $informationPage->parent_id) {
-            $parent = InformationPage::find($request->input('parent_id'));
-            $informationPage->appendToNode($parent);
-        }
+            // Parent
+            if ($request->input('parent_id', $informationPage->parent_id) !== $informationPage->parent_id) {
+                $parent = InformationPage::find($request->input('parent_id'));
+                $informationPage->appendToNode($parent);
+            }
 
-        // Order
-        if ($request->has('order')) {
-            $siblingAtIndex = $informationPage->siblingAtIndex($request->order)->first();
+            // Order
+            if ($request->has('order')) {
+                $siblingAtIndex = $informationPage->siblingAtIndex($request->order)->first();
 
-            $siblingAtIndex->getLft() > $informationPage->getLft() ?
+                $siblingAtIndex->getLft() > $informationPage->getLft() ?
                 $informationPage->afterNode($siblingAtIndex) :
                 $informationPage->beforeNode($siblingAtIndex);
-        }
+            }
 
-        // Enabled
-        $enabled = $request->input('enabled', $informationPage->enabled);
-        if ($enabled != $informationPage->enabled) {
-            $informationPage->enabled = $enabled;
-            InformationPage::whereIn('id', $informationPage->descendants->pluck('id'))
+            // Enabled
+            $enabled = $request->input('enabled', $informationPage->enabled);
+            if ($enabled != $informationPage->enabled) {
+                $informationPage->enabled = $enabled;
+                InformationPage::whereIn('id', $informationPage->descendants->pluck('id'))
                 ->update(['enabled' => $enabled]);
-        }
+            }
 
-        // Update model so far
-        $informationPage->save();
+            // Update model so far
+            $informationPage->save();
 
-        // Image File
-        if ($request->input('image_file_id', $informationPage->image_file_id) !== $informationPage->image_file_id) {
-            $currentImage = $informationPage->image;
+            // Image File
+            if ($request->input('image_file_id', $informationPage->image_file_id) !== $informationPage->image_file_id) {
+                $currentImage = $informationPage->image;
 
-            if ($request->input('image_file_id')) {
-                /** @var \App\Models\File $file */
-                $file = File::findOrFail($request->image_file_id)->assigned();
+                if ($request->input('image_file_id')) {
+                    /** @var \App\Models\File $file */
+                    $file = File::findOrFail($request->image_file_id)->assigned();
 
-                // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
-                    $file->resizedVersion($maxDimension);
+                    // Create resized version for common dimensions.
+                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                        $file->resizedVersion($maxDimension);
+                    }
+                }
+
+                $informationPage->update([
+                    'image_file_id' => $request->input('image_file_id'),
+                ]);
+
+                if ($currentImage) {
+                    $currentImage->deleteFromDisk();
+                    $currentImage->delete();
                 }
             }
 
-            $informationPage->update([
-                'image_file_id' => $request->input('image_file_id'),
-            ]);
+            event(EndpointHit::onUpdate($request, "Updated information page [{$informationPage->id}]", $informationPage));
 
-            if ($currentImage) {
-                $currentImage->deleteFromDisk();
-                $currentImage->delete();
-            }
-        }
-
-        event(EndpointHit::onUpdate($request, "Updated information page [{$informationPage->id}]", $informationPage));
-
-        return new InformationpageResource($informationPage->fresh(['parent', 'children']));
+            return new InformationpageResource($informationPage->fresh(['parent', 'children']));
+        });
     }
 
     /**
@@ -197,6 +203,12 @@ class InformationPageController extends Controller
      */
     public function destroy(DestroyRequest $request, InformationPage $informationPage)
     {
-        //
+        return DB::transaction(function () use ($request, $informationPage) {
+            event(EndpointHit::onDelete($request, "Deleted information page [{$informationPage->id}]", $informationPage));
+
+            $informationPage->delete();
+
+            return new ResourceDeleted('information page');
+        });
     }
 }

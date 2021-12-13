@@ -1149,7 +1149,7 @@ class InformationPageTest extends TestCase
 
         $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseMissing('information_pages', ['id' => $informationPage->id]);
     }
@@ -1157,7 +1157,7 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
-    public function deleteInformationPageWithChildren422()
+    public function deleteInformationPageWithChildren204()
     {
         /**
          * @var \App\Models\User $user
@@ -1175,12 +1175,37 @@ class InformationPageTest extends TestCase
 
         $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseMissing('information_pages', ['id' => $informationPage->id]);
         $this->assertDatabaseMissing('information_pages', ['id' => $children->get(0)->id]);
         $this->assertDatabaseMissing('information_pages', ['id' => $children->get(1)->id]);
         $this->assertDatabaseMissing('information_pages', ['id' => $children->get(2)->id]);
         $this->assertDatabaseHas('information_pages', ['id' => $parent->id]);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteInformationPageWithImage204()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)->states('withImage')->create();
+
+        $imageId = $informationPage->image_file_id;
+
+        $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseMissing('information_pages', ['id' => $informationPage->id]);
+        $this->assertDatabaseMissing('files', ['id' => $imageId]);
     }
 }

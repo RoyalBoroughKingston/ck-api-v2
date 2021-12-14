@@ -10,13 +10,15 @@ use Kalnoy\Nestedset\NodeTrait;
 class InformationPage extends Model
 {
     use
-    InformationPageRelationships,
-    InformationPageMutators,
-    InformationPageScopes,
-        NodeTrait;
+    InformationPageRelationships;
+    use InformationPageMutators;
+    use InformationPageScopes;
+    use NodeTrait;
 
     const DISABLED = false;
+
     const ENABLED = true;
+
     const PARENT_KEY = 'parent_uuid';
 
     /**
@@ -57,7 +59,7 @@ class InformationPage extends Model
     /**
      * Get the parent id key name.
      *
-     * @return  string
+     * @return string
      */
     public function getParentIdName()
     {

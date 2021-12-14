@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\InformationPage;
 
-use App\Models\InformationPage;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShowRequest extends FormRequest

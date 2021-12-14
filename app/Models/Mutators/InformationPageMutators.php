@@ -5,7 +5,8 @@ namespace App\Models\Mutators;
 trait InformationPageMutators
 {
     /**
-     * Specify parent id attribute mutator
+     * Specify parent id attribute mutator.
+     * @param mixed $value
      */
     public function setParentAttribute($value)
     {
@@ -13,12 +14,12 @@ trait InformationPageMutators
     }
 
     /**
-     * Get the order attribute
+     * Get the order attribute.
      *
      * @param type name
      * @return int
      * @author
-     **/
+     */
     public function getOrderAttribute()
     {
         return $this->prevSiblings()->count();

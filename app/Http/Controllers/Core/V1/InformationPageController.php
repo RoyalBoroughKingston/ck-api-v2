@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Models\File;
 use App\Events\EndpointHit;
-use Illuminate\Http\Request;
-use App\Models\InformationPage;
-use Spatie\QueryBuilder\Filter;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Spatie\QueryBuilder\QueryBuilder;
-use App\Http\Responses\ResourceDeleted;
-use App\Http\Resources\InformationPageResource;
-use App\Http\Requests\InformationPage\ShowRequest;
+use App\Http\Requests\InformationPage\DestroyRequest;
 use App\Http\Requests\InformationPage\IndexRequest;
+use App\Http\Requests\InformationPage\ShowRequest;
 use App\Http\Requests\InformationPage\StoreRequest;
 use App\Http\Requests\InformationPage\UpdateRequest;
-use App\Http\Requests\InformationPage\DestroyRequest;
+use App\Http\Resources\InformationPageResource;
+use App\Http\Responses\ResourceDeleted;
+use App\Models\File;
+use App\Models\InformationPage;
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class InformationPageController extends Controller
 {
@@ -40,7 +39,7 @@ class InformationPageController extends Controller
         $baseQuery = InformationPage::query()
             ->orderBy($orderByCol);
 
-        if (! $request->user() || ! $request->user()->isGlobalAdmin()) {
+        if (!$request->user() || !$request->user()->isGlobalAdmin()) {
             $baseQuery->where('enabled', true);
         }
 
@@ -50,9 +49,9 @@ class InformationPageController extends Controller
                 Filter::exact('parent_id', 'parent_uuid'),
                 'title',
             ])
-        ->allowedSorts($orderByCol, 'title')
-        ->defaultSort($orderByCol)
-        ->get();
+            ->allowedSorts($orderByCol, 'title')
+            ->defaultSort($orderByCol)
+            ->get();
 
         event(EndpointHit::onRead($request, 'Viewed all information pages'));
 
@@ -105,7 +104,7 @@ class InformationPageController extends Controller
      * Display the specified resource.
      *
      * @param \App\Http\Requests\InformationPage\ShowRequest $request
-     * @param  \App\InformationPage  $informationPage
+     * @param \App\InformationPage $informationPage
      * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, InformationPage $informationPage)
@@ -126,7 +125,7 @@ class InformationPageController extends Controller
      * Update the specified resource in storage.
      *
      * @param \App\Http\Requests\InformationPage\UpdateRequest $request
-     * @param  \App\InformationPage  $informationPage
+     * @param \App\InformationPage $informationPage
      * @return \App\Http\Resources\OrganisationResource
      */
     public function update(UpdateRequest $request, InformationPage $informationPage)
@@ -158,7 +157,7 @@ class InformationPageController extends Controller
             if ($enabled != $informationPage->enabled) {
                 $informationPage->enabled = $enabled;
                 InformationPage::whereIn('id', $informationPage->descendants->pluck('id'))
-                ->update(['enabled' => $enabled]);
+                    ->update(['enabled' => $enabled]);
             }
 
             // Update model so far
@@ -198,7 +197,7 @@ class InformationPageController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Http\Requests\Organisation\DestroyRequest $request
-     * @param  \App\InformationPage  $informationPage
+     * @param \App\InformationPage $informationPage
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, InformationPage $informationPage)

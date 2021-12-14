@@ -39,6 +39,7 @@ class UpdateRequest extends FormRequest
         ($this->information_page->parent ?
             $this->information_page->siblingsAndSelf()->count() :
             InformationPage::whereIsRoot()->count());
+
         return [
             'title' => ['string', 'min:1', 'max:255'],
             'content' => ['string', 'min:1', 'max:500'],

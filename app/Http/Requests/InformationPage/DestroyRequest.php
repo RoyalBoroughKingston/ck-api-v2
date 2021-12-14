@@ -31,4 +31,19 @@ class DestroyRequest extends FormRequest
             //
         ];
     }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->information_page->children()->count() !== 0) {
+                $validator->errors()->add('id', 'The information page has child pages. Move or delete these prior to deleting this page.');
+            }
+        });
+    }
 }

@@ -121,6 +121,83 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
+    public function listMixedStateInformationPagesAsGuestFilterByID200()
+    {
+        $informationPages = factory(InformationPage::class, 5)->create();
+        $disabledInformationPage = factory(InformationPage::class)->states('disabled')->create();
+
+        $ids = [
+            $informationPages->get(0)->id,
+            $informationPages->get(2)->id,
+            $informationPages->get(4)->id,
+            $disabledInformationPage->id,
+        ];
+
+        $response = $this->json('GET', '/core/v1/information-pages/index?filter[id]=' . implode(',', $ids));
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonFragment([
+            'id' => $informationPages->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPages->get(2)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPages->get(4)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPages->get(1)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPages->get(3)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $disabledInformationPage->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listMixedStateInformationPagesAsGuestFilterByParentID200()
+    {
+        $informationPage1 = factory(InformationPage::class)->states('withChildren')->create();
+        $informationPage2 = factory(InformationPage::class)->states('withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/information-pages/index?filter[parent_id]=' . $informationPage1->id);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonFragment([
+            'id' => $informationPage1->children->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPage1->children->get(1)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPage1->children->get(2)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage2->children->get(0)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage2->children->get(1)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage2->children->get(2)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage2->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function getEnabledInformationPageAsGuest200()
     {
         $informationPage = factory(InformationPage::class)->states('withImage', 'withParent', 'withChildren')->create();
@@ -164,6 +241,22 @@ class InformationPageTest extends TestCase
             'created_at',
             'updated_at',
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function auditCreatedOnShow()
+    {
+        $this->fakeEvents();
+
+        $informationPage = factory(InformationPage::class)->create();
+
+        $this->json('GET', '/core/v1/information-pages/' . $informationPage->id);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_READ);
+        });
     }
 
     /**
@@ -360,6 +453,36 @@ class InformationPageTest extends TestCase
             'created_at',
             'updated_at',
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function auditCreatedOnCreate()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(InformationPage::class)->create();
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => $this->faker->realText(),
+            'parent_id' => $parentPage->id,
+        ];
+
+        $this->json('POST', '/core/v1/information-pages', $data);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_CREATE);
+        });
     }
 
     /**
@@ -725,6 +848,34 @@ class InformationPageTest extends TestCase
         $response->assertJsonFragment([
             'title' => 'New Title',
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function auditCreatedOnUpdate()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)->create();
+
+        $data = [
+            'title' => 'New Title',
+        ];
+
+        $this->json('PUT', '/core/v1/information-pages/' . $informationPage->id, $data);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_UPDATE);
+        });
     }
 
     /**
@@ -1135,7 +1286,7 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
-    public function deleteInformationPageAsAdmin204()
+    public function deleteInformationPageAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1157,7 +1308,31 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
-    public function deleteInformationPageWithChildren204()
+    public function auditCreatedOnDelete()
+    {
+        $this->fakeEvents();
+
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $informationPage = factory(InformationPage::class)->create();
+
+        $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
+
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
+            return ($event->getAction() === Audit::ACTION_DELETE);
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function deleteInformationPageWithChildren422()
     {
         /**
          * @var \App\Models\User $user
@@ -1175,19 +1350,19 @@ class InformationPageTest extends TestCase
 
         $response = $this->json('DELETE', '/core/v1/information-pages/' . $informationPage->id);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertDatabaseMissing('information_pages', ['id' => $informationPage->id]);
-        $this->assertDatabaseMissing('information_pages', ['id' => $children->get(0)->id]);
-        $this->assertDatabaseMissing('information_pages', ['id' => $children->get(1)->id]);
-        $this->assertDatabaseMissing('information_pages', ['id' => $children->get(2)->id]);
+        $this->assertDatabaseHas('information_pages', ['id' => $informationPage->id]);
+        $this->assertDatabaseHas('information_pages', ['id' => $children->get(0)->id]);
+        $this->assertDatabaseHas('information_pages', ['id' => $children->get(1)->id]);
+        $this->assertDatabaseHas('information_pages', ['id' => $children->get(2)->id]);
         $this->assertDatabaseHas('information_pages', ['id' => $parent->id]);
     }
 
     /**
      * @test
      */
-    public function deleteInformationPageWithImage204()
+    public function deleteInformationPageWithImage200()
     {
         /**
          * @var \App\Models\User $user

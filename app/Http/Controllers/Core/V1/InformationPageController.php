@@ -47,7 +47,7 @@ class InformationPageController extends Controller
         $informationPages = QueryBuilder::for($baseQuery)
             ->allowedFilters([
                 Filter::exact('id'),
-                Filter::exact('parent_uuid'),
+                Filter::exact('parent_id', 'parent_uuid'),
                 'title',
             ])
         ->allowedSorts($orderByCol, 'title')

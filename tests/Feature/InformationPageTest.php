@@ -198,6 +198,38 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
+    public function listMixedStateInformationPagesAsGuestFilterByTitle200()
+    {
+        $informationPage1 = factory(InformationPage::class)->create(['title' => 'Page One']);
+        $informationPage2 = factory(InformationPage::class)->create(['title' => 'Second Page']);
+        $informationPage3 = factory(InformationPage::class)->create(['title' => 'Third']);
+        $informationPage4 = factory(InformationPage::class)->create(['title' => 'Page the Fourth']);
+        $informationPage5 = factory(InformationPage::class)->create(['title' => 'Final']);
+
+        $response = $this->json('GET', '/core/v1/information-pages/index?filter[title]=page');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonFragment([
+            'id' => $informationPage1->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPage2->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $informationPage4->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage3->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $informationPage5->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function getEnabledInformationPageAsGuest200()
     {
         $informationPage = factory(InformationPage::class)->states('withImage', 'withParent', 'withChildren')->create();

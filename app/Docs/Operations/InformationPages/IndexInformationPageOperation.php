@@ -2,6 +2,7 @@
 
 namespace App\Docs\Operations\InformationPages;
 
+use App\Docs\Parameters\FilterIdParameter;
 use App\Docs\Parameters\FilterParameter;
 use App\Docs\Parameters\SortParameter;
 use App\Docs\Schemas\AllSchema;
@@ -29,6 +30,7 @@ class IndexInformationPageOperation extends Operation
             ->description('**Permission:** `Open`')
             ->noSecurity()
             ->parameters(
+                FilterIdParameter::create(),
                 FilterParameter::create(null, 'parent_id')
                     ->description('Filter by Parent ID to return descendant nodes')
                     ->schema(Schema::string()),

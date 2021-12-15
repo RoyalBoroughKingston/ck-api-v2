@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use App\Models\File;
 use App\Events\EndpointHit;
+use App\Models\InformationPage;
+use Spatie\QueryBuilder\Filter;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InformationPage\DestroyRequest;
-use App\Http\Requests\InformationPage\IndexRequest;
+use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\QueryBuilder;
+use App\Http\Responses\ResourceDeleted;
+use App\Http\Resources\InformationPageResource;
 use App\Http\Requests\InformationPage\ShowRequest;
+use App\Http\Requests\InformationPage\IndexRequest;
 use App\Http\Requests\InformationPage\StoreRequest;
 use App\Http\Requests\InformationPage\UpdateRequest;
-use App\Http\Resources\InformationPageResource;
-use App\Http\Responses\ResourceDeleted;
-use App\Models\File;
-use App\Models\InformationPage;
-use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
-use Spatie\QueryBuilder\QueryBuilder;
+use App\Http\Requests\InformationPage\DestroyRequest;
 
 class InformationPageController extends Controller
 {
@@ -39,7 +41,7 @@ class InformationPageController extends Controller
         $baseQuery = InformationPage::query()
             ->orderBy($orderByCol);
 
-        if (!$request->user() || !$request->user()->isGlobalAdmin()) {
+        if (!$request->user('api') || !$request->user('api')->isGlobalAdmin()) {
             $baseQuery->where('enabled', true);
         }
 
@@ -73,7 +75,7 @@ class InformationPageController extends Controller
                     'content' => sanitize_markdown($request->content),
                     'image_file_id' => $request->image_file_id,
                 ],
-                InformationPage::find($request->parent_id)
+                $request->parent_id ? InformationPage::find($request->parent_id) : null
             );
 
             if ($request->filled('order')) {

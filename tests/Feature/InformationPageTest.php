@@ -546,7 +546,8 @@ class InformationPageTest extends TestCase
         $this->json('POST', '/core/v1/information-pages', [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->realText(),
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+            'parent_id' => 1,
+        ])->assertStatus(Response::HTTP_NOT_FOUND);
 
         $this->json('POST', '/core/v1/information-pages', [
             'title' => $this->faker->sentence(),
@@ -632,6 +633,50 @@ class InformationPageTest extends TestCase
             'created_at',
             'updated_at',
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function createInformationPageAsRoot201()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => $this->faker->realText(),
+            'parent_id' => null,
+        ];
+        $response = $this->json('POST', '/core/v1/information-pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'image',
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'parent' => null,
+        ]);
+
+        $rootPage = InformationPage::find($response->json('data.id'));
+
+        $this->assertTrue($rootPage->isRoot());
     }
 
     /**

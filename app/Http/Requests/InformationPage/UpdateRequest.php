@@ -59,7 +59,7 @@ class UpdateRequest extends FormRequest
                     $this->information_page->enabled
                 ),
             ],
-            'parent_id' => ['string', 'exists:information_pages,id'],
+            'parent_id' => ['sometimes', 'nullable', 'string', 'exists:information_pages,id'],
             'image_file_id' => [
                 'sometimes',
                 'nullable',

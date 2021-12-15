@@ -37,13 +37,13 @@ class StoreRequest extends FormRequest
 
         return [
             'title' => ['required', 'string', 'min:1', 'max:255'],
-            'content' => ['required', 'string', 'min:1', 'max:500'],
+            'content' => ['required', 'string', 'min:1', 'max:3000'],
             'order' => [
                 'integer',
                 'min:0',
                 'max:' . $maxOrder,
             ],
-            'parent_id' => ['required', 'string', 'exists:information_pages,id'],
+            'parent_id' => ['sometimes', 'nullable', 'string', 'exists:information_pages,id'],
             'image_file_id' => [
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),

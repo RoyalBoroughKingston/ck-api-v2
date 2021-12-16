@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Models\File;
 use App\Events\EndpointHit;
-use App\Models\InformationPage;
-use Spatie\QueryBuilder\Filter;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Spatie\QueryBuilder\QueryBuilder;
-use App\Http\Responses\ResourceDeleted;
-use App\Http\Resources\InformationPageResource;
-use App\Http\Requests\InformationPage\ShowRequest;
+use App\Http\Requests\InformationPage\DestroyRequest;
 use App\Http\Requests\InformationPage\IndexRequest;
+use App\Http\Requests\InformationPage\ShowRequest;
 use App\Http\Requests\InformationPage\StoreRequest;
 use App\Http\Requests\InformationPage\UpdateRequest;
-use App\Http\Requests\InformationPage\DestroyRequest;
+use App\Http\Resources\InformationPageResource;
+use App\Http\Responses\ResourceDeleted;
+use App\Models\File;
+use App\Models\InformationPage;
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class InformationPageController extends Controller
 {
@@ -140,9 +138,14 @@ class InformationPageController extends Controller
             sanitize_markdown($request->input('content')) :
             $informationPage->content;
 
-            // Parent
+            // Attach to parent and inherit disabled if set
             if ($request->input('parent_id', $informationPage->parent_id) !== $informationPage->parent_id) {
                 $parent = InformationPage::find($request->input('parent_id'));
+                if (!$parent->enabled) {
+                    $informationPage->enabled = $parent->enabled;
+                    InformationPage::whereIn('id', $informationPage->descendants->pluck('id'))
+                        ->update(['enabled' => $parent->enabled]);
+                }
                 $informationPage->appendToNode($parent);
             }
 
@@ -155,13 +158,13 @@ class InformationPageController extends Controller
                 $informationPage->beforeNode($siblingAtIndex);
             }
 
-            // Enabled
+            // Disable cascades into children, but enable does not
             $enabled = $request->input('enabled', $informationPage->enabled);
-            if ($enabled != $informationPage->enabled) {
-                $informationPage->enabled = $enabled;
+            if (!$enabled && $informationPage->enabled) {
                 InformationPage::whereIn('id', $informationPage->descendants->pluck('id'))
                     ->update(['enabled' => $enabled]);
             }
+            $informationPage->enabled = $enabled;
 
             // Update model so far
             $informationPage->save();

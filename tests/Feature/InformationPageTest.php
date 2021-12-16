@@ -1293,7 +1293,7 @@ class InformationPageTest extends TestCase
     /**
      * @test
      */
-    public function updateInformationPageEnabledCascadestoChildPages200()
+    public function updateInformationPageDisabledCascadestoChildPages200()
     {
         /**
          * @var \App\Models\User $user
@@ -1317,6 +1317,7 @@ class InformationPageTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $this->assertFalse($parent->fresh()->enabled);
         $this->assertFalse($informationPage->fresh()->enabled);
         $this->assertFalse($children->get(0)->fresh()->enabled);
 
@@ -1336,12 +1337,9 @@ class InformationPageTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertTrue($informationPage->fresh()->enabled);
-        $this->assertTrue($children->get(0)->fresh()->enabled);
-
-        $response->assertJsonMissing([
-            'enabled' => false,
-        ]);
+        $this->assertTrue($parent->fresh()->enabled);
+        $this->assertFalse($informationPage->fresh()->enabled);
+        $this->assertFalse($children->get(0)->fresh()->enabled);
 
         $response->assertJsonFragment([
             'enabled' => true,

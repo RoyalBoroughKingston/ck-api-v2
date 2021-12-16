@@ -39,6 +39,7 @@ class InformationPageController extends Controller
     {
         $orderByCol = (new InformationPage())->getLftName();
         $baseQuery = InformationPage::query()
+            ->with('parent')
             ->orderBy($orderByCol);
 
         if (!$request->user('api') || !$request->user('api')->isGlobalAdmin()) {

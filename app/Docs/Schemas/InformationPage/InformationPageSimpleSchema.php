@@ -6,7 +6,7 @@ use App\Docs\Schemas\File\FileSchema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class InformationPageExtendedSchema extends Schema
+class InformationPageSimpleSchema extends Schema
 {
     /**
      * @param string|null $objectId
@@ -24,9 +24,6 @@ class InformationPageExtendedSchema extends Schema
                 Schema::integer('order'),
                 Schema::boolean('enabled'),
                 FileSchema::create('image'),
-                InformationPageSimpleSchema::create('parent'),
-                Schema::array('children')
-                    ->items(InformationPageSimpleSchema::create()),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

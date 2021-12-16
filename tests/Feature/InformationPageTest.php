@@ -178,6 +178,9 @@ class InformationPageTest extends TestCase
         $response->assertJsonFragment([
             'id' => $informationPage1->children->get(2)->id,
         ]);
+        $response->assertJsonFragment([
+            'id' => $informationPage1->id,
+        ]);
         $response->assertJsonMissing([
             'id' => $informationPage2->children->get(0)->id,
         ]);
@@ -186,9 +189,6 @@ class InformationPageTest extends TestCase
         ]);
         $response->assertJsonMissing([
             'id' => $informationPage2->children->get(2)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $informationPage1->id,
         ]);
         $response->assertJsonMissing([
             'id' => $informationPage2->id,

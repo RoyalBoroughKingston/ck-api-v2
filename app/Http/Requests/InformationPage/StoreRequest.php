@@ -45,6 +45,8 @@ class StoreRequest extends FormRequest
             ],
             'parent_id' => ['sometimes', 'nullable', 'string', 'exists:information_pages,id'],
             'image_file_id' => [
+                'sometimes',
+                'nullable',
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),
                 new FileIsPendingAssignment(),

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\InformationPage\Image;
+namespace App\Http\Requests\Page\Image;
 
 use App\Http\Requests\ImageFormRequest;
 

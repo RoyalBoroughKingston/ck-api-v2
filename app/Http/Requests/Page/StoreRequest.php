@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests\InformationPage;
+namespace App\Http\Requests\Page;
 
 use App\Models\File;
-use App\Models\InformationPage;
+use App\Models\Page;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,8 +32,8 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         $maxOrder = $this->parent_id ?
-        InformationPage::findOrFail($this->parent_id)->children->count() :
-        InformationPage::whereIsRoot()->count();
+        Page::findOrFail($this->parent_id)->children->count() :
+        Page::whereIsRoot()->count();
 
         return [
             'title' => ['required', 'string', 'min:1', 'max:255'],
@@ -43,7 +43,7 @@ class StoreRequest extends FormRequest
                 'min:0',
                 'max:' . $maxOrder,
             ],
-            'parent_id' => ['sometimes', 'nullable', 'string', 'exists:information_pages,id'],
+            'parent_id' => ['sometimes', 'nullable', 'string', 'exists:pages,id'],
             'image_file_id' => [
                 'sometimes',
                 'nullable',

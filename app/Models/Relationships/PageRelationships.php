@@ -4,7 +4,7 @@ namespace App\Models\Relationships;
 
 use App\Models\File;
 
-trait InformationPageRelationships
+trait PageRelationships
 {
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

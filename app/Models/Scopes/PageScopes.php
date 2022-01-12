@@ -4,7 +4,7 @@ namespace App\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 
-trait InformationPageScopes
+trait PageScopes
 {
     /**
      * Get the InformationPage sibling at given index.

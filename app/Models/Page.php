@@ -2,18 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Mutators\InformationPageMutators;
-use App\Models\Relationships\InformationPageRelationships;
-use App\Models\Scopes\InformationPageScopes;
+use App\Models\Mutators\PageMutators;
+use App\Models\Relationships\PageRelationships;
+use App\Models\Scopes\PageScopes;
 use Kalnoy\Nestedset\NodeTrait;
 
-class InformationPage extends Model
+class Page extends Model
 {
-    use
-    InformationPageRelationships;
-    use InformationPageMutators;
-    use InformationPageScopes;
-    use NodeTrait;
+    use PageRelationships, PageMutators, PageScopes, NodeTrait;
 
     const DISABLED = false;
 
@@ -27,15 +23,16 @@ class InformationPage extends Model
      * @var array
      */
     protected $casts = [
+        'content' => 'array',
         'enabled' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
     /**
-     * Enable the InformationPage.
+     * Enable the Page.
      *
-     * @return \App\Models\InformationPage
+     * @return \App\Models\Page
      */
     public function enable()
     {
@@ -45,9 +42,9 @@ class InformationPage extends Model
     }
 
     /**
-     * Disable the InformationPage.
+     * Disable the Page.
      *
-     * @return \App\Models\InformationPage
+     * @return \App\Models\Page
      */
     public function disable()
     {

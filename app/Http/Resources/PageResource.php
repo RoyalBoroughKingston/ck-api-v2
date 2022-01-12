@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class InformationPageResource extends JsonResource
+class PageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

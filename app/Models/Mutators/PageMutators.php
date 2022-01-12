@@ -2,7 +2,7 @@
 
 namespace App\Models\Mutators;
 
-trait InformationPageMutators
+trait PageMutators
 {
     /**
      * Specify parent id attribute mutator.

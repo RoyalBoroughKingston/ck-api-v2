@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests\InformationPage;
+namespace App\Http\Requests\Page;
 
 use App\Models\File;
-use App\Models\InformationPage;
+use App\Models\Page;
 use App\Models\Role;
 use App\Models\UserRole;
 use App\Rules\FileIsMimeType;
@@ -35,10 +35,10 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         $maxOrder = $this->parent_id ?
-        InformationPage::findOrFail($this->parent_id)->children->count() :
-        ($this->information_page->parent ?
-            $this->information_page->siblingsAndSelf()->count() :
-            InformationPage::whereIsRoot()->count());
+        Page::findOrFail($this->parent_id)->children->count() :
+        ($this->page->parent ?
+            $this->page->siblingsAndSelf()->count() :
+            Page::whereIsRoot()->count());
 
         return [
             'title' => ['string', 'min:1', 'max:255'],
@@ -56,10 +56,10 @@ class UpdateRequest extends FormRequest
                         'user_id' => $this->user('api')->id,
                         'role_id' => Role::globalAdmin()->id,
                     ]),
-                    $this->information_page->enabled
+                    $this->page->enabled
                 ),
             ],
-            'parent_id' => ['sometimes', 'nullable', 'string', 'exists:information_pages,id'],
+            'parent_id' => ['sometimes', 'nullable', 'string', 'exists:pages,id'],
             'image_file_id' => [
                 'sometimes',
                 'nullable',

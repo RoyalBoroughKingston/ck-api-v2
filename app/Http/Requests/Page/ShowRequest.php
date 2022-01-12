@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\InformationPage;
+namespace App\Http\Requests\Page;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -14,7 +14,7 @@ class ShowRequest extends FormRequest
     public function authorize()
     {
         if (!$this->user('api') || !$this->user('api')->isGlobalAdmin()) {
-            return $this->information_page->enabled;
+            return $this->page->enabled;
         }
 
         return true;

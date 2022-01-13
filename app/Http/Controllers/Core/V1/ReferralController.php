@@ -69,15 +69,15 @@ class ReferralController extends Controller
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('service_id'),
                 AllowedFilter::exact('reference'),
-                AllowedFilter::custom('service_name', ServiceNameAllowedFilter::class),
-                AllowedFilter::custom('organisation_name', OrganisationNameAllowedFilter::class),
+                AllowedFilter::custom('service_name', new ServiceNameFilter),
+                AllowedFilter::custom('organisation_name', new OrganisationNameFilter),
                 AllowedFilter::exact('status'),
             ])
             ->allowedIncludes(['service.organisation'])
             ->allowedSorts([
                 'reference',
-                AllowedSort::custom('service_name', ServiceNameAllowedSort::class),
-                AllowedSort::custom('organisation_name', OrganisationNameAllowedSort::class),
+                AllowedSort::custom('service_name', new ServiceNameSort),
+                AllowedSort::custom('organisation_name', new OrganisationNameSort),
                 'status',
                 'created_at',
             ])

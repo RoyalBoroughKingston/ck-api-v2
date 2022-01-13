@@ -63,10 +63,10 @@ class UserController extends Controller
                 'last_name',
                 'email',
                 'phone',
-                AllowedFilter::custom('highest_role', HighestRoleAllowedFilter::class),
-                AllowedFilter::custom('has_permission', HasPermissionAllowedFilter::class),
-                AllowedFilter::custom('at_organisation', AtOrganisationAllowedFilter::class),
-                AllowedFilter::custom('at_service', AtServiceAllowedFilter::class),
+                AllowedFilter::custom('highest_role', new HighestRoleFilter),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter),
+                AllowedFilter::custom('at_organisation', new AtOrganisationFilter),
+                AllowedFilter::custom('at_service', new AtServiceFilter),
             ])
             ->allowedIncludes([
                 'user-roles.organisation',

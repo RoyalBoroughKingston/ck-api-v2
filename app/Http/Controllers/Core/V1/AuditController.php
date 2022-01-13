@@ -46,7 +46,7 @@ class AuditController extends Controller
             ->allowedSorts([
                 'action',
                 'description',
-                AllowedSort::custom('user_full_name', UserFullNameAllowedSort::class),
+                AllowedSort::custom('user_full_name', new UserFullNameSort),
                 'created_at',
             ])
             ->defaultSort('-created_at')

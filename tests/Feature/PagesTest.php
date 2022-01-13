@@ -139,44 +139,95 @@ class PagesTest extends TestCase
      */
     public function listMixedStatePagesAsGuestFilterByID200()
     {
-        $pages = factory(Page::class, 5)->create();
+        $pages = factory(Page::class, 2)->create();
         $disabledPage = factory(Page::class)->states('disabled')->create();
+        $landingPages = factory(Page::class, 2)->states('landingPage')->create();
+        $disabledLandingPage = factory(Page::class)->states('landingPage', 'disabled')->create();
 
         $ids = [
-            $pages->get(0)->id,
-            $pages->get(2)->id,
-            $pages->get(4)->id,
+            $pages->get(1)->id,
             $disabledPage->id,
+            $landingPages->get(1)->id,
+            $disabledLandingPage->id,
         ];
 
         $response = $this->json('GET', '/core/v1/pages/index?filter[id]=' . implode(',', $ids));
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(3, 'data');
+        $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment([
-            'id' => $pages->get(0)->id,
-        ]);
-        $response->assertJsonFragment([
-            'id' => $pages->get(2)->id,
-        ]);
-        $response->assertJsonFragment([
-            'id' => $pages->get(4)->id,
-        ]);
-        $response->assertJsonMissing([
             'id' => $pages->get(1)->id,
         ]);
+        $response->assertJsonFragment([
+            'id' => $landingPages->get(1)->id,
+        ]);
         $response->assertJsonMissing([
-            'id' => $pages->get(3)->id,
+            'id' => $pages->get(0)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPages->get(0)->id,
         ]);
         $response->assertJsonMissing([
             'id' => $disabledPage->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $disabledLandingPage->id,
         ]);
     }
 
     /**
      * @test
      */
-    public function listMixedStatePagesAsGuestFilterByParentID200()
+    public function listMixedStatePagesAsAdminFilterByID200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $pages = factory(Page::class, 2)->create();
+        $disabledPage = factory(Page::class)->states('disabled')->create();
+        $landingPages = factory(Page::class, 2)->states('landingPage')->create();
+        $disabledLandingPage = factory(Page::class)->states('landingPage', 'disabled')->create();
+
+        $ids = [
+            $pages->get(1)->id,
+            $disabledPage->id,
+            $landingPages->get(1)->id,
+            $disabledLandingPage->id,
+        ];
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[id]=' . implode(',', $ids));
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(4, 'data');
+        $response->assertJsonFragment([
+            'id' => $pages->get(1)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $landingPages->get(1)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $pages->get(0)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPages->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $disabledPage->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $disabledLandingPage->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listPagesAsGuestFilterByParentID200()
     {
         $page1 = factory(Page::class)->states('withChildren')->create();
         $page2 = factory(Page::class)->states('withChildren')->create();
@@ -194,7 +245,7 @@ class PagesTest extends TestCase
         $response->assertJsonFragment([
             'id' => $page1->children->get(2)->id,
         ]);
-        $response->assertJsonFragment([
+        $response->assertJsonMissing([
             'id' => $page1->id,
         ]);
         $response->assertJsonMissing([
@@ -214,16 +265,39 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsGuestFilterByTitle200()
+    public function listLandingPageChildPagesAsGuestFilterByParentID200()
+    {
+        $landingPage = factory(Page::class)->states('landingPage', 'withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]=' . $landingPage->id);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonFragment([
+            'id' => $landingPage->children->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $landingPage->children->get(1)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $landingPage->children->get(2)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPage->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listPagesAsGuestFilterByTitle200()
     {
         $page1 = factory(Page::class)->create(['title' => 'Page One']);
         $page2 = factory(Page::class)->create(['title' => 'Second Page']);
         $page3 = factory(Page::class)->create(['title' => 'Third']);
         $page4 = factory(Page::class)->create(['title' => 'Page the Fourth']);
         $page5 = factory(Page::class)->create(['title' => 'Final']);
-        $landingPage = factory(Page::class)
-            ->states('landingPage')
-            ->create(['title' => 'Landing Page']);
+        $landingPage = factory(Page::class)->states('landingPage')->create(['title' => 'Landing Page']);
 
         $response = $this->json('GET', '/core/v1/pages/index?filter[title]=page');
 
@@ -380,7 +454,66 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledPageAsGuest200()
+    public function listPagesAsGuestFilterByTitleAndPageType200()
+    {
+        $page1 = factory(Page::class)->create(['title' => 'Page One']);
+        $page2 = factory(Page::class)->create(['title' => 'Second Page']);
+        $page3 = factory(Page::class)->create(['title' => 'Third']);
+        $landingPage1 = factory(Page::class)->states('landingPage')->create(['title' => 'Landing Page One']);
+        $landingPage2 = factory(Page::class)->states('landingPage')->create(['title' => 'Landing Two']);
+        $landingPage3 = factory(Page::class)->states('landingPage')->create(['title' => 'Landing Three']);
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[title]=page&filter[page_type]=information');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonFragment([
+            'id' => $page1->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $page2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page3->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPage1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPage2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPage3->id,
+        ]);
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[title]=page&filter[page_type]=landing');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment([
+            'id' => $landingPage1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page3->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPage2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $landingPage3->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getEnabledInformationPageAsGuest200()
     {
         $page = factory(Page::class)->states('withImage', 'withParent', 'withChildren')->create();
 
@@ -410,6 +543,47 @@ class PagesTest extends TestCase
                 'created_at',
                 'updated_at',
             ],
+            'children' => [
+                '*' => [
+                    'id',
+                    'title',
+                    'image',
+                    'content',
+                    'order',
+                    'enabled',
+                    'page_type',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getEnabledLandingPageAsGuest200()
+    {
+        $page = factory(Page::class)->states('withImage', 'landingPage', 'withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image' => [
+                'id',
+                'mime_type',
+                'created_at',
+                'updated_at',
+            ],
+            'parent',
             'children' => [
                 '*' => [
                     'id',
@@ -844,7 +1018,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsRoot201()
+    public function createInformationPageRootAsAdmin201()
     {
         /**
          * @var \App\Models\User $user
@@ -893,7 +1067,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsLandingPage201()
+    public function createLandingPageAsAdmin201()
     {
         /**
          * @var \App\Models\User $user
@@ -1342,7 +1516,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAddImage200()
+    public function updatePageAddImageAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1400,7 +1574,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageRemoveImage200()
+    public function updatePageRemoveImageAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1455,7 +1629,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeImage200()
+    public function updatePageChangeImageAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1528,7 +1702,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeParent200()
+    public function updatePageChangeParentAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1567,7 +1741,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangePageType200()
+    public function updatePageChangePageTypeAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1614,7 +1788,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeOrder200()
+    public function updatePageChangeOrderAsAdmin200()
     {
         /**
          * @var \App\Models\User $user
@@ -1672,7 +1846,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageDisabledCascadestoChildPages200()
+    public function updatePageDisabledCascadestoChildPagesAsAdmin200()
     {
         /**
          * @var \App\Models\User $user

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62cabc56aa38c458317d928d2fb49e67",
+    "content-hash": "e5a36933b0407edb8105ddb4abb76e03",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -171,16 +171,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.238.6",
+            "version": "3.239.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "79a76b438bd20ae687394561b4f28cb6c10db08e"
+                "reference": "33ae76381b77a1a2580817996dcc7b9e931ae5f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/79a76b438bd20ae687394561b4f28cb6c10db08e",
-                "reference": "79a76b438bd20ae687394561b4f28cb6c10db08e",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/33ae76381b77a1a2580817996dcc7b9e931ae5f4",
+                "reference": "33ae76381b77a1a2580817996dcc7b9e931ae5f4",
                 "shasum": ""
             },
             "require": {
@@ -259,9 +259,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.238.6"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.239.0"
             },
-            "time": "2022-10-17T18:17:10+00:00"
+            "time": "2022-10-18T18:17:00+00:00"
         },
         {
             "name": "babenkoivan/scout-elasticsearch-driver",
@@ -5852,28 +5852,28 @@
         },
         {
             "name": "spatie/laravel-query-builder",
-            "version": "1.18.0",
+            "version": "2.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-query-builder.git",
-                "reference": "4a455e88bddab7ecc0f91ada6cae1a9e636b11d7"
+                "reference": "377cdd397a0d424146c39b92a36a851f95587842"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-query-builder/zipball/4a455e88bddab7ecc0f91ada6cae1a9e636b11d7",
-                "reference": "4a455e88bddab7ecc0f91ada6cae1a9e636b11d7",
+                "url": "https://api.github.com/repos/spatie/laravel-query-builder/zipball/377cdd397a0d424146c39b92a36a851f95587842",
+                "reference": "377cdd397a0d424146c39b92a36a851f95587842",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "~5.6.34|~5.7.0|~5.8.0|^6.0",
-                "illuminate/http": "~5.6.34|~5.7.0|~5.8.0|^6.0",
-                "illuminate/support": "~5.6.34|~5.7.0|~5.8.0|^6.0",
-                "php": "^7.1|^8.0"
+                "illuminate/database": "~5.6.34|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "illuminate/http": "~5.6.34|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "illuminate/support": "~5.6.34|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "php": "^7.1"
             },
             "require-dev": {
                 "ext-json": "*",
-                "orchestra/testbench": "~3.6.0|~3.7.0|~3.8.0|~4.0.0",
-                "phpunit/phpunit": "^7.0|^8.0"
+                "orchestra/testbench": "~3.6.0|~3.7.0|~3.8.0|^4.0|^5.0|^6.0",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0"
             },
             "type": "library",
             "extra": {
@@ -5908,7 +5908,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-query-builder/issues",
-                "source": "https://github.com/spatie/laravel-query-builder/tree/1.18.0"
+                "source": "https://github.com/spatie/laravel-query-builder"
             },
             "funding": [
                 {
@@ -5916,7 +5916,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-06-10T22:29:10+00:00"
+            "time": "2020-09-08T22:41:35+00:00"
         },
         {
             "name": "superbalist/flysystem-google-storage",

@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\Page;
 use App\Models\User;
 use Faker\Factory as Faker;
+use function GuzzleHttp\json_encode;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +35,7 @@ class PagesTest extends TestCase
      */
     public function listEnabledPagesAsGuest200()
     {
-        $page = factory(Page::class)->states('withParent', 'withChildren')->create();
+        factory(Page::class)->states('withParent', 'withChildren')->create();
 
         $response = $this->json('GET', '/core/v1/pages/index');
         $response->assertStatus(Response::HTTP_OK);
@@ -46,6 +47,7 @@ class PagesTest extends TestCase
                     'content',
                     'order',
                     'enabled',
+                    'page_type',
                     'image',
                     'created_at',
                     'updated_at',
@@ -77,12 +79,19 @@ class PagesTest extends TestCase
             ->states('withImage', 'withParent', 'disabled')
             ->create();
 
+        $landingPage = factory(Page::class)
+            ->states('withImage', 'landingPage')
+            ->create();
+
         $response = $this->json('GET', '/core/v1/pages/index');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
+        $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment([
             'id' => $page->parent->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $landingPage->id,
         ]);
         $response->assertJsonMissing([
             'id' => $page->id,
@@ -106,12 +115,19 @@ class PagesTest extends TestCase
             ->states('withImage', 'withParent', 'disabled')
             ->create();
 
+        $landingPage = factory(Page::class)
+            ->states('withImage', 'landingPage')
+            ->create();
+
         $response = $this->json('GET', '/core/v1/pages/index');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(2, 'data');
+        $response->assertJsonCount(3, 'data');
         $response->assertJsonFragment([
             'id' => $page->parent->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $landingPage->id,
         ]);
         $response->assertJsonFragment([
             'id' => $page->id,
@@ -205,11 +221,14 @@ class PagesTest extends TestCase
         $page3 = factory(Page::class)->create(['title' => 'Third']);
         $page4 = factory(Page::class)->create(['title' => 'Page the Fourth']);
         $page5 = factory(Page::class)->create(['title' => 'Final']);
+        $landingPage = factory(Page::class)
+            ->states('landingPage')
+            ->create(['title' => 'Landing Page']);
 
         $response = $this->json('GET', '/core/v1/pages/index?filter[title]=page');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(3, 'data');
+        $response->assertJsonCount(4, 'data');
         $response->assertJsonFragment([
             'id' => $page1->id,
         ]);
@@ -224,6 +243,137 @@ class PagesTest extends TestCase
         ]);
         $response->assertJsonMissing([
             'id' => $page5->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $landingPage->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listMixedStatePagesAsGuestFilterByLandingPage200()
+    {
+        $page1 = factory(Page::class)->states('landingPage')->create();
+        $page2 = factory(Page::class)->states('disabled')->create();
+        $page3 = factory(Page::class)->create();
+        $page4 = factory(Page::class)->states('landingPage', 'disabled')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[page_type]=landing');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment([
+            'id' => $page1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page3->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page4->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listMixedStatePagesAsGuestFilterByInformationPage200()
+    {
+        $page1 = factory(Page::class)->states('landingPage')->create();
+        $page2 = factory(Page::class)->states('disabled')->create();
+        $page3 = factory(Page::class)->create();
+        $page4 = factory(Page::class)->states('landingPage', 'disabled')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[page_type]=information');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment([
+            'id' => $page3->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page4->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listMixedStatePagesAsAdminFilterByLandingPage200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page1 = factory(Page::class)->states('landingPage')->create();
+        $page2 = factory(Page::class)->states('disabled')->create();
+        $page3 = factory(Page::class)->create();
+        $page4 = factory(Page::class)->states('landingPage', 'disabled')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[page_type]=landing');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonFragment([
+            'id' => $page1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page2->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page3->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $page4->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listMixedStatePagesAsAdminFilterByInformationPage200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page1 = factory(Page::class)->states('landingPage')->create();
+        $page2 = factory(Page::class)->states('disabled')->create();
+        $page3 = factory(Page::class)->create();
+        $page4 = factory(Page::class)->states('landingPage', 'disabled')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[page_type]=information');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonFragment([
+            'id' => $page2->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $page3->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page1->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $page4->id,
         ]);
     }
 
@@ -242,6 +392,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image' => [
                 'id',
                 'mime_type',
@@ -255,6 +406,7 @@ class PagesTest extends TestCase
                 'content',
                 'order',
                 'enabled',
+                'page_type',
                 'created_at',
                 'updated_at',
             ],
@@ -266,6 +418,7 @@ class PagesTest extends TestCase
                     'content',
                     'order',
                     'enabled',
+                    'page_type',
                     'created_at',
                     'updated_at',
                 ],
@@ -331,6 +484,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image' => [
                 'id',
                 'mime_type',
@@ -344,6 +498,7 @@ class PagesTest extends TestCase
                 'content',
                 'order',
                 'enabled',
+                'page_type',
                 'created_at',
                 'updated_at',
             ],
@@ -355,6 +510,7 @@ class PagesTest extends TestCase
                     'content',
                     'order',
                     'enabled',
+                    'page_type',
                     'created_at',
                     'updated_at',
                 ],
@@ -384,7 +540,7 @@ class PagesTest extends TestCase
             'mime_type' => 'image/png',
         ]);
 
-        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
+        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -394,7 +550,7 @@ class PagesTest extends TestCase
 
         $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.png');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/jpeg;base64,' . base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/png;base64,' . base64_encode($response->content()));
     }
 
     /**
@@ -433,13 +589,46 @@ class PagesTest extends TestCase
     /**
      * @test
      */
+    public function getEnabledPageImageSVGAsGuest200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(Page::class)->create();
+
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.svg',
+            'mime_type' => 'image/svg+xml',
+        ]);
+
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+
+        $image->uploadBase64EncodedFile($base64Image);
+
+        $page = factory(Page::class)->create([
+            'image_file_id' => $image->id,
+        ]);
+
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.svg');
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals($base64Image, 'data:image/svg+xml;base64,' . base64_encode($response->content()));
+    }
+
+    /**
+     * @test
+     */
     public function createPageAsGuest403()
     {
         $parentPage = factory(Page::class)->create();
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
         ];
 
@@ -465,11 +654,12 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
         ];
 
         $response = $this->json('POST', '/core/v1/pages', $data);
+
         $response->assertStatus(Response::HTTP_CREATED);
 
         $response->assertJsonResource([
@@ -478,6 +668,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image',
             'parent',
             'children',
@@ -505,11 +696,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
         ];
 
-        $this->json('POST', '/core/v1/pages', $data);
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return ($event->getAction() === Audit::ACTION_CREATE);
@@ -534,7 +727,7 @@ class PagesTest extends TestCase
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
@@ -545,12 +738,17 @@ class PagesTest extends TestCase
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->realText(),
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('POST', '/core/v1/pages', [
+            'title' => $this->faker->sentence(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => 1,
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $this->faker->uuid(),
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
@@ -558,16 +756,23 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
             'order' => $parentPage->children->count() + 1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
             'order' => -1,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('POST', '/core/v1/pages', [
+            'title' => $this->faker->sentence(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'parent_id' => $parentPage->id,
+            'page_type' => 'landing',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         /**
@@ -580,7 +785,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
             'order' => 1,
             'image_file_id' => $image->id,
@@ -604,7 +809,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
@@ -617,6 +822,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image',
             'parent' => [
                 'id',
@@ -625,6 +831,7 @@ class PagesTest extends TestCase
                 'content',
                 'order',
                 'enabled',
+                'page_type',
                 'created_at',
                 'updated_at',
             ],
@@ -649,7 +856,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => null,
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
@@ -662,6 +869,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image',
             'parent',
             'children',
@@ -671,6 +879,59 @@ class PagesTest extends TestCase
 
         $response->assertJsonFragment([
             'parent' => null,
+        ]);
+
+        $response->assertJsonFragment([
+            'page_type' => 'information',
+        ]);
+
+        $rootPage = Page::find($response->json('data.id'));
+
+        $this->assertTrue($rootPage->isRoot());
+    }
+
+    /**
+     * @test
+     */
+    public function createPageAsLandingPage201()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'page_type' => 'landing',
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'parent' => null,
+        ]);
+
+        $response->assertJsonFragment([
+            'page_type' => 'landing',
         ]);
 
         $rootPage = Page::find($response->json('data.id'));
@@ -697,7 +958,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
             'order' => 1,
         ];
@@ -733,7 +994,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'parent_id' => $parentPage->id,
             'order' => 0,
         ];
@@ -777,7 +1038,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'image_file_id' => $image->id,
             'parent_id' => $parentPage->id,
         ];
@@ -791,6 +1052,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image' => [
                 'id',
                 'mime_type',
@@ -834,7 +1096,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->realText(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
             'image_file_id' => $image->id,
             'parent_id' => $parentPage->id,
         ];
@@ -848,6 +1110,65 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
+            'image' => [
+                'id',
+                'mime_type',
+                'created_at',
+                'updated_at',
+            ],
+            'parent',
+            'children',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $image->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function createPageWithImageSVG201()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(Page::class)->create();
+
+        $image = factory(File::class)->states('pending-assignment')->create([
+            'filename' => Str::random() . '.svg',
+            'mime_type' => 'image/svg+xml',
+        ]);
+
+        $image->uploadBase64EncodedFile(
+            'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'))
+        );
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'image_file_id' => $image->id,
+            'parent_id' => $parentPage->id,
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
             'image' => [
                 'id',
                 'mime_type',
@@ -914,6 +1235,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image',
             'parent',
             'children',
@@ -985,6 +1307,10 @@ class PagesTest extends TestCase
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('PUT', '/core/v1/pages/' . $page->id, [
+            'content' => $this->faker->realText(),
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'parent_id' => $this->faker->uuid(),
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
@@ -994,6 +1320,10 @@ class PagesTest extends TestCase
 
         $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'order' => -1,
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+            'page_type' => 'landing',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         /**
@@ -1049,6 +1379,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image' => [
                 'id',
                 'mime_type',
@@ -1108,6 +1439,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image',
             'parent',
             'children',
@@ -1171,6 +1503,7 @@ class PagesTest extends TestCase
             'content',
             'order',
             'enabled',
+            'page_type',
             'image' => [
                 'id',
                 'mime_type',
@@ -1228,6 +1561,53 @@ class PagesTest extends TestCase
 
         $response->assertJsonFragment([
             'id' => $parentPage2->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updatePageChangePageType200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(Page::class)->states('withChildren')->create();
+
+        $page = factory(Page::class)
+            ->states('withChildren')
+            ->create();
+
+        $page->appendToNode($parentPage)->save();
+
+        $data = [
+            'page_type' => Page::PAGE_TYPE_LANDING,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $data = [
+            'page_type' => Page::PAGE_TYPE_LANDING,
+            'parent_id' => null,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonMissing([
+            'id' => $parentPage->id,
+        ]);
+
+        $response->assertJsonFragment([
+            'page_type' => Page::PAGE_TYPE_LANDING,
         ]);
     }
 
@@ -1431,6 +1811,35 @@ class PagesTest extends TestCase
         $this->assertDatabaseHas('pages', ['id' => $children->get(1)->id]);
         $this->assertDatabaseHas('pages', ['id' => $children->get(2)->id]);
         $this->assertDatabaseHas('pages', ['id' => $parent->id]);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteLandingPageWithChildren422()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page = factory(Page::class)->states('landingPage', 'withChildren')->create();
+
+        $parent = $page->parent;
+
+        $children = $page->children()->defaultOrder()->get();
+
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertDatabaseHas('pages', ['id' => $page->id]);
+        $this->assertDatabaseHas('pages', ['id' => $children->get(0)->id]);
+        $this->assertDatabaseHas('pages', ['id' => $children->get(1)->id]);
+        $this->assertDatabaseHas('pages', ['id' => $children->get(2)->id]);
     }
 
     /**

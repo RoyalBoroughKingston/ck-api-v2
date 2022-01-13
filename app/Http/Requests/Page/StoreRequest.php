@@ -6,7 +6,9 @@ use App\Models\File;
 use App\Models\Page;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\LandingPageCannotHaveParent;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -37,18 +39,23 @@ class StoreRequest extends FormRequest
 
         return [
             'title' => ['required', 'string', 'min:1', 'max:255'],
-            'content' => ['required', 'string', 'min:1', 'max:3000'],
+            'content' => ['required', 'json'],
             'order' => [
                 'integer',
                 'min:0',
                 'max:' . $maxOrder,
+            ],
+            'page_type' => [
+                'sometimes',
+                Rule::in([Page::PAGE_TYPE_INFORMATION, Page::PAGE_TYPE_LANDING]),
+                new LandingPageCannotHaveParent($this->input('parent_id')),
             ],
             'parent_id' => ['sometimes', 'nullable', 'string', 'exists:pages,id'],
             'image_file_id' => [
                 'sometimes',
                 'nullable',
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_SVG),
                 new FileIsPendingAssignment(),
             ],
         ];

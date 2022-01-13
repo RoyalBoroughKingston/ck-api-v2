@@ -24,4 +24,22 @@ trait PageMutators
     {
         return $this->prevSiblings()->count();
     }
+
+    /**
+     * Specify content attribute mutator.
+     * @param mixed $value
+     */
+    public function setContentAttribute($value)
+    {
+        // Sanitize the JSON content field
+        $pageContent = json_decode($value, true);
+
+        foreach ($pageContent as $section => &$sectionContent) {
+            if ($sectionContent['copy']) {
+                $sectionContent['copy'] = sanitize_markdown($sectionContent['copy']);
+            }
+        }
+
+        return $this->attributes['content'] = json_encode($pageContent);
+    }
 }

@@ -8,8 +8,10 @@ use App\Models\Role;
 use App\Models\UserRole;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\LandingPageCannotHaveParent;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -42,7 +44,7 @@ class UpdateRequest extends FormRequest
 
         return [
             'title' => ['string', 'min:1', 'max:255'],
-            'content' => ['string', 'min:1', 'max:500'],
+            'content' => ['json'],
             'order' => [
                 'integer',
                 'min:0',
@@ -58,6 +60,11 @@ class UpdateRequest extends FormRequest
                     ]),
                     $this->page->enabled
                 ),
+            ],
+            'page_type' => [
+                'sometimes',
+                Rule::in([Page::PAGE_TYPE_INFORMATION, Page::PAGE_TYPE_LANDING]),
+                new LandingPageCannotHaveParent($this->has('parent_id') ? $this->parent_id : $this->page->parent_uuid),
             ],
             'parent_id' => ['sometimes', 'nullable', 'string', 'exists:pages,id'],
             'image_file_id' => [

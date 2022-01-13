@@ -14,7 +14,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Models\File;
 use App\Models\Page;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PageController extends Controller
@@ -45,14 +45,15 @@ class PageController extends Controller
         }
 
         $pages = QueryBuilder::for($baseQuery)
-            ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('parent_id', 'parent_uuid'),
-                'title',
-            ])
-            ->allowedSorts($orderByCol, 'title')
-            ->defaultSort($orderByCol)
-            ->get();
+                ->allowedFilters([
+                    AllowedFilter::exact('id'),
+                    AllowedFilter::exact('parent_id', 'parent_uuid'),
+                    AllowedFilter::exact('page_type'),
+                    'title',
+                ])
+                ->allowedSorts($orderByCol, 'title')
+                ->defaultSort($orderByCol)
+                ->get();
 
         event(EndpointHit::onRead($request, 'Viewed all information pages'));
 
@@ -68,30 +69,24 @@ class PageController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            $page = Page::create(
+            $parent = $request->filled('parent_id') ? Page::find($request->parent_id) : null;
+            $page = Page::make(
                 [
-                    'title' => $request->title,
-                    'content' => sanitize_markdown($request->content),
-                    'image_file_id' => $request->image_file_id,
+                    'title' => $request->input('title'),
+                    'content' => $request->input('content'),
+                    'page_type' => $request->input('page_type', Page::PAGE_TYPE_INFORMATION),
                 ],
-                $request->parent_id ? Page::find($request->parent_id) : null
+                $parent
             );
 
-            if ($request->filled('order')) {
-                $nextSibling = $page->siblingAtIndex($request->order)->first();
+            // Update relationships
+            $page->updateParent($parent ? $parent->id : null)
+            ->updateStatus($request->input('enabled'))
+            ->updateOrder($request->input('order'))
+            ->updateImage($request->input('image_file_id'));
 
-                $page->insertBeforeNode($nextSibling);
-            }
-
-            if ($request->filled('image_file_id')) {
-                /** @var \App\Models\File $file */
-                $file = File::findOrFail($request->image_file_id)->assigned();
-
-                // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
-                    $file->resizedVersion($maxDimension);
-                }
-            }
+            // Update model so far
+            $page->save();
 
             $page->load('parent', 'children');
 
@@ -115,7 +110,7 @@ class PageController extends Controller
             ->where('id', $page->id);
 
         $page = QueryBuilder::for($baseQuery)
-            ->firstOrFail();
+                ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed page [{$page->id}]", $page));
 
@@ -134,64 +129,19 @@ class PageController extends Controller
         return DB::transaction(function () use ($request, $page) {
             // Core fields
             $page->title = $request->input('title', $page->title);
-            $page->content = $request->has('content') ?
-            sanitize_markdown($request->input('content')) :
-            $page->content;
-
-            // Attach to parent and inherit disabled if set
-            if ($request->input('parent_id', $page->parent_id) !== $page->parent_id) {
-                $parent = Page::find($request->input('parent_id'));
-                if (!$parent->enabled) {
-                    $page->enabled = $parent->enabled;
-                    Page::whereIn('id', $page->descendants->pluck('id'))
-                        ->update(['enabled' => $parent->enabled]);
-                }
-                $page->appendToNode($parent);
+            $page->page_type = $request->input('page_type', $page->page_type);
+            if ($request->filled('content')) {
+                $page->content = $request->input('content', $page->content);
             }
 
-            // Order
-            if ($request->has('order')) {
-                $siblingAtIndex = $page->siblingAtIndex($request->order)->first();
-
-                $siblingAtIndex->getLft() > $page->getLft() ?
-                $page->afterNode($siblingAtIndex) :
-                $page->beforeNode($siblingAtIndex);
-            }
-
-            // Disable cascades into children, but enable does not
-            $enabled = $request->input('enabled', $page->enabled);
-            if (!$enabled && $page->enabled) {
-                Page::whereIn('id', $page->descendants->pluck('id'))
-                    ->update(['enabled' => $enabled]);
-            }
-            $page->enabled = $enabled;
+            // Update relationships
+            $page->updateParent($request->has('parent_id') ? $request->parent_id : false)
+            ->updateStatus($request->input('enabled'))
+            ->updateOrder($request->input('order'))
+            ->updateImage($request->input('image_file_id'));
 
             // Update model so far
             $page->save();
-
-            // Image File
-            if ($request->input('image_file_id', $page->image_file_id) !== $page->image_file_id) {
-                $currentImage = $page->image;
-
-                if ($request->input('image_file_id')) {
-                    /** @var \App\Models\File $file */
-                    $file = File::findOrFail($request->image_file_id)->assigned();
-
-                    // Create resized version for common dimensions.
-                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
-                        $file->resizedVersion($maxDimension);
-                    }
-                }
-
-                $page->update([
-                    'image_file_id' => $request->input('image_file_id'),
-                ]);
-
-                if ($currentImage) {
-                    $currentImage->deleteFromDisk();
-                    $currentImage->delete();
-                }
-            }
 
             event(EndpointHit::onUpdate($request, "Updated page [{$page->id}]", $page));
 

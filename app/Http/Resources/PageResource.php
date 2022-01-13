@@ -21,6 +21,7 @@ class PageResource extends JsonResource
             'content' => $this->content,
             'order' => $this->order,
             'enabled' => $this->enabled,
+            'page_type' => $this->page_type,
             'image' => new FileResource($this->image),
             'parent' => new static($this->whenLoaded('parent')),
             'children' => static::collection($this->whenLoaded('children')),

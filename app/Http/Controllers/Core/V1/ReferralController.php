@@ -20,9 +20,9 @@ use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Sort;
+use Spatie\QueryBuilder\AllowedSort;
 
 class ReferralController extends Controller
 {
@@ -66,18 +66,18 @@ class ReferralController extends Controller
         // Filtering by the service ID here will only work for the IDs retrieved above. Others will be discarded.
         $referrals = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('service_id'),
-                Filter::exact('reference'),
-                Filter::custom('service_name', ServiceNameFilter::class),
-                Filter::custom('organisation_name', OrganisationNameFilter::class),
-                Filter::exact('status'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('service_id'),
+                AllowedFilter::exact('reference'),
+                AllowedFilter::custom('service_name', ServiceNameAllowedFilter::class),
+                AllowedFilter::custom('organisation_name', OrganisationNameAllowedFilter::class),
+                AllowedFilter::exact('status'),
             ])
             ->allowedIncludes(['service.organisation'])
             ->allowedSorts([
                 'reference',
-                Sort::custom('service_name', ServiceNameSort::class),
-                Sort::custom('organisation_name', OrganisationNameSort::class),
+                AllowedSort::custom('service_name', ServiceNameAllowedSort::class),
+                AllowedSort::custom('organisation_name', OrganisationNameAllowedSort::class),
                 'status',
                 'created_at',
             ])

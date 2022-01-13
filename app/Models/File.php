@@ -148,8 +148,8 @@ class File extends Model implements Responsable
      */
     public function resizedVersion(int $maxDimension = null): self
     {
-        // If no resize then return current instance.
-        if ($maxDimension === null) {
+        // If no resize or format is SVG then return current instance.
+        if ($maxDimension === null || $this->mime_type === self::MIME_TYPE_SVG) {
             return $this;
         }
 

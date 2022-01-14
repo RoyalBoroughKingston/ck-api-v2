@@ -1,6 +1,7 @@
 <?php
 
 use function GuzzleHttp\json_decode;
+use function GuzzleHttp\json_encode;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@ class UpdateInformationPagesConvertToPages extends Migration
     public function up()
     {
         $content = DB::table('information_pages')->pluck('content', 'id');
+
         Schema::rename('information_pages', 'pages');
 
         Schema::table('pages', function (Blueprint $table) {
@@ -28,13 +30,13 @@ class UpdateInformationPagesConvertToPages extends Migration
             DB::table('pages')
                 ->where('id', $id)
                 ->update([
-                    'content' => [
+                    'content' => json_encode([
                         'introduction' => [
                             [
                                 'copy' => $copy,
                             ],
                         ],
-                    ],
+                    ]),
                 ]);
         }
     }

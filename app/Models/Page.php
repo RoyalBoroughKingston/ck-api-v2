@@ -9,14 +9,19 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Page extends Model
 {
-    use PageRelationships, PageMutators, PageScopes, NodeTrait;
+    use PageRelationships;
+    use PageMutators;
+    use PageScopes;
+    use NodeTrait;
 
     const DISABLED = false;
+
     const ENABLED = true;
 
     const PARENT_KEY = 'parent_uuid';
 
     const PAGE_TYPE_INFORMATION = 'information';
+
     const PAGE_TYPE_LANDING = 'landing';
 
     /**
@@ -101,10 +106,11 @@ class Page extends Model
     /**
      * Inherit the status (if disabled) of a parent (if exists)
      * and pass on to descendants (if disabled).
-     * Children do not inherit enabled status, but must be enabled individually
+     * Children do not inherit enabled status, but must be enabled individually.
      *
+     * @param mixed $status
      * @return \App\Models\Page
-     **/
+     */
     public function updateStatus($status): self
     {
         if ($this->parent && $this->parent->enabled === self::DISABLED) {
@@ -124,11 +130,11 @@ class Page extends Model
     }
 
     /**
-     * Update the parent relationship
+     * Update the parent relationship.
      *
-     * @param String $parentId
+     * @param string $parentId
      * @return \App\Models\Page
-     **/
+     */
     public function updateParent($parentId = false): self
     {
         // If parent_id is null save as root node
@@ -142,11 +148,11 @@ class Page extends Model
     }
 
     /**
-     * Update the sibling order for the page
+     * Update the sibling order for the page.
      *
-     * @param Int $order
+     * @param int $order
      * @return \App\Models\Page
-     **/
+     */
     public function updateOrder($order): self
     {
         if (!is_null($order)) {
@@ -158,11 +164,11 @@ class Page extends Model
     }
 
     /**
-     * Update the image relationship
+     * Update the image relationship.
      *
-     * @param String $imageId
+     * @param string $imageId
      * @return \App\Models\Page
-     **/
+     */
     public function updateImage($imageId)
     {
         if ($imageId !== $this->image_file_id) {

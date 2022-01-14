@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Docs\Paths\InformationPages;
+namespace App\Docs\Paths\Pages;
 
-use App\Docs\Operations\InformationPages\IndexInformationPageOperation;
+use App\Docs\Operations\Pages\IndexPageOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 
-class InformationPagesIndexPath extends PathItem
+class PagesIndexPath extends PathItem
 {
     /**
      * @param string|null $objectId
@@ -18,8 +18,8 @@ class InformationPagesIndexPath extends PathItem
         return parent::create($objectId)
             ->route('/information-pages/index')
             ->operations(
-                IndexInformationPageOperation::create()
-                    ->action(IndexInformationPageOperation::ACTION_POST)
+                IndexPageOperation::create()
+                    ->action(IndexPageOperation::ACTION_POST)
                     ->description(
                         <<<'EOT'
 This is an alias of `GET /information-pages` which allows all the query string parameters to be passed

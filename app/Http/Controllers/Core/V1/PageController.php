@@ -11,7 +11,6 @@ use App\Http\Requests\Page\StoreRequest;
 use App\Http\Requests\Page\UpdateRequest;
 use App\Http\Resources\PageResource;
 use App\Http\Responses\ResourceDeleted;
-use App\Models\File;
 use App\Models\Page;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -44,15 +43,15 @@ class PageController extends Controller
         }
 
         $pages = QueryBuilder::for($baseQuery)
-                ->allowedFilters([
-                    AllowedFilter::exact('id'),
-                    AllowedFilter::exact('parent_id', 'parent_uuid'),
-                    AllowedFilter::exact('page_type'),
-                    'title',
-                ])
-                ->allowedSorts($orderByCol, 'title')
-                ->defaultSort($orderByCol)
-                ->get();
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('parent_id', 'parent_uuid'),
+                AllowedFilter::exact('page_type'),
+                'title',
+            ])
+            ->allowedSorts($orderByCol, 'title')
+            ->defaultSort($orderByCol)
+            ->get();
 
         event(EndpointHit::onRead($request, 'Viewed all information pages'));
 
@@ -80,9 +79,9 @@ class PageController extends Controller
 
             // Update relationships
             $page->updateParent($parent ? $parent->id : null)
-            ->updateStatus($request->input('enabled'))
-            ->updateOrder($request->input('order'))
-            ->updateImage($request->input('image_file_id'));
+                ->updateStatus($request->input('enabled'))
+                ->updateOrder($request->input('order'))
+                ->updateImage($request->input('image_file_id'));
 
             // Update model so far
             $page->save();
@@ -109,7 +108,7 @@ class PageController extends Controller
             ->where('id', $page->id);
 
         $page = QueryBuilder::for($baseQuery)
-                ->firstOrFail();
+            ->firstOrFail();
 
         event(EndpointHit::onRead($request, "Viewed page [{$page->id}]", $page));
 
@@ -135,9 +134,9 @@ class PageController extends Controller
 
             // Update relationships
             $page->updateParent($request->has('parent_id') ? $request->parent_id : false)
-            ->updateStatus($request->input('enabled'))
-            ->updateOrder($request->input('order'))
-            ->updateImage($request->input('image_file_id'));
+                ->updateStatus($request->input('enabled'))
+                ->updateOrder($request->input('order'))
+                ->updateImage($request->input('image_file_id'));
 
             // Update model so far
             $page->save();

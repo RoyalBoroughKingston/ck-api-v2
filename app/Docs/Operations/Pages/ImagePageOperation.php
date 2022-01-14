@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Docs\Operations\InformationPages;
+namespace App\Docs\Operations\Pages;
 
 use App\Docs\Parameters\MaxDimensionParameter;
 use App\Docs\Parameters\UpdateRequestIdParameter;
 use App\Docs\Responses\PngResponse;
-use App\Docs\Tags\InformationPagesTag;
+use App\Docs\Tags\PagesTag;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 
-class ImageInformationPageOperation extends Operation
+class ImagePageOperation extends Operation
 {
     /**
      * @param string|null $objectId
@@ -20,7 +20,7 @@ class ImageInformationPageOperation extends Operation
     {
         return parent::create($objectId)
             ->action(static::ACTION_GET)
-            ->tags(InformationPagesTag::create())
+            ->tags(PagesTag::create())
             ->summary("Get a specific information page's image")
             ->description('**Permission:** `Open`')
             ->noSecurity()

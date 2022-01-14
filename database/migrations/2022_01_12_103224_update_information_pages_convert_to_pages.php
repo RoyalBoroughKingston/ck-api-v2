@@ -10,12 +10,9 @@ class UpdateInformationPagesConvertToPages extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
-
         $content = DB::table('information_pages')->pluck('content', 'id');
         Schema::rename('information_pages', 'pages');
 
@@ -33,7 +30,9 @@ class UpdateInformationPagesConvertToPages extends Migration
                 ->update([
                     'content' => [
                         'introduction' => [
-                            'copy' => $copy,
+                            [
+                                'copy' => $copy,
+                            ],
                         ],
                     ],
                 ]);
@@ -42,8 +41,6 @@ class UpdateInformationPagesConvertToPages extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
@@ -61,7 +58,7 @@ class UpdateInformationPagesConvertToPages extends Migration
 
         foreach ($content as $id => $contentJson) {
             $copy = json_decode($contentJson);
-            $copy = $copy['content']['introduction']['copy'] ?? null;
+            $copy = $copy['content']['introduction'][0]['copy'] ?? null;
             DB::table('pages')
                 ->where('id', $id)
                 ->update($copy);

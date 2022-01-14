@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Docs\Paths\InformationPages;
+namespace App\Docs\Paths\Pages;
 
-use App\Docs\Operations\InformationPages\ImageInformationPageOperation;
+use App\Docs\Operations\Pages\ImagePageOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class InformationPagesImagePath extends PathItem
+class PagesImagePath extends PathItem
 {
     /**
      * @param string|null $objectId
@@ -18,16 +18,16 @@ class InformationPagesImagePath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/information-pages/{InformationPage}/image.png')
+            ->route('/information-pages/{Page}/image.png')
             ->parameters(
                 Parameter::path()
-                    ->name('InformationPage')
-                    ->description('The ID or slug of the InformationPage')
+                    ->name('Page')
+                    ->description('The ID or slug of the Page')
                     ->required()
                     ->schema(Schema::string())
             )
             ->operations(
-                ImageInformationPageOperation::create()
+                ImagePageOperation::create()
             );
     }
 }

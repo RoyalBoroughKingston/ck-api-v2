@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Docs\Paths\InformationPages;
+namespace App\Docs\Paths\Pages;
 
-use App\Docs\Operations\InformationPages\DestroyInformationPageOperation;
-use App\Docs\Operations\InformationPages\ShowInformationPageOperation;
-use App\Docs\Operations\InformationPages\UpdateInformationPageOperation;
+use App\Docs\Operations\Pages\DestroyPageOperation;
+use App\Docs\Operations\Pages\ShowPageOperation;
+use App\Docs\Operations\Pages\UpdatePageOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class InformationPagesNestedPath extends PathItem
+class PagesNestedPath extends PathItem
 {
     /**
      * @param string|null $objectId
@@ -20,18 +20,18 @@ class InformationPagesNestedPath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/information-pages/{InformationPage}')
+            ->route('/information-pages/{Page}')
             ->parameters(
                 Parameter::path()
-                    ->name('InformationPage')
-                    ->description('The ID or slug of the InformationPage')
+                    ->name('Page')
+                    ->description('The ID or slug of the Page')
                     ->required()
                     ->schema(Schema::string())
             )
             ->operations(
-                ShowInformationPageOperation::create(),
-                UpdateInformationPageOperation::create(),
-                DestroyInformationPageOperation::create()
+                ShowPageOperation::create(),
+                UpdatePageOperation::create(),
+                DestroyPageOperation::create()
             );
     }
 }

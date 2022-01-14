@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ReferralController extends Controller
 {
@@ -69,15 +69,15 @@ class ReferralController extends Controller
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('service_id'),
                 AllowedFilter::exact('reference'),
-                AllowedFilter::custom('service_name', new ServiceNameFilter),
-                AllowedFilter::custom('organisation_name', new OrganisationNameFilter),
+                AllowedFilter::custom('service_name', new ServiceNameFilter()),
+                AllowedFilter::custom('organisation_name', new OrganisationNameFilter()),
                 AllowedFilter::exact('status'),
             ])
             ->allowedIncludes(['service.organisation'])
             ->allowedSorts([
                 'reference',
-                AllowedSort::custom('service_name', new ServiceNameSort),
-                AllowedSort::custom('organisation_name', new OrganisationNameSort),
+                AllowedSort::custom('service_name', new ServiceNameSort()),
+                AllowedSort::custom('organisation_name', new OrganisationNameSort()),
                 'status',
                 'created_at',
             ])

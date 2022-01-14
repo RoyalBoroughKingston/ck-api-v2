@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Docs\Paths\InformationPages;
+namespace App\Docs\Paths\Pages;
 
-use App\Docs\Operations\InformationPages\IndexInformationPageOperation;
-use App\Docs\Operations\InformationPages\StoreInformationPageOperation;
+use App\Docs\Operations\Pages\IndexPageOperation;
+use App\Docs\Operations\Pages\StorePageOperation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 
-class InformationPagesRootPath extends PathItem
+class PagesRootPath extends PathItem
 {
     /**
      * @param string|null $objectId
@@ -19,8 +19,8 @@ class InformationPagesRootPath extends PathItem
         return parent::create($objectId)
             ->route('/information-pages')
             ->operations(
-                IndexInformationPageOperation::create(),
-                StoreInformationPageOperation::create()
+                IndexPageOperation::create(),
+                StorePageOperation::create()
             );
     }
 }

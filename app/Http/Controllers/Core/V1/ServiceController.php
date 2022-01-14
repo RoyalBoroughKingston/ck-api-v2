@@ -21,8 +21,8 @@ use App\Services\DataPersistence\ServicePersistenceService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ServiceController extends Controller
 {
@@ -59,15 +59,15 @@ class ServiceController extends Controller
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('organisation_id'),
                 'name',
-                AllowedFilter::custom('organisation_name', new OrganisationNameFilter),
+                AllowedFilter::custom('organisation_name', new OrganisationNameFilter()),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('referral_method'),
-                AllowedFilter::custom('has_permission', new HasPermissionFilter),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter()),
             ])
             ->allowedIncludes(['organisation'])
             ->allowedSorts([
                 'name',
-                AllowedSort::custom('organisation_name', new OrganisationNameSort),
+                AllowedSort::custom('organisation_name', new OrganisationNameSort()),
                 'status',
                 'referral_method',
                 'last_modified_at',

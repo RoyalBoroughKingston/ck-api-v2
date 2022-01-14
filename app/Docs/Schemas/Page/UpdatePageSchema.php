@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Docs\Schemas\InformationPage;
+namespace App\Docs\Schemas\Page;
 
+use App\Models\Page;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class UpdateInformationPageSchema extends Schema
+class UpdatePageSchema extends Schema
 {
     /**
      * @param string|null $objectId
@@ -18,16 +19,20 @@ class UpdateInformationPageSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->required(
                 'title',
-                'content',
-                'parent_id',
+                'content'
             )
             ->properties(
+                Schema::string('page_type')
+                    ->enum(
+                        Page::PAGE_TYPE_INFORMATION,
+                        Page::PAGE_TYPE_LANDING
+                    ),
                 Schema::string('title'),
-                Schema::string('content'),
+                Schema::string('content')->format('JSON'),
                 Schema::string('parent_id'),
-                Schema::string('image_file_id'),
                 Schema::integer('order'),
-                Schema::boolean('enabled')
+                Schema::boolean('enabled'),
+                Schema::string('image_file_id')
             );
     }
 }

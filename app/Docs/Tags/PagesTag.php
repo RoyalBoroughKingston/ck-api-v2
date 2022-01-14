@@ -5,7 +5,7 @@ namespace App\Docs\Tags;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 
-class InformationPagesTag extends Tag
+class PagesTag extends Tag
 {
     /**
      * @param string|null $objectId
@@ -14,6 +14,6 @@ class InformationPagesTag extends Tag
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->name('InformationPages');
+            ->name('Pages');
     }
 }

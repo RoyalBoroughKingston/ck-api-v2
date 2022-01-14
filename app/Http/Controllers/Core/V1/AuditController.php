@@ -10,8 +10,8 @@ use App\Http\Resources\AuditResource;
 use App\Http\Sorts\Audit\UserFullNameSort;
 use App\Models\Audit;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class AuditController extends Controller
 {
@@ -46,7 +46,7 @@ class AuditController extends Controller
             ->allowedSorts([
                 'action',
                 'description',
-                AllowedSort::custom('user_full_name', new UserFullNameSort),
+                AllowedSort::custom('user_full_name', new UserFullNameSort()),
                 'created_at',
             ])
             ->defaultSort('-created_at')

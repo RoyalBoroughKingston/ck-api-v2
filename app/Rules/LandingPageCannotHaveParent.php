@@ -8,26 +8,28 @@ use Illuminate\Contracts\Validation\Rule;
 class LandingPageCannotHaveParent implements Rule
 {
     /**
-     * Parent ID
+     * Parent ID.
      *
-     * @var String
-     **/
+     * @var string
+     */
     protected $parentId = null;
 
     /**
      * Create a new rule instance.
      *
      * @param \App\Models\Page $page
+     * @param mixed $parentId
      */
     public function __construct($parentId)
     {
         $this->parentId = $parentId;
     }
+
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)

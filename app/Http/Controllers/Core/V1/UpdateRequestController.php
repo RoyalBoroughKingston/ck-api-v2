@@ -45,7 +45,7 @@ class UpdateRequestController extends Controller
                 AllowedFilter::scope('service_location_id'),
                 AllowedFilter::scope('location_id'),
                 AllowedFilter::scope('organisation_id'),
-                AllowedFilter::custom('entry', new EntryFilter),
+                AllowedFilter::custom('entry', new EntryFilter()),
             ])
             ->allowedIncludes(['user'])
             ->allowedSorts([

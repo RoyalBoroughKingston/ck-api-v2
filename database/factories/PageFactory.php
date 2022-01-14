@@ -10,7 +10,13 @@ use Illuminate\Support\Str;
 $factory->define(Page::class, function (Faker $faker) {
     return [
         'title' => $faker->sentence(),
-        'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+        'content' => json_encode([
+            'introduction' => [
+                'copy' => [
+                    $this->faker->realText(),
+                ],
+            ],
+        ]),
         'enabled' => Page::ENABLED,
         'page_type' => Page::PAGE_TYPE_INFORMATION,
     ];
@@ -31,6 +37,31 @@ $factory->state(Page::class, 'disabled', [
 
 $factory->state(Page::class, 'landingPage', [
     'page_type' => Page::PAGE_TYPE_LANDING,
+    'content' => json_encode([
+        'introduction' => [
+            'copy' => [
+                $this->faker->realText(),
+            ],
+        ],
+        'about' => [
+            'copy' => [
+                $this->faker->realText(),
+                $this->faker->realText(),
+            ],
+        ],
+        'info-pages' => [
+            'title' => $this->faker->sentence(),
+            'copy' => [
+                $this->faker->realText(),
+            ],
+        ],
+        'collections' => [
+            'title' => $this->faker->sentence(),
+            'copy' => [
+                $this->faker->realText(),
+            ],
+        ],
+    ]),
 ]);
 
 $factory->afterCreatingState(Page::class, 'withParent', function (Page $page, Faker $faker) {

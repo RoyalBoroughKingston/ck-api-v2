@@ -36,7 +36,7 @@ trait PageMutators
 
         foreach ($pageContent as $section => &$sectionContent) {
             if ($sectionContent['copy']) {
-                $sectionContent['copy'] = sanitize_markdown($sectionContent['copy']);
+                array_walk($sectionContent['copy'], 'sanitize_markdown');
             }
         }
 

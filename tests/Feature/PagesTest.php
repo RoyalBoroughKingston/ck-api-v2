@@ -802,7 +802,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
         ];
 
@@ -828,7 +834,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
         ];
 
@@ -870,7 +882,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
         ];
 
@@ -901,7 +919,13 @@ class PagesTest extends TestCase
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
@@ -916,13 +940,30 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => [],
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('POST', '/core/v1/pages', [
+            'title' => $this->faker->sentence(),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => 1,
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $this->faker->uuid(),
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
@@ -930,21 +971,39 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
             'order' => $parentPage->children->count() + 1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
             'order' => -1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
             'page_type' => 'landing',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -959,7 +1018,13 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
             'order' => 1,
             'image_file_id' => $image->id,
@@ -983,7 +1048,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
@@ -1030,7 +1101,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => null,
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
@@ -1079,7 +1156,31 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+                'about' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                        $this->faker->realText(),
+                    ],
+                ],
+                'info-pages' => [
+                    'title' => $this->faker->sentence(),
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+                'collections' => [
+                    'title' => $this->faker->sentence(),
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'page_type' => 'landing',
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
@@ -1132,7 +1233,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
             'order' => 1,
         ];
@@ -1168,7 +1275,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'parent_id' => $parentPage->id,
             'order' => 0,
         ];
@@ -1212,7 +1325,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'image_file_id' => $image->id,
             'parent_id' => $parentPage->id,
         ];
@@ -1270,7 +1389,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'image_file_id' => $image->id,
             'parent_id' => $parentPage->id,
         ];
@@ -1328,7 +1453,13 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'content' => json_encode(['introduction' => ['copy' => $this->faker->realText()]]),
+            'content' => json_encode([
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ]),
             'image_file_id' => $image->id,
             'parent_id' => $parentPage->id,
         ];

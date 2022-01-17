@@ -32,9 +32,9 @@ class UpdateInformationPagesConvertToPages extends Migration
                 ->update([
                     'content' => json_encode([
                         'introduction' => [
-                            [
-                                'copy' => $copy,
-                            ],
+                            'label' => 'Page content',
+                            'hint' => 'This is the largest content of the page. Use formatting to improve readability and impact.',
+                            'copy' => [$copy],
                         ],
                     ]),
                 ]);
@@ -60,7 +60,7 @@ class UpdateInformationPagesConvertToPages extends Migration
 
         foreach ($content as $id => $contentJson) {
             $copy = json_decode($contentJson);
-            $copy = $copy['content']['introduction'][0]['copy'] ?? null;
+            $copy = $copy['content']['introduction']['copy'][0] ?? null;
             DB::table('pages')
                 ->where('id', $id)
                 ->update($copy);

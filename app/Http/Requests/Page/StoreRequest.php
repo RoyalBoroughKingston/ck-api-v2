@@ -39,7 +39,22 @@ class StoreRequest extends FormRequest
 
         return [
             'title' => ['required', 'string', 'min:1', 'max:255'],
-            'content' => ['required', 'json'],
+            'content' => ['required', 'array'],
+            'content.introduction.copy' => ['required', 'array'],
+            'content.introduction.copy.*' => ['required', 'string', 'min:1'],
+            'content.info_pages.title' => [
+                'required_if:page_type,landing',
+                'string',
+                'min:1',
+            ],
+            'content.collections.title' => [
+                'required_if:page_type,landing',
+                'string',
+                'min:1',
+            ],
+            'content.*.title' => ['sometimes', 'string'],
+            'content.*.copy' => ['sometimes', 'array'],
+            'content.*.copy.*' => ['sometimes', 'string'],
             'order' => [
                 'integer',
                 'min:0',

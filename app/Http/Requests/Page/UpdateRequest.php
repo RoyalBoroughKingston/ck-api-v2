@@ -44,7 +44,12 @@ class UpdateRequest extends FormRequest
 
         return [
             'title' => ['string', 'min:1', 'max:255'],
-            'content' => ['json'],
+            'content' => ['array'],
+            'content.introduction.*.copy' => ['sometimes', 'string', 'min:1'],
+            'content.info_pages.*.title' => ['sometimes', 'string', 'min:1'],
+            'content.collections.*.title' => ['sometimes', 'string', 'min:1'],
+            'content.*.*.title' => ['sometimes', 'string'],
+            'content.*.*.copy' => ['sometimes', 'string'],
             'order' => [
                 'integer',
                 'min:0',

@@ -18,7 +18,6 @@ trait PageMutators
      *
      * @param type name
      * @return int
-     * @author
      */
     public function getOrderAttribute()
     {
@@ -32,14 +31,13 @@ trait PageMutators
     public function setContentAttribute($value)
     {
         // Sanitize the JSON content field
-        $pageContent = json_decode($value, true);
 
-        foreach ($pageContent as $section => &$sectionContent) {
+        foreach ($value as $section => &$sectionContent) {
             if ($sectionContent['copy']) {
                 array_walk($sectionContent['copy'], 'sanitize_markdown');
             }
         }
 
-        return $this->attributes['content'] = json_encode($pageContent);
+        return $this->attributes['content'] = json_encode($value);
     }
 }

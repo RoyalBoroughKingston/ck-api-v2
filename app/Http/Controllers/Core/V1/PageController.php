@@ -36,6 +36,7 @@ class PageController extends Controller
     {
         $orderByCol = (new Page())->getLftName();
         $baseQuery = Page::query()
+            ->with('parent')
             ->orderBy($orderByCol);
 
         if (!$request->user('api') || !$request->user('api')->isGlobalAdmin()) {

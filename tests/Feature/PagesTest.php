@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\Collection;
 use App\Models\File;
 use App\Models\Page;
 use App\Models\User;
@@ -1543,6 +1544,153 @@ class PagesTest extends TestCase
     /**
      * @test
      */
+    public function createInformationPageWithCollectionsIgnored200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(Page::class)->create();
+
+        $collections = factory(Collection::class, 5)->create();
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => [
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ],
+            'parent_id' => $parentPage->id,
+            'collections' => $collections->pluck('id'),
+            'page_type' => 'information',
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'parent',
+            'children',
+            'collections',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonMissing([
+            'id' => $collections->get(0)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(1)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(2)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(3)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(4)->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function createLandingPageWithCollections201()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $collections = factory(Collection::class, 5)->create();
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => [
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+                'about' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                        $this->faker->realText(),
+                    ],
+                ],
+                'info_pages' => [
+                    'title' => $this->faker->sentence(),
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+                'collections' => [
+                    'title' => $this->faker->sentence(),
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ],
+            'page_type' => 'landing',
+            'collections' => $collections->pluck('id'),
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'parent',
+            'children',
+            'collections',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $collections->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(1)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(2)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(3)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(4)->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function updatePageAsGuest403()
     {
         $page = factory(Page::class)
@@ -2113,6 +2261,182 @@ class PagesTest extends TestCase
 
         $response->assertJsonFragment([
             'enabled' => true,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updateInformationPageAddCollectionsIgnored200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page = factory(Page::class)->create();
+
+        $collections = factory(Collection::class, 5)->create();
+
+        $data = [
+            'collections' => $collections->pluck('id'),
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'parent',
+            'children',
+            'collections',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonMissing([
+            'id' => $collections->get(0)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(1)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(2)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(3)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $collections->get(4)->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updateLandingPageAddCollections200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page = factory(Page::class)->states('landingPage')->create();
+
+        $collections = factory(Collection::class, 5)->create();
+
+        $data = [
+            'collections' => $collections->pluck('id'),
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'parent',
+            'children',
+            'collections',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $collections->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(1)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(2)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(3)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collections->get(4)->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updateLandingPageUpdateCollections200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page = factory(Page::class)->states('landingPage', 'withCollections')->create();
+
+        $pageCollectionIds = $page->collections()->pluck('id');
+
+        $collectionIds = factory(Collection::class, 3)->create()->pluck('id');
+
+        $collectionIds->push($pageCollectionIds->get(0));
+        $collectionIds->push($pageCollectionIds->get(1));
+
+        $data = [
+            'collections' => $collectionIds->all(),
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'parent',
+            'children',
+            'collections',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $collectionIds->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collectionIds->get(1)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $collectionIds->get(2)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $pageCollectionIds->get(0)->id,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $pageCollectionIds->get(1)->id,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $pageCollectionIds->get(2)->id,
         ]);
     }
 

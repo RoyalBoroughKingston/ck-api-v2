@@ -2,6 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+use App\Models\Collection;
 use App\Models\File;
 use App\Models\Page;
 use Faker\Generator as Faker;
@@ -72,4 +73,8 @@ $factory->afterCreatingState(Page::class, 'withChildren', function (Page $page, 
     factory(Page::class, 3)->create()->each(function (Page $child) use ($page) {
         $page->appendNode($child);
     });
+});
+
+$factory->afterCreatingState(Page::class, 'withCollections', function (Page $page, Faker $faker) {
+    $page->collections()->attach(factory(Collection::class, 3)->create()->pluck('id')->all());
 });

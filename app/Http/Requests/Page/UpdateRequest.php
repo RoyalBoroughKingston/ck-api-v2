@@ -79,6 +79,12 @@ class UpdateRequest extends FormRequest
                 new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),
                 new FileIsPendingAssignment(),
             ],
+            'collections' => [
+                'sometimes',
+                'array',
+                Rule::excludeIf($this->page->page_type === Page::PAGE_TYPE_INFORMATION || $this->page_type === Page::PAGE_TYPE_INFORMATION),
+            ],
+            'collections.*' => ['sometimes', 'exists:collections,id'],
         ];
     }
 }

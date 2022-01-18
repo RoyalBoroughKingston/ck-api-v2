@@ -73,6 +73,8 @@ class StoreRequest extends FormRequest
                 new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_SVG),
                 new FileIsPendingAssignment(),
             ],
+            'collections' => ['sometimes', 'array', 'exclude_if:page_type,' . Page::PAGE_TYPE_INFORMATION],
+            'collections.*' => ['sometimes', 'exists:collections,id'],
         ];
     }
 }

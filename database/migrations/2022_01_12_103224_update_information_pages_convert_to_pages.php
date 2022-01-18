@@ -15,7 +15,6 @@ class UpdateInformationPagesConvertToPages extends Migration
     public function up()
     {
         DB::transaction(function () {
-
             $content = DB::table('information_pages')->pluck('content', 'id');
 
             Schema::rename('information_pages', 'pages');

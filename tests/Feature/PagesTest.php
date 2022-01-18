@@ -1100,6 +1100,44 @@ class PagesTest extends TestCase
     /**
      * @test
      */
+    public function createPageAsChildInheritParentStatus201()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(Page::class)->states('disabled')->create();
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => [
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ],
+            'enabled' => true,
+            'parent_id' => $parentPage->id,
+        ];
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJson([
+            'data' => [
+                'enabled' => false,
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function createInformationPageRootAsAdmin201()
     {
         /**
@@ -1877,6 +1915,43 @@ class PagesTest extends TestCase
 
         $response->assertJsonFragment([
             'id' => $parentPage2->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updatePageChangeParentInheritStatusAsAdmin200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage1 = factory(Page::class)->states('withChildren')->create();
+        $parentPage2 = factory(Page::class)->states('disabled', 'withChildren')->create();
+
+        $page = factory(Page::class)
+            ->states('withChildren')
+            ->create([
+                'parent_uuid' => $parentPage1->id,
+            ]);
+
+        $data = [
+            'parent_id' => $parentPage2->id,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJson([
+            'data' => [
+                'enabled' => false,
+            ],
         ]);
     }
 

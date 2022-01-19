@@ -19,6 +19,7 @@ class InformationPageCannotHaveCollection implements Rule
      *
      * @param \App\Models\Page $page
      * @param mixed $pageId
+     * @param mixed $pageType
      */
     public function __construct($pageType)
     {

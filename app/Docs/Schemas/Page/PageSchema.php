@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\Page;
 
+use App\Docs\Schemas\Collection\Category\CollectionCategorySchema;
 use App\Docs\Schemas\File\FileSchema;
 use App\Models\Page;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
@@ -33,6 +34,8 @@ class PageSchema extends Schema
                 PageListItemSchema::create('parent'),
                 Schema::array('children')
                     ->items(PageListItemSchema::create()),
+                Schema::array('collections')
+                    ->items(CollectionCategorySchema::create()),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME),
                 Schema::string('updated_at')

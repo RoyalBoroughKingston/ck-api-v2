@@ -22,7 +22,7 @@ class UpdatePageOperation extends Operation
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->action(static::ACTION_POST)
+            ->action(static::ACTION_PUT)
             ->tags(PagesTag::create())
             ->summary('Update an information page')
             ->description('**Permission:** `Global Admin`')

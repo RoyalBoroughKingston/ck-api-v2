@@ -199,11 +199,12 @@ class Page extends Model
     }
 
     /**
-     * Update the collections relationship
+     * Update the collections relationship.
      *
-     * @param Array $collectionIds
+     * @param array $collectionIds
+     * @param mixed $collections
      * @return \App\Models\Page
-     **/
+     */
     public function updateCollections($collections)
     {
         if (is_array($collections)) {

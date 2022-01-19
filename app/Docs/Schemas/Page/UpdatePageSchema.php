@@ -32,7 +32,12 @@ class UpdatePageSchema extends Schema
                 Schema::string('parent_id'),
                 Schema::integer('order'),
                 Schema::boolean('enabled'),
-                Schema::string('image_file_id')
+                Schema::string('image_file_id'),
+                Schema::array('collections')
+                    ->items(
+                        Schema::string()
+                            ->format(Schema::FORMAT_UUID)
+                    )
             );
     }
 }

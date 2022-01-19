@@ -82,12 +82,13 @@ class PageController extends Controller
             $page->updateParent($parent ? $parent->id : null)
                 ->updateStatus($request->input('enabled'))
                 ->updateOrder($request->input('order'))
-                ->updateImage($request->input('image_file_id'));
+                ->updateImage($request->input('image_file_id'))
+                ->updateCollections($request->input('collections'));
 
             // Update model so far
             $page->save();
 
-            $page->load('parent', 'children');
+            $page->load('parent', 'children', 'collections');
 
             event(EndpointHit::onCreate($request, "Created page [{$page->id}]", $page));
 
@@ -105,7 +106,7 @@ class PageController extends Controller
     public function show(ShowRequest $request, Page $page)
     {
         $baseQuery = Page::query()
-            ->with(['parent', 'children'])
+            ->with(['parent', 'children', 'collections'])
             ->where('id', $page->id);
 
         $page = QueryBuilder::for($baseQuery)
@@ -137,14 +138,15 @@ class PageController extends Controller
             $page->updateParent($request->has('parent_id') ? $request->parent_id : false)
                 ->updateStatus($request->input('enabled'))
                 ->updateOrder($request->input('order'))
-                ->updateImage($request->input('image_file_id'));
+                ->updateImage($request->input('image_file_id'))
+                ->updateCollections($request->input('collections'));
 
             // Update model so far
             $page->save();
 
             event(EndpointHit::onUpdate($request, "Updated page [{$page->id}]", $page));
 
-            return new pageResource($page->fresh(['parent', 'children']));
+            return new pageResource($page->fresh(['parent', 'children', 'collections']));
         });
     }
 

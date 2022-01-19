@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\UserRole;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\InformationPageCannotHaveCollection;
 use App\Rules\LandingPageCannotHaveParent;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
@@ -43,19 +44,21 @@ class UpdateRequest extends FormRequest
             Page::whereIsRoot()->count());
 
         return [
-            'title' => ['string', 'min:1', 'max:255'],
-            'content' => ['array'],
+            'title' => ['sometimes', 'string', 'min:1', 'max:255'],
+            'content' => ['sometimes', 'array'],
             'content.introduction.*.copy' => ['sometimes', 'string', 'min:1'],
             'content.info_pages.*.title' => ['sometimes', 'string', 'min:1'],
             'content.collections.*.title' => ['sometimes', 'string', 'min:1'],
             'content.*.*.title' => ['sometimes', 'string'],
             'content.*.*.copy' => ['sometimes', 'string'],
             'order' => [
+                'sometimes',
                 'integer',
                 'min:0',
                 'max:' . $maxOrder,
             ],
             'enabled' => [
+                'sometimes',
                 'boolean',
                 new UserHasRole(
                     $this->user('api'),
@@ -82,7 +85,7 @@ class UpdateRequest extends FormRequest
             'collections' => [
                 'sometimes',
                 'array',
-                Rule::excludeIf($this->page->page_type === Page::PAGE_TYPE_INFORMATION || $this->page_type === Page::PAGE_TYPE_INFORMATION),
+                new InformationPageCannotHaveCollection($this->input('page_type', $this->page->page_type)),
             ],
             'collections.*' => ['sometimes', 'exists:collections,id'],
         ];

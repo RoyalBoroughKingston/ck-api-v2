@@ -25,6 +25,7 @@ class PageResource extends JsonResource
             'image' => new FileResource($this->image),
             'parent' => new static($this->whenLoaded('parent')),
             'children' => static::collection($this->whenLoaded('children')),
+            'collections' => static::collection($this->whenLoaded('collections')),
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
         ];

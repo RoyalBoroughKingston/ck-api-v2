@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\Page;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\InformationPageCannotHaveCollection;
 use App\Rules\LandingPageCannotHaveParent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -73,7 +74,11 @@ class StoreRequest extends FormRequest
                 new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_SVG),
                 new FileIsPendingAssignment(),
             ],
-            'collections' => ['sometimes', 'array', 'exclude_if:page_type,' . Page::PAGE_TYPE_INFORMATION],
+            'collections' => [
+                'sometimes',
+                'array',
+                new InformationPageCannotHaveCollection($this->input('page_type', Page::PAGE_TYPE_INFORMATION)),
+            ],
             'collections.*' => ['sometimes', 'exists:collections,id'],
         ];
     }

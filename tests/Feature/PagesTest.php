@@ -1544,7 +1544,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createInformationPageWithCollectionsIgnored200()
+    public function createInformationPageWithCollections422()
     {
         /**
          * @var \App\Models\User $user
@@ -1573,38 +1573,7 @@ class PagesTest extends TestCase
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
 
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'parent',
-            'children',
-            'collections',
-            'created_at',
-            'updated_at',
-        ]);
-
-        $response->assertJsonMissing([
-            'id' => $collections->get(0)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(1)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(2)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(3)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(4)->id,
-        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -1650,7 +1619,7 @@ class PagesTest extends TestCase
                 ],
             ],
             'page_type' => 'landing',
-            'collections' => $collections->pluck('id'),
+            'collections' => $collections->pluck('id')->all(),
         ];
         $response = $this->json('POST', '/core/v1/pages', $data);
 
@@ -2267,7 +2236,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updateInformationPageAddCollectionsIgnored200()
+    public function updateInformationPageAddCollections422()
     {
         /**
          * @var \App\Models\User $user
@@ -2284,40 +2253,9 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collections->pluck('id'),
         ];
-        $response = $this->json('POST', '/core/v1/pages', $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
-        $response->assertStatus(Response::HTTP_OK);
-
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'parent',
-            'children',
-            'collections',
-            'created_at',
-            'updated_at',
-        ]);
-
-        $response->assertJsonMissing([
-            'id' => $collections->get(0)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(1)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(2)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(3)->id,
-        ]);
-        $response->assertJsonMissing([
-            'id' => $collections->get(4)->id,
-        ]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -2340,7 +2278,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collections->pluck('id'),
         ];
-        $response = $this->json('POST', '/core/v1/pages', $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2401,7 +2339,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collectionIds->all(),
         ];
-        $response = $this->json('POST', '/core/v1/pages', $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2421,22 +2359,22 @@ class PagesTest extends TestCase
         ]);
 
         $response->assertJsonFragment([
-            'id' => $collectionIds->get(0)->id,
+            'id' => $collectionIds->get(0),
         ]);
         $response->assertJsonFragment([
-            'id' => $collectionIds->get(1)->id,
+            'id' => $collectionIds->get(1),
         ]);
         $response->assertJsonFragment([
-            'id' => $collectionIds->get(2)->id,
+            'id' => $collectionIds->get(2),
         ]);
         $response->assertJsonFragment([
-            'id' => $pageCollectionIds->get(0)->id,
+            'id' => $pageCollectionIds->get(0),
         ]);
         $response->assertJsonFragment([
-            'id' => $pageCollectionIds->get(1)->id,
+            'id' => $pageCollectionIds->get(1),
         ]);
         $response->assertJsonMissing([
-            'id' => $pageCollectionIds->get(2)->id,
+            'id' => $pageCollectionIds->get(2),
         ]);
     }
 

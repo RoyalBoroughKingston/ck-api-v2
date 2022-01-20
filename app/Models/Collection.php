@@ -26,6 +26,16 @@ class Collection extends Model
      */
     protected $casts = [
         'enabled' => 'boolean',
+        'homepage' => 'boolean',
+    ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'homepage' => false,
     ];
 
     /**
@@ -129,6 +139,30 @@ class Collection extends Model
     public function disable()
     {
         $this->enabled = false;
+
+        return $this;
+    }
+
+    /**
+     * Add the Collection to the homepage
+     *
+     * @return \App\Models\Collection
+     */
+    public function addToHomepage()
+    {
+        $this->homepage = true;
+
+        return $this;
+    }
+
+    /**
+     * Remove the Collection from the homepage
+     *
+     * @return \App\Models\Collection
+     */
+    public function removeFromHomepage()
+    {
+        $this->homepage = false;
 
         return $this;
     }

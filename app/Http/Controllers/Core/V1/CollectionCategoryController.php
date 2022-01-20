@@ -83,6 +83,7 @@ class CollectionCategoryController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {
@@ -156,6 +157,7 @@ class CollectionCategoryController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             // Update or create all of the pivot records.

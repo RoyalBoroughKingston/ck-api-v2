@@ -18,7 +18,7 @@ use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Services\DataPersistence\OrganisationEventPersistenceService;
 use DateTime;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganisationEventController extends Controller
@@ -47,18 +47,18 @@ class OrganisationEventController extends Controller
 
         $organisationEvents = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('organisation_id'),
-                Filter::exact('homepage'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('organisation_id'),
+                AllowedFilter::exact('homepage'),
                 'title',
-                Filter::scope('starts_before'),
-                Filter::scope('starts_after'),
-                Filter::scope('ends_before'),
-                Filter::scope('ends_after'),
-                Filter::scope('has_wheelchair_access', 'hasWheelchairAccess'),
-                Filter::scope('has_induction_loop', 'hasInductionLoop'),
-                Filter::scope('collections', 'inCollections'),
-                Filter::custom('has_permission', HasPermissionFilter::class),
+                AllowedFilter::scope('starts_before'),
+                AllowedFilter::scope('starts_after'),
+                AllowedFilter::scope('ends_before'),
+                AllowedFilter::scope('ends_after'),
+                AllowedFilter::scope('has_wheelchair_access', 'hasWheelchairAccess'),
+                AllowedFilter::scope('has_induction_loop', 'hasInductionLoop'),
+                AllowedFilter::scope('collections', 'inCollections'),
+                AllowedFilter::custom('has_permission', HasPermissionFilter::class),
             ])
             ->allowedIncludes(['organisation'])
             ->allowedSorts([

@@ -84,6 +84,7 @@ class CollectionPersonaController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {
@@ -154,6 +155,7 @@ class CollectionPersonaController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {

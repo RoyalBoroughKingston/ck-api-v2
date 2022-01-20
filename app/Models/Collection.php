@@ -144,7 +144,7 @@ class Collection extends Model
     }
 
     /**
-     * Add the Collection to the homepage
+     * Add the Collection to the homepage.
      *
      * @return \App\Models\Collection
      */
@@ -156,7 +156,7 @@ class Collection extends Model
     }
 
     /**
-     * Remove the Collection from the homepage
+     * Remove the Collection from the homepage.
      *
      * @return \App\Models\Collection
      */

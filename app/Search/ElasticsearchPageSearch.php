@@ -2,7 +2,11 @@
 
 namespace App\Search;
 
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
 use App\Contracts\ServiceSearch;
+=======
+use App\Contracts\PageSearch;
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
 use App\Http\Resources\ServiceResource;
 use App\Models\Collection as CollectionModel;
 use App\Models\SearchHistory;
@@ -16,24 +20,20 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use InvalidArgumentException;
 
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
 class ElasticsearchServiceSearch implements ServiceSearch
+=======
+class ElasticsearchPageSearch implements PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
 {
     const MILES = 'mi';
-
     const YARDS = 'yd';
-
     const FEET = 'ft';
-
     const INCHES = 'in';
-
     const KILOMETERS = 'km';
-
     const METERS = 'm';
-
     const CENTIMETERS = 'cm';
-
     const MILLIMETERS = 'mm';
-
     const NAUTICAL_MILES = 'nmi';
 
     /**
@@ -72,9 +72,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $term
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticsearchPageSearch
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyQuery(string $term): ServiceSearch
+=======
+    public function applyQuery(string $term): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         $should = &$this->query['query']['bool']['must']['bool']['should'];
 
@@ -131,9 +135,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $category
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticsearchPageSearch
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyCategory(string $category): ServiceSearch
+=======
+    public function applyCategory(string $category): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         $categoryModel = CollectionModel::query()
             ->with('taxonomies')
@@ -158,9 +166,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $persona
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticsearchPageSearch
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyPersona(string $persona): ServiceSearch
+=======
+    public function applyPersona(string $persona): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         $categoryModel = CollectionModel::query()
             ->with('taxonomies')
@@ -187,7 +199,11 @@ class ElasticsearchServiceSearch implements ServiceSearch
      * @param string $waitTime
      * @return \App\Contracts\Search
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyWaitTime(string $waitTime): ServiceSearch
+=======
+    public function applyWaitTime(string $waitTime): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         if (!Service::waitTimeIsValid($waitTime)) {
             throw new InvalidArgumentException("The wait time [$waitTime] is not valid");
@@ -236,7 +252,11 @@ class ElasticsearchServiceSearch implements ServiceSearch
      * @param bool $isFree
      * @return \App\Contracts\Search
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyIsFree(bool $isFree): ServiceSearch
+=======
+    public function applyIsFree(bool $isFree): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         $this->query['query']['bool']['filter'][] = [
             'term' => [
@@ -250,9 +270,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
     /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticsearchPageSearch
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyOrder(string $order, Coordinate $location = null): ServiceSearch
+=======
+    public function applyOrder(string $order, Coordinate $location = null): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         if ($order === static::ORDER_DISTANCE) {
             $this->query['sort'] = [
@@ -273,7 +297,11 @@ class ElasticsearchServiceSearch implements ServiceSearch
      * @param int $radius
      * @return \App\Contracts\Search
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyRadius(Coordinate $location, int $radius): ServiceSearch
+=======
+    public function applyRadius(Coordinate $location, int $radius): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         $this->query['query']['bool']['filter'][] = [
             'nested' => [
@@ -290,7 +318,11 @@ class ElasticsearchServiceSearch implements ServiceSearch
         return $this;
     }
 
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     public function applyEligibilities(array $eligibilityNames): ServiceSearch
+=======
+    public function applyEligibilities(array $eligibilityNames): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         $eligibilities = Taxonomy::whereIn('name', $eligibilityNames)->get();
         $eligibilityIds = $eligibilities->pluck('id')->all();
@@ -443,9 +475,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param array $response
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticsearchPageSearch
      */
+<<<<<<< HEAD:app/Search/ElasticsearchServiceSearch.php
     protected function logMetrics(array $response): ServiceSearch
+=======
+    protected function logMetrics(array $response): PageSearch
+>>>>>>> fcb21b09... Created entities for page search:app/Search/ElasticsearchPageSearch.php
     {
         SearchHistory::create([
             'query' => $this->query,

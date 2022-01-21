@@ -143,7 +143,8 @@ Route::prefix('/core/v1')
                 ->name('reports.download');
 
             // Search.
-            Route::post('/search', 'SearchController')->name('search.services');
+            Route::post('/search', 'SearchController')->name('search');
+            Route::post('/search/pages', 'Search\\PageController')->name('search');
             Route::post('/search/events', 'Search\\EventController')->name('search.events');
 
             // Service Locations.

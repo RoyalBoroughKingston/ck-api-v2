@@ -16,7 +16,7 @@ class PagesIndexPath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/information-pages/index')
+            ->route('/pages/index')
             ->operations(
                 IndexPageOperation::create()
                     ->action(IndexPageOperation::ACTION_POST)

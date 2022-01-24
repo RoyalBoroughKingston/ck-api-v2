@@ -18,7 +18,7 @@ class PagesImagePath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/information-pages/{Page}/image.png')
+            ->route('/pages/{Page}/image.png')
             ->parameters(
                 Parameter::path()
                     ->name('Page')

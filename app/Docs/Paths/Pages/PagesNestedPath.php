@@ -20,7 +20,7 @@ class PagesNestedPath extends PathItem
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)
-            ->route('/information-pages/{Page}')
+            ->route('/pages/{Page}')
             ->parameters(
                 Parameter::path()
                     ->name('Page')

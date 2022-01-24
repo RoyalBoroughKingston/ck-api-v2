@@ -88,7 +88,7 @@ class PageController extends Controller
             // Update model so far
             $page->save();
 
-            $page->load('parent', 'children', 'collections');
+            $page->load('parent', 'children', 'collectionCategories', 'collectionPersona');
 
             event(EndpointHit::onCreate($request, "Created page [{$page->id}]", $page));
 
@@ -106,7 +106,7 @@ class PageController extends Controller
     public function show(ShowRequest $request, Page $page)
     {
         $baseQuery = Page::query()
-            ->with(['parent', 'children', 'collections'])
+            ->with(['parent', 'children', 'collectionCategories', 'collectionPersona'])
             ->where('id', $page->id);
 
         $page = QueryBuilder::for($baseQuery)
@@ -146,7 +146,7 @@ class PageController extends Controller
 
             event(EndpointHit::onUpdate($request, "Updated page [{$page->id}]", $page));
 
-            return new pageResource($page->fresh(['parent', 'children', 'collections']));
+            return new pageResource($page->fresh(['parent', 'children', 'collectionCategories', 'collectionPersona']));
         });
     }
 

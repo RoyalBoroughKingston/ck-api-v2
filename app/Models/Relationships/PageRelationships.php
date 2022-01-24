@@ -22,4 +22,20 @@ trait PageRelationships
     {
         return $this->belongsToMany(Collection::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function collectionCategories()
+    {
+        return $this->collections()->where('type', Collection::TYPE_CATEGORY);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function collectionPersona()
+    {
+        return $this->collections()->where('type', Collection::TYPE_PERSONA);
+    }
 }

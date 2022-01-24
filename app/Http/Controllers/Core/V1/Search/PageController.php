@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Core\V1\Search;
 
@@ -20,6 +20,9 @@ class PageController
         if ($request->has('query')) {
             $search->applyQuery($request->input('query'));
         }
+
+        // Apply order.
+        $search->applyOrder('relevance');
 
         // Perform the search.
         return $search->paginate($request->page, $request->per_page);

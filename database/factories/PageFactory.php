@@ -77,4 +77,5 @@ $factory->afterCreatingState(Page::class, 'withChildren', function (Page $page, 
 
 $factory->afterCreatingState(Page::class, 'withCollections', function (Page $page, Faker $faker) {
     $page->collections()->attach(factory(Collection::class, 3)->create()->pluck('id')->all());
+    $page->save();
 });

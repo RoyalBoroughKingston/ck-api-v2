@@ -16,7 +16,7 @@ class Page extends Model
     use PageScopes;
     use NodeTrait;
     /**
-     * NodeTrait::usesSoftDelete and Laravel\Scout\Searchable::usesSoftDelete clash
+     * NodeTrait::usesSoftDelete and Laravel\Scout\Searchable::usesSoftDelete clash.
      */
     use Searchable {
         Searchable::usesSoftDelete insteadof NodeTrait;
@@ -77,23 +77,45 @@ class Page extends Model
     protected $mapping = [
         'properties' => [
             'id' => ['type' => 'keyword'],
+            'enabled' => ['type' => 'boolean'],
             'title' => [
                 'type' => 'text',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            'content' => ['type' => 'text'],
+            'content' => [
+                'properties' => [
+                    'introduction' => [
+                        'properties' => [
+                            'title' => ['type' => 'text'],
+                            'copy' => ['type' => 'text'],
+                        ],
+                    ],
+                    'about' => [
+                        'properties' => [
+                            'title' => ['type' => 'text'],
+                            'copy' => ['type' => 'text'],
+                        ],
+                    ],
+                    'info_pages' => [
+                        'properties' => [
+                            'title' => ['type' => 'text'],
+                            'copy' => ['type' => 'text'],
+                        ],
+                    ],
+                    'collections' => [
+                        'properties' => [
+                            'title' => ['type' => 'text'],
+                            'copy' => ['type' => 'text'],
+                        ],
+                    ],
+                ],
+            ],
+            'collection_categories' => ['type' => 'text'],
+            'collection_personas' => ['type' => 'text'],
         ],
     ];
-
-    /**
-     * Overridden to always boot searchable.
-     */
-    // public static function bootSearchable()
-    // {
-    //     self::sourceBootSearchable();
-    // }
 
     /**
      * Get the indexable data array for the model.
@@ -104,8 +126,11 @@ class Page extends Model
     {
         return [
             'id' => $this->id,
+            'enabled' => $this->enabled,
             'title' => $this->title,
             'content' => $this->content,
+            'collection_categories' => $this->collections()->where('type', Collection::TYPE_CATEGORY)->pluck('name')->all(),
+            'collection_personas' => $this->collections()->where('type', Collection::TYPE_PERSONA)->pluck('name')->all(),
         ];
     }
 
@@ -269,10 +294,11 @@ class Page extends Model
      * @param mixed $collections
      * @return \App\Models\Page
      */
-    public function updateCollections($collections)
+    public function updateCollections($collectionIds)
     {
-        if (is_array($collections)) {
-            $this->collections()->sync($collections);
+        if (is_array($collectionIds)) {
+            $this->collections()->sync($collectionIds);
+            $this->save();
         }
 
         return $this;

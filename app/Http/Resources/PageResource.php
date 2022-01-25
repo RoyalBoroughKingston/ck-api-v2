@@ -26,7 +26,7 @@ class PageResource extends JsonResource
             'parent' => new static($this->whenLoaded('parent')),
             'children' => static::collection($this->whenLoaded('children')),
             'collection_categories' => CollectionCategoryResource::collection($this->whenLoaded('collectionCategories')),
-            'collection_persona' => CollectionPersonaResource::collection($this->whenLoaded('collectionPersona')),
+            'collection_personas' => CollectionPersonaResource::collection($this->whenLoaded('collectionPersonas')),
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),
         ];

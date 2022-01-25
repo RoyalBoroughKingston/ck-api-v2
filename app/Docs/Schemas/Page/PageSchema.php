@@ -37,7 +37,7 @@ class PageSchema extends Schema
                     ->items(PageListItemSchema::create()),
                 Schema::array('collection_categories')
                     ->items(CollectionCategorySchema::create()),
-                Schema::array('collection_persona')
+                Schema::array('collection_personas')
                     ->items(CollectionPersonaSchema::create()),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME),

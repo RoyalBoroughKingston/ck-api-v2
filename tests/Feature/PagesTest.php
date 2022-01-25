@@ -859,7 +859,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1096,7 +1096,7 @@ class PagesTest extends TestCase
             ],
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1179,7 +1179,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1254,7 +1254,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1413,7 +1413,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1479,7 +1479,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1545,7 +1545,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1650,7 +1650,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1726,7 +1726,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1877,7 +1877,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -1934,7 +1934,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -2005,7 +2005,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -2316,7 +2316,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);
@@ -2378,7 +2378,7 @@ class PagesTest extends TestCase
             'parent',
             'children',
             'collection_categories',
-            'collection_persona',
+            'collection_personas',
             'created_at',
             'updated_at',
         ]);

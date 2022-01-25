@@ -34,7 +34,7 @@ trait PageRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function collectionPersona()
+    public function collectionPersonas()
     {
         return $this->collections()->where('type', Collection::TYPE_PERSONA);
     }

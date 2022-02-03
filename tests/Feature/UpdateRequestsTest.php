@@ -795,6 +795,7 @@ class UpdateRequestsTest extends TestCase
                     'file_id' => $galleryImage2['id'],
                 ],
             ],
+            'tags' => [],
             'category_taxonomies' => [],
         ];
 

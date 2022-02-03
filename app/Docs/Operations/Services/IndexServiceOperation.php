@@ -78,6 +78,14 @@ EOT
                             Service::REFERRAL_METHOD_NONE
                         )
                     ),
+                FilterParameter::create(null, 'tags.slug')
+                    ->description('Comma separated list of tag slugs to filter by')
+                    ->schema(
+                        Schema::array()->items(
+                            Schema::string()
+                        )
+                    )
+                    ->style(FilterParameter::STYLE_SIMPLE),
                 FilterParameter::create(null, 'has_permission')
                     ->description('Filter services to only ones they have permissions for')
                     ->schema(Schema::boolean()),

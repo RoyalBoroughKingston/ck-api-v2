@@ -42,6 +42,7 @@ class UpdateServiceSchema extends Schema
                 'useful_infos',
                 'offerings',
                 'gallery_items',
+                'tags',
                 'category_taxonomies',
                 'ends_at'
             )
@@ -123,6 +124,13 @@ class UpdateServiceSchema extends Schema
                         Schema::object()->properties(
                             Schema::string('file_id')
                                 ->format(Schema::FORMAT_UUID)
+                        )
+                    ),
+                Schema::array('tags')
+                    ->items(
+                        Schema::object()->properties(
+                            Schema::string('slug'),
+                            Schema::string('label')
                         )
                     ),
                 Schema::array('category_taxonomies')

@@ -262,6 +262,21 @@ class UpdateRequest extends FormRequest
                 }),
             ],
 
+            'tags' => [
+                'array',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->tags->only(['slug', 'label'])->all()
+                ),
+            ],
+            'tags.*' => ['array'],
+            'tags.*.slug' => ['required_with:tags.*', 'string', 'min:1', 'max:255', new Slug()],
+            'tags.*.label' => ['required_with:tags.*', 'string', 'min:1', 'max:255'],
+
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => [
                 'exists:taxonomies,id',

@@ -62,6 +62,7 @@ class ServiceController extends Controller
                 AllowedFilter::custom('organisation_name', new OrganisationNameFilter()),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('referral_method'),
+                AllowedFilter::exact('tags.slug'),
                 AllowedFilter::custom('has_permission', new HasPermissionFilter()),
             ])
             ->allowedIncludes(['organisation'])

@@ -193,6 +193,10 @@ Route::prefix('/core/v1')
             Route::put('/stop-words', 'StopWordsController@update')
                 ->name('stop-words.update');
 
+            // Tags.
+            Route::get('/tags', 'TagController@index')
+                ->name('tags.index');
+
             // Taxonomy Categories.
             Route::match(['GET', 'POST'], '/taxonomies/categories/index', 'TaxonomyCategoryController@index');
             Route::apiResource('/taxonomies/categories', 'TaxonomyCategoryController')

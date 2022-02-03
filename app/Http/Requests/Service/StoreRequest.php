@@ -203,6 +203,22 @@ class StoreRequest extends FormRequest
                 new FileIsPendingAssignment(),
             ],
 
+            'tags' => [
+                'present',
+                'array',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    []
+                ),
+            ],
+            'tags.*' => ['array'],
+            'tags.*.slug' => ['required_with:tags.*', 'string', 'min:1', 'max:255', new Slug()],
+            'tags.*.label' => ['required_with:tags.*', 'string', 'min:1', 'max:255'],
+
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo_file_id' => [

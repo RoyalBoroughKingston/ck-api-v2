@@ -26,6 +26,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Str;
 use ScoutElastic\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
@@ -336,6 +337,23 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
                     'order' => $offering['order'],
                 ]);
             }
+        }
+
+        // Update the tag records.
+        if (array_key_exists('tags', $data)) {
+            $tagIds = [];
+            foreach ($data['tags'] as $tagField) {
+                $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
+                if (null === $tag) {
+                    $tag = new Tag([
+                        'slug' => Str::slug($tagField['slug']),
+                        'label' => $tagField['label'],
+                    ]);
+                    $tag->save();
+                }
+                $tagIds[] = $tag->id;
+            }
+            $this->tags()->sync($tagIds);
         }
 
         // Update the gallery item records.

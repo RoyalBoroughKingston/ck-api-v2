@@ -147,6 +147,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -383,6 +384,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -473,6 +475,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
@@ -537,6 +540,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
@@ -626,6 +630,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -680,6 +685,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -733,6 +739,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -788,6 +795,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -851,6 +859,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -895,6 +904,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -951,6 +961,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1017,6 +1028,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1081,6 +1093,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1136,6 +1149,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1196,6 +1210,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1319,6 +1334,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1408,6 +1424,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1523,6 +1540,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -1602,6 +1620,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -1721,6 +1740,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1785,6 +1805,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1849,6 +1870,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -1913,6 +1935,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1975,6 +1998,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -2034,6 +2058,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -2096,6 +2121,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -2156,6 +2182,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -2215,6 +2242,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2262,6 +2290,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2309,6 +2338,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2356,6 +2386,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2403,6 +2434,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2452,6 +2484,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2504,6 +2537,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
@@ -2552,6 +2586,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [],
 
             'category_taxonomies' => [],
@@ -3327,6 +3362,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -4783,6 +4819,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -4855,6 +4892,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -4940,6 +4978,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
             'ends_at' => null,
             'useful_infos' => [
                 [
@@ -5385,6 +5424,7 @@ class ServicesTest extends TestCase
                 'referral_button_text' => $service->referral_button_text,
                 'referral_email' => $service->referral_email,
                 'referral_url' => $service->referral_url,
+                'cqc_location_id' => $service->cqc_location_id,
                 'ends_at' => null,
                 'useful_infos' => [],
                 'social_medias' => [

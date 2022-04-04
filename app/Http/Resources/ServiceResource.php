@@ -40,6 +40,7 @@ class ServiceResource extends JsonResource
             'referral_button_text' => $this->referral_button_text,
             'referral_email' => $this->referral_email,
             'referral_url' => $this->referral_url,
+            'cqc_location_id' => $this->cqc_location_id,
             'useful_infos' => UsefulInfoResource::collection($this->usefulInfos),
             'offerings' => OfferingResource::collection($this->offerings),
             'gallery_items' => ServiceGalleryItemResource::collection($this->serviceGalleryItems),

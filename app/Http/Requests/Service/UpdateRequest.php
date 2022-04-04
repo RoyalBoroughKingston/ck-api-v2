@@ -131,6 +131,7 @@ class UpdateRequest extends FormRequest
                 new UkPhoneNumber('Service Contact Phone - Please enter a valid UK telephone number.'),
             ],
             'contact_email' => ['nullable', 'email', 'max:255'],
+            'cqc_location_id' => ['nullable', 'string', 'regex:/^\d\-\d+$/'],
             'show_referral_disclaimer' => [
                 'boolean',
                 new UserHasRole(

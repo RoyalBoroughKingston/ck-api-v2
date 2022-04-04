@@ -287,6 +287,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             'contact_name' => Arr::get($data, 'contact_name', $this->contact_name),
             'contact_phone' => Arr::get($data, 'contact_phone', $this->contact_phone),
             'contact_email' => Arr::get($data, 'contact_email', $this->contact_email),
+            'cqc_location_id' => Arr::get($data, 'cqc_location_id', $this->cqc_location_id),
             'show_referral_disclaimer' => Arr::get($data, 'show_referral_disclaimer', $this->show_referral_disclaimer),
             'referral_method' => Arr::get($data, 'referral_method', $this->referral_method),
             'referral_button_text' => Arr::get($data, 'referral_button_text', $this->referral_button_text),

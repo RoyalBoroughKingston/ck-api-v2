@@ -2208,6 +2208,63 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    public function test_service_admin_can_update_cqc_location_id()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'cqc_location_id' => null,
+        ]);
+        $taxonomy = factory(Taxonomy::class)->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $cqcLocationId = $this->faker->numerify('#-#########');
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $cqcLocationId,
+            'useful_infos' => [],
+            'offerings' => [],
+
+            'category_taxonomies' => [
+                $taxonomy->id,
+                $taxonomy->parent_id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $service->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $service->id)->firstOrFail();
+        $this->assertEquals($cqcLocationId, $updateRequest->data['cqc_location_id']);
+    }
+
     public function test_service_admin_cannot_update_status()
     {
         $service = factory(Service::class)->create([

@@ -138,7 +138,7 @@ class PageController extends Controller
             $page->updateParent($request->has('parent_id') ? $request->parent_id : false)
                 ->updateStatus($request->input('enabled'))
                 ->updateOrder($request->input('order'))
-                ->updateImage($request->input('image_file_id'))
+                ->updateImage($request->has('image_file_id') ? $request->image_file_id : $page->image_file_id)
                 ->updateCollections($request->input('collections'));
 
             // Update model so far

@@ -254,6 +254,7 @@ class Page extends Model
 
     /**
      * Update the image relationship.
+     * Can be passed either null, the current image id or a new image id.
      *
      * @param string $imageId
      * @return \App\Models\Page

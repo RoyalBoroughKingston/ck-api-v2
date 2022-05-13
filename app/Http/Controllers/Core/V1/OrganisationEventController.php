@@ -18,6 +18,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\File;
 use App\Models\OrganisationEvent;
+use App\Models\Taxonomy;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filter;
@@ -122,6 +123,10 @@ class OrganisationEventController extends Controller
                 }
             }
 
+            // Create the category taxonomy records.
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $organisationEvent->syncTaxonomyRelationships($taxonomies);
+
             event(EndpointHit::onCreate($request, "Created organisation event [{$organisationEvent->id}]", $organisationEvent));
 
             return new OrganisationEventResource($organisationEvent);
@@ -184,6 +189,7 @@ class OrganisationEventController extends Controller
                 'is_virtual' => $request->missing('is_virtual'),
                 'location_id' => $request->missing('location_id'),
                 'image_file_id' => $request->missing('image_file_id'),
+                'category_taxonomies' => $request->missing('category_taxonomies'),
             ]);
 
             if ($request->filled('image_file_id')) {

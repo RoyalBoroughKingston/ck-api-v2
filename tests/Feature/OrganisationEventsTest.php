@@ -1319,6 +1319,11 @@ class OrganisationEventsTest extends TestCase
             'booking_summary' => $organisationEvent->booking_summary,
             'booking_url' => $organisationEvent->booking_url,
             'booking_cta' => $organisationEvent->booking_cta,
+            'homepage' => $organisationEvent->homepage,
+            'is_virtual' => $organisationEvent->is_virtual,
+            'google_calendar_link' => $organisationEvent->googleCalendarLink,
+            'microsoft_calendar_link' => $organisationEvent->microsoftCalendarLink,
+            'apple_calendar_link' => $organisationEvent->appleCalendarLink,
             'location_id' => $organisationEvent->location_id,
             'organisation_id' => $organisationEvent->organisation_id,
             'category_taxonomies' => [],
@@ -1374,6 +1379,59 @@ class OrganisationEventsTest extends TestCase
             return ($event->getAction() === Audit::ACTION_READ) &&
                 ($event->getModel()->id === $organisationEvent->id);
         });
+    }
+
+    /**
+     * @test
+     */
+    public function getSingleOrganisationEventIcalAsGuest200()
+    {
+        $organisationEvent = factory(OrganisationEvent::class)->states('notVirtual', 'withOrganiser')->create();
+
+        $now = new DateTime();
+        $start = $organisationEvent->start_date->copy();
+        list($startHour, $startMinute, $startSecond) = explode(':', $organisationEvent->start_time);
+        $start->hour($startHour)->minute($startMinute)->second($startSecond);
+        $end = $organisationEvent->end_date->copy();
+        list($endHour, $endMinute, $endSecond) = explode(':', $organisationEvent->end_time);
+        $end->hour($endHour)->minute($endMinute)->second($endSecond);
+        $urlsafeTitle = urlencode($organisationEvent->title);
+        $urlsafeIntro = urlencode($organisationEvent->intro);
+        $urlsafeLocation = urlencode(implode(',', [
+            $organisationEvent->location->address_line_1,
+            $organisationEvent->location->city,
+            $organisationEvent->location->postcode,
+        ]));
+
+        $iCalendar = implode("\r\n", [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//hacksw/handcal//NONSGML v1.0//EN',
+            'BEGIN:VEVENT',
+            'UID:' . $organisationEvent->id,
+            'DTSTAMP:' . $now->format('Ymd\\THis\\Z'),
+            'ORGANIZER;CN=' . $organisationEvent->organiser_name . ':MAILTO:' . $organisationEvent->organiser_email,
+            'DTSTART:' . $start->format('Ymd\\THis\\Z'),
+            'DTEND:' . $end->format('Ymd\\THis\\Z'),
+            'SUMMARY:' . $organisationEvent->title,
+            'DESCRIPTION:' . $organisationEvent->description,
+            'GEO:' . $organisationEvent->location->lat . ';' . $organisationEvent->location->lon,
+            'END:VEVENT',
+            'END:VCALENDAR',
+        ]);
+
+        $this->assertEquals('https://calendar.google.com/calendar/render?action=TEMPLATE&dates=' . urlencode($start->format('Ymd\\THis\\Z') . '/' . $end->format('Ymd\\THis\\Z')) . '&details=' . $urlsafeTitle . '&location=' . $urlsafeLocation . '&text=' . $urlsafeIntro, $organisationEvent->googleCalendarlink);
+
+        $this->assertEquals('https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&startdt=' . urlencode($start->format(DateTime::ATOM)) . '&enddt=' . urlencode($end->format(DateTime::ATOM)) . '&subject=' . $urlsafeTitle . '&location=' . $urlsafeLocation . '&body=' . $urlsafeIntro, $organisationEvent->microsoftCalendarLink);
+
+        $this->assertEquals(secure_url('/core/v1/organisation-events/' . $organisationEvent->id . '/event.ics'), $organisationEvent->appleCalendarLink);
+
+        $response = $this->get($organisationEvent->appleCalendarLink);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'text/calendar; charset=UTF-8');
+
+        $this->assertEquals($iCalendar, $response->content());
     }
 
     /**

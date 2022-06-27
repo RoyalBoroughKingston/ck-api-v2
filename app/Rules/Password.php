@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Password implements Rule
 {
-    const ALLOWED_SPECIAL_CHARACTERS = '!"#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
+    const ALLOWED_SPECIAL_CHARACTERS = '!#$%&()*+,-./:;<=>?@[]^_`{|}~';
 
     /**
      * @var string|null

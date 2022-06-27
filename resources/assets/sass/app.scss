@@ -52,3 +52,11 @@ body {
 .govuk-button:focus {
   background-color: #263146 !important;
 }
+
+.warning {
+  background-color: #f9b34a;
+
+  .govuk-warning-text {
+    margin-bottom: 0;
+  }
+}

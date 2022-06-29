@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::namespace('Auth')->group(function () {
+Route::namespace ('Auth')->group(function () {
     // Authentication Routes.
     Route::get('login', 'LoginController@showLoginForm')->name('login');
     Route::post('login', 'LoginController@login');

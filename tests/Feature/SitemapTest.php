@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Collection;
 use App\Models\Organisation;
+use App\Models\Page;
 use App\Models\Service;
 use DOMDocument;
 use Illuminate\Http\Response;
@@ -212,6 +213,34 @@ class SitemapTest extends TestCase
 
         foreach ($locTags as $tag) {
             if ($this->frontendUrl('results?persona=' . $collection->id) === $tag->textContent) {
+                $included = true;
+            }
+        }
+
+        return $this->assertTrue($included);
+    }
+
+    /**
+     * @test
+     */
+    public function getSitemapIncludesPages200()
+    {
+        /** @var \App\Models\Page $page */
+        $page = factory(Page::class)->create();
+        $included = false;
+
+        $response = $this->get('/sitemap');
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $xml = new DOMDocument('1.0', 'UTF-8');
+
+        $xml->loadXML($response->content());
+
+        $locTags = $xml->getElementsByTagName('loc');
+
+        foreach ($locTags as $tag) {
+            if ($this->frontendUrl($page->id) === $tag->textContent) {
                 $included = true;
             }
         }

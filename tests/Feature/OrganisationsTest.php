@@ -335,6 +335,55 @@ class OrganisationsTest extends TestCase
         $response->assertJsonFragment($responsePayload);
     }
 
+    public function test_all_global_admins_added_as_organisation_admin_when_one_is_created()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $globalAdmin1 = factory(User::class)->create()->makeGlobalAdmin();
+        $globalAdmin2 = factory(User::class)->create()->makeGlobalAdmin();
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+            'category_taxonomies' => [],
+        ];
+
+        Passport::actingAs($globalAdmin1);
+
+        $response = $this->json('POST', '/core/v1/organisations', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $responseData = $response->json('data');
+
+        $organisation = Organisation::find($responseData['id']);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin1->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'organisation_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin2->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'organisation_id' => $responseData['id'],
+        ]);
+
+        $this->assertTrue($globalAdmin1->isOrganisationAdmin($organisation));
+        $this->assertTrue($globalAdmin2->isOrganisationAdmin($organisation));
+    }
+
     public function test_audit_created_when_created()
     {
         $this->fakeEvents();

@@ -1260,6 +1260,202 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function global_admin_is_added_as_service_admin_when_organisation_admin_creates_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $globalAdmin = factory(User::class)->create()->makeGlobalAdmin();
+        $orgAdmin = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        //Given an organisation admin is logged in
+        Passport::actingAs($orgAdmin);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+            'eligibility_types' => [
+                'custom' => [],
+                'taxonomies' => [],
+            ],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $responseData = json_decode($response->getContent());
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = $responseData->id;
+
+        Passport::actingAs($globalAdmin);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $service = Service::where('slug', 'test-service')->first();
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service->id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $service->id,
+        ]);
+
+        $this->assertTrue($globalAdmin->isServiceWorker($service));
+        $this->assertTrue($globalAdmin->isServiceAdmin($service));
+        $this->assertTrue($globalAdmin->isOrganisationAdmin($service->organisation));
+    }
+
+    /**
+     * @test
+     */
+    public function global_admin_is_added_as_service_admin_when_other_global_admin_creates_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $taxonomy = factory(Taxonomy::class)->create();
+        $globalAdmin1 = factory(User::class)->create()->makeGlobalAdmin();
+        $globalAdmin2 = factory(User::class)->create()->makeGlobalAdmin();
+
+        //Given an global admin is logged in
+        Passport::actingAs($globalAdmin1);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+            'eligibility_types' => [
+                'custom' => [],
+                'taxonomies' => [],
+            ],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $responseData = $response->json('data');
+
+        $service = Service::find($responseData['id']);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin1->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin1->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin2->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin2->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertTrue($globalAdmin1->isServiceWorker($service));
+        $this->assertTrue($globalAdmin1->isServiceAdmin($service));
+        $this->assertTrue($globalAdmin1->isOrganisationAdmin($service->organisation));
+
+        $this->assertTrue($globalAdmin2->isServiceWorker($service));
+        $this->assertTrue($globalAdmin2->isServiceAdmin($service));
+        $this->assertTrue($globalAdmin2->isOrganisationAdmin($service->organisation));
+    }
+
     /*
      * Get a specific service.
      */
@@ -2504,23 +2700,41 @@ class ServicesTest extends TestCase
 
     public function test_global_admin_can_update_organisation_id()
     {
+        $originalOrganisation = factory(Organisation::class)->create([
+            'name' => 'Original Organisation',
+        ]);
         $service = factory(Service::class)->create([
+            'organisation_id' => $originalOrganisation->id,
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = factory(Taxonomy::class)->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $newOrganisation = factory(Organisation::class)->create([
+            'name' => 'New Organisation',
+        ]);
+        $globalAdmin = factory(User::class)->create()->makeGlobalAdmin();
+        $originalOrganisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        $newOrganisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($newOrganisation);
 
-        Passport::actingAs($user);
+        $this->assertFalse($newOrganisationAdmin->isServiceAdmin($service));
+        $this->assertTrue($originalOrganisationAdmin->isServiceAdmin($service));
+
+        Passport::actingAs($globalAdmin);
 
         $payload = [
-            'organisation_id' => factory(Organisation::class)->create()->id,
+            'organisation_id' => $newOrganisation->id,
         ];
+
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['data' => $payload]);
+
+        $service->refresh();
+
+        $this->assertTrue($newOrganisationAdmin->isServiceAdmin($service));
+        $this->assertFalse($originalOrganisationAdmin->isServiceAdmin($service));
     }
 
     public function test_global_admin_can_update_organisation_id_with_preview_only()

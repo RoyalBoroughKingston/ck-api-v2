@@ -40,4 +40,14 @@ trait PageMutators
 
         return $this->attributes['content'] = json_encode($value);
     }
+
+    /**
+     * Get the last ancestor with type 'landing page'
+     *
+     * @return \App\Models\Page | null
+     **/
+    public function getLandingPageAttribute()
+    {
+        return $this->landingPageAncestors->last();
+    }
 }

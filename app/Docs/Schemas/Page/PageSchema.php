@@ -34,6 +34,7 @@ class PageSchema extends Schema
                         Page::PAGE_TYPE_LANDING
                     ),
                 FileSchema::create('image'),
+                PageListItemSchema::create('landing_page'),
                 PageListItemSchema::create('parent'),
                 Schema::array('children')
                     ->items(PageListItemSchema::create()),

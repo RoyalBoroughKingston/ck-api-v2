@@ -38,4 +38,12 @@ trait PageRelationships
     {
         return $this->collections()->where('type', Collection::TYPE_PERSONA);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function landingPageAncestors()
+    {
+        return $this->ancestors()->where('page_type', static::PAGE_TYPE_LANDING);
+    }
 }

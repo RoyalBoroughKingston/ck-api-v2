@@ -28,6 +28,7 @@ class UpdatePageSchema extends Schema
                         Page::PAGE_TYPE_LANDING
                     ),
                 Schema::string('title'),
+                Schema::string('excerpt'),
                 Schema::string('content')->format('JSON'),
                 Schema::string('parent_id'),
                 Schema::integer('order'),

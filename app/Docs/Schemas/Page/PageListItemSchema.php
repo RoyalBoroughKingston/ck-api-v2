@@ -21,6 +21,7 @@ class PageListItemSchema extends Schema
                 Schema::string('id')
                     ->format(Schema::TYPE_OBJECT),
                 Schema::string('title'),
+                Schema::string('excerpt'),
                 Schema::string('content'),
                 Schema::integer('order'),
                 Schema::boolean('enabled'),

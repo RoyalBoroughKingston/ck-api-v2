@@ -72,6 +72,7 @@ class PageController extends Controller
             $page = Page::make(
                 [
                     'title' => $request->input('title'),
+                    'excerpt' => $request->input('excerpt'),
                     'content' => $request->input('content'),
                     'page_type' => $request->input('page_type', Page::PAGE_TYPE_INFORMATION),
                 ],
@@ -129,6 +130,7 @@ class PageController extends Controller
         return DB::transaction(function () use ($request, $page) {
             // Core fields
             $page->title = $request->input('title', $page->title);
+            $page->excerpt = $request->input('excerpt', $page->excerpt);
             $page->page_type = $request->input('page_type', $page->page_type);
             if ($request->filled('content')) {
                 $page->content = $request->input('content', $page->content);

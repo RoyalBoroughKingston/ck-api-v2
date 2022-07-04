@@ -522,6 +522,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -573,6 +574,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -655,6 +657,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -802,6 +805,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -834,6 +838,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -851,6 +856,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -884,6 +890,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -942,11 +949,25 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [],
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => str_pad($this->faker->paragraph(2), 151, 'words '),
+            'content' => [
+                'introduction' => [
+                    'copy' => [
+                        $this->faker->realText(),
+                    ],
+                ],
+            ],
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->json('POST', '/core/v1/pages', [
+            'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -959,6 +980,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -971,6 +993,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -985,6 +1008,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -998,6 +1022,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1011,6 +1036,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1032,6 +1058,7 @@ class PagesTest extends TestCase
 
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1062,6 +1089,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1078,6 +1106,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1119,6 +1148,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1155,6 +1185,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1171,6 +1202,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1212,6 +1244,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1246,6 +1279,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1291,6 +1325,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1333,6 +1368,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1383,6 +1419,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1400,6 +1437,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1449,6 +1487,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1466,6 +1505,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1515,6 +1555,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1532,6 +1573,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1574,6 +1616,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1607,6 +1650,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
+            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
             'content' => [
                 'introduction' => [
                     'copy' => [
@@ -1642,6 +1686,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1718,6 +1763,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1864,6 +1910,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1926,6 +1973,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -1992,6 +2040,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -2308,6 +2357,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',
@@ -2370,6 +2420,7 @@ class PagesTest extends TestCase
         $response->assertJsonResource([
             'id',
             'title',
+            'excerpt',
             'content',
             'order',
             'enabled',

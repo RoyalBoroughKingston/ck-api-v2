@@ -39,7 +39,8 @@ class StoreRequest extends FormRequest
         Page::whereIsRoot()->count();
 
         return [
-            'title' => ['required', 'string', 'min:1', 'max:255'],
+            'title' => ['required', 'string', 'min:1', 'max:128'],
+            'excerpt' => ['string', 'min:1', 'max:150'],
             'content' => ['required', 'array'],
             'content.introduction.copy' => ['required', 'array'],
             'content.introduction.copy.*' => ['required', 'string', 'min:1'],

@@ -44,7 +44,8 @@ class UpdateRequest extends FormRequest
             Page::whereIsRoot()->count());
 
         return [
-            'title' => ['sometimes', 'string', 'min:1', 'max:255'],
+            'title' => ['sometimes', 'string', 'min:1', 'max:128'],
+            'excerpt' => ['sometimes', 'string', 'min:1', 'max:150'],
             'content' => ['sometimes', 'array'],
             'content.introduction.*.copy' => ['sometimes', 'string', 'min:1'],
             'content.info_pages.*.title' => ['sometimes', 'string', 'min:1'],

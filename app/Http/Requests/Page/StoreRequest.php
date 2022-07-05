@@ -8,6 +8,7 @@ use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use App\Rules\InformationPageCannotHaveCollection;
 use App\Rules\LandingPageCannotHaveParent;
+use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -39,7 +40,8 @@ class StoreRequest extends FormRequest
         Page::whereIsRoot()->count();
 
         return [
-            'title' => ['required', 'string', 'min:1', 'max:128'],
+            'title' => ['required', 'string', 'min:1', 'max:255'],
+            'slug' => ['string', 'min:1', 'max:255', new Slug()],
             'excerpt' => ['string', 'min:1', 'max:150'],
             'content' => ['required', 'array'],
             'content.introduction.copy' => ['required', 'array'],

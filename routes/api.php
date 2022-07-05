@@ -81,13 +81,6 @@ Route::prefix('/core/v1')
             Route::apiResource('/files', 'FileController')
                 ->only('store');
 
-            // Pages.
-            Route::match(['GET', 'POST'], '/pages/index', 'PageController@index');
-            Route::apiResource('/pages', 'PageController');
-            Route::get('/pages/{page}/image.{suffix}', 'Page\\ImageController')
-                ->where('suffix', 'png|jpg|jpeg|svg')
-                ->name('pages.image');
-
             // Locations.
             Route::match(['GET', 'POST'], '/locations/index', 'LocationController@index');
             Route::apiResource('/locations', 'LocationController');
@@ -121,6 +114,13 @@ Route::prefix('/core/v1')
             // Organisation Sign Up Forms.
             Route::apiResource('/organisation-sign-up-forms', 'OrganisationSignUpFormController')
                 ->only('store');
+
+            // Pages.
+            Route::match(['GET', 'POST'], '/pages/index', 'PageController@index');
+            Route::apiResource('/pages', 'PageController');
+            Route::get('/pages/{page}/image.{suffix}', 'Page\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg|svg')
+                ->name('pages.image');
 
             // Page Feedbacks.
             Route::match(['GET', 'POST'], '/page-feedbacks/index', 'PageFeedbackController@index');

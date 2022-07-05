@@ -10,6 +10,7 @@ use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use App\Rules\InformationPageCannotHaveCollection;
 use App\Rules\LandingPageCannotHaveParent;
+use App\Rules\Slug;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -44,7 +45,22 @@ class UpdateRequest extends FormRequest
             Page::whereIsRoot()->count());
 
         return [
-            'title' => ['sometimes', 'string', 'min:1', 'max:128'],
+            'title' => ['sometimes', 'string', 'min:1', 'max:255'],
+            'slug' => [
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique(table(Page::class), 'slug')->ignoreModel($this->page),
+                new Slug(),
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->page->slug
+                ),
+            ],
             'excerpt' => ['sometimes', 'string', 'min:1', 'max:150'],
             'content' => ['sometimes', 'array'],
             'content.introduction.*.copy' => ['sometimes', 'string', 'min:1'],

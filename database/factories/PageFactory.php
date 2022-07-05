@@ -9,8 +9,11 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
 $factory->define(Page::class, function (Faker $faker) {
+    $title = $faker->unique()->words(3, true);
+
     return [
-        'title' => $faker->sentence(),
+        'title' => $title,
+        'slug' => Str::slug($title),
         'content' => [
             'introduction' => [
                 'copy' => [

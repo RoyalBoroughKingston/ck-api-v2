@@ -45,7 +45,9 @@ class PageController extends Controller
         }
 
         $pages = QueryBuilder::for($baseQuery)
+            ->allowedIncludes(['parent', 'children', 'landingPageAncestors'])
             ->allowedFilters([
+                AllowedFilter::scope('landing_page', 'pageDescendants'),
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('parent_id', 'parent_uuid'),
                 AllowedFilter::exact('page_type'),

@@ -17,4 +17,18 @@ trait PageScopes
     {
         return $this->siblingsAndSelf()->defaultOrder()->offset($index)->limit(1);
     }
+
+    /**
+     * Get the Landing Page descendants.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $uuid
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePageDescendants(Builder $query, $uuid): Builder
+    {
+        $descendantIds = static::descendantsOf($uuid)->pluck('id');
+
+        return $query->whereIn('id', $descendantIds)->orderBy('_lft');
+    }
 }

@@ -512,6 +512,164 @@ class PagesTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function listEnabledPagesAsGuestIncludeParent200()
+    {
+        factory(Page::class)->states('withParent', 'withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?include=parent');
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'slug',
+                    'title',
+                    'content',
+                    'order',
+                    'enabled',
+                    'page_type',
+                    'image',
+                    'parent',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listEnabledPagesAsGuestIncludeLandingPage200()
+    {
+        factory(Page::class)->states('withParent', 'withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?include=landing-page-ancestors');
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'slug',
+                    'title',
+                    'content',
+                    'order',
+                    'enabled',
+                    'page_type',
+                    'image',
+                    'landing_page',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listEnabledPagesAsGuestIncludeChildren200()
+    {
+        factory(Page::class)->states('withParent', 'withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?include=children');
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'slug',
+                    'title',
+                    'content',
+                    'order',
+                    'enabled',
+                    'page_type',
+                    'image',
+                    'children' => [
+                        '*' => [
+                            'id',
+                            'slug',
+                            'title',
+                            'image',
+                            'content',
+                            'order',
+                            'enabled',
+                            'page_type',
+                            'created_at',
+                            'updated_at',
+                        ],
+                    ],
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function listLandingPageDescendantsAsGuestIncludeParent200()
+    {
+        $page = factory(Page::class)->states('withImage', 'withChildren')->create();
+        $parent = factory(Page::class)->create();
+        $parent->appendNode($page);
+        $landingPage1 = factory(Page::class)->states('landingPage')->create();
+        $landingPage1->appendNode($parent);
+        $landingPage2 = factory(Page::class)->states('landingPage', 'withChildren')->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index?filter[landing_page]=' . $landingPage1->id . '&include=parent');
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'slug',
+                    'title',
+                    'content',
+                    'order',
+                    'enabled',
+                    'page_type',
+                    'image',
+                    'parent',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $parent->id,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $page->id,
+        ]);
+
+        foreach ($page->children as $child) {
+            $response->assertJsonFragment([
+                'id' => $child->id,
+            ]);
+        }
+
+        $response->assertJsonFragment([
+            'id' => $landingPage1->id,
+        ]);
+
+        $response->assertJsonMissing([
+            'id' => $landingPage2->id,
+        ]);
+
+        foreach ($landingPage2->children as $child) {
+            $response->assertJsonMissing([
+                'id' => $child->id,
+            ]);
+        }
+    }
+
+    /**
      * Get a single page
      */
 
@@ -619,7 +777,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledInformationPageBySlugAsGuest200()
+    public function getInformationPageBySlugAsGuest200()
     {
         $page = factory(Page::class)->states('withImage', 'withParent', 'withChildren')->create();
 

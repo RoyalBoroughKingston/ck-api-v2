@@ -21,7 +21,8 @@ class PageSchema extends Schema
             ->type(static::TYPE_OBJECT)
             ->properties(
                 Schema::string('id')
-                    ->format(Schema::TYPE_OBJECT),
+                    ->format(Schema::FORMAT_UUID),
+                Schema::string('slug'),
                 Schema::string('title'),
                 Schema::string('excerpt'),
                 Schema::string('content'),

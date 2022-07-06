@@ -23,8 +23,8 @@ class UpdatePagesAddSlugColumn extends Migration
                 $iteration = 0;
                 do {
                     $slug = $iteration === 0
-                    ? Str::slug($page->name)
-                    : Str::slug($page->name) . '-' . $iteration;
+                    ? Str::slug($page->title)
+                    : Str::slug($page->title) . '-' . $iteration;
                     $iteration++;
                 } while (Page::query()->where('slug', $slug)->exists());
 

@@ -61,7 +61,7 @@ class UpdateRequest extends FormRequest
                     $this->page->slug
                 ),
             ],
-            'excerpt' => ['sometimes', 'string', 'min:1', 'max:150'],
+            'excerpt' => ['sometimes', 'nullable', 'string', 'min:1', 'max:150'],
             'content' => ['sometimes', 'array'],
             'content.introduction.*.copy' => ['sometimes', 'string', 'min:1'],
             'content.info_pages.*.title' => ['sometimes', 'string', 'min:1'],

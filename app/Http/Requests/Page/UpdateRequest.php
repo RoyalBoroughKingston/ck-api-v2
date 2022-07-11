@@ -10,6 +10,7 @@ use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use App\Rules\InformationPageCannotHaveCollection;
 use App\Rules\LandingPageCannotHaveParent;
+use App\Rules\PageContent;
 use App\Rules\Slug;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
@@ -63,11 +64,11 @@ class UpdateRequest extends FormRequest
             ],
             'excerpt' => ['sometimes', 'nullable', 'string', 'min:1', 'max:150'],
             'content' => ['sometimes', 'array'],
-            'content.introduction.*.copy' => ['sometimes', 'string', 'min:1'],
             'content.info_pages.*.title' => ['sometimes', 'string', 'min:1'],
             'content.collections.*.title' => ['sometimes', 'string', 'min:1'],
-            'content.*.*.title' => ['sometimes', 'string'],
-            'content.*.*.copy' => ['sometimes', 'string'],
+            'content.*.title' => ['sometimes', 'string'],
+            'content.*.content' => ['sometimes', 'array'],
+            'content.*.content.*' => [new PageContent()],
             'order' => [
                 'sometimes',
                 'integer',

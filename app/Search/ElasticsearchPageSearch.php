@@ -59,13 +59,13 @@ class ElasticsearchPageSearch implements PageSearch
 
         $should[] = $this->match('title', $term, 3);
         $should[] = $this->match('content.introduction.title', $term, 2);
-        $should[] = $this->match('content.introduction.copy', $term);
+        $should[] = $this->match('content.introduction.content', $term);
         $should[] = $this->match('content.about.title', $term, 2);
-        $should[] = $this->match('content.about.copy', $term);
+        $should[] = $this->match('content.about.content', $term);
         $should[] = $this->match('content.info_pages.title', $term, 2);
-        $should[] = $this->match('content.info_pages.copy', $term);
+        $should[] = $this->match('content.info_pages.content', $term);
         $should[] = $this->match('content.collections.title', $term, 2);
-        $should[] = $this->match('content.collections.copy', $term);
+        $should[] = $this->match('content.collections.content', $term);
         $should[] = $this->match('collection_categories', $term);
         $should[] = $this->match('collection_personas', $term);
 

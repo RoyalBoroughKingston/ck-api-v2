@@ -8,6 +8,7 @@ use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
 use App\Rules\InformationPageCannotHaveCollection;
 use App\Rules\LandingPageCannotHaveParent;
+use App\Rules\PageContent;
 use App\Rules\Slug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -44,8 +45,7 @@ class StoreRequest extends FormRequest
             'slug' => ['string', 'min:1', 'max:255', new Slug()],
             'excerpt' => ['nullable', 'string', 'min:1', 'max:150'],
             'content' => ['required', 'array'],
-            'content.introduction.copy' => ['required', 'array'],
-            'content.introduction.copy.*' => ['required', 'string', 'min:1'],
+            'content.introduction.content' => ['required', 'array'],
             'content.info_pages.title' => [
                 'required_if:page_type,landing',
                 'string',
@@ -57,8 +57,8 @@ class StoreRequest extends FormRequest
                 'min:1',
             ],
             'content.*.title' => ['sometimes', 'string'],
-            'content.*.copy' => ['sometimes', 'array'],
-            'content.*.copy.*' => ['sometimes', 'string'],
+            'content.*.content' => ['sometimes', 'array'],
+            'content.*.content.*' => [new PageContent()],
             'order' => [
                 'integer',
                 'min:0',

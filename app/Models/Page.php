@@ -89,25 +89,25 @@ class Page extends Model
                     'introduction' => [
                         'properties' => [
                             'title' => ['type' => 'text'],
-                            'copy' => ['type' => 'text'],
+                            'content' => ['type' => 'text'],
                         ],
                     ],
                     'about' => [
                         'properties' => [
                             'title' => ['type' => 'text'],
-                            'copy' => ['type' => 'text'],
+                            'content' => ['type' => 'text'],
                         ],
                     ],
                     'info_pages' => [
                         'properties' => [
                             'title' => ['type' => 'text'],
-                            'copy' => ['type' => 'text'],
+                            'content' => ['type' => 'text'],
                         ],
                     ],
                     'collections' => [
                         'properties' => [
                             'title' => ['type' => 'text'],
-                            'copy' => ['type' => 'text'],
+                            'content' => ['type' => 'text'],
                         ],
                     ],
                 ],
@@ -124,11 +124,33 @@ class Page extends Model
      */
     public function toSearchableArray()
     {
+        $contentSections = [];
+        foreach ($this->content as $sectionLabel => $sectionContent) {
+            $content = [];
+            foreach ($sectionContent['content'] as $i => $contentBlock) {
+                switch ($contentBlock['type']) {
+                    case 'copy':
+                        $content[] = $contentBlock['value'];
+                        break;
+                    case 'cta':
+                        $content[] = $contentBlock['title'] . ' ' . $contentBlock['description'];
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            $contentSections[$sectionLabel] = [
+                'title' => $sectionContent['title'] ?? '',
+                'content' => implode("\n", $content),
+            ];
+        }
+
         return [
             'id' => $this->id,
             'enabled' => $this->enabled,
             'title' => $this->title,
-            'content' => $this->content,
+            'content' => $contentSections,
             'collection_categories' => $this->collections()->where('type', Collection::TYPE_CATEGORY)->pluck('name')->all(),
             'collection_personas' => $this->collections()->where('type', Collection::TYPE_PERSONA)->pluck('name')->all(),
         ];

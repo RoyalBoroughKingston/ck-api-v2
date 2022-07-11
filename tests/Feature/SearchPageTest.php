@@ -32,6 +32,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
     {
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'test',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -43,6 +45,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => $page->title,
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -53,16 +57,61 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_page_content()
     {
-        $page = factory(Page::class)->create();
+        $page = factory(Page::class)->states('landingPage')->create();
 
         $response = $this->json('POST', '/core/v1/search/pages', [
-            'query' => $page->content['introduction']['copy'][0],
+            'query' => $page->content['introduction']['content'][0]['value'],
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $page->id,
         ]);
+
+        $page = factory(Page::class)->states('landingPage')->create([
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => $this->faker->realText(),
+                        ],
+                        [
+                            'type' => 'cta',
+                            'title' => $this->faker->sentence,
+                            'description' => $this->faker->realText(),
+                            'url' => $this->faker->url(),
+                            'buttonText' => $this->faker->words(3, true),
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search/pages', [
+            'query' => $page->content['introduction']['content'][1]['title'],
+            'page' => 1,
+            'per_page' => 20,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $page->id,
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search/pages', [
+            'query' => $page->content['introduction']['content'][1]['description'],
+            'page' => 1,
+            'per_page' => 20,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $page->id,
+        ]);
+
     }
 
     public function test_query_matches_single_word_from_page_content()
@@ -70,8 +119,11 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
         $page = factory(Page::class)->create([
             'content' => [
                 'introduction' => [
-                    'copy' => [
-                        'This is a page that helps to homeless find temporary housing.',
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => 'This is a page that helps to homeless find temporary housing.',
+                        ],
                     ],
                 ],
             ],
@@ -79,6 +131,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'homeless',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -90,8 +144,11 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
         $page = factory(Page::class)->create([
             'content' => [
                 'introduction' => [
-                    'copy' => [
-                        'This is a page that helps to homeless find temporary housing.',
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => 'This is a page that helps to homeless find temporary housing.',
+                        ],
                     ],
                 ],
             ],
@@ -99,6 +156,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'temporary housing',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -111,8 +170,11 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
         $page2 = factory(Page::class)->create([
             'content' => [
                 'introduction' => [
-                    'copy' => [
-                        'Thisisatest',
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => 'Thisisatest',
+                        ],
                     ],
                 ],
             ],
@@ -120,6 +182,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -151,6 +215,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -161,6 +227,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thsiisatst',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -187,6 +255,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Anotherphrase',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -197,6 +267,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Another phrase',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -212,6 +284,8 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -242,10 +316,42 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Testing Page',
+            'page' => 1,
+            'per_page' => 20,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $activePage->id]);
         $response->assertJsonMissing(['id' => $inactivePage->id]);
+    }
+
+    public function test_query_returns_paginated_result_set()
+    {
+        $pages = factory(Page::class, 30)->create([
+            'title' => 'Testing Page',
+        ]);
+
+        $response = $this->json('POST', '/core/v1/search/pages', [
+            'query' => 'Testing',
+            'page' => 1,
+            'per_page' => 20,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonStructure([
+            "data" => [],
+            "links" => [],
+            "meta" => [
+                "current_page",
+                "from",
+                "last_page",
+                "path",
+                "per_page",
+                "to",
+                "total",
+            ],
+
+        ]);
     }
 }

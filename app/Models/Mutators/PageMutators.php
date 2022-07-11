@@ -33,8 +33,12 @@ trait PageMutators
         // Sanitize the JSON content field
 
         foreach ($value as $section => &$sectionContent) {
-            if ($sectionContent['copy']) {
-                array_walk($sectionContent['copy'], 'sanitize_markdown');
+            if ($sectionContent['content']) {
+                foreach ($sectionContent['content'] as &$content) {
+                    if ($content['type'] === 'copy') {
+                        $content['value'] = sanitize_markdown($content['value']);
+                    }
+                }
             }
         }
 

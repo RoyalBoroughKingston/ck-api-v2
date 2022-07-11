@@ -16,8 +16,11 @@ $factory->define(Page::class, function (Faker $faker) {
         'slug' => Str::slug($title),
         'content' => [
             'introduction' => [
-                'copy' => [
-                    $this->faker->realText(),
+                'content' => [
+                    [
+                        'type' => 'copy',
+                        'value' => $this->faker->realText(),
+                    ],
                 ],
             ],
         ],
@@ -43,26 +46,55 @@ $factory->state(Page::class, 'landingPage', [
     'page_type' => Page::PAGE_TYPE_LANDING,
     'content' => [
         'introduction' => [
-            'copy' => [
-                $this->faker->realText(),
+            'content' => [
+                [
+                    'type' => 'copy',
+                    'value' => $this->faker->realText(),
+                ],
+                [
+                    'type' => 'cta',
+                    'title' => $this->faker->sentence,
+                    'description' => $this->faker->realText(),
+                    'url' => $this->faker->url(),
+                    'buttonText' => $this->faker->words(3, true),
+                ],
             ],
         ],
         'about' => [
-            'copy' => [
-                $this->faker->realText(),
-                $this->faker->realText(),
+            'content' => [
+                [
+                    'type' => 'copy',
+                    'value' => $this->faker->realText(),
+                ],
+                [
+                    'type' => 'cta',
+                    'title' => $this->faker->sentence,
+                    'description' => $this->faker->realText(),
+                    'url' => $this->faker->url(),
+                    'buttonText' => $this->faker->words(3, true),
+                ],
+                [
+                    'type' => 'copy',
+                    'value' => $this->faker->realText(),
+                ],
             ],
         ],
         'info-pages' => [
             'title' => $this->faker->sentence(),
-            'copy' => [
-                $this->faker->realText(),
+            'content' => [
+                [
+                    'type' => 'copy',
+                    'value' => $this->faker->realText(),
+                ],
             ],
         ],
         'collections' => [
             'title' => $this->faker->sentence(),
-            'copy' => [
-                $this->faker->realText(),
+            'content' => [
+                [
+                    'type' => 'copy',
+                    'value' => $this->faker->realText(),
+                ],
             ],
         ],
     ],

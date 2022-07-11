@@ -77,7 +77,7 @@ class PageController extends Controller
                     'title' => $request->input('title'),
                     'slug' => $this->uniqueSlug($request->input('slug', Str::slug($request->input('title')))),
                     'excerpt' => $request->input('excerpt'),
-                    'content' => $request->input('content'),
+                    'content' => $request->input('content', []),
                     'page_type' => $request->input('page_type', Page::PAGE_TYPE_INFORMATION),
                 ],
                 $parent

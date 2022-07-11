@@ -29,7 +29,7 @@ class PageContent implements Rule
 
         if ($value['type'] === 'copy') {
             if (!isset($value['value']) || !is_string($value['value']) || mb_strlen($value['value']) === 0) {
-                $this->message = 'Introduction copy is required';
+                $this->message = 'Invalid format for copy content block';
 
                 return false;
             }

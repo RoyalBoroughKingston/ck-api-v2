@@ -1144,6 +1144,74 @@ class PagesTest extends TestCase
     /**
      * @test
      */
+    public function createPageWithMinimalDataAsAdmin201()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $parentPage = factory(Page::class)->create();
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'parent_id' => $parentPage->id,
+        ];
+
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonResource([
+            'id',
+            'title',
+            'excerpt',
+            'content',
+            'order',
+            'enabled',
+            'page_type',
+            'image',
+            'landing_page',
+            'parent',
+            'children',
+            'collection_categories',
+            'collection_personas',
+            'created_at',
+            'updated_at',
+        ]);
+
+        $data = [
+            'title' => $this->faker->sentence(),
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => $this->faker->realText(),
+                        ],
+                    ],
+                ],
+                'info_pages' => [
+                    'title' => $this->faker->sentence(),
+                ],
+                'collections' => [
+                    'title' => $this->faker->sentence(),
+                ],
+            ],
+            'page_type' => 'landing',
+        ];
+
+        $response = $this->json('POST', '/core/v1/pages', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    /**
+     * @test
+     */
     public function auditCreatedOnCreate()
     {
         $this->fakeEvents();
@@ -1196,11 +1264,6 @@ class PagesTest extends TestCase
 
         Passport::actingAs($user);
 
-        // Missing content
-        $this->json('POST', '/core/v1/pages', [
-            'title' => $this->faker->sentence(),
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
         // Missing title
         $this->json('POST', '/core/v1/pages', [
             'content' => [
@@ -1225,13 +1288,6 @@ class PagesTest extends TestCase
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->realText(),
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        // Content an empty array
-        $this->json('POST', '/core/v1/pages', [
-            'title' => $this->faker->sentence(),
-            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
-            'content' => [],
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         // Invalid structure for 'copy' content type

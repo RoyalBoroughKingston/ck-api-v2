@@ -68,7 +68,7 @@ class UpdateRequest extends FormRequest
             'content.collections.*.title' => ['sometimes', 'string', 'min:1'],
             'content.*.title' => ['sometimes', 'string'],
             'content.*.content' => ['sometimes', 'array'],
-            'content.*.content.*' => [new PageContent()],
+            'content.*.content.*' => [new PageContent($this->page->page_type)],
             'order' => [
                 'sometimes',
                 'integer',

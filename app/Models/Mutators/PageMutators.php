@@ -36,7 +36,7 @@ trait PageMutators
             if (!empty($sectionContent['content'])) {
                 foreach ($sectionContent['content'] as &$content) {
                     if ($content['type'] === 'copy') {
-                        $content['value'] = sanitize_markdown($content['value']);
+                        $content['value'] = sanitize_markdown($content['value'] ?? '');
                     }
                 }
             }

@@ -14,6 +14,21 @@ class PageContent implements Rule
     protected $message;
 
     /**
+     * The page type: landing, information, etc.
+     *
+     * @var string
+     */
+    protected $pageType;
+
+    /**
+     * @param mixed $pageType
+     */
+    public function __construct($pageType = 'information')
+    {
+        $this->pageType = $pageType;
+    }
+
+    /**
      * Determine if the validation rule passes.
      *
      * @param string $attribute
@@ -28,19 +43,24 @@ class PageContent implements Rule
         }
 
         if ($value['type'] === 'copy') {
-            if (!isset($value['value']) || !is_string($value['value']) || mb_strlen($value['value']) === 0) {
-                $this->message = 'Invalid format for copy content block';
+            if (!array_key_exists('value', $value)) {
+                $this->message = 'Invalid format for content';
+
+                return false;
+            }
+            if (($this->pageType === 'landing' && mb_strpos($attribute, 'introduction') && empty($value['value']))) {
+                $this->message = 'Page content is required for introduction';
 
                 return false;
             }
         }
         if ($value['type'] === 'cta') {
-            if ((!isset($value['title']) || !is_string($value['title']) || mb_strlen($value['title']) === 0)) {
+            if (empty($value['title']) || !is_string($value['title'])) {
                 $this->message = 'Call to action title is required';
 
                 return false;
             }
-            if (!isset($value['description']) || !is_string($value['description']) || mb_strlen($value['description']) === 0) {
+            if (empty($value['description']) || !is_string($value['description'])) {
                 $this->message = 'Call to action description is required';
 
                 return false;

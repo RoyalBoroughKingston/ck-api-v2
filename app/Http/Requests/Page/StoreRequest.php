@@ -58,7 +58,7 @@ class StoreRequest extends FormRequest
             ],
             'content.*.title' => ['sometimes', 'string'],
             'content.*.content' => ['sometimes', 'array'],
-            'content.*.content.*' => [new PageContent()],
+            'content.*.content.*' => [new PageContent($this->page_type)],
             'order' => [
                 'integer',
                 'min:0',

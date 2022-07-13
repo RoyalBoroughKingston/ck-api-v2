@@ -512,20 +512,45 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        unset($payload['image_file_id']);
-        $payload['has_image'] = true;
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonFragment($payload);
 
-        $responseData = json_decode($response->getContent())->data;
+        $responseData = json_decode($response->getContent());
 
-        // The organisation event is created
-        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $responseData->id]);
+        //Then an update request should be created for the new event
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
+            'updateable_id' => null,
+        ]);
 
-        // And no update request was created
-        $this->assertEmpty(UpdateRequest::all());
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
+            ->where('updateable_id', null)
+            ->firstOrFail();
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = $responseData->id;
+
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($globalAdminUser);
+
+        $updateRequestCheckResponse = $this->get(
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent(), true);
+
+        $this->assertEquals($updateRequestResponseData['data'], $payload);
+        //And the organisation event should not yet be created
+        $this->assertEmpty(OrganisationEvent::all());
     }
 
     /**
@@ -890,7 +915,6 @@ class OrganisationEventsTest extends TestCase
         $this->fakeEvents();
 
         $organisation = factory(Organisation::class)->create();
-        $location = factory(Location::class)->create();
         $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
 
         Passport::actingAs($user);
@@ -924,12 +948,12 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $response) {
             return ($event->getAction() === Audit::ACTION_CREATE) &&
                 ($event->getUser()->id === $user->id) &&
-                ($event->getModel()->id === $this->getResponseContent($response)['data']['id']);
+                ($event->getModel()->data['title'] === $this->getResponseContent($response)['data']['title']);
         });
     }
 
@@ -1029,7 +1053,7 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**
@@ -1153,7 +1177,7 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $payload['is_free'] = false;
 
@@ -1171,7 +1195,7 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**
@@ -1214,7 +1238,7 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $payload['organiser_name'] = $this->faker->name;
 
@@ -1226,21 +1250,21 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $payload['organiser_phone'] = null;
         $payload['organiser_email'] = $this->faker->safeEmail;
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $payload['organiser_email'] = null;
         $payload['organiser_url'] = $this->faker->url;
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**
@@ -1283,7 +1307,7 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $payload['booking_title'] = $this->faker->sentence(3);
 
@@ -1307,7 +1331,7 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-events', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**

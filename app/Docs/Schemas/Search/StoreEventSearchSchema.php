@@ -32,7 +32,7 @@ class StoreEventSearchSchema extends Schema
                 Schema::string('ends_before'),
                 Schema::string('order')
                     ->enum(Search::ORDER_RELEVANCE, Search::ORDER_DISTANCE, Search::ORDER_START, Search::ORDER_END)
-                    ->default('relevance'),
+                    ->default(Search::ORDER_START),
                 Schema::object('location')
                     ->required('lat', 'lon')
                     ->properties(

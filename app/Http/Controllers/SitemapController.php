@@ -163,10 +163,10 @@ class SitemapController extends Controller
     public function createPageNodes()
     {
         $pages = Page::where('enabled', '=', Page::ENABLED)
-            ->pluck('updated_at', 'id')
-            ->map(function ($updatedAt, $id) {
+            ->pluck('updated_at', 'slug')
+            ->map(function ($updatedAt, $slug) {
                 return [
-                    'path' => "$id",
+                    'path' => "pages/$slug",
                     'updated' => date(DateTime::W3C, strtotime($updatedAt)),
                 ];
             })

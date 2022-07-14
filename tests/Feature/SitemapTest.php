@@ -240,7 +240,7 @@ class SitemapTest extends TestCase
         $locTags = $xml->getElementsByTagName('loc');
 
         foreach ($locTags as $tag) {
-            if ($this->frontendUrl($page->id) === $tag->textContent) {
+            if ($this->frontendUrl('pages/' . $page->slug) === $tag->textContent) {
                 $included = true;
             }
         }

@@ -2,7 +2,7 @@
 
 namespace App\Docs\Schemas\Search;
 
-use App\Contracts\Search;
+use App\Contracts\ServiceSearch as Search;
 use App\Models\Service;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;

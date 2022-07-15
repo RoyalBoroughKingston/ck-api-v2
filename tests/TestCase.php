@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\Collection;
+use App\Models\OrganisationEvent;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use Illuminate\Database\Eloquent\Model;
@@ -105,6 +106,17 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Delete all the collection organisation events and pivot records.
+     */
+    protected function truncateCollectionOrganisationEvents()
+    {
+        Collection::organisationEvents()->get()->each(function (Collection $collection) {
+            $collection->collectionTaxonomies()->delete();
+        });
+        Collection::organisationEvents()->delete();
+    }
+
+    /**
      * Delete all the category taxonomy records.
      */
     protected function truncateTaxonomies()
@@ -130,9 +142,11 @@ abstract class TestCase extends BaseTestCase
     {
         if (!$this instanceof UsesElasticsearch) {
             Service::disableSearchSyncing();
+            OrganisationEvent::disableSearchSyncing();
             return;
         } else {
             Service::enableSearchSyncing();
+            OrganisationEvent::enableSearchSyncing();
         }
 
         if (!static::$elasticsearchInitialised) {
@@ -148,13 +162,16 @@ abstract class TestCase extends BaseTestCase
     {
         if (!$this instanceof UsesElasticsearch) {
             Service::disableSearchSyncing();
+            OrganisationEvent::disableSearchSyncing();
             return;
         } else {
             Service::enableSearchSyncing();
+            OrganisationEvent::enableSearchSyncing();
         }
 
         try {
             $this->artisan('scout:flush', ['model' => Service::class]);
+            $this->artisan('scout:flush', ['model' => OrganisationEvent::class]);
         } catch (\Exception $exception) {
             // Do nothing.
         }

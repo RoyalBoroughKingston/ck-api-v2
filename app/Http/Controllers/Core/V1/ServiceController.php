@@ -83,6 +83,7 @@ class ServiceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\Service\StoreRequest $request
+     * @param \App\Services\DataPersistence\ServicePersistenceService $persistenceService
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, ServicePersistenceService $persistenceService)
@@ -137,6 +138,7 @@ class ServiceController extends Controller
      *
      * @param \App\Http\Requests\Service\UpdateRequest $request
      * @param \App\Models\Service $service
+     * @param \App\Services\DataPersistence\ServicePersistenceService $persistenceService
      * @return UpdateRequestReceived
      */
     public function update(UpdateRequest $request, Service $service, ServicePersistenceService $persistenceService)

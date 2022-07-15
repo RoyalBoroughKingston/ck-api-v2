@@ -1,0 +1,190 @@
+<?php
+
+namespace App\Http\Controllers\Core\V1;
+
+use App\Events\EndpointHit;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CollectionOrganisationEvent\DestroyRequest;
+use App\Http\Requests\CollectionOrganisationEvent\IndexRequest;
+use App\Http\Requests\CollectionOrganisationEvent\ShowRequest;
+use App\Http\Requests\CollectionOrganisationEvent\StoreRequest;
+use App\Http\Requests\CollectionOrganisationEvent\UpdateRequest;
+use App\Http\Resources\CollectionOrganisationEventResource;
+use App\Http\Responses\ResourceDeleted;
+use App\Models\Collection;
+use App\Models\File;
+use App\Models\Taxonomy;
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\QueryBuilder;
+
+class CollectionOrganisationEventController extends Controller
+{
+    /**
+     * CollectionOrganisationEventController constructor.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('index', 'show');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \App\Http\Requests\CollectionOrganisationEvent\IndexRequest $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(IndexRequest $request)
+    {
+        $baseQuery = Collection::organisationEvents()
+            ->orderBy('order');
+
+        $organisationEventQuery = QueryBuilder::for($baseQuery)
+            ->with('taxonomies');
+        if ($request->is('*/all')) {
+            $organisationEventCollections = $organisationEventQuery->get();
+        } else {
+            $organisationEventCollections = $organisationEventQuery->allowedFilters([
+                Filter::exact('id'),
+            ])
+                ->paginate(per_page($request->per_page));
+        }
+
+        event(EndpointHit::onRead($request, 'Viewed all organisation event collections'));
+
+        return CollectionOrganisationEventResource::collection($organisationEventCollections);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\CollectionOrganisationEvent\StoreRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(StoreRequest $request)
+    {
+        return DB::transaction(function () use ($request) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
+            // Create the collection record.
+            $organisationEventCollection = Collection::create([
+                'type' => Collection::TYPE_ORGANISATION_EVENT,
+                'name' => $request->name,
+                'meta' => [
+                    'intro' => $request->intro,
+                    'subtitle' => $request->subtitle,
+                    'image_file_id' => $request->image_file_id,
+                    'sideboxes' => $sideboxes,
+                ],
+                'order' => $request->order,
+                'enabled' => $request->enabled,
+            ]);
+
+            if ($request->filled('image_file_id')) {
+                File::findOrFail($request->image_file_id)->assigned();
+            }
+
+            // Create all of the pivot records.
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $organisationEventCollection->syncCollectionTaxonomies($taxonomies);
+
+            // Reload the newly created pivot records.
+            $organisationEventCollection->load('taxonomies');
+
+            event(EndpointHit::onCreate($request, "Created organisation event collection [{$organisationEventCollection->id}]", $organisationEventCollection));
+
+            return new CollectionOrganisationEventResource($organisationEventCollection);
+        });
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param \App\Http\Requests\CollectionOrganisationEvent\ShowRequest $request
+     * @param \App\Models\Collection $collection
+     * @return \App\Http\Resources\CollectionOrganisationEventResource
+     */
+    public function show(ShowRequest $request, Collection $collection)
+    {
+        $baseQuery = Collection::query()
+            ->where('id', $collection->id);
+
+        $collection = QueryBuilder::for($baseQuery)
+            ->firstOrFail();
+
+        event(EndpointHit::onRead($request, "Viewed organisation event collection [{$collection->id}]", $collection));
+
+        return new CollectionOrganisationEventResource($collection);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \App\Http\Requests\CollectionOrganisationEvent\UpdateRequest $request
+     * @param \App\Models\Collection $collection
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateRequest $request, Collection $collection)
+    {
+        return DB::transaction(function () use ($request, $collection) {
+            // Parse the sideboxes.
+            $sideboxes = array_map(function (array $sidebox): array {
+                return [
+                    'title' => $sidebox['title'],
+                    'content' => sanitize_markdown($sidebox['content']),
+                ];
+            }, $request->sideboxes ?? []);
+
+            // Update the collection record.
+            $collection->update([
+                'name' => $request->name,
+                'meta' => [
+                    'intro' => $request->intro,
+                    'subtitle' => $request->subtitle,
+                    'image_file_id' => $request->has('image_file_id')
+                        ? $request->image_file_id
+                        : $collection->meta['image_file_id'] ?? null,
+                    'sideboxes' => $sideboxes,
+                ],
+                'order' => $request->order,
+                'enabled' => $request->enabled,
+            ]);
+
+            if ($request->filled('image_file_id')) {
+                File::findOrFail($request->image_file_id)->assigned();
+            }
+
+            // Update or create all of the pivot records.
+            $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();
+            $collection->syncCollectionTaxonomies($taxonomies);
+
+            event(EndpointHit::onUpdate($request, "Updated organisation event collection [{$collection->id}]", $collection));
+
+            return new CollectionOrganisationEventResource($collection);
+        });
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \App\Http\Requests\CollectionOrganisationEvent\DestroyRequest $request
+     * @param \App\Models\Collection $collection
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(DestroyRequest $request, Collection $collection)
+    {
+        return DB::transaction(function () use ($request, $collection) {
+            event(EndpointHit::onDelete($request, "Deleted organisation event collection [{$collection->id}]", $collection));
+
+            $collection->delete();
+
+            return new ResourceDeleted('organisation event collection');
+        });
+    }
+}

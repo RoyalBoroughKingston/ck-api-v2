@@ -101,11 +101,11 @@ class CollectionPersonasTest extends TestCase
 
     public function test_guest_can_list_enabled_and_disabled_collections()
     {
-        $disabledCollection = Collection::where('type', 'persona')->first();
+        $disabledCollection = Collection::personas()->first();
 
         $disabledCollection->disable()->save();
 
-        $enabledCollection = Collection::where('type', 'persona')->latest()->first();
+        $enabledCollection = Collection::personas()->offset(1)->first();
 
         $enabledCollection->enable()->save();
 
@@ -125,11 +125,11 @@ class CollectionPersonasTest extends TestCase
 
     public function test_guest_can_list_all_enabled_and_disabled_collections()
     {
-        $disabledCollection = Collection::where('type', 'persona')->first();
+        $disabledCollection = Collection::personas()->first();
 
         $disabledCollection->disable()->save();
 
-        $enabledCollection = Collection::where('type', 'persona')->latest()->first();
+        $enabledCollection = Collection::personas()->offset(1)->first();
 
         $enabledCollection->enable()->save();
 

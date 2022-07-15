@@ -46,6 +46,22 @@ Route::prefix('/core/v1')
                 ->where('suffix', 'png|jpg|jpeg|svg')
                 ->name('collection-categories.image');
 
+            // Collection Organisation Events.
+            Route::match(['GET', 'POST'], '/collections/organisation-events/index', 'CollectionOrganisationEventController@index');
+            Route::get('/collections/organisation-events/all', 'CollectionOrganisationEventController@index')->name('collection-organisation-events.all');
+            Route::apiResource('/collections/organisation-events', 'CollectionOrganisationEventController')
+                ->parameter('organisation-events', 'collection')
+                ->names([
+                    'index' => 'collection-organisation-events.index',
+                    'store' => 'collection-organisation-events.store',
+                    'show' => 'collection-organisation-events.show',
+                    'update' => 'collection-organisation-events.update',
+                    'destroy' => 'collection-organisation-events.destroy',
+                ]);
+            Route::get('/collections/organisation-events/{collection}/image.{suffix}', 'CollectionOrganisationEvent\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg|svg')
+                ->name('collection-organisation-events.image');
+
             // Collection Personas.
             Route::match(['GET', 'POST'], '/collections/personas/index', 'CollectionPersonaController@index');
             Route::get('/collections/personas/all', 'CollectionPersonaController@index')->name('collection-personas.all');
@@ -84,6 +100,14 @@ Route::prefix('/core/v1')
             Route::post('/organisations/import', 'Organisation\\ImportController')
                 ->name('organisations.import');
 
+            // Organisation Events.
+            Route::match(['GET', 'POST'], '/organisation-events/index', 'OrganisationEventController@index');
+            Route::apiResource('/organisation-events', 'OrganisationEventController');
+            Route::get('/organisation-events/{organisationEvent}/image.{suffix}', 'OrganisationEvent\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg|svg')
+                ->name('organisation-events.image');
+            Route::get('/organisation-events/{organisationEvent}/event.ics', 'OrganisationEvent\\CalendarController');
+
             // Organisation Sign Up Forms.
             Route::apiResource('/organisation-sign-up-forms', 'OrganisationSignUpFormController')
                 ->only('store');
@@ -109,8 +133,8 @@ Route::prefix('/core/v1')
                 ->name('reports.download');
 
             // Search.
-            Route::post('/search', 'SearchController')
-                ->name('search');
+            Route::post('/search', 'SearchController')->name('search.services');
+            Route::post('/search/events', 'Search\\EventController')->name('search.events');
 
             // Service Locations.
             Route::match(['GET', 'POST'], '/service-locations/index', 'ServiceLocationController@index');

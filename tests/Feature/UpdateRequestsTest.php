@@ -573,8 +573,10 @@ class UpdateRequestsTest extends TestCase
             'actioning_user_id' => $user->id,
             'approved_at' => $now->toDateTimeString(),
         ]);
-        $this->assertDatabaseHas((new ServiceLocation())->getTable(),
-            ['id' => $serviceLocation->id, 'name' => 'Test Name']);
+        $this->assertDatabaseHas(
+            (new ServiceLocation())->getTable(),
+            ['id' => $serviceLocation->id, 'name' => 'Test Name']
+        );
     }
 
     public function test_global_admin_can_approve_one_for_organisation()

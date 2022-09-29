@@ -11,6 +11,7 @@ use App\Rules\MarkdownMinLength;
 use App\Rules\Password;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
+use App\Rules\UserEmailNotInPendingSignupRequest;
 use App\Rules\UserEmailNotTaken;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
@@ -44,6 +45,7 @@ class StoreRequest extends FormRequest
                 'email',
                 'max:255',
                 new UserEmailNotTaken(null, 'User Email - The email entered is already in use. Please enter a different email address or log into your existing account.'),
+                new UserEmailNotInPendingSignupRequest('User Email - The email has already been submitted for approval. Please await the outcome of the approval process before registering with this email.'),
             ],
             'user.phone' => [
                 'required',
@@ -207,7 +209,7 @@ class StoreRequest extends FormRequest
             'user.password.min' => '2. User account - Please create a password that is at least eight characters long.',
 
             'organisation.slug.required' => '3. Organisation - Please enter the organisation slug.',
-            'organisation.slug.unique' => '3. Organisation - The organisation is already listed. Please contact us for help logging in onehounslowconnect@hounslow.gov.uk.',
+            'organisation.slug.unique' => '3. Organisation - The organisation is already listed. Please contact us for help logging in hounslowconnect@hounslow.gov.uk.',
             'organisation.name.required' => '3. Organisation - Please enter the organisation name.',
             'organisation.description.required' => '3. Organisation - Please enter a one-line summary of the organisation.',
             'organisation.url.required' => '3. Organisation - Please enter a valid web address in the correct format (starting with https:// or http://).',

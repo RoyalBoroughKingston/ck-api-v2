@@ -390,8 +390,10 @@ class ServicesTest extends TestCase
         Passport::actingAs($globalAdminUser);
 
         $updateRequestCheckResponse = $this->get(
-            route('core.v1.update-requests.show',
-                ['update_request' => $updateRequestId])
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
         );
 
         $updateRequestCheckResponse->assertSuccessful();
@@ -536,8 +538,10 @@ class ServicesTest extends TestCase
         Passport::actingAs(factory(User::class)->create()->makeGlobalAdmin());
 
         $updateRequestCheckResponse = $this->get(
-            route('core.v1.update-requests.show',
-                ['update_request' => $updateRequestId])
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
         );
 
         $updateRequestCheckResponse->assertSuccessful();
@@ -625,6 +629,58 @@ class ServicesTest extends TestCase
             'url' => $this->faker->url,
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_global_admin_cannot_create_with_non_numeric_phone()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => 'Tel 01234 567890',
             'contact_email' => $this->faker->safeEmail,
             'show_referral_disclaimer' => true,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
@@ -1575,6 +1631,68 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
+    public function test_global_admin_cannot_update_with_non_numeric_phone()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = factory(Taxonomy::class)->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => 'Tel 01234 567890',
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => $service->referral_method,
+            'referral_button_text' => $service->referral_button_text,
+            'referral_email' => $service->referral_email,
+            'referral_url' => $service->referral_url,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+
+            'gallery_items' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+            'eligibility_types' => [
+                'custom' => [],
+                'taxonomies' => [],
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function test_global_admin_cannot_update_show_referral_disclaimer_for_one()
     {
         $service = factory(Service::class)->create([
@@ -2416,8 +2534,10 @@ class ServicesTest extends TestCase
         Passport::actingAs($user);
 
         $updateRequestCheckResponse = $this->get(
-            route('core.v1.update-requests.show',
-                ['update_request' => $updateRequestId])
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
         );
 
         $updateRequestCheckResponse->assertSuccessful();
@@ -2831,7 +2951,7 @@ class ServicesTest extends TestCase
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
-        $response = $this->json('POST', '/core/v1/services', [
+        $payload = [
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
             'name' => 'Test Service',
@@ -2871,14 +2991,47 @@ class ServicesTest extends TestCase
             'gallery_items' => [],
             'category_taxonomies' => [],
             'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
-        ]);
+        ];
 
-        $serviceId = $this->getResponseContent($response, 'data.id');
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $updateRequestId = $this->getResponseContent($response, 'id');
+
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $serviceId]);
-        $updateRequest = UpdateRequest::where('updateable_id', $serviceId)->firstOrFail();
+        $this->assertDatabaseHas(table(UpdateRequest::class), [
+            'id' => $updateRequestId,
+            'updateable_id' => null
+        ]);
+        $updateRequest = UpdateRequest::where('id', $updateRequestId)->firstOrFail();
         $this->assertEquals($this->getResponseContent($imageResponse, 'data.id'), $updateRequest->data['logo_file_id']);
+
+        $globalAdminUser = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($globalAdminUser);
+
+        //And the organisation event should not yet be created
+        $this->assertEmpty(Service::all());
+
+        // Get the event image for the update request
+        $response = $this->get("/core/v1/services/new/logo.png?update_request_id=$updateRequestId");
+
+        $this->assertEquals($image, $response->content());
+
+        $serviceApproveResponse = $this->put(
+            route(
+                'core.v1.update-requests.approve',
+                ['update_request' => $updateRequestId]
+            )
+        );
+
+        $serviceApproveResponse->assertSuccessful();
+
+        unset($payload['useful_infos']);
+        unset($payload['offerings']);
+        unset($payload['gallery_items']);
+        unset($payload['category_taxonomies']);
+
+        $this->assertDatabaseHas('services', $payload);
     }
 
     /*
@@ -3517,6 +3670,64 @@ class ServicesTest extends TestCase
                             'errors' => [
                                 'id' => [
                                     'The ID is used elsewhere in the spreadsheet.',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function validate_file_import_invalid_organisation_ids()
+    {
+        Storage::fake('local');
+
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $uuid = uuid();
+
+        $services = collect([
+            factory(Service::class)->make([
+                'organisation_id' => 'foo',
+            ]),
+            factory(Service::class)->make([
+                'organisation_id' => $uuid,
+            ]),
+        ]);
+
+        $this->createServiceSpreadsheets($services);
+
+        $response = $this->json('POST', "/core/v1/services/import", [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $response->assertJson([
+            'data' => [
+                'errors' => [
+                    'spreadsheet' => [
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'organisation_id' => [
+                                    "validation.uuid",
+                            "The organisation id field must contain an ID for an organisation you are an organisation admin for."
+                                ],
+                            ],
+                        ],
+                        [
+                            'row' => [],
+                            'errors' => [
+                                'organisation_id' => [
+                                    "The selected organisation id is invalid.",
+                            "The organisation id field must contain an ID for an organisation you are an organisation admin for."
                                 ],
                             ],
                         ],
@@ -4778,7 +4989,6 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
-
     }
 
     public function test_service_update_request_approval_rejected_if_social_medias_field_is_populated()
@@ -4832,6 +5042,5 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
-
     }
 }

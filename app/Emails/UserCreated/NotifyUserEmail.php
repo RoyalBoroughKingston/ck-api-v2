@@ -11,7 +11,7 @@ class NotifyUserEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.user_created.notify_user.email');
+        return config('gov_uk_notify.notifications_template_ids.user_created.notify_user.email');
     }
 
     /**

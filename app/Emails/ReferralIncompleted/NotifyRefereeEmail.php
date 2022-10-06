@@ -11,7 +11,7 @@ class NotifyRefereeEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.referral_incompleted.notify_referee.email');
+        return config('gov_uk_notify.notifications_template_ids.referral_incompleted.notify_referee.email');
     }
 
     /**

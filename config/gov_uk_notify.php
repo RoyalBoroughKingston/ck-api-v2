@@ -1,79 +1,13 @@
 <?php
 
 return [
-
-    /*
-     * The default number of results to show in paginated responses.
-     */
-    'pagination_results' => 25,
-
-    /*
-     * The maximum number of results that can be requested.
-     */
-    'max_pagination_results' => 100,
-
-    /*
-     * Available drivers: 'stub', 'nominatim', 'google'
-     */
-    'geocode_driver' => env('GEOCODE_DRIVER', 'stub'),
-
-    /*
-     * The API key to use with the Google Geocoding API.
-     */
-    'google_api_key' => env('GOOGLE_API_KEY'),
-
-    /*
-     * Available drivers: 'log', 'null', 'gov'
-     */
-    'email_driver' => env('EMAIL_DRIVER', 'log'),
-
-    /*
-     * Available drivers: 'log', 'null', 'gov'
-     */
-    'sms_driver' => env('SMS_DRIVER', 'log'),
-
     /*
      * The GOV.UK Notify API key.
      */
     'gov_notify_api_key' => env('GOV_NOTIFY_API_KEY'),
 
     /*
-     * The contact details for the global admin team.
-     */
-    'global_admin' => [
-        'email' => env('GLOBAL_ADMIN_EMAIL'),
-    ],
-
-    /*
-     * The URI for the backend app.
-     */
-    'backend_uri' => env('BACKEND_URI', ''),
-
-    /*
-     * The number of working days a service must respond within.
-     */
-    'working_days_for_service_to_respond' => 10,
-
-    /*
-     * If one time password authentication should be enabled.
-     */
-    'otp_enabled' => env('OTP_ENABLED', true),
-
-    /*
-     * The distance (in miles) that the search results should limit up to.
-     */
-    'search_distance' => 5,
-
-    /*
-     * The dimensions to automatically generate resized images at.
-     */
-    'cached_image_dimensions' => [
-        150,
-        350,
-    ],
-
-    /*
-     * Used for GOV.UK Notify.
+     * GOV.UK Notify template IDs.
      */
     'notifications_template_ids' => [
         'password_reset' => [

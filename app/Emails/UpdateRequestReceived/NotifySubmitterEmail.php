@@ -11,7 +11,7 @@ class NotifySubmitterEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.update_request_received.notify_submitter.email');
+        return config('gov_uk_notify.notifications_template_ids.update_request_received.notify_submitter.email');
     }
 
     /**

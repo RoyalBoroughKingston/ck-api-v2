@@ -11,7 +11,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.stale_service_disabled.notify_global_admin.email');
+        return config('gov_uk_notify.notifications_template_ids.stale_service_disabled.notify_global_admin.email');
     }
 
     /**

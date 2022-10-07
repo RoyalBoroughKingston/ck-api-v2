@@ -35,7 +35,7 @@ class ServiceCreatedTest extends TestCase
         Queue::assertPushed(
             NotifyGlobalAdminEmail::class,
             function (NotifyGlobalAdminEmail $email) use ($service, $user) {
-                $this->assertEquals(config('ck.global_admin.email'), $email->to);
+                $this->assertEquals(config('local.global_admin.email'), $email->to);
                 $this->assertEquals(
                     config('gov_uk_notify.notifications_template_ids.service_created.notify_global_admin.email'),
                     $email->templateId

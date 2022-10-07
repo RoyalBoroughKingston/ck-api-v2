@@ -33,7 +33,7 @@ class PageFeedbackReceivedTest extends TestCase
         Queue::assertPushed(
             NotifyGlobalAdminEmail::class,
             function (NotifyGlobalAdminEmail $email) use ($pageFeedback) {
-                $this->assertEquals(config('ck.global_admin.email'), $email->to);
+                $this->assertEquals(config('local.global_admin.email'), $email->to);
                 $this->assertEquals(
                     config('gov_uk_notify.notifications_template_ids.page_feedback_received.notify_global_admin.email'),
                     $email->templateId

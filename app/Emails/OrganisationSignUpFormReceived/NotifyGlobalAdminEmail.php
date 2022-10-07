@@ -15,26 +15,28 @@ class NotifyGlobalAdminEmail extends Email
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    protected function getReference(): ?string
+    public function getContent(): string
     {
-        return null;
-    }
+        return <<<'EOT'
+Hello,
 
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
+An organisation sign up form has been submitted for ((ORGANISATION_NAME)).
+
+Please review the request below before approving/rejecting:
+((REQUEST_URL))
+
+Regards,
+Connected Places Team
+EOT;
     }
 
     /**
      * @return string
      */
-    public function getContent(): string
+    public function getSubject(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'Organisation Sign Up Form Submitted';
     }
 }

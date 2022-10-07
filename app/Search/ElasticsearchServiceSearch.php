@@ -40,7 +40,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
     {
         $this->query = [
             'from' => 0,
-            'size' => config('ck.pagination_results'),
+            'size' => config('local.pagination_results'),
             'query' => [
                 'bool' => [
                     'filter' => [
@@ -424,7 +424,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
             $services = new LengthAwarePaginator(
                 $services,
                 $response['hits']['total']['value'],
-                config('ck.pagination_results'),
+                config('local.pagination_results'),
                 $page,
                 ['path' => Paginator::resolveCurrentPath()]
             );

@@ -12,7 +12,7 @@ class LogoutTest extends TestCase
 {
     public function test_logged_in_user_can_logout()
     {
-        Config::set('ck.otp_enabled', false);
+        Config::set('local.otp_enabled', false);
 
         $user = factory(User::class)->create(['password' => bcrypt('secret')]);
 

@@ -102,6 +102,7 @@ class OrganisationsTest extends TestCase
         ]);
 
         $response = $this->json('GET', '/core/v1/organisations?sort=-name');
+
         $data = $this->getResponseContent($response);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -555,8 +556,10 @@ class OrganisationsTest extends TestCase
         Passport::actingAs($user);
 
         $updateRequestCheckResponse = $this->get(
-            route('core.v1.update-requests.show',
-                ['update_request' => $updateRequestId])
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
         );
 
         $updateRequestCheckResponse->assertSuccessful();

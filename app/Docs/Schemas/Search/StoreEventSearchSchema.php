@@ -20,7 +20,7 @@ class StoreEventSearchSchema extends Schema
             ->properties(
                 Schema::integer('page'),
                 Schema::integer('per_page')
-                    ->default(config('ck.pagination_results')),
+                    ->default(config('local.pagination_results')),
                 Schema::string('query'),
                 Schema::string('category'),
                 Schema::boolean('is_free'),
@@ -42,7 +42,7 @@ class StoreEventSearchSchema extends Schema
                             ->type(Schema::FORMAT_FLOAT)
                     ),
                 Schema::integer('distance')
-                    ->default(config('ck.search_distance')),
+                    ->default(config('local.search_distance')),
                 Schema::array('eligibilities')
                     ->items(
                         Schema::string()

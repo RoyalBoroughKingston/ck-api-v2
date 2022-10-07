@@ -15,19 +15,11 @@ class NotifySubmitterEmail extends Email
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    protected function getReference(): ?string
+    public function getSubject(): string
     {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
+        return 'Organisation Sign Up Form Rejected';
     }
 
     /**

@@ -65,7 +65,7 @@ class EventController extends Controller
             );
 
             // Apply radius filtering.
-            $search->applyRadius($location, $request->input('distance', config('ck.search_distance')));
+            $search->applyRadius($location, $request->input('distance', config('local.search_distance')));
         }
 
         // Apply order.

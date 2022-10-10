@@ -19,13 +19,7 @@ class NotifySubmitterEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hi ((SUBMITTER_NAME)),
-Your request to register ((ORGANISATION_NAME)) on Connected Places has been submitted and received. A member of the admin team will review it shortly.
-If you have any questions, please get in touch at hlp.admin.connect@nhs.net.
-Many thanks,
-Connected Places Team
-EOT;
+        return 'emails.organisation.sign_up_form.received.notify_submitter.content';
     }
 
     /**
@@ -33,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Connected Places Organisation Sign Up Form Submitted';
+        return 'emails.organisation.sign_up_form.received.notify_submitter.subject';
     }
 }

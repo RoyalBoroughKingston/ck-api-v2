@@ -19,16 +19,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hello,
-
-A site feedback form has been submitted for the page:
-((FEEDBACK_URL))
-
-Here are the details:
-
-”((FEEDBACK_CONTENT))”
-EOT;
+        return 'emails.page_feedback.received.notify_global_admin.content';
     }
 
     /**
@@ -36,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Feedback received on the site';
+        return 'emails.page_feedback.received.notify_global_admin.subject';
     }
 }

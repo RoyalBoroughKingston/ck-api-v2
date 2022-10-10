@@ -19,11 +19,6 @@ class NotifyClientSms extends Sms
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-LOOP: Hi ((CLIENT_INITIALS)),
-Your referral (ID: ((REFERRAL_ID))) has been marked as incomplete. This means the service tried to contact you but couldn't.
-For details: info@connectedtogether.org.uk
-The Connected Together team
-EOT;
+        return 'sms.referral.incompleted.notify_client';
     }
 }

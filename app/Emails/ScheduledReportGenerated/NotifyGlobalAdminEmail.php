@@ -19,13 +19,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hello,
-
-A ((REPORT_FREQUENCY)) ((REPORT_TYPE)) report has been generated.
-
-Please login to the admin system to view the report.
-EOT;
+        return 'email.report.scheduled.notify_global_admin.content';
     }
 
     /**
@@ -33,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Scheduled report generated';
+        return 'email.report.scheduled.notify_global_admin.subject';
     }
 }

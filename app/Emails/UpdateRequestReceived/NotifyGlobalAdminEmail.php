@@ -19,18 +19,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hello,
-
-An update request has been created for the ((RESOURCE_TYPE)) with the ID: ((RESOURCE_ID)).
-
-Please review the request below before approving/rejecting:
-((REQUEST_URL))
-
-Regards,
-
-Connected Together.
-EOT;
+        return 'emails.update_request.received.notify_global_admin.content';
     }
 
     /**
@@ -38,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Update Request Submitted';
+        return 'emails.update_request.received.notify_global_admin.subject';
     }
 }

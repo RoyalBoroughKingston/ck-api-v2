@@ -19,8 +19,6 @@ class NotifyRefereeSms extends Sms
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-LOOP: You've made a connection for a client on Connected Together ((REFERRAL_ID)). The service should contact them within 10 working days. Any feedback contact info@connectedtogether.org.uk
-EOT;
+        return 'sms.referral.created.notify_referee';
     }
 }

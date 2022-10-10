@@ -19,17 +19,7 @@ class NotifySubmitterEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hi ((SUBMITTER_NAME)),
-
-Your update to ((RESOURCE_NAME)) (((RESOURCE_TYPE))) has been submitted and received. A member of the admin team will review it shortly.
-
-If you have any questions, please get in touch at info@connectedtogether.org.uk.
-
-Many thanks,
-
-The Connected Together team
-EOT;
+        return 'emails.update_request.received.notify_submitter.content';
     }
 
     /**
@@ -37,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Update Request Submitted';
+        return 'emails.update_request.received.notify_submitter.subject';
     }
 }

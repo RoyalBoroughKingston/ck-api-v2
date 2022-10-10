@@ -19,8 +19,6 @@ class UserSms extends Sms
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-LOOP: ((OTP_CODE)) is your authentication code
-EOT;
+        return 'sms.otp.user.content';
     }
 }

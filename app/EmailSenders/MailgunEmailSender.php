@@ -3,42 +3,72 @@
 namespace App\EmailSenders;
 
 use App\Contracts\EmailSender;
-use App\Contracts\VariableSubstituter;
 use App\Emails\Email;
 use Mailgun\Mailgun;
 
 class MailgunEmailSender implements EmailSender
 {
     /**
+     * Global values to be included in language files.
+     *
+     * @var array
+     */
+    protected $globalValues = [];
+
+    public function __construct()
+    {
+        $globalValues['APP_NAME'] = config('app.name');
+        $globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
+        $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
+    }
+
+    /**
+     * Create the email subject from the language file and the email values.
+     *
+     * @param Email $email
+     * @return string
+     */
+    public function createSubject(Email $email)
+    {
+        return trans(
+            $email->getSubject(),
+            array_merge($this->globalValues, $email->values)
+        );
+    }
+
+    /**
+     * Create the email content from the language file and the email values.
+     *
+     * @param Email $email
+     * @return string
+     */
+    public function createContent(Email $email)
+    {
+        return trans(
+            $email->getContent(),
+            array_merge($this->globalValues, $email->values)
+        );
+    }
+
+    /**
      * @inheritDoc
      */
     public function send(Email $email)
     {
-        /** @var \App\Contracts\VariableSubstituter $variableSubstituter */
-        $variableSubstituter = resolve(VariableSubstituter::class);
-
-        $subject = $variableSubstituter->substitute(
-            $email->getSubject(),
-            $email->values
-        );
-
-        $content = $variableSubstituter->substitute(
-            $email->getContent(),
-            $email->values
-        );
-
         /** @var \Mailgun\Mailgun $client */
         $client = resolve(Mailgun::class);
 
         $fromName = config('mail.from.name');
         $fromAddress = config('mail.from.address');
 
+        $content = $this->createContent($email);
+
         $response = $client
             ->messages()
             ->send(config('services.mailgun.domain'), [
                 'from' => "{$fromName} <{$fromAddress}>",
                 'to' => $email->to,
-                'subject' => $subject,
+                'subject' => $this->createSubject($email),
                 'text' => $content,
             ]);
 

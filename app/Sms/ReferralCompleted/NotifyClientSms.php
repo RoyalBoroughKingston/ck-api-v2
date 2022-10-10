@@ -19,8 +19,6 @@ class NotifyClientSms extends Sms
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-LOOP: You've made a connection on LOOP ((REFERRAL_ID)). The service should contact you within 10 working days. Any feedback contact info@connectedtogether.org.uk
-EOT;
+        return 'sms.referral.completed.notify_client';
     }
 }

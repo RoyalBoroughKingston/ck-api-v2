@@ -19,9 +19,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-((SERVICE_NAME)) on Connected Together has been marked as disabled after not being updated for over a year.
-EOT;
+        return 'emails.service.disabled.notify_global_admin.content';
     }
 
     /**
@@ -29,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Disabled ((SERVICE_NAME)) page on Connected Together';
+        return 'emails.service.disabled.notify_global_admin.subject';
     }
 }

@@ -19,7 +19,7 @@ class NotifySubmitterEmail extends Email
      */
     public function getSubject(): string
     {
-        return 'Organisation Sign Up Form Approved';
+        return 'emails.organisation.sign_up_form.approved.notify_submitter.subject';
     }
 
     /**
@@ -27,6 +27,6 @@ class NotifySubmitterEmail extends Email
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'emails.organisation.sign_up_form.approved.notify_submitter.content';
     }
 }

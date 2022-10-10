@@ -40,6 +40,8 @@ class ServiceCreatedTest extends TestCase
                     config('gov_uk_notify.notifications_template_ids.service_created.notify_global_admin.email'),
                     $email->templateId
                 );
+                $this->assertEquals('emails.service.created.notify_global_admin.subject', $email->getSubject());
+                $this->assertEquals('emails.service.created.notify_global_admin.content', $email->getContent());
 
                 $this->assertEquals($service->name, $email->values['SERVICE_NAME']);
                 $this->assertEquals($user->full_name, $email->values['ORGANISATION_ADMIN_NAME']);

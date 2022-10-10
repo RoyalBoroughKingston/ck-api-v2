@@ -19,26 +19,7 @@ class NotifyServiceEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hello,
-
-You received a referral to your service ((REFERRAL_SERVICE_NAME)) for ((REFERRAL_INITIALS)) and ((REFERRAL_ID)) ((REFERRAL_DAYS_AGO)) working days ago.
-
-This is a ((REFERRAL_TYPE)).
-
-Please contact the client via ((REFERRAL_CONTACT_METHOD)) within the next ((REFERRAL_DAYS_LEFT)) working days.
-
-If you are unable to get in contact with the client, you can mark the referral is ‘Incomplete’.
-
-You can update the status of the referral in the admin portal:
-http://admin.connectedtogether.org.uk/referrals
-
-If you have any questions, please contact us at info@connectedtogether.org.uk.
-
-Many thanks,
-
-The Connected Together team
-EOT;
+        return 'emails.referral.unactioned.notify_service.content';
     }
 
     /**
@@ -46,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return '((REFERRAL_SERVICE_NAME)) has a referral that needs actioning';
+        return 'emails.referral.unactioned.notify_service.subject';
     }
 }

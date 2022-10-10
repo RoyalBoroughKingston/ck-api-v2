@@ -19,23 +19,7 @@ class NotifyGlobalAdminEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-((SERVICE_NAME)) on Connected Together has not been updated in over 12 months.
-
-View the page on Connected Together:
-((SERVICE_URL))
-
-Reminders have been sent monthly to the following:
-((SERVICE_ADMIN_NAMES))
-
-Page already up to date?
-Reset the clock:
-((SERVICE_STILL_UP_TO_DATE_URL))
-
-Disable page?
-You can disable the page in the backend:
-((SERVICE_URL))
-EOT;
+        return 'emails.service.updated.notify_global_admin.content';
     }
 
     /**
@@ -43,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return '((SERVICE_NAME)) page on Connected Together – Inactive for 1 year';
+        return 'emails.service.updated.notify_global_admin.subject';
     }
 }

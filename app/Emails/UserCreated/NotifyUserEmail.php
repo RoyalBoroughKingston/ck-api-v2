@@ -19,21 +19,7 @@ class NotifyUserEmail extends Email
      */
     public function getContent(): string
     {
-        return <<<'EOT'
-Hi ((NAME)),
-
-An account has been created for you using this email address. You can log in to the Connected Together admin portal at:
-http://admin.connectedtogether.org.uk
-
-Permissions:
-((PERMISSIONS))
-
-If you have any questions, you can email us at info@connectedtogether.org.uk
-
-Many thanks,
-
-The Connected Together team
-EOT;
+        return 'emails.user.created.notify_user.content';
     }
 
     /**
@@ -41,6 +27,6 @@ EOT;
      */
     public function getSubject(): string
     {
-        return 'Account Created';
+        return 'emails.user.created.notify_user.subject';
     }
 }

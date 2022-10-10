@@ -38,6 +38,8 @@ class PageFeedbackReceivedTest extends TestCase
                     config('gov_uk_notify.notifications_template_ids.page_feedback_received.notify_global_admin.email'),
                     $email->templateId
                 );
+                $this->assertEquals('emails.page_feedback.received.notify_global_admin.subject', $email->getSubject());
+                $this->assertEquals('emails.page_feedback.received.notify_global_admin.content', $email->getContent());
                 $this->assertArrayHasKey('FEEDBACK_URL', $email->values);
                 $this->assertArrayHasKey('FEEDBACK_CONTENT', $email->values);
                 return true;

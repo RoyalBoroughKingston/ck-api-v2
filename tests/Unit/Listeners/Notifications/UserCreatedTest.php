@@ -27,6 +27,12 @@ class UserCreatedTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyUserEmail::class);
         Queue::assertPushed(NotifyUserEmail::class, function (NotifyUserEmail $email) {
+            $this->assertEquals(
+                config('gov_uk_notify.notifications_template_ids.user_created.notify_user.email'),
+                $email->templateId
+            );
+            $this->assertEquals('emails.user.created.notify_user.subject', $email->getSubject());
+            $this->assertEquals('emails.user.created.notify_user.content', $email->getContent());
             $this->assertArrayHasKey('NAME', $email->values);
             $this->assertArrayHasKey('PERMISSIONS', $email->values);
             return true;

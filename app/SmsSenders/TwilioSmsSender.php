@@ -3,23 +3,33 @@
 namespace App\SmsSenders;
 
 use App\Contracts\SmsSender;
-use App\Contracts\VariableSubstituter;
 use App\Sms\Sms;
 use Twilio\Rest\Client;
 
 class TwilioSmsSender implements SmsSender
 {
     /**
+     * Global values to be included in language files.
+     *
+     * @var array
+     */
+    protected $globalValues = [];
+
+    public function __construct()
+    {
+        $globalValues['APP_NAME'] = config('app.name');
+        $globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
+        $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
+    }
+
+    /**
      * @inheritDoc
      */
     public function send(Sms $sms)
     {
-        /** @var \App\Contracts\VariableSubstituter $variableSubstituter */
-        $variableSubstituter = resolve(VariableSubstituter::class);
-
-        $content = $variableSubstituter->substitute(
+        $content = trans(
             $sms->getContent(),
-            $sms->values
+            array_merge($this->globalValues, $sms->values)
         );
 
         /** @var \Twilio\Rest\Client $client */

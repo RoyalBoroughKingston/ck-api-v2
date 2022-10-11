@@ -19,6 +19,7 @@ use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -178,7 +179,7 @@ class StoreRequest extends FormRequest
                     null
                 ),
             ],
-
+            'ends_at' => ['present', 'nullable', 'date_format:' . CarbonImmutable::ISO8601],
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],

@@ -61,29 +61,8 @@ class ServicePersistenceService implements DataPersistenceService
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'eligibility_types' => $request->filled('eligibility_types') ? $request->eligibility_types : new MissingValue(),
                 'logo_file_id' => $request->missing('logo_file_id'),
+                'ends_at' => $request->missing('ends_at'),
             ]);
-
-            // if ($request->filled('gallery_items') && !$request->isPreview()) {
-            //     foreach ($request->gallery_items as $galleryItem) {
-            //         /** @var \App\Models\File $file */
-            //         $file = File::findOrFail($galleryItem['file_id'])->assigned();
-
-            //         // Create resized version for common dimensions.
-            //         foreach (config('local.cached_image_dimensions') as $maxDimension) {
-            //             $file->resizedVersion($maxDimension);
-            //         }
-            //     }
-            // }
-
-            // if ($request->filled('logo_file_id') && !$request->isPreview()) {
-            //     /** @var \App\Models\File $file */
-            //     $file = File::findOrFail($request->logo_file_id)->assigned();
-
-            //     // Create resized version for common dimensions.
-            //     foreach (config('local.cached_image_dimensions') as $maxDimension) {
-            //         $file->resizedVersion($maxDimension);
-            //     }
-            // }
 
             // Loop through each useful info.
             foreach ($request->input('useful_infos', []) as $usefulInfo) {
@@ -158,6 +137,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'referral_url' => $request->referral_url,
                 'logo_file_id' => $request->logo_file_id,
                 'last_modified_at' => Date::now(),
+                'ends_at' => $request->ends_at,
             ];
 
             foreach ($request->input('eligibility_types.custom', []) as $customEligibilityType => $value) {

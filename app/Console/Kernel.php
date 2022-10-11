@@ -46,6 +46,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(Commands\Ck\AutoDelete\ServiceRefreshTokensCommand::class)
             ->daily();
+
+        $schedule->command(Commands\Ck\EndActiveServicesCommand::class)
+            ->daily();
     }
 
     /**

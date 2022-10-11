@@ -17,6 +17,7 @@ use App\TaxonomyRelationships\UpdateServiceEligibilityTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -65,6 +66,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     protected $casts = [
         'is_free' => 'boolean',
         'show_referral_disclaimer' => 'boolean',
+        'ends_at' => 'datetime',
         'last_modified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -269,6 +271,13 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             'referral_email' => Arr::get($data, 'referral_email', $this->referral_email),
             'referral_url' => Arr::get($data, 'referral_url', $this->referral_url),
             'logo_file_id' => Arr::get($data, 'logo_file_id', $this->logo_file_id),
+            'ends_at' => array_key_exists('ends_at', $data)
+                ? (
+                    $data['ends_at'] === null
+                        ? null
+                        : Date::createFromFormat(CarbonImmutable::ISO8601, $data['ends_at'])
+                )
+                : $this->ends_at,
             // This must always be updated regardless of the fields changed.
             'last_modified_at' => Date::now(),
             'eligibility_age_group_custom' => Arr::get($data, 'eligibility_types.custom.age_group', $this->eligibility_age_group_custom),

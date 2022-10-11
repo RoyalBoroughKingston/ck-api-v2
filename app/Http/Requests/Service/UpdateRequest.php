@@ -21,6 +21,7 @@ use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -216,7 +217,7 @@ class UpdateRequest extends FormRequest
                     $this->service->referral_url
                 ),
             ],
-
+            'ends_at' => ['nullable', 'date_format:' . CarbonImmutable::ISO8601],
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],

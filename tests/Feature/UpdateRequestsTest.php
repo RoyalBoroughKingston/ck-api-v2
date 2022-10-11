@@ -771,6 +771,7 @@ class UpdateRequestsTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',

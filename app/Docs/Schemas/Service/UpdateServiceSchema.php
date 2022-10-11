@@ -42,7 +42,8 @@ class UpdateServiceSchema extends Schema
                 'useful_infos',
                 'offerings',
                 'gallery_items',
-                'category_taxonomies'
+                'category_taxonomies',
+                'ends_at'
             )
             ->properties(
                 Schema::string('name'),
@@ -120,6 +121,9 @@ class UpdateServiceSchema extends Schema
                         Schema::string()
                             ->format(Schema::FORMAT_UUID)
                     ),
+                Schema::string('ends_at')
+                    ->format(Schema::FORMAT_DATE_TIME)
+                    ->nullable(),
                 Schema::object('eligibility_types')
                     ->properties(
                         Schema::object('custom')

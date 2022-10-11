@@ -47,7 +47,7 @@ class SearchController extends Controller
             );
 
             // Apply radius filtering.
-            $search->applyRadius($location, $request->input('distance', config('ck.search_distance')));
+            $search->applyRadius($location, $request->input('distance', config('local.search_distance')));
         }
 
         if ($request->has('eligibilities')) {

@@ -39,7 +39,7 @@ class ElasticsearchEventSearch implements EventSearch
     {
         $this->query = [
             'from' => 0,
-            'size' => config('ck.pagination_results'),
+            'size' => config('local.pagination_results'),
             'query' => [
                 'bool' => [
                     'filter' => [
@@ -416,7 +416,7 @@ class ElasticsearchEventSearch implements EventSearch
             $events = new LengthAwarePaginator(
                 $events,
                 $response['hits']['total']['value'],
-                config('ck.pagination_results'),
+                config('local.pagination_results'),
                 $page,
                 ['path' => Paginator::resolveCurrentPath()]
             );

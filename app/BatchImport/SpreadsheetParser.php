@@ -9,7 +9,7 @@ class SpreadsheetParser
     /**
      * The spreadsheet import / export library.
      *
-     * @var \PhpOffice\PhpSpreadsheet\Reader\Xlsx | \PhpOffice\PhpSpreadsheet\Reader\Xls
+     * @var \PhpOffice\PhpSpreadsheet\Reader\Xlsx|\PhpOffice\PhpSpreadsheet\Reader\Xls
      */
     protected $reader;
 

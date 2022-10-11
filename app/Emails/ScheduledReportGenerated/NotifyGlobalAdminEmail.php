@@ -11,30 +11,22 @@ class NotifyGlobalAdminEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.scheduled_report_generated.notify_global_admin.email');
+        return config('gov_uk_notify.notifications_template_ids.scheduled_report_generated.notify_global_admin.email');
     }
 
     /**
-     * @return string|null
-     */
-    protected function getReference(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string
+     * @inheritDoc
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'email.report.scheduled.notify_global_admin.content';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSubject(): string
+    {
+        return 'email.report.scheduled.notify_global_admin.subject';
     }
 }

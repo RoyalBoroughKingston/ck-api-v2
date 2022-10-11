@@ -9,6 +9,20 @@ use App\Sms\Sms;
 class GovNotifySmsSender implements SmsSender
 {
     /**
+     * Global values to be included in language files.
+     *
+     * @var array
+     */
+    protected $globalValues = [];
+
+    public function __construct()
+    {
+        $globalValues['APP_NAME'] = config('app.name');
+        $globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
+        $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
+    }
+
+    /**
      * @param \App\Sms\Sms $sms
      */
     public function send(Sms $sms)
@@ -19,7 +33,7 @@ class GovNotifySmsSender implements SmsSender
         $response = $client->sendSms(
             $sms->to,
             $sms->templateId,
-            $sms->values,
+            array_merge($this->globalValues, $sms->values),
             $sms->reference,
             $sms->senderId
         );

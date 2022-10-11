@@ -12,7 +12,7 @@ class LoginTest extends TestCase
 {
     public function test_otp_sms_sent_to_user()
     {
-        Config::set('ck.otp_enabled', true);
+        Config::set('local.otp_enabled', true);
 
         Queue::fake();
 

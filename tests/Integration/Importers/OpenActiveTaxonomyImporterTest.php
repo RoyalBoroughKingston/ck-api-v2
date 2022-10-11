@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Importers;
+namespace Tests\Integration\Importers;
 
 use App\BatchImport\OpenActiveTaxonomyImporter;
 use App\Models\Taxonomy;
@@ -8,7 +8,6 @@ use Tests\TestCase;
 
 class OpenActiveTaxonomyImporterTest extends TestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

@@ -66,19 +66,33 @@ abstract class Email implements ShouldQueue
     }
 
     /**
+     * @return string|null
+     */
+    protected function getTemplateId(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getReference(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getReplyTo(): ?string
+    {
+        return null;
+    }
+
+    /**
      * @return string
      */
-    abstract protected function getTemplateId(): string;
-
-    /**
-     * @return string|null
-     */
-    abstract protected function getReference(): ?string;
-
-    /**
-     * @return string|null
-     */
-    abstract protected function getReplyTo(): ?string;
+    abstract public function getSubject(): string;
 
     /**
      * @return string

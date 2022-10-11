@@ -7,34 +7,30 @@ use App\Emails\Email;
 class NotifyGlobalAdminEmail extends Email
 {
     /**
-     * @return string
+     * @inheritDoc
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.page_feedback_received.notify_global_admin.email');
+        return config('gov_uk_notify.notifications_template_ids.page_feedback_received.notify_global_admin.email');
     }
 
     /**
-     * @return string|null
-     */
-    protected function getReference(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string
+     * @inheritDoc
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        if ($this->values['CONTACT_DETAILS_PROVIDED']?? null) {
+            return 'emails.page_feedback.received_content.notify_global_admin.content';
+        }
+
+        return 'emails.page_feedback.received.notify_global_admin.content';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSubject(): string
+    {
+        return 'emails.page_feedback.received.notify_global_admin.subject';
     }
 }

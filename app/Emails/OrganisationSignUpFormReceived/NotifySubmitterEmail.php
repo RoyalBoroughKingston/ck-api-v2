@@ -11,23 +11,7 @@ class NotifySubmitterEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.organisation_sign_up_form_received.notify_submitter.email');
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReference(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
+        return config('gov_uk_notify.notifications_template_ids.organisation_sign_up_form_received.notify_submitter.email');
     }
 
     /**
@@ -35,6 +19,14 @@ class NotifySubmitterEmail extends Email
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'emails.organisation.sign_up_form.received.notify_submitter.content';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject(): string
+    {
+        return 'emails.organisation.sign_up_form.received.notify_submitter.subject';
     }
 }

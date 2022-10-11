@@ -2,19 +2,20 @@
 
 namespace Tests\Unit\Listeners\Notifications;
 
+use Tests\TestCase;
+use App\Models\User;
+use App\Models\Service;
+use App\Models\Referral;
+use App\Events\EndpointHit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Queue;
+use App\EmailSenders\MailgunEmailSender;
+use App\Sms\ReferralCreated\NotifyClientSms;
+use App\Sms\ReferralCreated\NotifyRefereeSms;
+use App\Listeners\Notifications\ReferralCreated;
 use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Emails\ReferralCreated\NotifyRefereeEmail;
 use App\Emails\ReferralCreated\NotifyServiceEmail;
-use App\Events\EndpointHit;
-use App\Listeners\Notifications\ReferralCreated;
-use App\Models\Referral;
-use App\Models\Service;
-use App\Models\User;
-use App\Sms\ReferralCreated\NotifyClientSms;
-use App\Sms\ReferralCreated\NotifyRefereeSms;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
 
 class ReferralCreatedTest extends TestCase
 {
@@ -42,6 +43,12 @@ class ReferralCreatedTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyRefereeEmail::class);
         Queue::assertPushed(NotifyRefereeEmail::class, function (NotifyRefereeEmail $email) {
+            $this->assertEquals(
+                config('gov_uk_notify.notifications_template_ids.referral_created.notify_referee.email'),
+                $email->templateId
+            );
+            $this->assertEquals('emails.referral.created.notify_referee.subject', $email->getSubject());
+            $this->assertEquals('emails.referral.created.notify_referee.content', $email->getContent());
             $this->assertArrayHasKey('REFEREE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
@@ -51,6 +58,12 @@ class ReferralCreatedTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyClientEmail::class);
         Queue::assertPushed(NotifyClientEmail::class, function (NotifyClientEmail $email) {
+            $this->assertEquals(
+                config('gov_uk_notify.notifications_template_ids.referral_created.notify_client.email'),
+                $email->templateId
+            );
+            $this->assertEquals('emails.referral.created.notify_client.subject', $email->getSubject());
+            $this->assertEquals('emails.referral.created.notify_client.content', $email->getContent());
             $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
@@ -59,6 +72,12 @@ class ReferralCreatedTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyServiceEmail::class);
         Queue::assertPushed(NotifyServiceEmail::class, function (NotifyServiceEmail $email) {
+            $this->assertEquals(
+                config('gov_uk_notify.notifications_template_ids.referral_created.notify_service.email'),
+                $email->templateId
+            );
+            $this->assertEquals('emails.referral.created.notify_service.subject', $email->getSubject());
+            $this->assertEquals('emails.referral.created.notify_service.content', $email->getContent());
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
             $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_INITIALS', $email->values);

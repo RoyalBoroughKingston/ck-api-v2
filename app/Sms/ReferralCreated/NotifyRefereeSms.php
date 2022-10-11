@@ -11,23 +11,7 @@ class NotifyRefereeSms extends Sms
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.referral_created.notify_referee.sms');
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReference(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getSenderId(): ?string
-    {
-        return null;
+        return config('gov_uk_notify.notifications_template_ids.referral_created.notify_referee.sms');
     }
 
     /**
@@ -35,6 +19,6 @@ class NotifyRefereeSms extends Sms
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'sms.referral.created.notify_referee';
     }
 }

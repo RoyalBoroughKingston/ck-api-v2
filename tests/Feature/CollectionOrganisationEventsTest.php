@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
-class CollectionOrganisationEventTest extends TestCase
+class CollectionOrganisationEventsTest extends TestCase
 {
     /**
      * Setup

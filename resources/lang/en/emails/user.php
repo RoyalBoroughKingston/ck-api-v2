@@ -14,18 +14,18 @@ return [
         'notify_user' => [
             'subject' => 'Account Created',
             'content' => "
-            Hi :NAME,
+Hi :NAME,
 
-            An account has been created for you using this email address. You can log in to the :APP_NAME  admin portal at:
-            :APP_ADMIN_URL
+An account has been created for you using this email address. You can log in to the :APP_NAME  admin portal at:
+:APP_ADMIN_URL
 
-            Permissions:
-            :PERMISSIONS
+Permissions:
+:PERMISSIONS
 
-            If you have any questions, you can email us at :CONTACT_EMAIL
+If you have any questions, you can email us at :CONTACT_EMAIL
 
-            Many thanks,
-            The :APP_NAME  Team
+Many thanks,
+The :APP_NAME  Team
             "
         ]
     ],
@@ -33,20 +33,20 @@ return [
         'notify_user' => [
             'subject' => 'Permissions Updated',
             'content' => "
-            Hi :NAME,
+Hi :NAME,
 
-            Your account has had its permissions updated.
+Your account has had its permissions updated.
 
-            Old permissions:
-            :OLD_PERMISSIONS
+Old permissions:
+:OLD_PERMISSIONS
 
-            New permissions:
-            :PERMISSIONS
+New permissions:
+:PERMISSIONS
 
-            If you have any questions, please contact us at :CONTACT_EMAIL
+If you have any questions, please contact us at :CONTACT_EMAIL
 
-            Many thanks,
-            The :APP_NAME  Team
+Many thanks,
+The :APP_NAME  Team
             "
         ]
     ]

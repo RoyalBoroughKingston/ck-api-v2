@@ -2,19 +2,20 @@
 
 namespace Tests\Unit\Listeners\Notifications;
 
+use Tests\TestCase;
+use App\Models\User;
+use App\Models\Service;
+use App\Models\Referral;
+use App\Events\EndpointHit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Queue;
+use App\EmailSenders\MailgunEmailSender;
+use App\Sms\ReferralCreated\NotifyClientSms;
+use App\Sms\ReferralCreated\NotifyRefereeSms;
+use App\Listeners\Notifications\ReferralCreated;
 use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Emails\ReferralCreated\NotifyRefereeEmail;
 use App\Emails\ReferralCreated\NotifyServiceEmail;
-use App\Events\EndpointHit;
-use App\Listeners\Notifications\ReferralCreated;
-use App\Models\Referral;
-use App\Models\Service;
-use App\Models\User;
-use App\Sms\ReferralCreated\NotifyClientSms;
-use App\Sms\ReferralCreated\NotifyRefereeSms;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
 
 class ReferralCreatedTest extends TestCase
 {

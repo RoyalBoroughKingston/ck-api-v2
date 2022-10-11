@@ -14,11 +14,11 @@ return [
         'notify_global_admin' => [
             'subject' => ' Scheduled report generated ',
             'content' => "
-            Hello,
+Hello,
 
-            A :REPORT_FREQUENCY :REPORT_TYPE report has been generated.
+A :REPORT_FREQUENCY :REPORT_TYPE report has been generated.
 
-            Please login to the admin system to view the report.
+Please login to the admin system to view the report.
             "
         ]
     ]

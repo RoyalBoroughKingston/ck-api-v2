@@ -19,6 +19,10 @@ class NotifyGlobalAdminEmail extends Email
      */
     public function getContent(): string
     {
+        if ($this->values['CONTACT_DETAILS_PROVIDED']?? null) {
+            return 'emails.page_feedback.received_content.notify_global_admin.content';
+        }
+
         return 'emails.page_feedback.received.notify_global_admin.content';
     }
 

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Listeners\Notifications;
 
 use App\Emails\PageFeedbackReceived\NotifyGlobalAdminEmail;
+use App\EmailSenders\MailgunEmailSender;
 use App\Events\EndpointHit;
 use App\Listeners\Notifications\PageFeedbackReceived;
 use App\Models\PageFeedback;

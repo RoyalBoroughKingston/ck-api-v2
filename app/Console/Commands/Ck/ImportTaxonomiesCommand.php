@@ -164,7 +164,7 @@ class ImportTaxonomiesCommand extends Command
      * @param array $taxonomyRecords
      * @param bool $refresh
      * @param bool $dryrun
-     * @return bool | int
+     * @return bool|int
      */
     public function importTaxonomyRecords(array $taxonomyRecords, bool $refresh, bool $dryrun)
     {

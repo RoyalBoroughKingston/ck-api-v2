@@ -4,6 +4,7 @@ namespace App\EmailSenders;
 
 use App\Contracts\EmailSender;
 use App\Emails\Email;
+use Illuminate\Mail\Markdown;
 use Mailgun\Mailgun;
 
 class MailgunEmailSender implements EmailSender
@@ -17,9 +18,9 @@ class MailgunEmailSender implements EmailSender
 
     public function __construct()
     {
-        $globalValues['APP_NAME'] = config('app.name');
-        $globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
-        $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
+        $this->globalValues['APP_NAME'] = config('app.name');
+        $this->globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
+        $this->globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
     }
 
     /**
@@ -51,6 +52,20 @@ class MailgunEmailSender implements EmailSender
     }
 
     /**
+     * Create the email content from the language file and the email values.
+     *
+     * @param Email $email
+     * @return string
+     */
+    public function createHtmlContent(Email $email)
+    {
+        return Markdown::parse(trans(
+            $email->getContent(),
+            array_merge($this->globalValues, $email->values)
+        ));
+    }
+
+    /**
      * @inheritDoc
      */
     public function send(Email $email)
@@ -62,6 +77,7 @@ class MailgunEmailSender implements EmailSender
         $fromAddress = config('mail.from.address');
 
         $content = $this->createContent($email);
+        $htmlContent = $this->createHtmlContent($email);
 
         $response = $client
             ->messages()
@@ -70,6 +86,7 @@ class MailgunEmailSender implements EmailSender
                 'to' => $email->to,
                 'subject' => $this->createSubject($email),
                 'text' => $content,
+                'html' => $htmlContent,
             ]);
 
         $email->notification->update(['message' => $content]);

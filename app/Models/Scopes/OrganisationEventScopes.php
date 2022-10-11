@@ -5,7 +5,6 @@ namespace App\Models\Scopes;
 use App\Models\Collection;
 use App\Models\CollectionTaxonomy;
 use App\Models\Location;
-use App\Models\OrganisationEvent;
 use App\Models\OrganisationEventTaxonomy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;

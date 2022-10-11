@@ -16,7 +16,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
      * Store the model.
      *
      * @param \Illuminate\Foundation\Http\FormRequest $request
-     * @return \App\Models\UpdateRequest | \App\Models\OrganisationEvent
+     * @return \App\Models\UpdateRequest|\App\Models\OrganisationEvent
      */
     public function store(FormRequest $request)
     {

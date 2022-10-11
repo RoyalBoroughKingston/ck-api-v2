@@ -13,14 +13,14 @@ return [
     'user' => [
         'subject' => 'Reset forgotten password',
         'content' => "
-        Hello,
+Hello,
 
-        We have received a request to reset your password. Please follow this link:
-        :PASSWORD_RESET_LINK
+We have received a request to reset your password. Please follow this link:
+:PASSWORD_RESET_LINK
 
-        If this is not you, please ignore this message.
+If this is not you, please ignore this message.
 
-        If you need any further help please contact :CONTACT_EMAIL
+If you need any further help please contact :CONTACT_EMAIL
         "
     ]
 ];

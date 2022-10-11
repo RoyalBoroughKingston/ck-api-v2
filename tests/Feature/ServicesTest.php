@@ -64,6 +64,7 @@ class ServicesTest extends TestCase
             'referral_method',
             'referral_email',
             'referral_url',
+            'ends_at',
             'show_referral_disclaimer',
             'referral_button_text',
             'eligibility_age_group_custom',
@@ -145,6 +146,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -342,6 +344,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -431,6 +434,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -494,6 +498,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -582,6 +587,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -635,6 +641,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -687,6 +694,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -741,6 +749,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -803,6 +812,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -846,6 +856,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -901,6 +912,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -965,6 +977,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1027,6 +1040,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1081,6 +1095,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1140,6 +1155,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1476,6 +1492,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1539,6 +1556,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1602,6 +1620,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1848,6 +1867,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1907,6 +1927,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1965,6 +1986,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2011,6 +2033,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2057,6 +2080,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2103,6 +2127,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2149,6 +2174,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2197,6 +2223,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2248,6 +2275,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2795,6 +2823,7 @@ class ServicesTest extends TestCase
                     'referral_button_text',
                     'referral_email',
                     'referral_url',
+                    'ends_at',
                     'useful_infos' => [
                         [
                             'title',
@@ -2974,6 +3003,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4429,6 +4459,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4500,6 +4531,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4584,6 +4616,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4963,6 +4996,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -5027,6 +5061,7 @@ class ServicesTest extends TestCase
                 'referral_button_text' => $service->referral_button_text,
                 'referral_email' => $service->referral_email,
                 'referral_url' => $service->referral_url,
+                'ends_at' => null,
                 'useful_infos' => [],
                 'social_medias' => [
                     [

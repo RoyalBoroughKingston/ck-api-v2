@@ -17,9 +17,9 @@ class TwilioSmsSender implements SmsSender
 
     public function __construct()
     {
-        $globalValues['APP_NAME'] = config('app.name');
-        $globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
-        $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
+        $this->globalValues['APP_NAME'] = config('app.name');
+        $this->globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
+        $this->globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
     }
 
     /**

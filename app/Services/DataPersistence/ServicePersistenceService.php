@@ -6,11 +6,12 @@ use App\Models\File;
 use App\Models\Model;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\UpdateRequest as UpdateRequestModel;
+use Carbon\CarbonImmutable;
 use App\Support\MissingValue;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\UpdateRequest as UpdateRequestModel;
 
 class ServicePersistenceService implements DataPersistenceService
 {
@@ -137,7 +138,9 @@ class ServicePersistenceService implements DataPersistenceService
                 'referral_url' => $request->referral_url,
                 'logo_file_id' => $request->logo_file_id,
                 'last_modified_at' => Date::now(),
-                'ends_at' => $request->ends_at,
+                'ends_at' => $request->filled('ends_at')
+                    ? Date::createFromFormat(CarbonImmutable::ISO8601, $request->ends_at)
+                    : null,
             ];
 
             foreach ($request->input('eligibility_types.custom', []) as $customEligibilityType => $value) {

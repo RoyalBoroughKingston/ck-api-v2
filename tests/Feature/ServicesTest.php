@@ -2,33 +2,34 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
+use Carbon\Carbon;
+use Tests\TestCase;
 use App\Models\File;
-use App\Models\HolidayOpeningHour;
-use App\Models\Organisation;
-use App\Models\RegularOpeningHour;
 use App\Models\Role;
-use App\Models\Service;
-use App\Models\ServiceLocation;
-use App\Models\ServiceRefreshToken;
-use App\Models\ServiceTaxonomy;
-use App\Models\SocialMedia;
-use App\Models\Taxonomy;
-use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Taxonomy;
 use App\Models\UserRole;
+use App\Events\EndpointHit;
+use App\Models\SocialMedia;
 use Carbon\CarbonImmutable;
 use Faker\Factory as Faker;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use App\Models\Organisation;
+use App\Models\UpdateRequest;
+use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use App\Models\ServiceLocation;
+use App\Models\ServiceTaxonomy;
+use Illuminate\Http\UploadedFile;
+use App\Models\HolidayOpeningHour;
+use App\Models\RegularOpeningHour;
+use App\Models\ServiceRefreshToken;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Collection;
 
 class ServicesTest extends TestCase
 {
@@ -434,7 +435,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'ends_at' => null,
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -498,7 +499,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'ends_at' => null,
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',

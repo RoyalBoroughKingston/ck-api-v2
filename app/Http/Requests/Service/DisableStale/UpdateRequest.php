@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Service\Refresh;
+namespace App\Http\Requests\Service\DisableStale;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,11 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if ($this->user()->isSuperAdmin()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -23,12 +27,8 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        if (optional($this->user('api'))->isServiceAdmin($this->service)) {
-            return [];
-        }
-
         return [
-            'token' => ['required', 'exists:service_refresh_tokens,id'],
+            'last_modified_at' => ['required', 'date_format:Y-m-d'],
         ];
     }
 }

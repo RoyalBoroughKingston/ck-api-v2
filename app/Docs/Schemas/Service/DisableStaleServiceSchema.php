@@ -5,7 +5,7 @@ namespace App\Docs\Schemas\Service;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-class RefreshServiceSchema extends Schema
+class DisableStaleServiceSchema extends Schema
 {
     /**
      * @param string|null $objectId
@@ -16,11 +16,11 @@ class RefreshServiceSchema extends Schema
     {
         return parent::create($objectId)
             ->type(static::TYPE_OBJECT)
-            ->required('token')
+            ->required('last_modified_at')
             ->properties(
-                Schema::string('token')
-                    ->format(Schema::FORMAT_UUID)
-                    ->description('A unique one-time token needed to invoke the refresh (not required if a service admin)')
+                Schema::string('last_modified_at')
+                    ->format(Schema::FORMAT_DATE)
+                    ->description('The date to specify when services last updated before should be disabled')
             );
     }
 }

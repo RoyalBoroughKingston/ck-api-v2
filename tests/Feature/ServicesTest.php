@@ -280,6 +280,22 @@ class ServicesTest extends TestCase
         $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
     }
 
+    public function test_guest_can_sort_by_last_modified_at()
+    {
+        $serviceOne = factory(Service::class)->create([
+            'last_modified_at' => '2020-01-01 13:00:00'
+        ]);
+        $serviceTwo = factory(Service::class)->create([
+            'last_modified_at' => '2020-01-01 20:00:00'
+        ]);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-last_modified_at');
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceOne->organisation_id, $data['data'][1]['organisation_id']);
+        $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
+    }
+
     /*
      * Create a service.
      */
@@ -2704,7 +2720,7 @@ class ServicesTest extends TestCase
 
         $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_guest_with_invalid_token_cannot_refresh()
@@ -2732,6 +2748,40 @@ class ServicesTest extends TestCase
                 'service_id' => $service->id,
             ])->id,
         ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'last_modified_at' => $now->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    public function test_service_worker_without_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_service_admin_without_token_can_refresh()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => Date::now()->subMonths(6),
+        ]);
+
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -2932,6 +2982,45 @@ class ServicesTest extends TestCase
         $this->assertCount(2, $services);
         $this->assertSame($closelyRelatedService->id, $services[0]['id']);
         $this->assertSame($distantlyRelatedService->id, $services[1]['id']);
+    }
+
+    /*
+     * Disable stale.
+     */
+
+    public function test_guest_cannot_disable_stale()
+    {
+        $response = $this->putJson('/core/v1/services/disable-stale', [
+            'last_modified_at' => Date::today()->toDateString(),
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_super_admin_can_disable_stale()
+    {
+        $staleService = factory(Service::class)->create([
+            'last_modified_at' => '2020-02-01',
+        ]);
+        $currentService = factory(Service::class)->create([
+            'last_modified_at' => '2020-05-01',
+        ]);
+
+        Passport::actingAs(factory(User::class)->create()->makeSuperAdmin());
+
+        $response = $this->putJson('/core/v1/services/disable-stale', [
+            'last_modified_at' => '2020-03-01',
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas($staleService->getTable(), [
+            'id' => $staleService->id,
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+        $this->assertDatabaseHas($currentService->getTable(), [
+            'id' => $currentService->id,
+            'status' => Service::STATUS_ACTIVE,
+        ]);
     }
 
     /*

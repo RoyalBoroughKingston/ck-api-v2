@@ -147,6 +147,8 @@ Route::prefix('/core/v1')
 
             // Services.
             Route::match(['GET', 'POST'], '/services/index', 'ServiceController@index');
+            Route::put('/services/disable-stale', 'Service\\DisableStaleController')
+                ->name('services.disable-stale');
             Route::apiResource('/services', 'ServiceController');
             Route::put('/services/{service}/refresh', 'Service\\RefreshController')
                 ->name('services.refresh');

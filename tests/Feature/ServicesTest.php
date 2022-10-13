@@ -2985,6 +2985,45 @@ class ServicesTest extends TestCase
     }
 
     /*
+     * Disable stale.
+     */
+
+    public function test_guest_cannot_disable_stale()
+    {
+        $response = $this->putJson('/core/v1/services/disable-stale', [
+            'last_modified_at' => Date::today()->toDateString(),
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_super_admin_can_disable_stale()
+    {
+        $staleService = factory(Service::class)->create([
+            'last_modified_at' => '2020-02-01',
+        ]);
+        $currentService = factory(Service::class)->create([
+            'last_modified_at' => '2020-05-01',
+        ]);
+
+        Passport::actingAs(factory(User::class)->create()->makeSuperAdmin());
+
+        $response = $this->putJson('/core/v1/services/disable-stale', [
+            'last_modified_at' => '2020-03-01',
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas($staleService->getTable(), [
+            'id' => $staleService->id,
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+        $this->assertDatabaseHas($currentService->getTable(), [
+            'id' => $currentService->id,
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+    }
+
+    /*
      * Get a specific service's logo.
      */
 

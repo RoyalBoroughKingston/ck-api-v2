@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\Ck;
 
-use App\Models\IndexConfigurators\PagesIndexConfigurator;
 use App\Models\IndexConfigurators\EventsIndexConfigurator;
+use App\Models\IndexConfigurators\PagesIndexConfigurator;
 use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\OrganisationEvent;
 use App\Models\Page;

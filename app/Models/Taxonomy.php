@@ -13,7 +13,9 @@ class Taxonomy extends Model
     use TaxonomyScopes;
 
     const NAME_CATEGORY = 'Category';
+
     const NAME_ORGANISATION = 'Organisation';
+
     const NAME_SERVICE_ELIGIBILITY = 'Service Eligibility';
 
     /**

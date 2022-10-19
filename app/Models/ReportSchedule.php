@@ -13,5 +13,6 @@ class ReportSchedule extends Model
     use ReportScheduleScopes;
 
     const REPEAT_TYPE_WEEKLY = 'weekly';
+
     const REPEAT_TYPE_MONTHLY = 'monthly';
 }

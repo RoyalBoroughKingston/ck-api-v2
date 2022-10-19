@@ -25,19 +25,27 @@ class File extends Model implements Responsable
     const MIME_TYPE_TXT = 'text/plain';
 
     const META_TYPE_RESIZED_IMAGE = 'resized_image';
+
     const META_TYPE_PENDING_ASSIGNMENT = 'pending_assignment';
 
     const META_PLACEHOLDER_FOR_ORGANISATION = 'organisation';
+
     const META_PLACEHOLDER_FOR_ORGANISATION_EVENT = 'organisation_event';
+
     const META_PLACEHOLDER_FOR_SERVICE = 'service';
+
     const META_PLACEHOLDER_FOR_COLLECTION_CATEGORY = 'collection_category';
+
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
+
     const META_PLACEHOLDER_FOR_LOCATION = 'location';
+
     const META_PLACEHOLDER_FOR_SERVICE_LOCATION = 'service_location';
 
     const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
 
     const WITH_PERIOD = true;
+
     const WITHOUT_PERIOD = false;
 
     /**

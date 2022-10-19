@@ -41,21 +41,31 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     use UpdateServiceEligibilityTaxonomyRelationships;
 
     const TYPE_SERVICE = 'service';
+
     const TYPE_ACTIVITY = 'activity';
+
     const TYPE_CLUB = 'club';
+
     const TYPE_GROUP = 'group';
 
     const STATUS_ACTIVE = 'active';
+
     const STATUS_INACTIVE = 'inactive';
 
     const WAIT_TIME_ONE_WEEK = 'one_week';
+
     const WAIT_TIME_TWO_WEEKS = 'two_weeks';
+
     const WAIT_TIME_THREE_WEEKS = 'three_weeks';
+
     const WAIT_TIME_MONTH = 'month';
+
     const WAIT_TIME_LONGER = 'longer';
 
     const REFERRAL_METHOD_INTERNAL = 'internal';
+
     const REFERRAL_METHOD_EXTERNAL = 'external';
+
     const REFERRAL_METHOD_NONE = 'none';
 
     /**

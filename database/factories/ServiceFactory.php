@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 $factory->define(Service::class, function (Faker $faker) {
-    $name = $faker->unique()->company;
+    $name = $faker->company . ' ' . $faker->word() . ' ' . mt_rand(1, 100000);
 
     return [
         'organisation_id' => function () {

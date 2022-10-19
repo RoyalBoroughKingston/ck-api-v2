@@ -179,7 +179,7 @@ class Page extends Model
                 $file = File::findOrFail($imageId)->assigned();
 
                 // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                foreach (config('local.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
                 $this->image()->associate($file);

@@ -15,7 +15,7 @@ trait OrganisationEventMutators
     public function getStartDateTimeAttribute()
     {
         $start = new Carbon($this->start_date);
-        list($startHour, $startMinute, $startSecond) = explode(':', $this->start_time);
+        [$startHour, $startMinute, $startSecond] = explode(':', $this->start_time);
         $start->hour($startHour)->minute($startMinute)->second($startSecond);
 
         return $start;
@@ -29,7 +29,7 @@ trait OrganisationEventMutators
     public function getEndDateTimeAttribute()
     {
         $end = new Carbon($this->end_date);
-        list($endHour, $endMinute, $endSecond) = explode(':', $this->end_time);
+        [$endHour, $endMinute, $endSecond] = explode(':', $this->end_time);
         $end->hour($endHour)->minute($endMinute)->second($endSecond);
 
         return $end;

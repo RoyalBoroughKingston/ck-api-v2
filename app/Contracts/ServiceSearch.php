@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 interface ServiceSearch
 {
     const ORDER_RELEVANCE = 'relevance';
+
     const ORDER_DISTANCE = 'distance';
 
     /**

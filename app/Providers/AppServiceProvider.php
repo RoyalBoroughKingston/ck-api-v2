@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
             default:
                 $this->app->singleton(\App\Contracts\ServiceSearch::class, \App\Search\ElasticsearchServiceSearch::class);
                 $this->app->singleton(\App\Contracts\EventSearch::class, \App\Search\ElasticsearchEventSearch::class);
+                $this->app->singleton(\App\Contracts\PageSearch::class, \App\Search\ElasticsearchPageSearch::class);
                 break;
         }
 

@@ -8,8 +8,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 interface EventSearch
 {
     const ORDER_RELEVANCE = 'relevance';
+
     const ORDER_DISTANCE = 'distance';
+
     const ORDER_START = 'start_date';
+
     const ORDER_END = 'end_date';
 
     /**

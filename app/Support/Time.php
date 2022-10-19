@@ -28,7 +28,7 @@ class Time
      */
     public function __construct(string $time)
     {
-        list($hours, $minutes, $seconds) = explode(':', $time);
+        [$hours, $minutes, $seconds] = explode(':', $time);
 
         $this->hours = (int)$hours;
         $this->minutes = (int)$minutes;

@@ -22,10 +22,10 @@ class CalendarController extends Controller
     {
         $now = new DateTime();
         $start = new Carbon($organisationEvent->start_date);
-        list($startHour, $startMinute, $startSecond) = explode(':', $organisationEvent->start_time);
+        [$startHour, $startMinute, $startSecond] = explode(':', $organisationEvent->start_time);
         $start->setTime($startHour, $startMinute, $startSecond);
         $end = new Carbon($organisationEvent->end_date);
-        list($endHour, $endMinute, $endSecond) = explode(':', $organisationEvent->end_time);
+        [$endHour, $endMinute, $endSecond] = explode(':', $organisationEvent->end_time);
         $end->setTime($endHour, $endMinute, $endSecond);
 
         $vEvent = [

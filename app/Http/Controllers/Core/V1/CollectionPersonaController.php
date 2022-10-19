@@ -15,7 +15,7 @@ use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionPersonaController extends Controller
@@ -45,7 +45,7 @@ class CollectionPersonaController extends Controller
             $personas = $personaQuery->get();
         } else {
             $personas = $personaQuery->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
                 ->paginate(per_page($request->per_page));
         }
@@ -84,6 +84,7 @@ class CollectionPersonaController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {
@@ -154,6 +155,7 @@ class CollectionPersonaController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {

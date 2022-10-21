@@ -15,7 +15,7 @@ use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionCategoryController extends Controller
@@ -45,7 +45,7 @@ class CollectionCategoryController extends Controller
             $categories = $categoryQuery->get();
         } else {
             $categories = $categoryQuery->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
                 ->paginate(per_page($request->per_page));
         }
@@ -83,6 +83,7 @@ class CollectionCategoryController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {
@@ -156,6 +157,7 @@ class CollectionCategoryController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             // Update or create all of the pivot records.

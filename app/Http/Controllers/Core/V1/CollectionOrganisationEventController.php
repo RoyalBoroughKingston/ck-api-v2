@@ -15,7 +15,7 @@ use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionOrganisationEventController extends Controller
@@ -45,7 +45,7 @@ class CollectionOrganisationEventController extends Controller
             $organisationEventCollections = $organisationEventQuery->get();
         } else {
             $organisationEventCollections = $organisationEventQuery->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
                 ->paginate(per_page($request->per_page));
         }

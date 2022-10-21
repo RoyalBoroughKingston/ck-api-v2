@@ -7,7 +7,6 @@ use App\Models\Organisation;
 use App\Models\Service;
 use DateTime;
 use DOMDocument;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
 class SitemapController extends Controller

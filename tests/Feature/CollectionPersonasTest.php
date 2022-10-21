@@ -36,6 +36,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle',
             'order',
             'enabled',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -76,6 +77,7 @@ class CollectionPersonasTest extends TestCase
                     'subtitle',
                     'order',
                     'enabled',
+                    'homepage',
                     'sideboxes' => [
                         '*' => [
                             'title',
@@ -252,6 +254,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
@@ -264,6 +267,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle',
             'order',
             'enabled',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -288,6 +292,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
@@ -312,6 +317,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => false,
+            'homepage' => false,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -329,6 +335,52 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => false,
+            'homepage' => false,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+        ]);
+    }
+
+    public function test_super_admin_can_create_a_homepage_one()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => true,
+            'sideboxes' => [
+                [
+                    'title' => 'Sidebox title',
+                    'content' => 'Sidebox content',
+                ],
+            ],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment([
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => true,
             'sideboxes' => [
                 [
                     'title' => 'Sidebox title',
@@ -353,6 +405,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -364,6 +417,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -375,6 +429,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -390,6 +445,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -416,6 +472,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -427,6 +484,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -438,6 +496,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -453,6 +512,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -479,6 +539,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -490,6 +551,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -501,6 +563,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -516,6 +579,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 4,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -546,6 +610,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 0,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -568,6 +633,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -579,6 +645,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -594,6 +661,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 4,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -620,6 +688,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
         ]);
@@ -649,6 +718,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle',
             'order',
             'enabled',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -674,6 +744,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => $persona->meta['subtitle'],
             'order' => $persona->order,
             'enabled' => $persona->enabled,
+            'homepage' => $persona->homepage,
             'sideboxes' => $persona->meta['sideboxes'],
             'created_at' => $persona->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $persona->updated_at->format(CarbonImmutable::ISO8601),
@@ -779,6 +850,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -791,6 +863,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle',
             'order',
             'enabled',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -815,6 +888,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
@@ -841,6 +915,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => false,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -867,6 +942,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => false,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -879,6 +955,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle',
             'order',
             'enabled',
+            'homepage',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -903,6 +980,72 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => false,
+            'homepage' => false,
+            'sideboxes' => [],
+        ]);
+        $response->assertJsonFragment([
+            'id' => $taxonomy->id,
+        ]);
+    }
+
+    public function test_global_admin_can_update_homepage()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = factory(User::class)->create();
+        $user->makeSuperAdmin();
+        $persona = Collection::personas()->inRandomOrder()->firstOrFail();
+        $persona->addToHomepage()->save();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/collections/personas/{$persona->id}", [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'name',
+            'intro',
+            'subtitle',
+            'order',
+            'enabled',
+            'homepage',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
         ]);
         $response->assertJsonFragment([
@@ -925,6 +1068,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -937,6 +1081,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -949,6 +1094,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -965,6 +1111,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -990,6 +1137,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1002,6 +1150,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1014,6 +1163,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1030,6 +1180,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1055,6 +1206,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1067,6 +1219,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1079,6 +1232,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1095,6 +1249,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1120,6 +1275,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1136,6 +1292,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 0,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1158,6 +1315,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1174,6 +1332,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [],
         ]);
@@ -1201,6 +1360,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$taxonomy->id],
         ]);
@@ -1328,6 +1488,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1339,6 +1500,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1350,6 +1512,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1382,6 +1545,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1393,6 +1557,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1404,6 +1569,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1436,6 +1602,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1447,6 +1614,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1458,6 +1626,7 @@ class CollectionPersonasTest extends TestCase
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
+            'homepage' => false,
             'meta' => [
                 'intro' => 'Lorem ipsum',
                 'subtitle' => 'Subtitle here',
@@ -1553,6 +1722,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => 'Subtitle here',
             'order' => 1,
             'enabled' => true,
+            'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
             'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
@@ -1589,6 +1759,7 @@ class CollectionPersonasTest extends TestCase
             'subtitle' => $persona->meta['subtitle'],
             'order' => $persona->order,
             'enabled' => $persona->enabled,
+            'homepage' => $persona->homepage,
             'sideboxes' => [],
             'category_taxonomies' => $persona->taxonomies()->pluck(table(Taxonomy::class, 'id')),
             'image_file_id' => null,

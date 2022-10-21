@@ -3,6 +3,7 @@
 namespace App\Models\Relationships;
 
 use App\Models\CollectionTaxonomy;
+use App\Models\Page;
 use App\Models\Taxonomy;
 
 trait CollectionRelationships
@@ -21,5 +22,13 @@ trait CollectionRelationships
     public function taxonomies()
     {
         return $this->belongsToMany(Taxonomy::class, (new CollectionTaxonomy())->getTable());
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function pages()
+    {
+        return $this->belongsToMany(Page::class);
     }
 }

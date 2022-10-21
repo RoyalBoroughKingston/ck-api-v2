@@ -3,8 +3,10 @@
 namespace App\Console\Commands\Ck;
 
 use App\Models\IndexConfigurators\EventsIndexConfigurator;
+use App\Models\IndexConfigurators\PagesIndexConfigurator;
 use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\OrganisationEvent;
+use App\Models\Page;
 use App\Models\Service;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -44,6 +46,10 @@ class ReindexElasticsearchCommand extends Command
 
         if (Schema::hasTable((new OrganisationEvent())->getTable())) {
             $this->reindex(EventsIndexConfigurator::class, OrganisationEvent::class);
+        }
+
+        if (Schema::hasTable((new Page())->getTable())) {
+            $this->reindex(PagesIndexConfigurator::class, Page::class);
         }
     }
 

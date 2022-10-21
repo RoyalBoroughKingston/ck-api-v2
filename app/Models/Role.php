@@ -13,9 +13,13 @@ class Role extends Model
     use RoleScopes;
 
     const NAME_SERVICE_WORKER = 'Service Worker';
+
     const NAME_SERVICE_ADMIN = 'Service Admin';
+
     const NAME_ORGANISATION_ADMIN = 'Organisation Admin';
+
     const NAME_GLOBAL_ADMIN = 'Global Admin';
+
     const NAME_SUPER_ADMIN = 'Super Admin';
 
     /**

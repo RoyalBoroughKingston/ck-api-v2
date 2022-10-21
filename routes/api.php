@@ -115,6 +115,13 @@ Route::prefix('/core/v1')
             Route::apiResource('/organisation-sign-up-forms', 'OrganisationSignUpFormController')
                 ->only('store');
 
+            // Pages.
+            Route::match(['GET', 'POST'], '/pages/index', 'PageController@index');
+            Route::apiResource('/pages', 'PageController');
+            Route::get('/pages/{page}/image.{suffix}', 'Page\\ImageController')
+                ->where('suffix', 'png|jpg|jpeg|svg')
+                ->name('pages.image');
+
             // Page Feedbacks.
             Route::match(['GET', 'POST'], '/page-feedbacks/index', 'PageFeedbackController@index');
             Route::apiResource('/page-feedbacks', 'PageFeedbackController')
@@ -136,7 +143,8 @@ Route::prefix('/core/v1')
                 ->name('reports.download');
 
             // Search.
-            Route::post('/search', 'SearchController')->name('search.services');
+            Route::post('/search', 'SearchController')->name('search');
+            Route::post('/search/pages', 'Search\\PageController')->name('search');
             Route::post('/search/events', 'Search\\EventController')->name('search.events');
 
             // Service Locations.

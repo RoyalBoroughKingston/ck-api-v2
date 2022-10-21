@@ -19,13 +19,21 @@ use InvalidArgumentException;
 class ElasticsearchServiceSearch implements ServiceSearch
 {
     const MILES = 'mi';
+
     const YARDS = 'yd';
+
     const FEET = 'ft';
+
     const INCHES = 'in';
+
     const KILOMETERS = 'km';
+
     const METERS = 'm';
+
     const CENTIMETERS = 'cm';
+
     const MILLIMETERS = 'mm';
+
     const NAUTICAL_MILES = 'nmi';
 
     /**
@@ -64,7 +72,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $term
-     * @return \App\Search\ElasticsearchSearch
+     * @return \App\Search\ElasticsearchServiceSearch
      */
     public function applyQuery(string $term): ServiceSearch
     {
@@ -123,7 +131,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $category
-     * @return \App\Search\ElasticsearchSearch
+     * @return \App\Search\ElasticsearchServiceSearch
      */
     public function applyCategory(string $category): ServiceSearch
     {
@@ -150,7 +158,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $persona
-     * @return \App\Search\ElasticsearchSearch
+     * @return \App\Search\ElasticsearchServiceSearch
      */
     public function applyPersona(string $persona): ServiceSearch
     {
@@ -242,7 +250,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
     /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
-     * @return \App\Search\ElasticsearchSearch
+     * @return \App\Search\ElasticsearchServiceSearch
      */
     public function applyOrder(string $order, Coordinate $location = null): ServiceSearch
     {
@@ -435,7 +443,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param array $response
-     * @return \App\Search\ElasticsearchSearch
+     * @return \App\Search\ElasticsearchServiceSearch
      */
     protected function logMetrics(array $response): ServiceSearch
     {

@@ -3,6 +3,9 @@
 # Set the docker-compose files to use.
 COMPOSE="docker-compose"
 
+# Import the environment variables from the .env file
+source .env
+
 # Set script scope environment variables.
 export APP_PORT=${APP_PORT:-80}
 export DB_PORT=${DB_PORT:-3306}

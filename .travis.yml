@@ -33,7 +33,6 @@ before_script:
   - ./develop npm run dev
   - ./develop composer install
   - ./develop run --rm -T app mv .env.example .env
-  - source .env
   - ./develop artisan key:generate
   - ./develop artisan passport:keys
 

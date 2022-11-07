@@ -2,7 +2,6 @@ from troposphere import GetAtt, Ref, Base64, Join, Sub, Select
 import troposphere.autoscaling as autoscaling
 import troposphere.awslambda as awslambda
 from troposphere.cloudformation import AWSCustomObject
-import troposphere.cloudfront as cloudfront
 import troposphere.ec2 as ec2
 import troposphere.ecr as ecr
 import troposphere.ecs as ecs
@@ -920,7 +919,7 @@ def create_elasticsearch_lambda_log_group_policy_function_resource(template, lam
             ])),
             Handler="index.handler",
             Role=GetAtt(elasticsearch_lambda_execution_role_resource, 'Arn'),
-            Runtime="python3.6"
+            Runtime="python3.9"
         )
     )
 
@@ -936,6 +935,13 @@ def create_elasticsearch_log_group_policy_custom_resource(template, elasticsearc
         )
     )
 
+def create_elasticsearch_service_linked_role_resource(template):
+    return template.add_resource(
+        iam.ServiceLinkedRole(
+            'ElasticsearchServiceLinkedRole',
+            AWSServiceName='es.amazonaws.com'
+        )
+    )
 
 def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                                   elasticsearch_instance_count_parameter, elasticsearch_instance_class_parameter,
@@ -976,52 +982,3 @@ def create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
             )
         )
     )
-
-def create_redirect_bucket_resource(template, cname_redirect_parameter, cname_parameter):
-    return template.add_resource(
-    s3.Bucket(
-        'Bucket301',
-        BucketName=Ref(cname_redirect_parameter),
-        AccessControl=s3.PublicRead,
-        WebsiteConfiguration=s3.WebsiteConfiguration(
-            RedirectAllRequestsTo=s3.RedirectAllRequestsTo(
-            HostName=Ref(cname_parameter),
-            )
-        )
-    )
-)
-
-def create_redirect_cloudfront_distribution_resource(template, cname_redirect_parameter, redirect_bucket_resource, redirect_certificate_arn_parameter):
-    return template.add_resource(
-    cloudfront.Distribution(
-        'Distribution301',
-        DistributionConfig=cloudfront.DistributionConfig(
-            Aliases=[
-                Ref(cname_redirect_parameter)
-            ],
-            DefaultCacheBehavior=cloudfront.DefaultCacheBehavior(
-                ForwardedValues=cloudfront.ForwardedValues(
-                    QueryString=False
-                ),
-                TargetOriginId=Join('-', ['S3', Ref(redirect_bucket_resource)]),
-                ViewerProtocolPolicy='redirect-to-https'
-            ),
-            Enabled=True,
-            IPV6Enabled=True,
-            Origins=[
-                cloudfront.Origin(
-                    DomainName=Join('.', [Ref(cname_redirect_parameter), 's3-website', Ref('AWS::Region'),'amazonaws.com']),
-                    Id=Join('-', ['S3', Ref(redirect_bucket_resource)]),
-                    CustomOriginConfig=cloudfront.CustomOrigin(
-                        OriginProtocolPolicy='http-only'
-                    )
-                )
-            ],
-            ViewerCertificate=cloudfront.ViewerCertificate(
-                AcmCertificateArn=Ref(redirect_certificate_arn_parameter),
-                SslSupportMethod='sni-only',
-                MinimumProtocolVersion='TLSv1.2_2019'
-            )
-        )
-    )
-)

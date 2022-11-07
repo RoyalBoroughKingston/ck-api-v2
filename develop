@@ -3,15 +3,12 @@
 # Set the docker-compose files to use.
 COMPOSE="docker-compose"
 
-# Import the environment variables from the .env file
-source .env
-
 # Set script scope environment variables.
 export APP_PORT=${APP_PORT:-80}
 export DB_PORT=${DB_PORT:-3306}
 export DB_ROOT_PASS=${DB_ROOT_PASSWORD:-secret}
-export DB_NAME=${DB_DATABASE:-test_db}
-export DB_USER=${DB_USERNAME:-test_db}
+export DB_NAME=${DB_DATABASE:-connected_places}
+export DB_USER=${DB_USERNAME:-connected_places}
 export DB_PASS=${DB_PASSWORD:-secret}
 export ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
 export KIBANA_PORT=${KIBANA_PORT:-5601}

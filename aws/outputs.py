@@ -6,7 +6,7 @@ def create_database_name_output(template, database_username_variable):
         Output(
             'DatabaseName',
             Description='The database name',
-            Value=database_username_variable
+            Value=Ref(database_username_variable)
         )
     )
 
@@ -16,7 +16,7 @@ def create_database_username_output(template, database_username_variable):
         Output(
             'DatabaseUsername',
             Description='The username for the database',
-            Value=database_username_variable
+            Value=Ref(database_username_variable)
         )
     )
 
@@ -81,6 +81,16 @@ def create_notifications_queue_output(template, notifications_queue_name_variabl
     )
 
 
+def create_default_queue_url_output(template, default_queue_resource):
+    return template.add_output(
+        Output(
+            'DefaultQueueUrl',
+            Description='The URL for the defalt queue',
+            Value=Ref(default_queue_resource)
+        )
+    )
+
+
 def create_load_balancer_domain_output(template, load_balancer_resource):
     return template.add_output(
         Output(
@@ -127,5 +137,15 @@ def create_docker_cluster_name_output(template, ecs_cluster_resource):
             'DockerClusterName',
             Description='The name of the Docker cluster',
             Value=Ref(ecs_cluster_resource)
+        )
+    )
+
+
+def create_uploads_bucket_name_output(template, uploads_bucket_name_variable):
+    return template.add_output(
+        Output(
+            'UploadsBucketName',
+            Description='The name of the S3 bucket for uploads',
+            Value=uploads_bucket_name_variable
         )
     )

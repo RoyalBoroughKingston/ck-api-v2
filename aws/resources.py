@@ -114,18 +114,18 @@ def create_database_subnet_group_resource(template, subnets_parameter):
     )
 
 
-def create_database_resource(template, database_name_variable, database_allocated_storage_parameter,
-                             database_class_parameter, database_username_variable, database_password_parameter,
+def create_database_resource(template, database_allocated_storage_parameter,
+                             database_class_parameter, database_username_parameter, database_password_parameter,
                              database_security_group_resource, database_subnet_group_resource):
     return template.add_resource(
         rds.DBInstance(
             'Database',
-            DBName=database_name_variable,
+            DBName=Ref(database_username_parameter),
             AllocatedStorage=Ref(database_allocated_storage_parameter),
             DBInstanceClass=Ref(database_class_parameter),
             Engine='MySQL',
             EngineVersion='5.7',
-            MasterUsername=database_username_variable,
+            MasterUsername=Ref(database_username_parameter),
             MasterUserPassword=Ref(database_password_parameter),
             VPCSecurityGroups=[
                 GetAtt(database_security_group_resource, 'GroupId')],

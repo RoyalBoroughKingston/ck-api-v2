@@ -48,6 +48,8 @@ class Request extends FormRequest
                 'array',
             ],
             'eligibilities.*' => ['string'],
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'per_page' => ['sometimes', 'integer', 'min:1'],
         ];
     }
 }

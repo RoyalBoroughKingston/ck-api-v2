@@ -3,7 +3,7 @@ import json
 from template import create_template
 
 from parameters import create_uuid_parameter, create_environment_parameter, create_certificate_arn_parameter, \
-    create_redirect_certificate_arn_parameter, create_vpc_parameter, create_cname_parameter, create_cname_redirect_parameter, \
+    create_vpc_parameter, create_cname_parameter, create_database_username_parameter,\
     create_subnets_parameter, create_database_password_parameter, create_database_class_parameter, \
     create_database_allocated_storage_parameter, create_redis_node_class_parameter, create_redis_nodes_count_parameter, \
     create_api_instance_class_parameter, create_api_instance_count_parameter, create_api_task_count_parameter, \
@@ -15,10 +15,9 @@ from variables import create_default_queue_name_variable, create_notifications_q
     create_docker_repository_name_variable, create_api_log_group_name_variable, create_queue_worker_log_group_name_variable, \
     create_scheduler_log_group_name_variable, create_elasticsearch_log_group_name_variable, create_api_task_definition_family_variable, \
     create_queue_worker_task_definition_family_variable, create_scheduler_task_definition_family_variable, \
-    create_api_user_name_variable, create_ci_user_name_variable, create_database_name_variable, create_database_username_variable, create_api_name_variable, create_elasticsearch_domain_name_variable, create_elasticsearch_log_access_policy_lambda_name_variable
+    create_api_user_name_variable, create_ci_user_name_variable, create_api_name_variable, create_elasticsearch_domain_name_variable, create_elasticsearch_log_access_policy_lambda_name_variable
 
 from resources import create_load_balancer_security_group_resource, create_api_security_group_resource, \
-    create_redirect_bucket_resource, create_redirect_cloudfront_distribution_resource, \
     create_database_security_group_resource, create_redis_security_group_resource, create_database_subnet_group_resource, \
     create_database_resource, create_redis_subnet_group_resource, create_redis_resource, create_default_queue_resource, \
     create_notifications_queue_resource, create_search_queue_resource, create_uploads_bucket_resource, \
@@ -31,12 +30,13 @@ from resources import create_load_balancer_security_group_resource, create_api_s
     create_autoscaling_group_resource, create_api_user_resource, create_ci_user_resource, \
     create_elasticsearch_security_group_resource, create_elasticsearch_lambda_execution_role_resource, \
     create_elasticsearch_lambda_log_group_policy_function_resource, create_elasticsearch_log_group_policy_custom_resource, \
-    create_elasticsearch_resource
+    create_elasticsearch_service_linked_role_resource, create_elasticsearch_resource
 
 from outputs import create_database_name_output, create_database_username_output, create_database_host_output, \
-    create_database_port_output, create_redis_host_output, create_redis_port_output, create_default_queue_output, \
-    create_notifications_queue_output, create_load_balancer_domain_output, create_elasticsearch_host_output, \
-    create_docker_repository_uri_output, create_docker_cluster_name_output
+    create_database_port_output, create_redis_host_output, create_redis_port_output, create_default_queue_url_output, \
+    create_default_queue_output, create_notifications_queue_output, create_load_balancer_domain_output, create_elasticsearch_host_output, \
+    create_elasticsearch_service_linked_role_id_output, create_docker_repository_uri_output, create_docker_cluster_name_output, \
+    create_uploads_bucket_name_output
 
 # UUID.
 uuid = str(uuid.uuid4())
@@ -49,11 +49,10 @@ template = create_template(api_name)
 uuid_parameter = create_uuid_parameter(template, uuid)
 environment_parameter = create_environment_parameter(template)
 cname_parameter = create_cname_parameter(template)
-cname_redirect_parameter = create_cname_redirect_parameter(template)
 certificate_arn_parameter = create_certificate_arn_parameter(template)
-redirect_certificate_arn_parameter = create_redirect_certificate_arn_parameter(template)
 vpc_parameter = create_vpc_parameter(template)
 subnets_parameter = create_subnets_parameter(template)
+database_username_parameter = create_database_username_parameter(template)
 database_password_parameter = create_database_password_parameter(template)
 database_class_parameter = create_database_class_parameter(template)
 database_allocated_storage_parameter = create_database_allocated_storage_parameter(
@@ -101,8 +100,6 @@ scheduler_task_definition_family_variable = create_scheduler_task_definition_fam
     environment_parameter)
 api_user_name_variable = create_api_user_name_variable(environment_parameter)
 ci_user_name_variable = create_ci_user_name_variable(environment_parameter)
-database_name_variable = create_database_name_variable()
-database_username_variable = create_database_username_variable()
 elasticsearch_domain_name_variable = create_elasticsearch_domain_name_variable(
     environment_parameter)
 elasticsearch_log_access_policy_lambda_name_variable = create_elasticsearch_log_access_policy_lambda_name_variable(
@@ -122,15 +119,11 @@ redis_security_group_resource = create_redis_security_group_resource(
 elasticsearch_security_group_resource = create_elasticsearch_security_group_resource(
     template, api_security_group_resource)
 
-# Redirects
-redirect_bucket_resource = create_redirect_bucket_resource(template, cname_redirect_parameter, cname_parameter)
-redirect_cloudfront_distribution_resource = create_redirect_cloudfront_distribution_resource(template, cname_redirect_parameter, redirect_bucket_resource, redirect_certificate_arn_parameter)
-
 # Database
 database_subnet_group_resource = create_database_subnet_group_resource(
     template, subnets_parameter)
-database_resource = create_database_resource(template, database_name_variable, database_allocated_storage_parameter,
-                                             database_class_parameter, database_username_variable,
+database_resource = create_database_resource(template, database_allocated_storage_parameter,
+                                             database_class_parameter, database_username_parameter,
                                              database_password_parameter, database_security_group_resource,
                                              database_subnet_group_resource)
 
@@ -233,6 +226,7 @@ elasticsearch_lambda_log_group_policy_function_resource = create_elasticsearch_l
     template, elasticsearch_log_access_policy_lambda_name_variable, elasticsearch_lambda_log_group_resource, elasticsearch_lambda_execution_role_resource)
 elasticsearch_log_group_policy_custom_resource = create_elasticsearch_log_group_policy_custom_resource(
     template, elasticsearch_lambda_log_group_policy_function_resource, elasticsearch_log_group_name_variable, elasticsearch_log_group_resource)
+elasticsearch_service_linked_role_resource = create_elasticsearch_service_linked_role_resource(template)
 elasticsearch_resource = create_elasticsearch_resource(template, elasticsearch_domain_name_variable,
                                                        elasticsearch_instance_count_parameter,
                                                        elasticsearch_instance_class_parameter,
@@ -240,18 +234,21 @@ elasticsearch_resource = create_elasticsearch_resource(template, elasticsearch_d
                                                        subnets_parameter)
 
 # Outputs.
-create_database_name_output(template, database_username_variable)
-create_database_username_output(template, database_username_variable)
+create_database_name_output(template, database_username_parameter)
+create_database_username_output(template, database_username_parameter)
 create_database_host_output(template, database_resource)
 create_database_port_output(template, database_resource)
 create_redis_host_output(template, redis_resource)
 create_redis_port_output(template, redis_resource)
+create_default_queue_url_output(template, default_queue_resource)
 create_default_queue_output(template, default_queue_name_variable)
 create_notifications_queue_output(template, notifications_queue_name_variable)
 create_load_balancer_domain_output(template, load_balancer_resource)
+create_elasticsearch_service_linked_role_id_output(template, elasticsearch_service_linked_role_resource)
 create_elasticsearch_host_output(template, elasticsearch_resource)
 create_docker_repository_uri_output(template, docker_repository_resource)
 create_docker_cluster_name_output(template, ecs_cluster_resource)
+create_uploads_bucket_name_output(template, uploads_bucket_name_variable)
 
 # Troposhere cannot set LogPublishingOptions on Elasticsearch, so we do it via JSON here
 json_template = json.loads(template.to_json())

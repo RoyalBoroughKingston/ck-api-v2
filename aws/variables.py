@@ -61,16 +61,8 @@ def create_ci_user_name_variable(environment_parameter):
     return Join('-', ['ci-api', Ref(environment_parameter)])
 
 
-def create_database_name_variable():
-    return 'one_hounslow_connect'
-
-
-def create_database_username_variable():
-    return 'one_hounslow_connect'
-
-
 def create_api_name_variable():
-    return 'Hounslow Connect'
+    return 'Connected Places'
 
 
 def create_elasticsearch_domain_name_variable(environment_parameter):

@@ -1295,7 +1295,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1309,13 +1309,8 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
-            'eligibility_types' => [
-                'custom' => [],
-                'taxonomies' => [],
-            ],
         ];
 
         //When they create a service
@@ -1389,7 +1384,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
-            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1403,14 +1398,9 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
-            ],
-            'eligibility_types' => [
-                'custom' => [],
-                'taxonomies' => [],
             ],
         ];
 

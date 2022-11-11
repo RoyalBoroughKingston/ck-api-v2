@@ -55,6 +55,20 @@ def create_subnets_parameter(template):
     )
 
 
+def create_database_username_parameter(template):
+    return template.add_parameter(
+        Parameter(
+            'DatabaseUsername',
+            Type='String',
+            Description='The database name and admin username',
+            MinLength='8',
+            MaxLength='36',
+            AllowedPattern='[a-zA-Z0-9_]*',
+            ConstraintDescription='Must only contain alphanumeric characters.'
+        )
+    )
+
+
 def create_database_password_parameter(template):
     return template.add_parameter(
         Parameter(
@@ -214,10 +228,10 @@ def create_elasticsearch_instance_class_parameter(template):
             'ElasticsearchInstanceClass',
             Description='The Elasticseach instance class.',
             Type='String',
-            Default='t2.small.elasticsearch',
+            Default='t3.small.elasticsearch',
             AllowedValues=[
-                't2.small.elasticsearch',
-                't2.medium.elasticsearch'
+                't3.small.elasticsearch',
+                't3.medium.elasticsearch'
             ],
             ConstraintDescription='Must select a valid Elasticsearch instance type.'
         )

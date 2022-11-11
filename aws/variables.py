@@ -61,14 +61,6 @@ def create_ci_user_name_variable(environment_parameter):
     return Join('-', ['ci-api', Ref(environment_parameter)])
 
 
-def create_database_name_variable():
-    return 'connected_places'
-
-
-def create_database_username_variable():
-    return 'connected_places'
-
-
 def create_api_name_variable():
     return 'Connected Places'
 

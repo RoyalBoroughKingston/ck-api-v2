@@ -14,11 +14,12 @@ class CreateUserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'ck:create-user 
-        {first_name : The user\'s first name} 
-        {last_name : The user\' last name} 
-        {email : The user\'s email} 
-        {phone : The user\'s phone number}';
+    protected $signature = 'ck:create-user
+        {first_name : The user\'s first name}
+        {last_name : The user\' last name}
+        {email : The user\'s email}
+        {phone : The user\'s phone number}
+        {--password= : The user\'s password}';
 
     /**
      * The console command description.
@@ -54,7 +55,7 @@ class CreateUserCommand extends Command
     {
         return $this->db->transaction(function () {
             // Cache the password to display.
-            $password = Str::random();
+            $password = $this->option('password') ?? Str::random(16);
 
             // Create the user record.
             $user = $this->createUser($password);

@@ -50,18 +50,32 @@ class ElasticsearchServiceSearch implements ServiceSearch
             'from' => 0,
             'size' => config('local.pagination_results'),
             'query' => [
-                'bool' => [
-                    'filter' => [
-                        [
-                            'term' => [
-                                'status' => Service::STATUS_ACTIVE,
+                'function_score' => [
+                    'boost_mode' => 'sum',
+                    'query' => [
+                        'bool' => [
+                            'filter' => [
+                                [
+                                    'term' => [
+                                        'status' => Service::STATUS_ACTIVE,
+                                    ],
+                                ],
+                            ],
+                            'must' => [
+                                'bool' => [
+                                    'should' => [
+                                        //
+                                    ],
+                                ],
                             ],
                         ],
                     ],
-                    'must' => [
-                        'bool' => [
-                            'should' => [
-                                //
+                    'functions' => [
+                        [
+                            'field_value_factor' => [
+                                'field' => 'score',
+                                'modifier' => 'ln1p',
+                                'missing' => 1,
                             ],
                         ],
                     ],
@@ -76,7 +90,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
      */
     public function applyQuery(string $term): ServiceSearch
     {
-        $should = &$this->query['query']['bool']['must']['bool']['should'];
+        $should = &$this->query['query']['function_score']['query']['bool']['must']['bool']['should'];
 
         $should[] = $this->match('name', $term, 3);
         $should[] = $this->match('organisation_name', $term, 3);
@@ -84,8 +98,8 @@ class ElasticsearchServiceSearch implements ServiceSearch
         $should[] = $this->matchPhrase('description', $term, 1.5);
         $should[] = $this->match('taxonomy_categories', $term);
 
-        if (empty($this->query['query']['bool']['must']['bool']['minimum_should_match'])) {
-            $this->query['query']['bool']['must']['bool']['minimum_should_match'] = 1;
+        if (empty($this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'])) {
+            $this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'] = 1;
         }
 
         return $this;
@@ -141,13 +155,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
             ->where('name', $category)
             ->firstOrFail();
 
-        $should = &$this->query['query']['bool']['must']['bool']['should'];
+        $should = &$this->query['query']['function_score']['query']['bool']['must']['bool']['should'];
 
         foreach ($categoryModel->taxonomies as $taxonomy) {
             $should[] = $this->match('taxonomy_categories', $taxonomy->name);
         }
 
-        $this->query['query']['bool']['filter'][] = [
+        $this->query['query']['function_score']['query']['bool']['filter'][] = [
             'term' => [
                 'collection_categories' => $category,
             ],
@@ -168,13 +182,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
             ->where('name', $persona)
             ->firstOrFail();
 
-        $should = &$this->query['query']['bool']['must']['bool']['should'];
+        $should = &$this->query['query']['function_score']['query']['bool']['must']['bool']['should'];
 
         foreach ($categoryModel->taxonomies as $taxonomy) {
             $should[] = $this->match('taxonomy_categories', $taxonomy->name);
         }
 
-        $this->query['query']['bool']['filter'][] = [
+        $this->query['query']['function_score']['query']['bool']['filter'][] = [
             'term' => [
                 'collection_personas' => $persona,
             ],
@@ -223,7 +237,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
                 break;
         }
 
-        $this->query['query']['bool']['filter'][] = [
+        $this->query['query']['function_score']['query']['bool']['filter'][] = [
             'terms' => [
                 'wait_time' => $criteria,
             ],
@@ -238,7 +252,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
      */
     public function applyIsFree(bool $isFree): ServiceSearch
     {
-        $this->query['query']['bool']['filter'][] = [
+        $this->query['query']['function_score']['query']['bool']['filter'][] = [
             'term' => [
                 'is_free' => $isFree,
             ],
@@ -275,7 +289,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
      */
     public function applyRadius(Coordinate $location, int $radius): ServiceSearch
     {
-        $this->query['query']['bool']['filter'][] = [
+        $this->query['query']['function_score']['query']['bool']['filter'][] = [
             'nested' => [
                 'path' => 'service_locations',
                 'query' => [
@@ -303,20 +317,20 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
                 $serviceEligibilityTypeAllName = $serviceEligibilityType->name . ' All';
 
-                $this->query['query']['bool']['filter'][] = [
+                $this->query['query']['function_score']['query']['bool']['filter'][] = [
                     'terms' => [
                         'service_eligibilities.keyword' => array_merge($serviceEligibilityTypeNames, [$serviceEligibilityTypeAllName]),
                     ],
                 ];
 
-                if (empty($this->query['query']['bool']['must']['bool']['minimum_should_match'])) {
-                    $this->query['query']['bool']['must']['bool']['minimum_should_match'] = 1;
+                if (empty($this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'])) {
+                    $this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'] = 1;
                 } else {
-                    $this->query['query']['bool']['must']['bool']['minimum_should_match']++;
+                    $this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match']++;
                 }
 
                 foreach ($serviceEligibilityTypeNames as $serviceEligibilityTypeName) {
-                    $this->query['query']['bool']['must']['bool']['should'][] = [
+                    $this->query['query']['function_score']['query']['bool']['must']['bool']['should'][] = [
                         'term' => [
                             'service_eligibilities.keyword' => [
                                 'value' => $serviceEligibilityTypeName,
@@ -325,7 +339,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
                     ];
                 }
 
-                $this->query['query']['bool']['must']['bool']['should'][] = [
+                $this->query['query']['function_score']['query']['bool']['must']['bool']['should'][] = [
                     'match' => [
                         'service_eligibilities' => [
                             'query' => $serviceEligibilityTypeAllName,
@@ -448,7 +462,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
     protected function logMetrics(array $response): ServiceSearch
     {
         SearchHistory::create([
-            'query' => $this->query,
+            'query' => $this->query['query']['function_score']['query'],
             'count' => $response['hits']['total']['value'],
         ]);
 

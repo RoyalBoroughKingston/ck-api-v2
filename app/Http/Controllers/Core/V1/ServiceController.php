@@ -70,6 +70,7 @@ class ServiceController extends Controller
                 AllowedSort::custom('organisation_name', new OrganisationNameSort()),
                 'status',
                 'referral_method',
+                'score',
                 'last_modified_at',
             ])
             ->defaultSort('name')

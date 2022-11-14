@@ -68,6 +68,16 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     const REFERRAL_METHOD_NONE = 'none';
 
+    const SCORE_POOR = 1;
+
+    const SCORE_BELOW_AVERAGE = 2;
+
+    const SCORE_AVERAGE = 3;
+
+    const SCORE_ABOVE_AVERAGE = 4;
+
+    const SCORE_EXCELLENT = 5;
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -117,6 +127,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             'wait_time' => ['type' => 'keyword'],
             'is_free' => ['type' => 'boolean'],
             'status' => ['type' => 'keyword'],
+            'score' => ['type' => 'integer'],
             'organisation_name' => [
                 'type' => 'text',
                 'fields' => [
@@ -172,6 +183,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             'wait_time' => $this->wait_time,
             'is_free' => $this->is_free,
             'status' => $this->status,
+            'score' => $this->score,
             'organisation_name' => $this->organisation->name,
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => static::collections($this)->where('type', Collection::TYPE_CATEGORY)->pluck('name')->toArray(),
@@ -281,6 +293,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             'referral_email' => Arr::get($data, 'referral_email', $this->referral_email),
             'referral_url' => Arr::get($data, 'referral_url', $this->referral_url),
             'logo_file_id' => Arr::get($data, 'logo_file_id', $this->logo_file_id),
+            'score' => Arr::get($data, 'score', $this->score),
             'ends_at' => array_key_exists('ends_at', $data)
                 ? (
                     $data['ends_at'] === null

@@ -57,6 +57,14 @@ class UpdateServiceSchema extends Schema
                     ),
                 Schema::string('status')
                     ->enum(Service::STATUS_ACTIVE, Service::STATUS_INACTIVE),
+                Schema::integer('score')
+                    ->enum(
+                        Service::SCORE_POOR,
+                        Service::SCORE_BELOW_AVERAGE,
+                        Service::SCORE_AVERAGE,
+                        Service::SCORE_ABOVE_AVERAGE,
+                        Service::SCORE_EXCELLENT
+                    ),
                 Schema::string('intro'),
                 Schema::string('description'),
                 Schema::string('wait_time')

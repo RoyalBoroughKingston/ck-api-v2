@@ -210,6 +210,25 @@ class StoreRequest extends FormRequest
                 new FileIsMimeType(File::MIME_TYPE_PNG),
                 new FileIsPendingAssignment(),
             ],
+            'score' => [
+                'nullable',
+                'numeric',
+                Rule::in([
+                    Service::SCORE_POOR,
+                    Service::SCORE_BELOW_AVERAGE,
+                    Service::SCORE_AVERAGE,
+                    Service::SCORE_ABOVE_AVERAGE,
+                    Service::SCORE_EXCELLENT,
+                ]),
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::superAdmin()->id,
+                    ]),
+                    null
+                ),
+            ],
             'eligibility_types' => ['array'],
             'eligibility_types.taxonomies' => ['array'],
             'eligibility_types.taxonomies.*' => [

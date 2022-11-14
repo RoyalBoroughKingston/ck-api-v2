@@ -25,7 +25,12 @@ class StoreFileSchema extends Schema
             ->properties(
                 Schema::boolean('is_private'),
                 Schema::string('mime_type')
-                    ->enum(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG),
+                    ->enum(
+                        File::MIME_TYPE_PNG,
+                        File::MIME_TYPE_JPG,
+                        File::MIME_TYPE_JPEG,
+                        File::MIME_TYPE_SVG
+                    ),
                 Schema::string('file')
                     ->format(static::FORMAT_BINARY)
                     ->description('Base64 encoded string of the image')

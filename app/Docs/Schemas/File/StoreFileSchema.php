@@ -28,7 +28,8 @@ class StoreFileSchema extends Schema
                     ->enum(
                         File::MIME_TYPE_PNG,
                         File::MIME_TYPE_JPG,
-                        File::MIME_TYPE_JPEG
+                        File::MIME_TYPE_JPEG,
+                        File::MIME_TYPE_SVG
                     ),
                 Schema::string('file')
                     ->format(static::FORMAT_BINARY)

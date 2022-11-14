@@ -24,7 +24,8 @@ class FileSchema extends Schema
                     ->enum(
                         File::MIME_TYPE_PNG,
                         File::MIME_TYPE_JPG,
-                        File::MIME_TYPE_JPEG
+                        File::MIME_TYPE_JPEG,
+                        File::MIME_TYPE_SVG
                     ),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\Rule;
 class FileIsMimeType implements Rule
 {
     /**
-     * @var string
+     * @var array
      */
     protected $mimeTypes;
 

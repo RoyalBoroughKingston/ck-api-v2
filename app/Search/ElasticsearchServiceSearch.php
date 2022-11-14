@@ -461,8 +461,13 @@ class ElasticsearchServiceSearch implements ServiceSearch
      */
     protected function logMetrics(array $response): ServiceSearch
     {
+        $query = $this->query['query']['function_score'];
+        if (isset($this->query['sort'])) {
+            $query['sort'] = $this->query['sort'];
+        }
+
         SearchHistory::create([
-            'query' => $this->query['query']['function_score']['query'],
+            'query' => $query,
             'count' => $response['hits']['total']['value'],
         ]);
 

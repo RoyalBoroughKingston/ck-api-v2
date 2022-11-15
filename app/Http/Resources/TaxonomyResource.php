@@ -18,6 +18,7 @@ class TaxonomyResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $this->updated_at->format(CarbonImmutable::ISO8601),

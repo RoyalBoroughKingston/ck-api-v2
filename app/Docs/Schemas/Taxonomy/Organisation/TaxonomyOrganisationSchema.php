@@ -18,6 +18,7 @@ class TaxonomyOrganisationSchema extends Schema
             ->properties(
                 Schema::string('id')
                     ->format(Schema::FORMAT_UUID),
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::integer('order'),
                 Schema::string('created_at')

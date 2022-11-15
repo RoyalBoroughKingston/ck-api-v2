@@ -131,6 +131,7 @@ class OpenActiveTaxonomyImporterTest extends TestCase
                 $this->assertJsonStringEqualsJsonString(
                     json_encode([
                         'id' => 'f5d6e765-28d7-4aff-8bde-74baaa1da1dd',
+                        'slug' => $taxonomy['slug'],
                         'name' => 'Football',
                         'parent_id' => $this->openActiveCategory->id,
                         'order' => 0,
@@ -146,6 +147,7 @@ class OpenActiveTaxonomyImporterTest extends TestCase
                 $this->assertJsonStringEqualsJsonString(
                     json_encode([
                         'id' => '8ea70826-d1c6-461f-97fc-b4195e08994b',
+                        'slug' => $taxonomy['slug'],
                         'name' => 'Small Sided Football',
                         'parent_id' => 'f5d6e765-28d7-4aff-8bde-74baaa1da1dd',
                         'order' => 0,
@@ -161,6 +163,7 @@ class OpenActiveTaxonomyImporterTest extends TestCase
                 $this->assertJsonStringEqualsJsonString(
                     json_encode([
                         'id' => '00750444-c29e-43ab-ab8e-0ef800d8bdeb',
+                        'slug' => $taxonomy['slug'],
                         'name' => '5-a-side',
                         'parent_id' => '8ea70826-d1c6-461f-97fc-b4195e08994b',
                         'order' => 0,

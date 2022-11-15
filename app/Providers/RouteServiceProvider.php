@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Page;
 use App\Models\Service;
+use App\Models\Taxonomy;
 use App\Models\Collection;
 use App\Models\Organisation;
 use Illuminate\Http\Response;
@@ -53,6 +54,13 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('collection', function ($value) {
             return Collection::query()->find($value)
                 ?? Collection::query()->where('slug', '=', $value)->first()
+                ?? abort(Response::HTTP_NOT_FOUND);
+        });
+
+        // Resolve by ID first, then resort to slug.
+        Route::bind('taxonomy', function ($value) {
+            return Taxonomy::query()->find($value)
+                ?? Taxonomy::query()->where('slug', $value)->first()
                 ?? abort(Response::HTTP_NOT_FOUND);
         });
     }

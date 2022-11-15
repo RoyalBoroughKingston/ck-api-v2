@@ -24,9 +24,9 @@ class TaxonomyOrganisationsNestedPath extends PathItem
             ->parameters(
                 Parameter::path()
                     ->name('organisation')
-                    ->description('The ID of the organisation taxonomy')
+                    ->description('The ID or slug of the organisation taxonomy')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->operations(
                 ShowTaxonomyOrganisationOperation::create(),

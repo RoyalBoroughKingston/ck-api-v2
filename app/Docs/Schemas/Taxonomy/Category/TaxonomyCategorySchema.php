@@ -21,6 +21,7 @@ class TaxonomyCategorySchema extends Schema
                 Schema::string('parent_id')
                     ->format(Schema::FORMAT_UUID)
                     ->nullable(),
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::integer('order'),
                 Schema::string('created_at')

@@ -2,11 +2,14 @@
 
 use App\Models\Taxonomy;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(Taxonomy::class, function (Faker $faker) {
     $name = $faker->unique()->words(3, true);
+    $slug = Str::slug($name);
 
     return [
+        'slug' => $slug,
         'name' => $name,
         'parent_id' => Taxonomy::category()->children()->first()->id,
         'order' => 0,

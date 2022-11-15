@@ -949,6 +949,7 @@ class OrganisationEventsTest extends TestCase
             [
                 'id' => $taxonomy->parent->id,
                 'parent_id' => $taxonomy->parent->parent_id,
+                'slug' => $taxonomy->parent->slug,
                 'name' => $taxonomy->parent->name,
                 'created_at' => $taxonomy->parent->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy->parent->updated_at->format(CarbonImmutable::ISO8601),
@@ -956,6 +957,7 @@ class OrganisationEventsTest extends TestCase
             [
                 'id' => $taxonomy->id,
                 'parent_id' => $taxonomy->parent_id,
+                'slug' => $taxonomy->slug,
                 'name' => $taxonomy->name,
                 'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
@@ -2341,6 +2343,7 @@ class OrganisationEventsTest extends TestCase
             [
                 'id' => $taxonomy2->parent->id,
                 'parent_id' => $taxonomy2->parent->parent_id,
+                'slug' => $taxonomy2->parent->slug,
                 'name' => $taxonomy2->parent->name,
                 'created_at' => $taxonomy2->parent->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy2->parent->updated_at->format(CarbonImmutable::ISO8601),
@@ -2348,6 +2351,7 @@ class OrganisationEventsTest extends TestCase
             [
                 'id' => $taxonomy2->id,
                 'parent_id' => $taxonomy2->parent_id,
+                'slug' => $taxonomy2->slug,
                 'name' => $taxonomy2->name,
                 'created_at' => $taxonomy2->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy2->updated_at->format(CarbonImmutable::ISO8601),
@@ -2355,6 +2359,7 @@ class OrganisationEventsTest extends TestCase
             [
                 'id' => $taxonomy3->id,
                 'parent_id' => $taxonomy3->parent_id,
+                'slug' => $taxonomy3->slug,
                 'name' => $taxonomy3->name,
                 'created_at' => $taxonomy3->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy3->updated_at->format(CarbonImmutable::ISO8601),

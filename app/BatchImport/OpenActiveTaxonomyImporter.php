@@ -19,6 +19,18 @@ class OpenActiveTaxonomyImporter
     protected $openActiveDirectoryUrl = 'https://openactive.io/activity-list/activity-list.jsonld';
 
     /**
+     * Unique Slug Generator.
+     *
+     * @var App\Generators\UniqueSlugGenerator
+     */
+    protected $slugGenerator;
+
+    public function __construct()
+    {
+        $this->slugGenerator = resolve('App\Generators\UniqueSlugGenerator');
+    }
+
+    /**
      * Fetch the Open Active taxonomy data and store it as a collection.
      *
      * @param mixed $openActiveDirectoryUrl
@@ -134,12 +146,18 @@ class OpenActiveTaxonomyImporter
      */
     private function mapOpenActiveTaxonomyToTaxonomyModelSchema(Taxonomy $rootTaxonomy, array $taxonomyData)
     {
-        return [
+        $modelData = [
             'id' => $taxonomyData['identifier'],
             'name' => $taxonomyData['prefLabel'],
             'parent_id' => array_key_exists('broader', $taxonomyData) ? $this->parseIdentifier($taxonomyData['broader'][0]) : $rootTaxonomy->id,
             'order' => 0,
             'depth' => 2,
         ];
+
+        if (Schema::hasColumn('taxonomies', 'slug')) {
+            $modelData['slug'] = $this->slugGenerator->generate($taxonomyData['prefLabel'], 'taxonomies');
+        }
+
+        return $modelData;
     }
 }

@@ -41,11 +41,20 @@ class ImportTaxonomiesCommand extends Command
     protected $failedRows = [];
 
     /**
+     * Unique Slug Generator.
+     *
+     * @var App\Generators\UniqueSlugGenerator
+     */
+    protected $slugGenerator;
+
+    /**
      * Create a new command instance.
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->slugGenerator = resolve('App\Generators\UniqueSlugGenerator');
     }
 
     /**
@@ -251,16 +260,22 @@ class ImportTaxonomiesCommand extends Command
     public function mapToIdKeys(array $records): array
     {
         return collect($records)->mapWithKeys(function ($record) {
+            $modelData = [
+                'id' => $record[0],
+                'name' => $record[1],
+                'parent_id' => $record[2] ?: Taxonomy::category()->id,
+                'order' => 0,
+                'depth' => 1,
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' => Carbon::now()->toDateTimeString(),
+            ];
+
+            if (Schema::hasColumn('taxonomies', 'slug')) {
+                $modelData['slug'] = $this->slugGenerator->generate($record[1], 'taxonomies');
+            }
+
             return [
-                $record[0] => [
-                    'id' => $record[0],
-                    'name' => $record[1],
-                    'parent_id' => $record[2] ?: Taxonomy::category()->id,
-                    'order' => 0,
-                    'depth' => 1,
-                    'created_at' => Carbon::now()->toDateTimeString(),
-                    'updated_at' => Carbon::now()->toDateTimeString(),
-                ],
+                $record[0] => $modelData,
             ];
         })->all();
     }

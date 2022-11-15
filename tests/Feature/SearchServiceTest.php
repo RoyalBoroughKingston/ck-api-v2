@@ -99,6 +99,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
     {
         $service1 = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'thisisatest',
             'name' => 'Thisisatest',
             'order' => 1,
             'depth' => 1,
@@ -107,6 +108,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
 
         $service2 = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'should-not-match',
             'name' => 'Should not match',
             'order' => 1,
             'depth' => 1,
@@ -135,6 +137,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
     {
         $service1 = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'phpunit-taxonomy',
             'name' => 'PHPUnit Taxonomy',
             'order' => 1,
             'depth' => 1,
@@ -143,6 +146,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
 
         $service2 = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'should-not-match',
             'name' => 'Should not match',
             'order' => 1,
             'depth' => 1,
@@ -228,6 +232,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'description' => 'Service description',
         ]);
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'thisisatest',
             'name' => 'Thisisatest',
             'order' => 1,
             'depth' => 1,
@@ -358,6 +363,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'phpunit-taxonomy',
             'name' => 'PHPUnit Taxonomy',
             'order' => 1,
             'depth' => 1,
@@ -384,6 +390,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'phpunit-taxonomy',
             'name' => 'PHPUnit Taxonomy',
             'order' => 1,
             'depth' => 1,
@@ -474,6 +481,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'collection',
             'name' => 'Collection',
             'order' => 1,
             'depth' => 1,
@@ -490,6 +498,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $differentTaxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'persona',
             'name' => 'Persona',
             'order' => 2,
             'depth' => 1,
@@ -518,6 +527,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'collection',
             'name' => 'Collection',
             'order' => 1,
             'depth' => 1,
@@ -534,6 +544,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $differentTaxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'persona',
             'name' => 'Persona',
             'order' => 2,
             'depth' => 1,
@@ -735,16 +746,19 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
     {
         // Create 3 taxonomies
         $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'red',
             'name' => 'Red',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'blue',
             'name' => 'Blue',
             'order' => 2,
             'depth' => 1,
         ]);
         $taxonomy3 = Taxonomy::category()->children()->create([
+            'slug' => 'green',
             'name' => 'Green',
             'order' => 3,
             'depth' => 1,
@@ -798,16 +812,19 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
     {
         // Create 3 taxonomies
         $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'red',
             'name' => 'Red',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'blue',
             'name' => 'Blue',
             'order' => 2,
             'depth' => 1,
         ]);
         $taxonomy3 = Taxonomy::category()->children()->create([
+            'slug' => 'green',
             'name' => 'Green',
             'order' => 3,
             'depth' => 1,
@@ -950,6 +967,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
         $service3 = factory(Service::class)->create(['description' => 'Thisisatest']);
         $service4 = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'thisisatest',
             'name' => 'Thisisatest',
             'order' => 1,
             'depth' => 1,

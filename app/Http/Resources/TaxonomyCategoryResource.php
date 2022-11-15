@@ -19,6 +19,7 @@ class TaxonomyCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id !== Taxonomy::category()->id ? $this->parent_id : null,
+            'slug' => $this->slug,
             'name' => $this->name,
             'order' => $this->order,
             'children' => static::collection($this->whenLoaded('children')),

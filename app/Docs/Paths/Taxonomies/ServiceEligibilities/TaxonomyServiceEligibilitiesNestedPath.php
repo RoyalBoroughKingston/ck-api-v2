@@ -24,9 +24,9 @@ class TaxonomyServiceEligibilitiesNestedPath extends PathItem
             ->parameters(
                 Parameter::path()
                     ->name('eligibility')
-                    ->description('The ID of the eligibility taxonomy')
+                    ->description('The ID or slug of the eligibility taxonomy')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->operations(
                 ShowTaxonomyServiceEligibilityOperation::create(),

@@ -167,6 +167,7 @@ class ServicesTest extends TestCase
                 [
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
+                    'slug' => Taxonomy::category()->children()->first()->slug,
                     'name' => Taxonomy::category()->children()->first()->name,
                     'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
@@ -976,6 +977,7 @@ class ServicesTest extends TestCase
             [
                 'id' => Taxonomy::category()->children()->firstOrFail()->id,
                 'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
+                'slug' => Taxonomy::category()->children()->firstOrFail()->slug,
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
                 'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(CarbonImmutable::ISO8601),
@@ -1042,6 +1044,7 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment([
             'id' => $taxonomy->id,
             'parent_id' => $taxonomy->parent_id,
+            'slug' => $taxonomy->slug,
             'name' => $taxonomy->name,
             'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
@@ -1538,6 +1541,7 @@ class ServicesTest extends TestCase
                 [
                     'id' => $taxonomy->id,
                     'parent_id' => $taxonomy->parent_id,
+                    'slug' => $taxonomy->slug,
                     'name' => $taxonomy->name,
                     'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
                     'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
@@ -1616,6 +1620,7 @@ class ServicesTest extends TestCase
                 [
                     'id' => $taxonomy->id,
                     'parent_id' => $taxonomy->parent_id,
+                    'slug' => $taxonomy->slug,
                     'name' => $taxonomy->name,
                     'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
                     'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),

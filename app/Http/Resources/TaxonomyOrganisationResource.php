@@ -17,6 +17,7 @@ class TaxonomyOrganisationResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'order' => $this->order,
             'created_at' => $this->created_at->format(CarbonImmutable::ISO8601),

@@ -24,9 +24,9 @@ class TaxonomyCategoriesNestedPath extends PathItem
             ->parameters(
                 Parameter::path()
                     ->name('category')
-                    ->description('The ID of the category taxonomy')
+                    ->description('The ID or slug of the category taxonomy')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->operations(
                 ShowTaxonomyCategoryOperation::create(),

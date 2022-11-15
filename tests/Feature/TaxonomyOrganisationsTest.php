@@ -30,6 +30,7 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertJsonFragment([
             [
                 'id' => $taxonomy->id,
+                'slug' => $taxonomy->slug,
                 'name' => $taxonomy->name,
                 'order' => $taxonomy->order,
                 'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
@@ -114,9 +115,9 @@ class TaxonomyOrganisationsTest extends TestCase
 
     public function test_order_is_updated_when_created_at_beginning()
     {
-        $this->createTaxonomyOrganisation();
-        $this->createTaxonomyOrganisation();
-        $this->createTaxonomyOrganisation();
+        $this->createTaxonomyOrganisation(['slug' => 'org']);
+        $this->createTaxonomyOrganisation(['slug' => 'org-1']);
+        $this->createTaxonomyOrganisation(['slug' => 'org-2']);
 
         $user = factory(User::class)->create()->makeSuperAdmin();
         $taxonomyOrganisation = Taxonomy::organisation()->children()->orderBy('order')->get();
@@ -131,16 +132,18 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
         foreach ($taxonomyOrganisation as $organisation) {
-            $this->assertDatabaseHas((new Taxonomy())->getTable(),
-                ['id' => $organisation->id, 'order' => $organisation->order + 1]);
+            $this->assertDatabaseHas(
+                (new Taxonomy())->getTable(),
+                ['id' => $organisation->id, 'order' => $organisation->order + 1]
+            );
         }
     }
 
     public function test_order_is_updated_when_created_at_middle()
     {
-        $this->createTaxonomyOrganisation();
-        $this->createTaxonomyOrganisation();
-        $this->createTaxonomyOrganisation();
+        $this->createTaxonomyOrganisation(['slug' => 'org']);
+        $this->createTaxonomyOrganisation(['slug' => 'org-1']);
+        $this->createTaxonomyOrganisation(['slug' => 'org-2']);
 
         $user = factory(User::class)->create()->makeSuperAdmin();
         $taxonomyOrganisations = Taxonomy::organisation()->children()->orderBy('order')->get();
@@ -156,20 +159,24 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertJsonFragment($payload);
         foreach ($taxonomyOrganisations as $organisation) {
             if ($organisation->order < 2) {
-                $this->assertDatabaseHas((new Taxonomy())->getTable(),
-                    ['id' => $organisation->id, 'order' => $organisation->order]);
+                $this->assertDatabaseHas(
+                    (new Taxonomy())->getTable(),
+                    ['id' => $organisation->id, 'order' => $organisation->order]
+                );
             } else {
-                $this->assertDatabaseHas((new Taxonomy())->getTable(),
-                    ['id' => $organisation->id, 'order' => $organisation->order + 1]);
+                $this->assertDatabaseHas(
+                    (new Taxonomy())->getTable(),
+                    ['id' => $organisation->id, 'order' => $organisation->order + 1]
+                );
             }
         }
     }
 
     public function test_order_is_updated_when_created_at_end()
     {
-        $this->createTaxonomyOrganisation();
-        $this->createTaxonomyOrganisation();
-        $this->createTaxonomyOrganisation();
+        $this->createTaxonomyOrganisation(['slug' => 'org']);
+        $this->createTaxonomyOrganisation(['slug' => 'org-1']);
+        $this->createTaxonomyOrganisation(['slug' => 'org-2']);
 
         $user = factory(User::class)->create()->makeSuperAdmin();
         $taxonomyOrganisations = Taxonomy::organisation()->children()->orderBy('order')->get();
@@ -184,8 +191,10 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment($payload);
         foreach ($taxonomyOrganisations as $organisation) {
-            $this->assertDatabaseHas((new Taxonomy())->getTable(),
-                ['id' => $organisation->id, 'order' => $organisation->order]);
+            $this->assertDatabaseHas(
+                (new Taxonomy())->getTable(),
+                ['id' => $organisation->id, 'order' => $organisation->order]
+            );
         }
     }
 
@@ -252,6 +261,7 @@ class TaxonomyOrganisationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'id' => $taxonomy->id,
+                'slug' => $taxonomy->slug,
                 'name' => $taxonomy->name,
                 'order' => $taxonomy->order,
                 'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
@@ -344,9 +354,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
-        $organisationOne = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
-        $organisationTwo = $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
-        $organisationThree = $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+        $organisationOne = $this->createTaxonomyOrganisation(['slug' => 'one', 'name' => 'One', 'order' => 1]);
+        $organisationTwo = $this->createTaxonomyOrganisation(['slug' => 'two', 'name' => 'Two', 'order' => 2]);
+        $organisationThree = $this->createTaxonomyOrganisation(['slug' => 'three', 'name' => 'Three', 'order' => 3]);
 
         $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisationTwo->id}", [
             'name' => $organisationTwo->name,
@@ -364,9 +374,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
-        $organisationOne = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
-        $organisationTwo = $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
-        $organisationThree = $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+        $organisationOne = $this->createTaxonomyOrganisation(['slug' => 'one', 'name' => 'One', 'order' => 1]);
+        $organisationTwo = $this->createTaxonomyOrganisation(['slug' => 'two', 'name' => 'Two', 'order' => 2]);
+        $organisationThree = $this->createTaxonomyOrganisation(['slug' => 'three', 'name' => 'Three', 'order' => 3]);
 
         $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisationOne->id}", [
             'name' => $organisationOne->name,
@@ -384,9 +394,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
-        $organisationOne = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
-        $organisationTwo = $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
-        $organisationThree = $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+        $organisationOne = $this->createTaxonomyOrganisation(['slug' => 'one', 'name' => 'One', 'order' => 1]);
+        $organisationTwo = $this->createTaxonomyOrganisation(['slug' => 'two', 'name' => 'Two', 'order' => 2]);
+        $organisationThree = $this->createTaxonomyOrganisation(['slug' => 'three', 'name' => 'Three', 'order' => 3]);
 
         $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisationTwo->id}", [
             'name' => $organisationTwo->name,
@@ -419,9 +429,9 @@ class TaxonomyOrganisationsTest extends TestCase
         $user = factory(User::class)->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
-        $organisation = $this->createTaxonomyOrganisation(['name' => 'One', 'order' => 1]);
-        $this->createTaxonomyOrganisation(['name' => 'Two', 'order' => 2]);
-        $this->createTaxonomyOrganisation(['name' => 'Three', 'order' => 3]);
+        $organisation = $this->createTaxonomyOrganisation(['slug' => 'one', 'name' => 'One', 'order' => 1]);
+        $this->createTaxonomyOrganisation(['slug' => 'two', 'name' => 'Two', 'order' => 2]);
+        $this->createTaxonomyOrganisation(['slug' => 'three', 'name' => 'Three', 'order' => 3]);
 
         $response = $this->json('PUT', "/core/v1/taxonomies/organisations/{$organisation->id}", [
             'name' => $organisation->name,
@@ -538,6 +548,7 @@ class TaxonomyOrganisationsTest extends TestCase
         $count = Taxonomy::organisation()->children()->count();
 
         return Taxonomy::organisation()->children()->create(array_merge([
+            'slug' => 'phpunit-organisation',
             'name' => 'PHPUnit Organisation',
             'order' => $count + 1,
             'depth' => 1,

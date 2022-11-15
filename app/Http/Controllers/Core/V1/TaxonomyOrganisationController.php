@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaxonomyOrganisation\DestroyRequest;
 use App\Http\Requests\TaxonomyOrganisation\IndexRequest;
@@ -49,12 +50,14 @@ class TaxonomyOrganisationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\TaxonomyOrganisation\StoreRequest $request
+     * @param \App\Generators\UniqueSlugGenerator $slugGenerator
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $slugGenerator) {
             $organisation = Taxonomy::organisation()->children()->create([
+                'slug' => $slugGenerator->generate($request->name, table(Taxonomy::class)),
                 'name' => $request->name,
                 'order' => $request->order,
                 'depth' => 1,
@@ -93,10 +96,13 @@ class TaxonomyOrganisationController extends Controller
      * @param \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Taxonomy $taxonomy)
+    public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Taxonomy $taxonomy)
     {
-        return DB::transaction(function () use ($request, $taxonomy) {
+        return DB::transaction(function () use ($request, $slugGenerator, $taxonomy) {
             $taxonomy->update([
+                'slug' => $slugGenerator->compareEquals($request->name, $taxonomy->slug)
+                    ? $taxonomy->slug
+                    : $slugGenerator->generate($request->name, table(Taxonomy::class)),
                 'name' => $request->name,
                 'order' => $request->order,
             ]);

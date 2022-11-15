@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaxonomyServiceEligibility\DestroyRequest;
 use App\Http\Requests\TaxonomyServiceEligibility\IndexRequest;
@@ -50,15 +51,16 @@ class TaxonomyServiceEligibilityController extends Controller
      * @param \App\Http\Requests\TaxonomyServiceEligibility\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $slugGenerator) {
             $parent = $request->filled('parent_id')
                 ? Taxonomy::query()->findOrFail($request->parent_id)
                 : Taxonomy::serviceEligibility();
 
             $serviceEligibility = Taxonomy::create([
                 'parent_id' => $parent->id,
+                'slug' => $slugGenerator->generate($request->name, table(Taxonomy::class)),
                 'name' => $request->name,
                 'order' => $request->order,
                 'depth' => 0, // Placeholder
@@ -99,15 +101,18 @@ class TaxonomyServiceEligibilityController extends Controller
      * @param \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Taxonomy $taxonomy)
+    public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Taxonomy $taxonomy)
     {
-        return DB::transaction(function () use ($request, $taxonomy) {
+        return DB::transaction(function () use ($request, $slugGenerator, $taxonomy) {
             $parent = $request->filled('parent_id')
                 ? Taxonomy::query()->findOrFail($request->parent_id)
                 : Taxonomy::serviceEligibility();
 
             $taxonomy->update([
                 'parent_id' => $parent->id,
+                'slug' => $slugGenerator->compareEquals($request->name, $taxonomy->slug)
+                    ? $taxonomy->slug
+                    : $slugGenerator->generate($request->name, table(Taxonomy::class)),
                 'name' => $request->name,
                 'order' => $request->order,
                 'depth' => 0, // Placeholder

@@ -17,6 +17,7 @@ class CollectionOrganisationEventResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'intro' => $this->meta['intro'],
             'image_file_id' => $this->meta['image_file_id'] ?? null,

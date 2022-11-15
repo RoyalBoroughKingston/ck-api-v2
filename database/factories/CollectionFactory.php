@@ -3,12 +3,16 @@
 use App\Models\Collection;
 use App\Models\File;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(Collection::class, function (Faker $faker) {
     $imageId = factory(File::class)->states('image-svg')->create()->id;
-    $collection = [
+    $name = $faker->sentence(2);
+
+    return [
         'type' => Collection::TYPE_CATEGORY,
-        'name' => $faker->sentence(2),
+        'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
+        'name' => $name,
         'meta' => [
             'intro' => $faker->sentence,
             'sideboxes' => [],
@@ -17,8 +21,6 @@ $factory->define(Collection::class, function (Faker $faker) {
         'order' => Collection::categories()->count() + 1,
         'enabled' => true,
     ];
-
-    return $collection;
 });
 
 $factory->state(Collection::class, 'typePersona', function (Faker $faker) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Collection;
 use App\Models\Organisation;
+use App\Models\Page;
 use App\Models\Service;
 use DateTime;
 use DOMDocument;
@@ -37,6 +38,8 @@ class SitemapController extends Controller
             $this->createCategoryNodes();
 
             $this->createPersonaNodes();
+
+            $this->createPageNodes();
 
             return $this->sitemap->saveXML();
         });
@@ -149,6 +152,26 @@ class SitemapController extends Controller
             ->all();
 
         $this->addUrlNodes($personas);
+    }
+
+    /**
+     * Create the information page routes.
+     *
+     * @return array [DomElement]
+     */
+    public function createPageNodes()
+    {
+        $pages = Page::where('enabled', '=', Page::ENABLED)
+            ->pluck('updated_at', 'slug')
+            ->map(function ($updatedAt, $slug) {
+                return [
+                    'path' => "pages/$slug",
+                    'updated' => date(DateTime::W3C, strtotime($updatedAt)),
+                ];
+            })
+            ->all();
+
+        $this->addUrlNodes($pages);
     }
 
     /**

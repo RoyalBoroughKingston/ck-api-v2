@@ -296,6 +296,27 @@ class ServicesTest extends TestCase
         $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
     }
 
+    public function test_guest_can_sort_by_score()
+    {
+        $service1 = factory(Service::class)->create(['score' => 0]);
+        $service2 = factory(Service::class)->create(['score' => 5]);
+        $service3 = factory(Service::class)->create(['score' => 3]);
+        $service4 = factory(Service::class)->create(['score' => 1]);
+        $service5 = factory(Service::class)->create(['score' => 4]);
+        $service6 = factory(Service::class)->create(['score' => 2]);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-score');
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($service2->id, $data['data'][0]['id']);
+        $this->assertEquals($service5->id, $data['data'][1]['id']);
+        $this->assertEquals($service3->id, $data['data'][2]['id']);
+        $this->assertEquals($service6->id, $data['data'][3]['id']);
+        $this->assertEquals($service4->id, $data['data'][4]['id']);
+        $this->assertEquals($service1->id, $data['data'][5]['id']);
+    }
+
     /*
      * Create a service.
      */

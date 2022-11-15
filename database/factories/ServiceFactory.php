@@ -27,6 +27,7 @@ $factory->define(Service::class, function (Faker $faker) {
         'contact_email' => $faker->safeEmail,
         'show_referral_disclaimer' => false,
         'referral_method' => Service::REFERRAL_METHOD_NONE,
+        'score' => 0,
         'ends_at' => null,
         'last_modified_at' => Date::now(),
     ];
@@ -78,4 +79,10 @@ $factory->afterCreatingState(Service::class, 'withEligibilityTaxonomies', functi
 
 $factory->afterCreatingState(Service::class, 'withCategoryTaxonomies', function (Service $service) {
     $service->syncTaxonomyRelationships(collect([factory(Taxonomy::class)->create()]));
+});
+
+$factory->state(Service::class, 'score', function (Faker $faker) {
+    return [
+        'score' => $faker->numberBetween(1, 5),
+    ];
 });

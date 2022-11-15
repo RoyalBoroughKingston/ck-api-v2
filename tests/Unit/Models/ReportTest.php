@@ -770,7 +770,7 @@ class ReportTest extends TestCase
 
         // Create a single search history.
         $searchHistory = SearchHistory::create([
-            'query' => $search->getQuery(),
+            'query' => $search->getQuery()['query']['function_score'],
             'count' => 1,
         ]);
 
@@ -808,8 +808,12 @@ class ReportTest extends TestCase
             ->applyOrder(Search::ORDER_DISTANCE, new Coordinate(0, 0));
 
         // Create a single search history.
+        $query = $search->getQuery();
         $searchHistory = SearchHistory::create([
-            'query' => $search->getQuery(),
+            'query' => [
+                'query' => $query['query']['function_score']['query'],
+                'sort' => $query['sort']
+            ],
             'count' => 1,
         ]);
 
@@ -846,7 +850,7 @@ class ReportTest extends TestCase
 
         // Create a single search history.
         $searchHistoryWithinRange = SearchHistory::create([
-            'query' => $search->getQuery(),
+            'query' => $search->getQuery()['query']['function_score'],
             'count' => 1,
         ]);
         SearchHistory::create([

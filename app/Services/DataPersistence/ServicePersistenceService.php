@@ -62,6 +62,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'eligibility_types' => $request->filled('eligibility_types') ? $request->eligibility_types : new MissingValue(),
                 'logo_file_id' => $request->missing('logo_file_id'),
+                'score' => $request->missing('score'),
                 'ends_at' => $request->missing('ends_at'),
             ]);
 
@@ -137,6 +138,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'referral_email' => $request->referral_email,
                 'referral_url' => $request->referral_url,
                 'logo_file_id' => $request->logo_file_id,
+                'score' => $request->score,
                 'last_modified_at' => Date::now(),
                 'ends_at' => $request->filled('ends_at')
                     ? Date::createFromFormat(CarbonImmutable::ISO8601, $request->ends_at)

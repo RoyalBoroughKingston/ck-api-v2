@@ -3161,21 +3161,25 @@ class ServicesTest extends TestCase
         // Create taxonomies.
         $taxonomy = factory(Taxonomy::class)->create();
         $taxonomyOneDepthOne = $taxonomy->children()->create([
+            'slug' => 'taxonomy-one',
             'name' => 'Taxonomy One',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomyTwoDepthOne = $taxonomy->children()->create([
+            'slug' => 'taxonomy-two',
             'name' => 'Taxonomy Two',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomyThreeDepthOne = $taxonomy->children()->create([
+            'slug' => 'taxonomy-three',
             'name' => 'Taxonomy Three',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomyFourDepthTwo = $taxonomyOneDepthOne->children()->create([
+            'slug' => 'taxonomy-four',
             'name' => 'Taxonomy Four',
             'order' => 1,
             'depth' => 2,

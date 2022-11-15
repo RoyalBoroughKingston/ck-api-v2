@@ -241,6 +241,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
             'title' => 'Event title',
         ]);
         $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'quick-brown-fox',
             'name' => 'Quick Brown Fox',
             'order' => 1,
             'depth' => 1,
@@ -252,6 +253,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
             'title' => 'Event title',
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'lazy-dog',
             'name' => 'Lazy Dog',
             'order' => 1,
             'depth' => 1,
@@ -418,6 +420,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
             'description' => '<p>Quick Brown Fox</p>',
         ]);
         $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'lazy-dog',
             'name' => 'Lazy Dog',
             'order' => 1,
             'depth' => 1,
@@ -429,6 +432,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
             'description' => '<p>Lazy Dog</p>',
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'quick-brown-fox',
             'name' => 'Quick Brown Fox',
             'order' => 1,
             'depth' => 1,
@@ -485,6 +489,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'category-1',
             'name' => 'Category 1',
             'order' => 1,
             'depth' => 1,
@@ -503,6 +508,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
             'order' => 1,
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'category-2',
             'name' => 'Category 2',
             'order' => 1,
             'depth' => 1,
@@ -1127,16 +1133,19 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
     {
         // Create 3 taxonomies
         $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'red',
             'name' => 'Red',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'blue',
             'name' => 'Blue',
             'order' => 2,
             'depth' => 1,
         ]);
         $taxonomy3 = Taxonomy::category()->children()->create([
+            'slug' => 'green',
             'name' => 'Green',
             'order' => 3,
             'depth' => 1,

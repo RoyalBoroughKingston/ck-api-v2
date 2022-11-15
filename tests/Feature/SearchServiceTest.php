@@ -232,6 +232,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
             'description' => 'Service description',
         ]);
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'thisisatest',
             'name' => 'Thisisatest',
             'order' => 1,
             'depth' => 1,
@@ -966,6 +967,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
         $service3 = factory(Service::class)->create(['description' => 'Thisisatest']);
         $service4 = factory(Service::class)->create();
         $taxonomy = Taxonomy::category()->children()->create([
+            'slug' => 'thisisatest',
             'name' => 'Thisisatest',
             'order' => 1,
             'depth' => 1,

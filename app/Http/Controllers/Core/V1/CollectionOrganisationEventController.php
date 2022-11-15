@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Events\EndpointHit;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\CollectionOrganisationEvent\DestroyRequest;
-use App\Http\Requests\CollectionOrganisationEvent\IndexRequest;
-use App\Http\Requests\CollectionOrganisationEvent\ShowRequest;
-use App\Http\Requests\CollectionOrganisationEvent\StoreRequest;
-use App\Http\Requests\CollectionOrganisationEvent\UpdateRequest;
-use App\Http\Resources\CollectionOrganisationEventResource;
-use App\Http\Responses\ResourceDeleted;
-use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
+use App\Models\Collection;
+use App\Events\EndpointHit;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\AllowedFilter;
+use App\Http\Controllers\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use App\Generators\UniqueSlugGenerator;
+use App\Http\Responses\ResourceDeleted;
+use App\Http\Resources\CollectionOrganisationEventResource;
+use App\Http\Requests\CollectionOrganisationEvent\ShowRequest;
+use App\Http\Requests\CollectionOrganisationEvent\IndexRequest;
+use App\Http\Requests\CollectionOrganisationEvent\StoreRequest;
+use App\Http\Requests\CollectionOrganisationEvent\UpdateRequest;
+use App\Http\Requests\CollectionOrganisationEvent\DestroyRequest;
 
 class CollectionOrganisationEventController extends Controller
 {
@@ -61,9 +62,9 @@ class CollectionOrganisationEventController extends Controller
      * @param \App\Http\Requests\CollectionOrganisationEvent\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $slugGenerator) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -75,6 +76,7 @@ class CollectionOrganisationEventController extends Controller
             // Create the collection record.
             $organisationEventCollection = Collection::create([
                 'type' => Collection::TYPE_ORGANISATION_EVENT,
+                'slug' => $slugGenerator->generate($request->name, table(Collection::class)),
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -130,9 +132,9 @@ class CollectionOrganisationEventController extends Controller
      * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Collection $collection)
+    public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $collection) {
+        return DB::transaction(function () use ($request, $slugGenerator, $collection) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -143,6 +145,9 @@ class CollectionOrganisationEventController extends Controller
 
             // Update the collection record.
             $collection->update([
+                'slug' => $slugGenerator->compareEquals($request->name, $collection->slug)
+                    ? $collection->slug
+                    : $slugGenerator->generate($request->name, table(Collection::class)),
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,

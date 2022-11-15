@@ -484,6 +484,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
         ]);
         $collection1 = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'quick-brown-fox',
             'name' => 'Quick Brown Fox',
             'meta' => [],
             'order' => 1,
@@ -503,6 +504,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
         ]);
         $collection2 = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'lazy-dog',
             'name' => 'Lazy Dog',
             'meta' => [],
             'order' => 1,
@@ -1154,6 +1156,7 @@ class SearchEventTest extends TestCase implements UsesElasticsearch
         // Create a collection
         $collection = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'self-help',
             'name' => 'Self Help',
             'meta' => [],
             'order' => 1,

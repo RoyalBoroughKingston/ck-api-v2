@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Models\File;
-use App\Models\Taxonomy;
-use App\Models\Collection;
 use App\Events\EndpointHit;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 use App\Generators\UniqueSlugGenerator;
-use App\Http\Responses\ResourceDeleted;
-use App\Http\Resources\CollectionPersonaResource;
-use App\Http\Requests\CollectionPersona\ShowRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CollectionPersona\DestroyRequest;
 use App\Http\Requests\CollectionPersona\IndexRequest;
+use App\Http\Requests\CollectionPersona\ShowRequest;
 use App\Http\Requests\CollectionPersona\StoreRequest;
 use App\Http\Requests\CollectionPersona\UpdateRequest;
-use App\Http\Requests\CollectionPersona\DestroyRequest;
+use App\Http\Resources\CollectionPersonaResource;
+use App\Http\Responses\ResourceDeleted;
+use App\Models\Collection;
+use App\Models\File;
+use App\Models\Taxonomy;
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionPersonaController extends Controller
 {

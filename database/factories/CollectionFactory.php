@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\File;
 use App\Models\Collection;
-use Illuminate\Support\Str;
+use App\Models\File;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(Collection::class, function (Faker $faker) {
     $imageId = factory(File::class)->states('image-svg')->create()->id;

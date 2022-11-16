@@ -892,7 +892,7 @@ class ReportTest extends TestCase
     public function test_search_histories_without_query_are_omitted()
     {
         /** @var \App\Contracts\Search $search */
-        $search = resolve(Search::class)->applyCategory('Self Help');
+        $search = resolve(Search::class)->applyCategory('self-help');
 
         // Create a single search history.
         SearchHistory::create([

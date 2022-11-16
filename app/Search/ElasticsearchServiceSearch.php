@@ -149,25 +149,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
      */
     public function applyCategory(string $category): ServiceSearch
     {
-        $categoryModel = CollectionModel::query()
-            ->with('taxonomies')
-            ->categories()
-            ->where('name', $category)
-            ->firstOrFail();
-
-        $should = &$this->query['query']['function_score']['query']['bool']['must']['bool']['should'];
-
-        foreach ($categoryModel->taxonomies as $taxonomy) {
-            $should[] = $this->match('taxonomy_categories', $taxonomy->name);
-        }
-
-        $this->query['query']['function_score']['query']['bool']['filter'][] = [
-            'term' => [
-                'collection_categories' => $category,
-            ],
-        ];
-
-        return $this;
+        return $this->applyCollection($category, 'category');
     }
 
     /**
@@ -176,25 +158,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
      */
     public function applyPersona(string $persona): ServiceSearch
     {
-        $categoryModel = CollectionModel::query()
-            ->with('taxonomies')
-            ->personas()
-            ->where('name', $persona)
-            ->firstOrFail();
-
-        $should = &$this->query['query']['function_score']['query']['bool']['must']['bool']['should'];
-
-        foreach ($categoryModel->taxonomies as $taxonomy) {
-            $should[] = $this->match('taxonomy_categories', $taxonomy->name);
-        }
-
-        $this->query['query']['function_score']['query']['bool']['filter'][] = [
-            'term' => [
-                'collection_personas' => $persona,
-            ],
-        ];
-
-        return $this;
+        return $this->applyCollection($persona, 'persona');
     }
 
     /**
@@ -488,5 +452,51 @@ class ElasticsearchServiceSearch implements ServiceSearch
                 return $location->distanceFrom($serviceLocation->location->toCoordinate());
             });
         });
+    }
+
+    /**
+     * @param string $slug
+     * @param string $type
+     * @return \App\Search\ElasticsearchServiceSearch
+     */
+    protected function applyCollection(string $slug, string $type): ServiceSearch
+    {
+        $query = CollectionModel::query()
+            ->with('taxonomies')
+            ->where('slug', $slug);
+
+        if ($type === 'category') {
+            $query->categories();
+        } elseif ($type === 'persona') {
+            $query->personas();
+        } else {
+            throw new \Exception('Invalid Collection Type');
+        }
+
+        $collectionModel = $query->firstOrFail();
+
+        $term = $type === 'category' ? 'collection_categories' : 'collection_personas';
+
+        $should = &$this->query['query']['function_score']['query']['bool']['must']['bool']['should'];
+
+        foreach ($collectionModel->taxonomies as $taxonomy) {
+            $should[] = $this->match('taxonomy_categories', $taxonomy->name);
+        }
+
+        foreach ($this->query['query']['function_score']['query']['bool']['filter'] as &$filter) {
+            if (is_array($filter) && array_key_exists('terms', $filter) && array_key_exists($term, $filter['terms'])) {
+                $filter['terms'][$term][] = $collectionModel->name;
+
+                return $this;
+            }
+        }
+
+        $this->query['query']['function_score']['query']['bool']['filter'][] = [
+            'terms' => [
+                $term => [$collectionModel->name],
+            ],
+        ];
+
+        return $this;
     }
 }

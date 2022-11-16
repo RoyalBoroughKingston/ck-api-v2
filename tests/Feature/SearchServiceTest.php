@@ -353,60 +353,114 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
         $response->assertJsonFragment(['id' => $service1->id]);
     }
 
-    public function test_filter_by_category_works()
+    public function test_filter_by_categories_works()
     {
-        $service = factory(Service::class)->create();
-        $collection = Collection::create([
+        $service1 = factory(Service::class)->create();
+        $service2 = factory(Service::class)->create();
+        $collection1 = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
             'slug' => 'self-help',
             'name' => 'Self Help',
             'meta' => [],
             'order' => 1,
         ]);
-        $taxonomy = Taxonomy::category()->children()->create([
-            'slug' => 'phpunit-taxonomy',
-            'name' => 'PHPUnit Taxonomy',
+        $collection2 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'addiction',
+            'name' => 'Addiction',
+            'meta' => [],
+            'order' => 2,
+        ]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-1',
+            'name' => 'Test Taxonomy 1',
             'order' => 1,
             'depth' => 1,
         ]);
-        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
-        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
-        $service->save();
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-2',
+            'name' => 'Test Taxonomy 2',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection1->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service1->save();
+
+        $collection2->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->save();
 
         $response = $this->json('POST', '/core/v1/search', [
-            'category' => $collection->name,
+            'category' => $collection1->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['id' => $service->id]);
+        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonMissing(['id' => $service2->id]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'category' => implode(',', [$collection1->slug, $collection2->slug]),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service2->id]);
     }
 
-    public function test_filter_by_persona_works()
+    public function test_filter_by_personas_works()
     {
-        $service = factory(Service::class)->create();
-        $collection = Collection::create([
+        $service1 = factory(Service::class)->create();
+        $service2 = factory(Service::class)->create();
+        $collection1 = Collection::create([
             'type' => Collection::TYPE_PERSONA,
             'slug' => 'refugees',
             'name' => 'Refugees',
             'meta' => [],
             'order' => 1,
         ]);
-        $taxonomy = Taxonomy::category()->children()->create([
-            'slug' => 'phpunit-taxonomy',
-            'name' => 'PHPUnit Taxonomy',
+        $collection2 = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
+            'slug' => 'homeless',
+            'name' => 'Homeless',
+            'meta' => [],
+            'order' => 2,
+        ]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-1',
+            'name' => 'Test Taxonomy 1',
             'order' => 1,
             'depth' => 1,
         ]);
-        $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
-        $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
-        $service->save();
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-2',
+            'name' => 'Test Taxonomy 2',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection1->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service1->save();
+
+        $collection2->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->save();
 
         $response = $this->json('POST', '/core/v1/search', [
-            'persona' => $collection->name,
+            'persona' => $collection1->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['id' => $service->id]);
+        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonMissing(['id' => $service2->id]);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'persona' => implode(',', [$collection1->slug, $collection2->slug]),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service2->id]);
     }
 
     public function test_filter_by_wait_time_works()
@@ -513,7 +567,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Ayup Digital',
-            'category' => $collectionTaxonomy->collection->name,
+            'category' => $collectionTaxonomy->collection->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -561,7 +615,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'asfkjbadsflksbdafklhasdbflkbs',
-            'category' => $collectionTaxonomy->collection->name,
+            'category' => $collectionTaxonomy->collection->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -804,7 +858,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
 
         // Assert that when searching by collection, the services with more taxonomies are ranked higher.
         $response = $this->json('POST', '/core/v1/search', [
-            'category' => $collection->name,
+            'category' => $collection->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -871,7 +925,7 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
 
         // Assert that when searching by collection, the services with more taxonomies are ranked higher.
         $response = $this->json('POST', '/core/v1/search', [
-            'persona' => $collection->name,
+            'persona' => $collection->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -880,6 +934,248 @@ class SearchServiceTest extends TestCase implements UsesElasticsearch
         $this->assertEquals($service1->id, $content[0]['id']);
         $this->assertEquals($service2->id, $content[1]['id']);
         $this->assertEquals($service3->id, $content[2]['id']);
+    }
+
+    public function test_searches_are_carried_out_in_specified_collections()
+    {
+        $collection1 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'self-help',
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-1',
+            'name' => 'Test Taxonomy 1',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $collection1->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+
+        $collection2 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'addiction',
+            'name' => 'Addiction',
+            'meta' => [],
+            'order' => 2,
+        ]);
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-2',
+            'name' => 'Test Taxonomy 2',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection2->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+
+        $collection3 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'refugees',
+            'name' => 'Refugees',
+            'meta' => [],
+            'order' => 2,
+        ]);
+        $taxonomy3 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-3',
+            'name' => 'Test Taxonomy 3',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection3->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+
+        // Service 1 is in Collection 1
+        $service1 = factory(Service::class)->create(['name' => 'Bar']);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $service1->save();
+
+        // Service 2 is in Collection 2
+        $service2 = factory(Service::class)->create(['name' => 'Bim']);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->save();
+
+        // Service 3 is in Collection 2
+        $service3 = factory(Service::class)->create(['name' => 'Foo']);
+        $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service3->save();
+
+        // Service 4 is in Collection 3
+        $service4 = factory(Service::class)->create(['name' => 'Baz']);
+        $service4->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+        $service4->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'Foo',
+            'category' => implode(',', [$collection2->slug, $collection3->slug]),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service2->id]);
+        $response->assertJsonFragment(['id' => $service3->id]);
+        $response->assertJsonFragment(['id' => $service4->id]);
+        $response->assertJsonMissing(['id' => $service1->id]);
+        $this->assertEquals($service3->id, $response->json('data')[0]['id']);
+    }
+
+    public function test_location_searches_are_carried_out_in_specified_collections()
+    {
+        $collection1 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'self-help',
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-1',
+            'name' => 'Test Taxonomy 1',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $collection1->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+
+        $collection2 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'addiction',
+            'name' => 'Addiction',
+            'meta' => [],
+            'order' => 2,
+        ]);
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-2',
+            'name' => 'Test Taxonomy 2',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection2->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+
+        // Service 1 is in Collection 1
+        $service1 = factory(Service::class)->create(['name' => 'Bar']);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $serviceLocation1 = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        DB::table('locations')->where('id', $serviceLocation1->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
+        $service1->save();
+
+        // Service 2 is in Collection 2
+        $service2 = factory(Service::class)->create(['name' => 'Bim']);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
+        $service2->save();
+
+        // Service 3 is in Collection 2
+        $service3 = factory(Service::class)->create(['name' => 'Foo']);
+        $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 90]);
+        $service3->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'order' => 'distance',
+            'category' => implode(',', [$collection2->slug]),
+            'location' => [
+                'lat' => 041.9374814,
+                'lon' => -8.8643883,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service2->id]);
+        $response->assertJsonMissing(['id' => $service1->id]);
+        $response->assertJsonMissing(['id' => $service3->id]);
+    }
+
+    public function test_location_searches_and_queries_are_carried_out_in_specified_collections()
+    {
+        $collection1 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'self-help',
+            'name' => 'Self Help',
+            'meta' => [],
+            'order' => 1,
+        ]);
+        $taxonomy1 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-1',
+            'name' => 'Test Taxonomy 1',
+            'order' => 1,
+            'depth' => 1,
+        ]);
+        $collection1->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+
+        $collection2 = Collection::create([
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'addiction',
+            'name' => 'Addiction',
+            'meta' => [],
+            'order' => 2,
+        ]);
+        $taxonomy2 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-2',
+            'name' => 'Test Taxonomy 2',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection2->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+
+        $collection3 = Collection::create([
+            'type' => Collection::TYPE_PERSONA,
+            'slug' => 'refugees',
+            'name' => 'Refugees',
+            'meta' => [],
+            'order' => 1,
+        ]);
+        $taxonomy3 = Taxonomy::category()->children()->create([
+            'slug' => 'test-taxonomy-3',
+            'name' => 'Test Taxonomy 3',
+            'order' => 2,
+            'depth' => 1,
+        ]);
+        $collection3->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+
+        // Service 1 is in Collection 1
+        $service1 = factory(Service::class)->create(['name' => 'Bar']);
+        $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $serviceLocation1 = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        DB::table('locations')->where('id', $serviceLocation1->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
+        $service1->save();
+
+        // Service 2 is in Collection 2
+        $service2 = factory(Service::class)->create(['name' => 'Bim']);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
+        $service2->save();
+
+        // Service 3 is in Collection 2
+        $service3 = factory(Service::class)->create(['name' => 'Foo']);
+        $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
+        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 90]);
+        $service3->save();
+
+        // Service 4 is in Collection 3
+        $service4 = factory(Service::class)->create(['name' => 'Baz']);
+        $service4->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
+        $serviceLocation4 = factory(ServiceLocation::class)->create(['service_id' => $service4->id]);
+        DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
+        $service4->save();
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'Baz',
+            'persona' => implode(',', [$collection3->slug]),
+            'location' => [
+                'lat' => 041.9374814,
+                'lon' => -8.8643883,
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service2->id]);
+        $response->assertJsonFragment(['id' => $service4->id]);
+        $response->assertJsonMissing(['id' => $service1->id]);
+        $response->assertJsonMissing(['id' => $service3->id]);
+        $this->assertEquals($service4->id, $response->json('data')[0]['id']);
+        $this->assertEquals($service2->id, $response->json('data')[1]['id']);
     }
 
     public function test_query_matches_eligibility_name()

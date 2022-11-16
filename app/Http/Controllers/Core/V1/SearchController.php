@@ -23,10 +23,14 @@ class SearchController extends Controller
 
         if ($request->has('category')) {
             // If category given then filter by category.
-            $search->applyCategory($request->category);
+            foreach (explode(',', $request->category) as $category) {
+                $search->applyCategory($category);
+            }
         } elseif ($request->has('persona')) {
             // Otherwise, if persona given then filter by persona.
-            $search->applyPersona($request->persona);
+            foreach (explode(',', $request->persona) as $persona) {
+                $search->applyPersona($persona);
+            }
         }
 
         // Apply filter on `wait_time` field.

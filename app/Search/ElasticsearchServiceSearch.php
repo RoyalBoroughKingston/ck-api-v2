@@ -86,7 +86,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $term
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticSearchServiceSearch
      */
     public function applyQuery(string $term): ServiceSearch
     {
@@ -145,7 +145,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $category
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticSearchServiceSearch
      */
     public function applyCategory(string $category): ServiceSearch
     {
@@ -154,7 +154,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param string $persona
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticSearchServiceSearch
      */
     public function applyPersona(string $persona): ServiceSearch
     {
@@ -228,7 +228,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
     /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticSearchServiceSearch
      */
     public function applyOrder(string $order, Coordinate $location = null): ServiceSearch
     {
@@ -421,7 +421,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
 
     /**
      * @param array $response
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticSearchServiceSearch
      */
     protected function logMetrics(array $response): ServiceSearch
     {
@@ -457,7 +457,7 @@ class ElasticsearchServiceSearch implements ServiceSearch
     /**
      * @param string $slug
      * @param string $type
-     * @return \App\Search\ElasticsearchServiceSearch
+     * @return \App\Search\ElasticSearchServiceSearch
      */
     protected function applyCollection(string $slug, string $type): ServiceSearch
     {

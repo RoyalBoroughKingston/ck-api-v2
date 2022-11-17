@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Search;
 
 use App\Models\Collection;
 use App\Models\Page;
@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Tests\TestCase;
 use Tests\UsesElasticsearch;
 
-class SearchPageTest extends TestCase implements UsesElasticsearch
+class PageTest extends TestCase implements UsesElasticsearch
 {
     /**
      * Setup the test environment.
@@ -111,7 +111,6 @@ class SearchPageTest extends TestCase implements UsesElasticsearch
         $response->assertJsonFragment([
             'id' => $page->id,
         ]);
-
     }
 
     public function test_query_matches_single_word_from_page_content()

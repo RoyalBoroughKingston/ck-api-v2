@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Search\Pages;
+namespace App\Http\Requests\Search\Collection;
 
+use App\Models\Collection;
+use App\Rules\CollectionExists;
 use Illuminate\Foundation\Http\FormRequest;
 
-class Request extends FormRequest
+class PersonaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +26,13 @@ class Request extends FormRequest
     public function rules()
     {
         return [
-            'query' => ['required', 'string', 'min:3', 'max:255'],
-            'page' => ['sometimes', 'integer', 'min:1'],
-            'per_page' => ['sometimes', 'integer', 'min:1'],
+            'persona' => [
+                'required',
+                new CollectionExists(Collection::TYPE_PERSONA),
+                'string',
+                'min:1',
+                'max:255',
+            ],
         ];
     }
 }

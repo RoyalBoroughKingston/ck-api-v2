@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Search\Events;
+namespace App\Http\Requests\Search\Event;
 
 use App\Contracts\EventSearch;
 use Illuminate\Foundation\Http\FormRequest;

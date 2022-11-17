@@ -76,7 +76,7 @@ class ElasticsearchEventSearch implements EventSearch
 
     /**
      * @param string $term
-     * @return \App\Search\ElasticsearchEventSearch
+     * @return \App\Search\ElasticSearchEventSearch
      */
     public function applyQuery(string $term): EventSearch
     {
@@ -135,7 +135,7 @@ class ElasticsearchEventSearch implements EventSearch
 
     /**
      * @param string $category
-     * @return \App\Search\ElasticsearchEventSearch
+     * @return \App\Search\ElasticSearchEventSearch
      */
     public function applyCategory(string $category): EventSearch
     {
@@ -253,7 +253,7 @@ class ElasticsearchEventSearch implements EventSearch
     /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
-     * @return \App\Search\ElasticsearchEventSearch
+     * @return \App\Search\ElasticSearchEventSearch
      */
     public function applyOrder(string $order, Coordinate $location = null): EventSearch
     {
@@ -435,7 +435,7 @@ class ElasticsearchEventSearch implements EventSearch
 
     /**
      * @param array $response
-     * @return \App\Search\ElasticsearchEventSearch
+     * @return \App\Search\ElasticSearchEventSearch
      */
     protected function logMetrics(array $response): EventSearch
     {

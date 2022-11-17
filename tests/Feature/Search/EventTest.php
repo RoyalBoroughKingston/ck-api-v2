@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Search;
 
 use App\Models\Collection;
 use App\Models\Location;
@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 use Tests\TestCase;
 use Tests\UsesElasticsearch;
 
-class SearchEventTest extends TestCase implements UsesElasticsearch
+class EventTest extends TestCase implements UsesElasticsearch
 {
     /**
      * Setup the test environment.

@@ -51,7 +51,7 @@ class ElasticsearchPageSearch implements PageSearch
 
     /**
      * @param string $term
-     * @return \App\Search\ElasticsearchPageSearch
+     * @return \App\Search\ElasticSearchPageSearch
      */
     public function applyQuery(string $term): PageSearch
     {
@@ -117,7 +117,7 @@ class ElasticsearchPageSearch implements PageSearch
     /**
      * @param string $order
      * @param \App\Support\Coordinate|null $location
-     * @return \App\Search\ElasticsearchPageSearch
+     * @return \App\Search\ElasticSearchPageSearch
      */
     public function applyOrder(string $order): PageSearch
     {
@@ -208,7 +208,7 @@ class ElasticsearchPageSearch implements PageSearch
 
     /**
      * @param array $response
-     * @return \App\Search\ElasticsearchPageSearch
+     * @return \App\Search\ElasticSearchPageSearch
      */
     protected function logMetrics(array $response): PageSearch
     {

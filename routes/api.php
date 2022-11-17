@@ -144,6 +144,10 @@ Route::prefix('/core/v1')
 
             // Search.
             Route::post('/search', 'SearchController')->name('search');
+            Route::post('/search/collections/categories', 'Search\\CollectionCategoryController')
+                ->name('search.collections.categories');
+            Route::post('/search/collections/personas', 'Search\\CollectionPersonaController')
+                ->name('search.collections.personas');
             Route::post('/search/pages', 'Search\\PageController')->name('search');
             Route::post('/search/events', 'Search\\EventController')->name('search.events');
 

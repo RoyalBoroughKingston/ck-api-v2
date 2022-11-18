@@ -96,8 +96,6 @@ class ServiceQueryBuilder
             }
         }
 
-        // dump($this->esQuery);
-
         return $this->esQuery;
     }
 

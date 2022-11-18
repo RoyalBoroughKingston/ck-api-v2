@@ -14,8 +14,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class SearchController extends Controller
 {
     /**
-     * @param \App\Contracts\ServiceSearch $search
      * @param \App\Http\Requests\Search\Request $request
+     * @param \App\Search\ServiceCriteriaQuery $criteria
+     * @param \App\Search\ElasticSearch\ServiceQueryBuilder $builder
+     * @param \App\Search\ElasticSearch\ServiceEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(

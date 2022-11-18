@@ -265,7 +265,7 @@ class PageTest extends TestCase implements UsesElasticsearch
 
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search/pages', [
-            'query' => 'Another phrase',
+            'query' => 'Anotherfrase',
             'page' => 1,
             'per_page' => 20,
         ]);

@@ -9,6 +9,7 @@ use App\Support\Coordinate;
 class ServiceCriteriaQuery
 {
     const ORDER_RELEVANCE = 'relevance';
+
     const ORDER_DISTANCE = 'distance';
 
     /**

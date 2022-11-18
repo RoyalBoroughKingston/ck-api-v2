@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Core\V1\Search;
 
 use App\Http\Controllers\Controller;
-use App\Search\ServiceCriteriaQuery;
-use App\Search\ElasticSearch\ServiceEloquentMapper;
 use App\Http\Requests\Search\Collection\PersonaRequest;
 use App\Search\ElasticSearch\CollectionPersonaQueryBuilder;
+use App\Search\ElasticSearch\ServiceEloquentMapper;
+use App\Search\ServiceCriteriaQuery;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CollectionPersonaController extends Controller

@@ -2,76 +2,100 @@
 
 namespace App\Http\Controllers\Core\V1\Search;
 
-use App\Contracts\EventSearch;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Search\Events\Request;
+use App\Http\Requests\Search\Event\Request;
+use App\Search\ElasticSearch\EventEloquentMapper;
+use App\Search\ElasticSearch\EventQueryBuilder;
+use App\Search\EventCriteriaQuery;
 use App\Support\Coordinate;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EventController extends Controller
 {
     /**
-     * @param \App\Contracts\EventSearch $search
-     * @param \App\Http\Requests\Search\Request $request
+     * @param \App\Http\Requests\Search\Event\Request $request
+     * @param \App\Search\EventCriteriaQuery $criteria
+     * @param \App\Search\ElasticSearch\EventQueryBuilder $builder
+     * @param \App\Search\ElasticSearch\EventEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function __invoke(EventSearch $search, Request $request)
-    {
+    public function __invoke(
+        Request $request,
+        EventCriteriaQuery $criteria,
+        EventQueryBuilder $builder,
+        EventEloquentMapper $mapper
+    ): AnonymousResourceCollection {
         // Apply query.
         if ($request->has('query')) {
-            $search->applyQuery($request->input('query'));
+            $criteria->setQuery($request->input('query'));
         }
 
         if ($request->has('category')) {
             // If category given then filter by category.
-            $search->applyCategory($request->category);
+            $criteria->setCategories(explode(',', $request->input('category')));
         }
 
         // Apply filter on `is_free` field.
         if ($request->has('is_free')) {
-            $search->applyIsFree($request->is_free);
+            $criteria->setIsFree($request->input('is_free'));
         }
 
         // Apply filter on `is_virtual` field.
         if ($request->has('is_virtual')) {
-            $search->applyIsVirtual($request->is_virtual);
+            $criteria->setIsVirtual($request->input('is_virtual'));
         }
 
         // Apply filter on `has_wheelchair_access` field.
         if ($request->has('has_wheelchair_access')) {
-            $search->applyHasWheelchairAccess($request->has_wheelchair_access);
+            $criteria->setHasWheelchairAccess($request->input('has_wheelchair_access'));
         }
 
         // Apply filter on `has_induction_loop` field.
         if ($request->has('has_induction_loop')) {
-            $search->applyHasInductionLoop($request->has_induction_loop);
+            $criteria->setHasInductionLoop($request->input('has_induction_loop'));
         }
 
         // Apply filter on `has_accessible_toilet` field.
         if ($request->has('has_accessible_toilet')) {
-            $search->applyHasAccessibleToilet($request->has_accessible_toilet);
+            $criteria->setHasAccessibleToilet($request->input('has_accessible_toilet'));
         }
 
         // Apply filter on `starts_after` field.
-        if ($request->has('starts_after') || $request->has('ends_before')) {
-            $search->applyDateRange($request->input('starts_after'), $request->input('ends_before'));
+        if ($request->has('starts_after')) {
+            $criteria->setStartsAfter($request->input('starts_after'));
+        }
+
+        // Apply filter on `ends_before` field.
+        if ($request->has('ends_before')) {
+            $criteria->setEndsBefore($request->input('ends_before'));
         }
 
         // If location was passed, then parse the location.
-        if ($request->has('location') && !$request->is_virtual ?? false) {
-            $search->applyIsVirtual(false);
-            $location = new Coordinate(
-                $request->input('location.lat'),
-                $request->input('location.lon')
+        if ($request->has('location')) {
+            $criteria->setLocation(
+                new Coordinate(
+                    $request->input('location.lat'),
+                    $request->input('location.lon')
+                )
             );
 
-            // Apply radius filtering.
-            $search->applyRadius($location, $request->input('distance', config('local.search_distance')));
+            if ($request->has('distance')) {
+                $criteria->setDistance($request->input('distance'));
+            }
         }
 
         // Apply order.
-        $search->applyOrder($request->order ?? 'start_date', $location ?? null);
+        if ($request->has('order')) {
+            $criteria->setOrder($request->input('order'));
+        }
+
+        $query = $builder->build(
+            $criteria,
+            $request->input('page'),
+            $request->input('per_page')
+        );
 
         // Perform the search.
-        return $search->paginate($request->page, $request->per_page);
+        return $mapper->paginate($query);
     }
 }

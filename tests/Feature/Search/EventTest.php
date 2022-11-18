@@ -521,7 +521,7 @@ class EventTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Event title',
-            'category' => 'Quick Brown Fox',
+            'category' => 'quick-brown-fox',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -532,7 +532,7 @@ class EventTest extends TestCase implements UsesElasticsearch
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Title Events',
-            'category' => 'Quick Brown Fox',
+            'category' => 'quick-brown-fox',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -1194,7 +1194,7 @@ class EventTest extends TestCase implements UsesElasticsearch
         // Assert that when searching by collection, the events with more taxonomies are ranked higher.
         $response = $this->json('POST', '/core/v1/search/events', [
             'order' => 'relevance',
-            'category' => $collection->name,
+            'category' => $collection->slug,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);

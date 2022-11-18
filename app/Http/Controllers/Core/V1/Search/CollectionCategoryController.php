@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Core\V1\Search;
 
 use App\Http\Controllers\Controller;
-use App\Search\ServiceCriteriaQuery;
-use App\Search\ElasticSearch\ServiceEloquentMapper;
 use App\Http\Requests\Search\Collection\CategoryRequest;
 use App\Search\ElasticSearch\CollectionCategoryQueryBuilder;
+use App\Search\ElasticSearch\ServiceEloquentMapper;
+use App\Search\ServiceCriteriaQuery;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CollectionCategoryController extends Controller

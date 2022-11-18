@@ -30,17 +30,17 @@ class Request extends FormRequest
             'query' => [
                 'string',
                 'min:3',
-                'max:255'
+                'max:255',
             ],
             'category' => [
                 'string',
                 'min:1',
-                'max:255'
+                'max:255',
             ],
             'persona' => [
                 'string',
                 'min:1',
-                'max:255'
+                'max:255',
             ],
             'wait_time' => [
                 Rule::in([
@@ -49,34 +49,34 @@ class Request extends FormRequest
                     Service::WAIT_TIME_THREE_WEEKS,
                     Service::WAIT_TIME_MONTH,
                     Service::WAIT_TIME_LONGER,
-                ])
+                ]),
             ],
             'is_free' => [
                 'required_without_all:query,category,persona,wait_time,location,eligibilities',
-                'boolean'
+                'boolean',
             ],
             'order' => [
-                Rule::in([ServiceSearch::ORDER_RELEVANCE, ServiceSearch::ORDER_DISTANCE])
+                Rule::in([ServiceSearch::ORDER_RELEVANCE, ServiceSearch::ORDER_DISTANCE]),
             ],
             'location' => [
                 'required_if:order,distance',
-                'array'
+                'array',
             ],
             'location.lat' => [
                 'required_with:location',
                 'numeric',
                 'min:-90',
-                'max:90'
+                'max:90',
             ],
             'location.lon' => [
                 'required_with:location',
                 'numeric',
                 'min:-180',
-                'max:180'
+                'max:180',
             ],
             'distance' => [
                 'integer',
-                'min:0'
+                'min:0',
             ],
             'eligibilities' => [
                 'array',
@@ -85,12 +85,12 @@ class Request extends FormRequest
             'page' => [
                 'sometimes',
                 'integer',
-                'min:1'
+                'min:1',
             ],
             'per_page' => [
                 'sometimes',
                 'integer',
-                'min:1'
+                'min:1',
             ],
         ];
     }

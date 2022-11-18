@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use App\Support\Coordinate;
-use App\Contracts\ServiceSearch;
 use App\Http\Controllers\Controller;
-use App\Search\ServiceCriteriaQuery;
 use App\Http\Requests\Search\Request;
-use App\Search\ElasticSearch\ServiceQueryBuilder;
 use App\Search\ElasticSearch\ServiceEloquentMapper;
+use App\Search\ElasticSearch\ServiceQueryBuilder;
+use App\Search\ServiceCriteriaQuery;
+use App\Support\Coordinate;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SearchController extends Controller

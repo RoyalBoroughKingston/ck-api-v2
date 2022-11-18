@@ -108,16 +108,19 @@ class CollectionCategoriesTest extends TestCase implements UsesElasticsearch
             'slug' => 'red',
             'name' => 'Red',
             'order' => 1,
+            'depth' => 1,
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
             'slug' => 'blue',
             'name' => 'Blue',
             'order' => 2,
+            'depth' => 1,
         ]);
         $taxonomy3 = Taxonomy::category()->children()->create([
             'slug' => 'green',
             'name' => 'Green',
             'order' => 3,
+            'depth' => 1,
         ]);
 
         // Create a collection

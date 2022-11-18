@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
+use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\Collection;
-use App\Search\CriteriaQuery;
 use App\Search\ServiceCriteriaQuery;
 
 class CollectionPersonaQueryBuilder

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Search;
 
-use App\Support\Coordinate;
-
 class PageCriteriaQuery
 {
     const ORDER_RELEVANCE = 'relevance';

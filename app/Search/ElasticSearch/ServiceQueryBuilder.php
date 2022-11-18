@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
+use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\Collection;
+use App\Search\ServiceCriteriaQuery;
 use App\Support\Coordinate;
 use InvalidArgumentException;
-use App\Search\ServiceCriteriaQuery;
 
 class ServiceQueryBuilder
 {
@@ -36,8 +36,8 @@ class ServiceQueryBuilder
                             ],
                             'filter' => [
                                 'bool' => [
-                                    'must' => []
-                                ]
+                                    'must' => [],
+                                ],
                             ],
                         ],
                     ],
@@ -149,7 +149,6 @@ class ServiceQueryBuilder
 
     /**
      * @param string $waitTime
-     * @return null
      */
     protected function applyWaitTime(string $waitTime): void
     {
@@ -239,7 +238,7 @@ class ServiceQueryBuilder
                 'path' => 'service_locations',
                 'query' => [
                     'geo_distance' => [
-                        'distance' => $distance? $distance . 'mi' : config('local.search_distance') . 'mi',
+                        'distance' => $distance ? $distance . 'mi' : config('local.search_distance') . 'mi',
                         'service_locations.location' => $coordinate->toArray(),
                     ],
                 ],
@@ -272,13 +271,12 @@ class ServiceQueryBuilder
     }
 
     /**
-     * Add a match query
+     * Add a match query.
      *
      * @param string $field
      * @param string $term
      * @param int $boost
      * @param mixed $fuzziness
-     * @return null
      */
     protected function addMatch(string $field, string $term, $boost = 1, $fuzziness = 'AUTO'): void
     {
@@ -294,11 +292,10 @@ class ServiceQueryBuilder
     }
 
     /**
-     * Add a match_phrase query
+     * Add a match_phrase query.
      * @param string $field
      * @param string $term
      * @param int $boost
-     * @return void
      */
     protected function addMatchPhrase(string $field, string $term, $boost = 1): void
     {
@@ -313,15 +310,14 @@ class ServiceQueryBuilder
     }
 
     /**
-     * Add a filter
+     * Add a filter.
      *
      * @param string $field
      * @param mixed $value
-     * @return void
-     **/
+     */
     public function addFilter(string $field, $value): void
     {
-        $type = is_array($value)? 'terms' : 'term';
+        $type = is_array($value) ? 'terms' : 'term';
         $this->esQuery['query']['function_score']['query']['bool']['filter']['bool']['must'][] = [
             $type => [
                 $field => $value,

@@ -18,9 +18,10 @@ use App\Models\PageFeedback;
 use App\Models\SearchHistory;
 use App\Models\UpdateRequest;
 use App\Models\ServiceLocation;
-use App\Search\ServiceCriteriaQuery;
+use App\Search\SearchCriteriaQuery;
 use Illuminate\Support\Facades\Date;
 use App\Search\ElasticSearch\ServiceQueryBuilder;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 
 class ReportTest extends TestCase
 {
@@ -766,7 +767,7 @@ class ReportTest extends TestCase
 
     public function test_search_histories_export_works()
     {
-        $criteria = new ServiceCriteriaQuery();
+        $criteria = new SearchCriteriaQuery();
         $criteria->setQuery('Health and Social');
 
         $queryBuilder = new ServiceQueryBuilder();
@@ -806,9 +807,9 @@ class ReportTest extends TestCase
 
     public function test_search_histories_export_works_with_location()
     {
-        $criteria = new ServiceCriteriaQuery();
+        $criteria = new SearchCriteriaQuery();
         $criteria->setQuery('Health and Social');
-        $criteria->setOrder(ServiceCriteriaQuery::ORDER_DISTANCE);
+        $criteria->setOrder(ElasticsearchQueryBuilder::ORDER_DISTANCE);
         $criteria->setLocation(new Coordinate(0, 0));
 
         $queryBuilder = new ServiceQueryBuilder();
@@ -851,7 +852,7 @@ class ReportTest extends TestCase
 
     public function test_search_histories_export_works_with_date_range()
     {
-        $criteria = new ServiceCriteriaQuery();
+        $criteria = new SearchCriteriaQuery();
         $criteria->setQuery('Health and Social');
 
         $queryBuilder = new ServiceQueryBuilder();
@@ -900,7 +901,7 @@ class ReportTest extends TestCase
 
     public function test_search_histories_without_query_are_omitted()
     {
-        $criteria = new ServiceCriteriaQuery();
+        $criteria = new SearchCriteriaQuery();
         $criteria->setCategories(['self-help']);
 
         $queryBuilder = new ServiceQueryBuilder();

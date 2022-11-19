@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Search\Event;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class Request extends FormRequest
 {

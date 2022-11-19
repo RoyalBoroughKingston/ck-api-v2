@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Models\Page;
 use App\Contracts\QueryBuilder;
+use App\Models\Page;
 use App\Search\SearchCriteriaQuery;
 
 class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder

@@ -17,32 +17,31 @@ abstract class ElasticsearchQueryBuilder
     const ORDER_END = 'end_date';
 
     /**
-     * Elasticsearch query array
+     * Elasticsearch query array.
      *
      * @var array
      */
     protected $esQuery;
 
     /**
-    * Path to add match and match_phrase queries
-    *
-    * @var array
-    **/
+     * Path to add match and match_phrase queries.
+     *
+     * @var array
+     */
     protected $matchPath;
 
     /**
-    * Path to add filter queries
-    *
-    * @var array
-    **/
+     * Path to add filter queries.
+     *
+     * @var array
+     */
     protected $filterPath;
 
     /**
-     * Add a from limit
+     * Add a from limit.
      *
      * @param int $page
      * @param int $perPage
-     * @return void
      */
     protected function applyFrom(int $page, int $perPage): void
     {
@@ -50,10 +49,9 @@ abstract class ElasticsearchQueryBuilder
     }
 
     /**
-     * Add a size limit
+     * Add a size limit.
      *
      * @param int $perPage
-     * @return void
      */
     protected function applySize(int $perPage): void
     {

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Models\Service;
-use App\Support\Coordinate;
-use App\Models\SearchHistory;
-use App\Models\ServiceLocation;
 use App\Contracts\EloquentMapper;
-use Illuminate\Pagination\Paginator;
 use App\Http\Resources\ServiceResource;
+use App\Models\SearchHistory;
+use App\Models\Service;
+use App\Models\ServiceLocation;
+use App\Support\Coordinate;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class ServiceEloquentMapper implements EloquentMapper
 {

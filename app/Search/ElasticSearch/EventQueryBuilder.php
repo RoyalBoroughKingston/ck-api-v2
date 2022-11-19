@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use Carbon\Carbon;
-use App\Models\Collection;
-use App\Support\Coordinate;
 use App\Contracts\QueryBuilder;
+use App\Models\Collection;
 use App\Search\SearchCriteriaQuery;
+use App\Support\Coordinate;
+use Carbon\Carbon;
 
 class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {

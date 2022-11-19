@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
+use App\Contracts\QueryBuilder;
+use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\Collection;
-use App\Contracts\QueryBuilder;
 use App\Search\SearchCriteriaQuery;
 
 class CollectionPersonaQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder

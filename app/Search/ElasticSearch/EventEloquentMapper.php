@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Support\Coordinate;
-use App\Models\SearchHistory;
 use App\Contracts\EloquentMapper;
-use Illuminate\Pagination\Paginator;
-use App\Models\OrganisationEvent as Event;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Resources\OrganisationEventResource;
+use App\Models\OrganisationEvent as Event;
+use App\Models\SearchHistory;
+use App\Support\Coordinate;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class EventEloquentMapper implements EloquentMapper
 {

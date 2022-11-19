@@ -2,9 +2,9 @@
 
 namespace App\Docs\Schemas\Search;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class StoreEventSearchSchema extends Schema
 {

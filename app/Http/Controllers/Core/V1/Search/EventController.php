@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Search\Event\Request;
 use App\Search\ElasticSearch\EventEloquentMapper;
 use App\Search\ElasticSearch\EventQueryBuilder;
-use App\Search\EventCriteriaQuery;
+use App\Search\SearchCriteriaQuery;
 use App\Support\Coordinate;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -14,14 +14,14 @@ class EventController extends Controller
 {
     /**
      * @param \App\Http\Requests\Search\Event\Request $request
-     * @param \App\Search\EventCriteriaQuery $criteria
+     * @param \App\Search\SearchCriteriaQuery $criteria
      * @param \App\Search\ElasticSearch\EventQueryBuilder $builder
      * @param \App\Search\ElasticSearch\EventEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(
         Request $request,
-        EventCriteriaQuery $criteria,
+        SearchCriteriaQuery $criteria,
         EventQueryBuilder $builder,
         EventEloquentMapper $mapper
     ): AnonymousResourceCollection {

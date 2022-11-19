@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Search\ServiceCriteriaQuery;
+use App\Models\Collection;
+use App\Contracts\QueryBuilder;
+use App\Search\SearchCriteriaQuery;
 
-class CollectionCategoryQueryBuilder
+class CollectionCategoryQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {
-    /**
-     * @var array
-     */
-    protected $esQuery;
-
     public function __construct()
     {
         $this->esQuery = [
@@ -40,9 +36,11 @@ class CollectionCategoryQueryBuilder
                 ],
             ],
         ];
+
+        $this->filterPath = 'query.function_score.query.bool.filter';
     }
 
-    public function build(ServiceCriteriaQuery $query, int $page = null, int $perPage = null): array
+    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): array
     {
         $page = page($page);
         $perPage = per_page($perPage);
@@ -55,23 +53,9 @@ class CollectionCategoryQueryBuilder
         return $this->esQuery;
     }
 
-    protected function applyFrom(int $page, int $perPage): void
-    {
-        $this->esQuery['from'] = ($page - 1) * $perPage;
-    }
-
-    protected function applySize(int $perPage): void
-    {
-        $this->esQuery['size'] = $perPage;
-    }
-
     protected function applyStatus(string $status): void
     {
-        $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
-            'term' => [
-                'status' => $status,
-            ],
-        ];
+        $this->addFilter('status', $status);
     }
 
     protected function applyCategory(string $categorySlug): void
@@ -81,11 +65,7 @@ class CollectionCategoryQueryBuilder
             ->where('slug', '=', $categorySlug)
             ->first();
 
-        $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
-            'term' => [
-                'collection_categories' => $category->getAttribute('name'),
-            ],
-        ];
+        $this->addFilter('collection_categories', $category->getAttribute('name'));
 
         $category->taxonomies->each(function (Taxonomy $taxonomy): void {
             $this->esQuery['query']['function_score']['query']['bool']['should'][] = [

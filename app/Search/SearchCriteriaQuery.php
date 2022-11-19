@@ -6,12 +6,8 @@ namespace App\Search;
 
 use App\Support\Coordinate;
 
-class ServiceCriteriaQuery
+class SearchCriteriaQuery
 {
-    const ORDER_RELEVANCE = 'relevance';
-
-    const ORDER_DISTANCE = 'distance';
-
     /**
      * @var string|null
      */
@@ -41,6 +37,36 @@ class ServiceCriteriaQuery
      * @var bool|null
      */
     protected $isFree;
+
+    /**
+     * @var bool|null
+     */
+    protected $isVirtual;
+
+    /**
+     * @var bool|null
+     */
+    protected $hasWheelchairAccess;
+
+    /**
+     * @var bool|null
+     */
+    protected $hasInductionLoop;
+
+    /**
+     * @var bool|null
+     */
+    protected $hasAccessibleToilet;
+
+    /**
+     * @var string|null
+     */
+    protected $startsAfter;
+
+    /**
+     * @var string|null
+     */
+    protected $endsBefore;
 
     /**
      * @var string[]|null
@@ -204,6 +230,150 @@ class ServiceCriteriaQuery
     public function setIsFree(?bool $isFree): void
     {
         $this->isFree = $isFree;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasIsVirtual(): bool
+    {
+        return $this->isVirtual !== null;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsVirtual(): ?bool
+    {
+        return $this->isVirtual;
+    }
+
+    /**
+     * @param bool|null $isVirtual
+     */
+    public function setIsVirtual(?bool $isVirtual): void
+    {
+        $this->isVirtual = $isVirtual;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasHasWheelchairAccess(): bool
+    {
+        return $this->hasWheelchairAccess !== null;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasWheelchairAccess(): ?bool
+    {
+        return $this->hasWheelchairAccess;
+    }
+
+    /**
+     * @param bool|null $hasWheelchairAccess
+     */
+    public function setHasWheelchairAccess(?bool $hasWheelchairAccess): void
+    {
+        $this->hasWheelchairAccess = $hasWheelchairAccess;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasHasInductionLoop(): bool
+    {
+        return $this->hasInductionLoop !== null;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasInductionLoop(): ?bool
+    {
+        return $this->hasInductionLoop;
+    }
+
+    /**
+     * @param bool|null $hasInductionLoop
+     */
+    public function setHasInductionLoop(?bool $hasInductionLoop): void
+    {
+        $this->hasInductionLoop = $hasInductionLoop;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasHasAccessibleToilet(): bool
+    {
+        return $this->hasAccessibleToilet !== null;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasAccessibleToilet(): ?bool
+    {
+        return $this->hasAccessibleToilet;
+    }
+
+    /**
+     * @param bool|null $hasAccessibleToilet
+     */
+    public function setHasAccessibleToilet(?bool $hasAccessibleToilet): void
+    {
+        $this->hasAccessibleToilet = $hasAccessibleToilet;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasStartsAfter(): bool
+    {
+        return $this->startsAfter !== null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStartsAfter(): ?string
+    {
+        return $this->startsAfter;
+    }
+
+    /**
+     * @param string|null $startsAfter
+     */
+    public function setStartsAfter(?string $startsAfter): void
+    {
+        $this->startsAfter = $startsAfter;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasEndsBefore(): bool
+    {
+        return $this->endsBefore !== null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEndsBefore(): ?string
+    {
+        return $this->endsBefore;
+    }
+
+    /**
+     * @param string|null $endsBefore
+     */
+    public function setEndsBefore(?string $endsBefore): void
+    {
+        $this->endsBefore = $endsBefore;
     }
 
     /**

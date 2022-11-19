@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Search;
 
-use App\Contracts\ServiceSearch;
 use App\Models\Service;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 
 class Request extends FormRequest
 {
@@ -56,7 +56,7 @@ class Request extends FormRequest
                 'boolean',
             ],
             'order' => [
-                Rule::in([ServiceSearch::ORDER_RELEVANCE, ServiceSearch::ORDER_DISTANCE]),
+                Rule::in([ElasticsearchQueryBuilder::ORDER_RELEVANCE, ElasticsearchQueryBuilder::ORDER_DISTANCE]),
             ],
             'location' => [
                 'required_if:order,distance',

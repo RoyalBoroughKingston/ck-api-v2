@@ -80,6 +80,8 @@ class OpenApi extends BaseOpenApi implements Responsable
                 Paths\Search\SearchRootPath::create(),
                 Paths\Search\SearchEventsPath::create(),
                 Paths\Search\SearchPagesPath::create(),
+                Paths\Search\Collections\SearchCollectionCategoriesRootPath::create(),
+                Paths\Search\Collections\SearchCollectionPersonasRootPath::create(),
                 Paths\ServiceLocations\ServiceLocationsRootPath::create(),
                 Paths\ServiceLocations\ServiceLocationsIndexPath::create(),
                 Paths\ServiceLocations\ServiceLocationsNestedPath::create(),

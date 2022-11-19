@@ -2,9 +2,9 @@
 
 namespace App\Docs\Schemas\Search;
 
-use App\Contracts\EventSearch as Search;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 
 class StoreEventSearchSchema extends Schema
 {
@@ -31,8 +31,8 @@ class StoreEventSearchSchema extends Schema
                 Schema::string('starts_after'),
                 Schema::string('ends_before'),
                 Schema::string('order')
-                    ->enum(Search::ORDER_RELEVANCE, Search::ORDER_DISTANCE, Search::ORDER_START, Search::ORDER_END)
-                    ->default(Search::ORDER_START),
+                    ->enum(ElasticsearchQueryBuilder::ORDER_RELEVANCE, ElasticsearchQueryBuilder::ORDER_DISTANCE, ElasticsearchQueryBuilder::ORDER_START, ElasticsearchQueryBuilder::ORDER_END)
+                    ->default(ElasticsearchQueryBuilder::ORDER_START),
                 Schema::object('location')
                     ->required('lat', 'lon')
                     ->properties(

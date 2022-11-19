@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace App\Search\ElasticSearch;
 
 use App\Models\Page;
-use App\Search\PageCriteriaQuery;
+use App\Contracts\QueryBuilder;
+use App\Search\SearchCriteriaQuery;
 
-class PageQueryBuilder
+class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {
-    /**
-     * @var array
-     */
-    protected $esQuery;
-
     public function __construct()
     {
         $this->esQuery = [
@@ -32,9 +28,12 @@ class PageQueryBuilder
                 ],
             ],
         ];
+
+        $this->matchPath = 'query.bool.must.bool.should';
+        $this->filterPath = 'query.bool.filter.bool.must';
     }
 
-    public function build(PageCriteriaQuery $query, int $page = null, int $perPage = null): array
+    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): array
     {
         $page = page($page);
         $perPage = per_page($perPage);
@@ -49,16 +48,6 @@ class PageQueryBuilder
         $this->applyStatus(Page::ENABLED);
 
         return $this->esQuery;
-    }
-
-    protected function applyFrom(int $page, int $perPage): void
-    {
-        $this->esQuery['from'] = ($page - 1) * $perPage;
-    }
-
-    protected function applySize(int $perPage): void
-    {
-        $this->esQuery['size'] = $perPage;
     }
 
     protected function applyStatus(bool $enabled): void
@@ -83,60 +72,5 @@ class PageQueryBuilder
         if (empty($this->query['query']['bool']['must']['bool']['minimum_should_match'])) {
             $this->query['query']['bool']['must']['bool']['minimum_should_match'] = 1;
         }
-    }
-
-    /**
-     * Add a match query.
-     *
-     * @param string $field
-     * @param string $term
-     * @param int $boost
-     * @param mixed $fuzziness
-     */
-    protected function addMatch(string $field, string $term, $boost = 1, $fuzziness = 'AUTO'): void
-    {
-        $this->esQuery['query']['bool']['must']['bool']['should'][] = [
-            'match' => [
-                $field => [
-                    'query' => $term,
-                    'boost' => $boost,
-                    'fuzziness' => $fuzziness,
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Add a match_phrase query.
-     * @param string $field
-     * @param string $term
-     * @param int $boost
-     */
-    protected function addMatchPhrase(string $field, string $term, $boost = 1): void
-    {
-        $this->esQuery['query']['bool']['must']['bool']['should'][] = [
-            'match_phrase' => [
-                $field => [
-                    'query' => $term,
-                    'boost' => $boost,
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Add a filter.
-     *
-     * @param string $field
-     * @param mixed $value
-     */
-    public function addFilter(string $field, $value): void
-    {
-        $type = is_array($value) ? 'terms' : 'term';
-        $this->esQuery['query']['bool']['filter']['bool']['must'][] = [
-            $type => [
-                $field => $value,
-            ],
-        ];
     }
 }

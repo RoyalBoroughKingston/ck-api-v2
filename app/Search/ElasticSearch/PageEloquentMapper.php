@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Http\Resources\PageResource;
 use App\Models\Page;
 use App\Models\SearchHistory;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Contracts\EloquentMapper;
+use App\Http\Resources\PageResource;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class PageEloquentMapper
+class PageEloquentMapper implements EloquentMapper
 {
     public function paginate(array $esQuery): AnonymousResourceCollection
     {

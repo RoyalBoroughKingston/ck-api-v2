@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Search\Request;
 use App\Search\ElasticSearch\ServiceEloquentMapper;
 use App\Search\ElasticSearch\ServiceQueryBuilder;
-use App\Search\ServiceCriteriaQuery;
+use App\Search\SearchCriteriaQuery;
 use App\Support\Coordinate;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -14,14 +14,14 @@ class SearchController extends Controller
 {
     /**
      * @param \App\Http\Requests\Search\Request $request
-     * @param \App\Search\ServiceCriteriaQuery $criteria
+     * @param \App\Search\SearchCriteriaQuery $criteria
      * @param \App\Search\ElasticSearch\ServiceQueryBuilder $builder
      * @param \App\Search\ElasticSearch\ServiceEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(
         Request $request,
-        ServiceCriteriaQuery $criteria,
+        SearchCriteriaQuery $criteria,
         ServiceQueryBuilder $builder,
         ServiceEloquentMapper $mapper
     ): AnonymousResourceCollection {

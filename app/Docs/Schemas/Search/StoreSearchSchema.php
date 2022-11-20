@@ -2,8 +2,8 @@
 
 namespace App\Docs\Schemas\Search;
 
-use App\Contracts\ServiceSearch as Search;
 use App\Models\Service;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -35,7 +35,7 @@ class StoreSearchSchema extends Schema
                     ),
                 Schema::boolean('is_free'),
                 Schema::string('order')
-                    ->enum(Search::ORDER_RELEVANCE, Search::ORDER_DISTANCE)
+                    ->enum(ElasticsearchQueryBuilder::ORDER_RELEVANCE, ElasticsearchQueryBuilder::ORDER_DISTANCE)
                     ->default('relevance'),
                 Schema::object('location')
                     ->required('lat', 'lon')

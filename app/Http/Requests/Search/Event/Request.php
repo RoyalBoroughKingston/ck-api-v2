@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Search\Events;
+namespace App\Http\Requests\Search\Event;
 
-use App\Contracts\EventSearch;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -76,10 +76,10 @@ class Request extends FormRequest
             ],
             'order' => [
                 Rule::in([
-                    EventSearch::ORDER_RELEVANCE,
-                    EventSearch::ORDER_DISTANCE,
-                    EventSearch::ORDER_START,
-                    EventSearch::ORDER_END,
+                    ElasticsearchQueryBuilder::ORDER_RELEVANCE,
+                    ElasticsearchQueryBuilder::ORDER_DISTANCE,
+                    ElasticsearchQueryBuilder::ORDER_START,
+                    ElasticsearchQueryBuilder::ORDER_END,
                 ]), ],
         ];
     }

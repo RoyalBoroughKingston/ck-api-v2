@@ -32,16 +32,6 @@ class AppServiceProvider extends ServiceProvider
                 break;
         }
 
-        // Search.
-        switch (config('scout.driver')) {
-            case 'elastic':
-            default:
-                $this->app->singleton(\App\Contracts\ServiceSearch::class, \App\Search\ElasticsearchServiceSearch::class);
-                $this->app->singleton(\App\Contracts\EventSearch::class, \App\Search\ElasticsearchEventSearch::class);
-                $this->app->singleton(\App\Contracts\PageSearch::class, \App\Search\ElasticsearchPageSearch::class);
-                break;
-        }
-
         // Email Sender.
         switch (config('mail.driver')) {
             case 'gov':

@@ -15,7 +15,7 @@ class ServiceResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $resource = [
             'id' => $this->id,
             'organisation_id' => $this->organisation_id,
             'has_logo' => $this->hasLogo(),
@@ -40,7 +40,6 @@ class ServiceResource extends JsonResource
             'referral_button_text' => $this->referral_button_text,
             'referral_email' => $this->referral_email,
             'referral_url' => $this->referral_url,
-            'cqc_location_id' => $this->cqc_location_id,
             'useful_infos' => UsefulInfoResource::collection($this->usefulInfos),
             'offerings' => OfferingResource::collection($this->offerings),
             'gallery_items' => ServiceGalleryItemResource::collection($this->serviceGalleryItems),
@@ -56,5 +55,14 @@ class ServiceResource extends JsonResource
             'service_locations' => ServiceLocationResource::collection($this->whenLoaded('serviceLocations')),
             'organisation' => new OrganisationResource($this->whenLoaded('organisation')),
         ];
+
+        /**
+         * Flagged items.
+         */
+        if (config('flags.cqc_location')) {
+            $resource['cqc_location_id'] = $this->cqc_location_id;
+        }
+
+        return $resource;
     }
 }

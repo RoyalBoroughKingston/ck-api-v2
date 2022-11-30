@@ -27,7 +27,7 @@ class ServicePersistenceService implements DataPersistenceService
         return $this->processAsUpdateRequest($request, $model);
     }
 
-    private function processAsUpdateRequest($request, $service = null)
+    private function processAsUpdateRequest(FormRequest $request, $service = null)
     {
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array
@@ -51,7 +51,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'contact_name' => $request->missing('contact_name'),
                 'contact_phone' => $request->missing('contact_phone'),
                 'contact_email' => $request->missing('contact_email'),
-                'cqc_location_id' => $request->missing('cqc_location_id'),
+                'cqc_location_id' => config('flags.cqc_location') ? $request->missing('cqc_location_id') : null,
                 'show_referral_disclaimer' => $request->missing('show_referral_disclaimer'),
                 'referral_method' => $request->missing('referral_method'),
                 'referral_button_text' => $request->missing('referral_button_text'),
@@ -112,7 +112,7 @@ class ServicePersistenceService implements DataPersistenceService
         });
     }
 
-    private function processAsNewEntity($request)
+    private function processAsNewEntity(FormRequest $request)
     {
         return DB::transaction(function () use ($request) {
             $initialCreateData = [
@@ -133,7 +133,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'contact_name' => $request->contact_name,
                 'contact_phone' => $request->contact_phone,
                 'contact_email' => $request->contact_email,
-                'cqc_location_id' => $request->cqc_location_id,
+                'cqc_location_id' => config('flags.cqc_location') ? $request->cqc_location_id : null,
                 'show_referral_disclaimer' => $request->show_referral_disclaimer,
                 'referral_method' => $request->referral_method,
                 'referral_button_text' => $request->referral_button_text,

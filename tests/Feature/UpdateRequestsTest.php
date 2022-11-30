@@ -766,6 +766,7 @@ class UpdateRequestsTest extends TestCase
             'contact_name' => $this->faker->name,
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
             'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,

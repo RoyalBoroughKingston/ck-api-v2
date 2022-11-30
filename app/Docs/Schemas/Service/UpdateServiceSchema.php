@@ -90,6 +90,7 @@ class UpdateServiceSchema extends Schema
                 Schema::string('contact_name'),
                 Schema::string('contact_phone'),
                 Schema::string('contact_email'),
+                Schema::string('cqc_location_id'),
                 Schema::boolean('show_referral_disclaimer'),
                 Schema::string('referral_method')
                     ->enum(

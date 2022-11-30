@@ -51,5 +51,6 @@
         <server name="SCOUT_PREFIX" value="testing_"/>
 
         <server name="OTP_ENABLED" value="(true)"/>
+        <server name="CQC_LOCATION" value="(true)"/>
     </php>
 </phpunit>

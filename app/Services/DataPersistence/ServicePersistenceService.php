@@ -5,6 +5,7 @@ namespace App\Services\DataPersistence;
 use App\Models\File;
 use App\Models\Model;
 use App\Models\Service;
+use App\Models\Tag;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Support\MissingValue;
@@ -12,6 +13,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ServicePersistenceService implements DataPersistenceService
 {
@@ -60,6 +62,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'offerings' => $request->has('offerings') ? [] : new MissingValue(),
                 'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
+                'tags' => $request->has('tags') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'eligibility_types' => $request->filled('eligibility_types') ? $request->eligibility_types : new MissingValue(),
                 'logo_file_id' => $request->missing('logo_file_id'),
@@ -88,6 +91,14 @@ class ServicePersistenceService implements DataPersistenceService
             foreach ($request->input('gallery_items', []) as $galleryItem) {
                 $data['gallery_items'][] = [
                     'file_id' => $galleryItem['file_id'],
+                ];
+            }
+
+            // Loop through each tag.
+            foreach ($request->input('tags', []) as $tag) {
+                $data['tags'][] = [
+                    'slug' => Str::slug($tag['slug']),
+                    'label' => $tag['label'],
                 ];
             }
 
@@ -200,6 +211,23 @@ class ServicePersistenceService implements DataPersistenceService
                 $service->serviceGalleryItems()->create([
                     'file_id' => $galleryItem['file_id'],
                 ]);
+            }
+
+            // Create the tag records.
+            if (config('flags.service_tags')) {
+                $tagIds = [];
+                foreach ($request->tags as $tagField) {
+                    $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
+                    if (null === $tag) {
+                        $tag = new Tag([
+                            'slug' => Str::slug($tagField['slug']),
+                            'label' => $tagField['label'],
+                        ]);
+                        $tag->save();
+                    }
+                    $tagIds[] = $tag->id;
+                }
+                $service->tags()->sync($tagIds);
             }
 
             // Create the category taxonomy records.

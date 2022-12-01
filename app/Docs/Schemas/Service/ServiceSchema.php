@@ -2,6 +2,7 @@
 
 namespace App\Docs\Schemas\Service;
 
+use App\Docs\Schemas\Tag\TagSchema;
 use App\Docs\Schemas\Taxonomy\Category\TaxonomyCategorySchema;
 use App\Models\Service;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
@@ -80,6 +81,8 @@ class ServiceSchema extends Schema
                     ->items(OfferingSchema::create()),
                 Schema::array('gallery_items')
                     ->items(GalleryItemSchema::create()),
+                Schema::array('tags')
+                    ->items(TagSchema::create()),
                 Schema::array('category_taxonomies')
                     ->items(TaxonomyCategorySchema::create()),
                 Schema::string('ends_at')

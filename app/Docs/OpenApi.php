@@ -101,6 +101,7 @@ class OpenApi extends BaseOpenApi implements Responsable
                 Paths\StatusUpdates\StatusUpdatesRootPath::create(),
                 Paths\StatusUpdates\StatusUpdatesIndexPath::create(),
                 Paths\StopWords\StopWordsRootPath::create(),
+                Paths\Tags\TagsRootPath::create(),
                 Paths\Taxonomies\Categories\TaxonomyCategoriesRootPath::create(),
                 Paths\Taxonomies\Categories\TaxonomyCategoriesIndexPath::create(),
                 Paths\Taxonomies\Categories\TaxonomyCategoriesNestedPath::create(),

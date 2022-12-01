@@ -13,6 +13,7 @@ use App\Models\ServiceLocation;
 use App\Models\ServiceRefreshToken;
 use App\Models\ServiceTaxonomy;
 use App\Models\SocialMedia;
+use App\Models\Tag;
 use App\Models\Taxonomy;
 use App\Models\UsefulInfo;
 use App\Models\User;
@@ -145,5 +146,14 @@ trait ServiceRelationships
     public function serviceRefreshTokens(): HasMany
     {
         return $this->hasMany(ServiceRefreshToken::class);
+    }
+
+    /**
+     * The tags that belong to the service.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

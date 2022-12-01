@@ -689,7 +689,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
         ];
@@ -1318,6 +1318,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1384,6 +1386,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1655,6 +1659,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
         ];
@@ -1745,6 +1750,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -3949,6 +3955,7 @@ class ServicesTest extends TestCase
         unset($payload['offerings']);
         unset($payload['gallery_items']);
         unset($payload['category_taxonomies']);
+        unset($payload['tags']);
 
         $this->assertDatabaseHas('services', $payload);
     }

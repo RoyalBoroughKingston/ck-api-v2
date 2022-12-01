@@ -220,9 +220,9 @@ class ServicePersistenceService implements DataPersistenceService
                     $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
                     if (null === $tag) {
                         $tag = new Tag([
-                        'slug' => Str::slug($tagField['slug']),
-                        'label' => $tagField['label'],
-                    ]);
+                            'slug' => Str::slug($tagField['slug']),
+                            'label' => $tagField['label'],
+                        ]);
                         $tag->save();
                     }
                     $tagIds[] = $tag->id;

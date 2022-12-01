@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
@@ -74,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(VariableSubstituter::class, DoubleParenthesisVariableSubstituter::class);
 
         /**
-         * Flagged functionality
+         * Flagged functionality.
          */
         Validator::extendImplicit('present_if_flagged', function ($attribute, $value, $parameters, $validator) {
             switch ($attribute) {

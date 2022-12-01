@@ -76,7 +76,9 @@ class AppServiceProvider extends ServiceProvider
                 case 'cqc_location_id':
                     $flagged = config('flags.cqc_location');
                     break;
-
+                case 'tags':
+                    $flagged = config('flags.service_tags');
+                    break;
                 default:
                     $flagged = false;
                     break;

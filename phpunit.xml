@@ -52,5 +52,6 @@
 
         <server name="OTP_ENABLED" value="(true)"/>
         <server name="CQC_LOCATION" value="(true)"/>
+        <server name="SERVICE_TAGS" value="(true)"/>
     </php>
 </phpunit>

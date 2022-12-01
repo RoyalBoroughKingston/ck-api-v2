@@ -12,4 +12,5 @@ return [
      * Flag to allow use the CQC location ID field on Services.
      */
     'cqc_location' => env('CQC_LOCATION', false),
+    'service_tags' => env('SERVICE_TAGS', false),
 ];

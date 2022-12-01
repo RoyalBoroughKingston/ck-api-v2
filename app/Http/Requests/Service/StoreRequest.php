@@ -204,7 +204,7 @@ class StoreRequest extends FormRequest
             ],
 
             'tags' => [
-                'present',
+                'present_if_flagged',
                 'array',
                 new UserHasRole(
                     $this->user('api'),

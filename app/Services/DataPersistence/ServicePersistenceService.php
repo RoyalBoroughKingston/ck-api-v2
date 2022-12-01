@@ -214,19 +214,21 @@ class ServicePersistenceService implements DataPersistenceService
             }
 
             // Create the tag records.
-            $tagIds = [];
-            foreach ($request->tags as $tagField) {
-                $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
-                if (null === $tag) {
-                    $tag = new Tag([
+            if (config('flags.service_tags')) {
+                $tagIds = [];
+                foreach ($request->tags as $tagField) {
+                    $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
+                    if (null === $tag) {
+                        $tag = new Tag([
                         'slug' => Str::slug($tagField['slug']),
                         'label' => $tagField['label'],
                     ]);
-                    $tag->save();
+                        $tag->save();
+                    }
+                    $tagIds[] = $tag->id;
                 }
-                $tagIds[] = $tag->id;
+                $service->tags()->sync($tagIds);
             }
-            $service->tags()->sync($tagIds);
 
             // Create the category taxonomy records.
             $taxonomies = Taxonomy::whereIn('id', $request->category_taxonomies)->get();

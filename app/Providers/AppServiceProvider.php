@@ -7,6 +7,8 @@ use App\VariableSubstitution\DoubleParenthesisVariableSubstituter;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
@@ -71,6 +73,9 @@ class AppServiceProvider extends ServiceProvider
         // Variable substitution.
         $this->app->bind(VariableSubstituter::class, DoubleParenthesisVariableSubstituter::class);
 
+        /**
+         * Flagged functionality
+         */
         Validator::extendImplicit('present_if_flagged', function ($attribute, $value, $parameters, $validator) {
             switch ($attribute) {
                 case 'cqc_location_id':
@@ -85,7 +90,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return $flagged ? Arr::has($validator->getData(), $attribute) : true;
-        });
+        }, Lang::get('validation.present'));
     }
 
     /**

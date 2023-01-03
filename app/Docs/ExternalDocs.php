@@ -15,6 +15,6 @@ class ExternalDocs extends BaseExternalDocs
     {
         return parent::create($objectId)
             ->description('GitHub Wiki')
-            ->url('https://github.com/One-Hounslow-Connect/api/wiki');
+            ->url('https://github.com/LondonBoroughSutton/helpyourselfsutton-api/wiki');
     }
 }

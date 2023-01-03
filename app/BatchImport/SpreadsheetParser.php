@@ -9,7 +9,7 @@ class SpreadsheetParser
     /**
      * The spreadsheet import / export library.
      *
-     * @var \PhpOffice\PhpSpreadsheet\Reader\Xlsx | \PhpOffice\PhpSpreadsheet\Reader\Xls
+     * @var \PhpOffice\PhpSpreadsheet\Reader\Xlsx|\PhpOffice\PhpSpreadsheet\Reader\Xls
      */
     protected $reader;
 
@@ -37,7 +37,7 @@ class SpreadsheetParser
     /**
      * The imported header row.
      *
-     * @var \Array
+     * @var \array
      */
     public $headers = [];
 

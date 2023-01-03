@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Collection;
 use App\Models\Organisation;
+use App\Models\Page;
 use App\Models\Service;
+use App\Models\Taxonomy;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -29,14 +32,35 @@ class RouteServiceProvider extends ServiceProvider
         // Resolve by ID first, then resort to slug.
         Route::bind('organisation', function ($value) {
             return Organisation::query()->find($value)
-                ?? Organisation::query()->where('slug', $value)->first()
+                ?? Organisation::query()->where('slug', '=', $value)->first()
                 ?? abort(Response::HTTP_NOT_FOUND);
         });
 
         // Resolve by ID first, then resort to slug.
         Route::bind('service', function ($value) {
             return Service::query()->find($value)
-                ?? Service::query()->where('slug', $value)->first()
+                ?? Service::query()->where('slug', '=', $value)->first()
+                ?? abort(Response::HTTP_NOT_FOUND);
+        });
+
+        // Resolve by ID first, then resort to slug.
+        Route::bind('page', function ($value) {
+            return Page::query()->find($value)
+                ?? Page::query()->where('slug', '=', $value)->first()
+                ?? abort(Response::HTTP_NOT_FOUND);
+        });
+
+        // Resolve by ID first, then resort to slug.
+        Route::bind('collection', function ($value) {
+            return Collection::query()->find($value)
+                ?? Collection::query()->where('slug', '=', $value)->first()
+                ?? abort(Response::HTTP_NOT_FOUND);
+        });
+
+        // Resolve by ID first, then resort to slug.
+        Route::bind('taxonomy', function ($value) {
+            return Taxonomy::query()->find($value)
+                ?? Taxonomy::query()->where('slug', $value)->first()
                 ?? abort(Response::HTTP_NOT_FOUND);
         });
     }

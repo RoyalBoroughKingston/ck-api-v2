@@ -18,6 +18,7 @@ class Notification extends Model
     use NotificationScopes;
 
     const CHANNEL_EMAIL = 'email';
+
     const CHANNEL_SMS = 'sms';
 
     /**
@@ -45,7 +46,7 @@ class Notification extends Model
             $notification = $query->create([
                 'channel' => static::CHANNEL_EMAIL,
                 'recipient' => $email->to,
-                'message' => $email->getContent(),
+                'message' => 'Pending to be sent. Content will be filled once sent.',
             ]);
 
             // Add the email as a job on the queue to be sent.
@@ -67,7 +68,7 @@ class Notification extends Model
             $notification = $query->create([
                 'channel' => static::CHANNEL_SMS,
                 'recipient' => $sms->to,
-                'message' => $sms->getContent(),
+                'message' => 'Pending to be sent. Content will be filled once sent.',
             ]);
 
             // Add the SMS as a job on the queue to be sent.

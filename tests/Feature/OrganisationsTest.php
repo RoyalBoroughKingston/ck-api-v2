@@ -2,26 +2,27 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
+use Tests\TestCase;
 use App\Models\File;
-use App\Models\Organisation;
-use App\Models\OrganisationTaxonomy;
 use App\Models\Role;
-use App\Models\Service;
-use App\Models\SocialMedia;
-use App\Models\Taxonomy;
-use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Taxonomy;
 use App\Models\UserRole;
+use App\Events\EndpointHit;
+use App\Models\SocialMedia;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Str;
+use App\Models\Organisation;
+use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use App\Models\OrganisationTaxonomy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
 
 class OrganisationsTest extends TestCase
 {
@@ -102,6 +103,7 @@ class OrganisationsTest extends TestCase
         ]);
 
         $response = $this->json('GET', '/core/v1/organisations?sort=-name');
+
         $data = $this->getResponseContent($response);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -318,6 +320,7 @@ class OrganisationsTest extends TestCase
             [
                 'id' => $taxonomy->parent->id,
                 'parent_id' => $taxonomy->parent->parent_id,
+                'slug' => $taxonomy->parent->slug,
                 'name' => $taxonomy->parent->name,
                 'created_at' => $taxonomy->parent->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy->parent->updated_at->format(CarbonImmutable::ISO8601),
@@ -325,12 +328,62 @@ class OrganisationsTest extends TestCase
             [
                 'id' => $taxonomy->id,
                 'parent_id' => $taxonomy->parent_id,
+                'slug' => $taxonomy->slug,
                 'name' => $taxonomy->name,
                 'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ];
         $response->assertJsonFragment($responsePayload);
+    }
+
+    public function test_all_global_admins_added_as_organisation_admin_when_one_is_created()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $globalAdmin1 = factory(User::class)->create()->makeGlobalAdmin();
+        $globalAdmin2 = factory(User::class)->create()->makeGlobalAdmin();
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => 'http://test-org.example.com',
+            'email' => 'info@test-org.example.com',
+            'phone' => '07700000000',
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+            'category_taxonomies' => [],
+        ];
+
+        Passport::actingAs($globalAdmin1);
+
+        $response = $this->json('POST', '/core/v1/organisations', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $responseData = $response->json('data');
+
+        $organisation = Organisation::find($responseData['id']);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin1->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'organisation_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin2->id,
+            'role_id' => Role::organisationAdmin()->id,
+            'organisation_id' => $responseData['id'],
+        ]);
+
+        $this->assertTrue($globalAdmin1->isOrganisationAdmin($organisation));
+        $this->assertTrue($globalAdmin2->isOrganisationAdmin($organisation));
     }
 
     public function test_audit_created_when_created()
@@ -555,8 +608,10 @@ class OrganisationsTest extends TestCase
         Passport::actingAs($user);
 
         $updateRequestCheckResponse = $this->get(
-            route('core.v1.update-requests.show',
-                ['update_request' => $updateRequestId])
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
         );
 
         $updateRequestCheckResponse->assertSuccessful();
@@ -879,6 +934,7 @@ class OrganisationsTest extends TestCase
             [
                 'id' => $taxonomy2->parent->id,
                 'parent_id' => $taxonomy2->parent->parent_id,
+                'slug' => $taxonomy2->parent->slug,
                 'name' => $taxonomy2->parent->name,
                 'created_at' => $taxonomy2->parent->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy2->parent->updated_at->format(CarbonImmutable::ISO8601),
@@ -886,6 +942,7 @@ class OrganisationsTest extends TestCase
             [
                 'id' => $taxonomy2->id,
                 'parent_id' => $taxonomy2->parent_id,
+                'slug' => $taxonomy2->slug,
                 'name' => $taxonomy2->name,
                 'created_at' => $taxonomy2->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy2->updated_at->format(CarbonImmutable::ISO8601),
@@ -893,6 +950,7 @@ class OrganisationsTest extends TestCase
             [
                 'id' => $taxonomy3->id,
                 'parent_id' => $taxonomy3->parent_id,
+                'slug' => $taxonomy3->slug,
                 'name' => $taxonomy3->name,
                 'created_at' => $taxonomy3->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $taxonomy3->updated_at->format(CarbonImmutable::ISO8601),
@@ -1607,6 +1665,7 @@ class OrganisationsTest extends TestCase
         $this->createOrganisationSpreadsheets($organisations);
 
         $response = $this->json('POST', "/core/v1/organisations/import", ['spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls')))]);
+
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
             'data' => [

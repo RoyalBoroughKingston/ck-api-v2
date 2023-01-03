@@ -62,6 +62,7 @@ class ImportTaxonomiesCommandTest extends TestCase
             $associativeRecords['level-2-2'],
             [
                 'id' => 'level-2-2',
+                'slug' => 'level-2-2',
                 'name' => 'Level 2 2',
                 'parent_id' => 'level-1-0',
                 'order' => 0,

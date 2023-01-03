@@ -17,7 +17,7 @@ use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ServiceLocationController extends Controller
@@ -44,8 +44,8 @@ class ServiceLocationController extends Controller
 
         $serviceLocations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
-                Filter::exact('service_id'),
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('service_id'),
             ])
             ->allowedIncludes(['location'])
             ->paginate(per_page($request->per_page));
@@ -109,7 +109,7 @@ class ServiceLocationController extends Controller
                 $file = File::findOrFail($request->image_file_id)->assigned();
 
                 // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                foreach (config('local.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
             }
@@ -201,7 +201,7 @@ class ServiceLocationController extends Controller
                 $file = File::findOrFail($request->image_file_id)->assigned();
 
                 // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                foreach (config('local.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
             }

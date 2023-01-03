@@ -2,33 +2,35 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
+use Carbon\Carbon;
+use Tests\TestCase;
 use App\Models\File;
-use App\Models\HolidayOpeningHour;
-use App\Models\Organisation;
-use App\Models\RegularOpeningHour;
 use App\Models\Role;
-use App\Models\Service;
-use App\Models\ServiceLocation;
-use App\Models\ServiceRefreshToken;
-use App\Models\ServiceTaxonomy;
-use App\Models\SocialMedia;
-use App\Models\Taxonomy;
-use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Tag;
+use App\Models\Taxonomy;
 use App\Models\UserRole;
+use App\Events\EndpointHit;
+use App\Models\SocialMedia;
 use Carbon\CarbonImmutable;
 use Faker\Factory as Faker;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use App\Models\Organisation;
+use App\Models\UpdateRequest;
+use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use App\Models\ServiceLocation;
+use App\Models\ServiceTaxonomy;
+use Illuminate\Http\UploadedFile;
+use App\Models\HolidayOpeningHour;
+use App\Models\RegularOpeningHour;
+use App\Models\ServiceRefreshToken;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Collection;
 
 class ServicesTest extends TestCase
 {
@@ -64,6 +66,7 @@ class ServicesTest extends TestCase
             'referral_method',
             'referral_email',
             'referral_url',
+            'ends_at',
             'show_referral_disclaimer',
             'referral_button_text',
             'eligibility_age_group_custom',
@@ -145,6 +148,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -164,6 +169,7 @@ class ServicesTest extends TestCase
                 [
                     'id' => Taxonomy::category()->children()->first()->id,
                     'parent_id' => Taxonomy::category()->children()->first()->parent_id,
+                    'slug' => Taxonomy::category()->children()->first()->slug,
                     'name' => Taxonomy::category()->children()->first()->name,
                     'created_at' => Taxonomy::category()->children()->first()->created_at->format(CarbonImmutable::ISO8601),
                     'updated_at' => Taxonomy::category()->children()->first()->updated_at->format(CarbonImmutable::ISO8601),
@@ -234,6 +240,49 @@ class ServicesTest extends TestCase
         $response->assertJsonMissing(['id' => $anotherService->id]);
     }
 
+    public function test_guest_can_filter_by_tag()
+    {
+        $tag1 = factory(Tag::class)->create();
+        $tag2 = factory(Tag::class)->create();
+        $tag3 = factory(Tag::class)->create();
+        $service1 = factory(Service::class)
+            ->states('withUsefulInfo', 'withOfferings', 'withSocialMedia', 'withCategoryTaxonomies')
+            ->create();
+        $service1->tags()->attach([
+            $tag1->id,
+            $tag2->id,
+        ]);
+        $service2 = factory(Service::class)
+            ->states('withUsefulInfo', 'withOfferings', 'withSocialMedia', 'withCategoryTaxonomies')
+            ->create();
+        $service2->tags()->attach([
+            $tag2->id,
+            $tag3->id,
+        ]);
+        $service3 = factory(Service::class)
+            ->states('withUsefulInfo', 'withOfferings', 'withSocialMedia', 'withCategoryTaxonomies')
+            ->create();
+        $service3->tags()->attach([
+            $tag1->id,
+            $tag3->id,
+        ]);
+
+        $response = $this->json('GET', "/core/v1/services?filter[tags.slug]={$tag1->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service3->id]);
+        $response->assertJsonMissing(['id' => $service2->id]);
+
+        $response = $this->json('GET', "/core/v1/services?filter[tags.slug]={$tag1->slug},{$tag2->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service2->id]);
+        $response->assertJsonFragment(['id' => $service3->id]);
+    }
+
     public function test_audit_created_when_listed()
     {
         $this->fakeEvents();
@@ -275,6 +324,43 @@ class ServicesTest extends TestCase
 
         $this->assertEquals($serviceOne->organisation_id, $data['data'][1]['organisation_id']);
         $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
+    }
+
+    public function test_guest_can_sort_by_last_modified_at()
+    {
+        $serviceOne = factory(Service::class)->create([
+            'last_modified_at' => '2020-01-01 13:00:00'
+        ]);
+        $serviceTwo = factory(Service::class)->create([
+            'last_modified_at' => '2020-01-01 20:00:00'
+        ]);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-last_modified_at');
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($serviceOne->organisation_id, $data['data'][1]['organisation_id']);
+        $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
+    }
+
+    public function test_guest_can_sort_by_score()
+    {
+        $service1 = factory(Service::class)->create(['score' => 0]);
+        $service2 = factory(Service::class)->create(['score' => 5]);
+        $service3 = factory(Service::class)->create(['score' => 3]);
+        $service4 = factory(Service::class)->create(['score' => 1]);
+        $service5 = factory(Service::class)->create(['score' => 4]);
+        $service6 = factory(Service::class)->create(['score' => 2]);
+
+        $response = $this->json('GET', '/core/v1/services?sort=-score');
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response);
+
+        $this->assertEquals($service2->id, $data['data'][0]['id']);
+        $this->assertEquals($service5->id, $data['data'][1]['id']);
+        $this->assertEquals($service3->id, $data['data'][2]['id']);
+        $this->assertEquals($service6->id, $data['data'][3]['id']);
+        $this->assertEquals($service4->id, $data['data'][4]['id']);
+        $this->assertEquals($service1->id, $data['data'][5]['id']);
     }
 
     /*
@@ -342,6 +428,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -355,7 +443,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
             'eligibility_types' => [
@@ -431,6 +519,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -444,7 +534,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
@@ -494,6 +584,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -507,7 +599,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
             'eligibility_types' => [
@@ -582,6 +674,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -595,10 +689,126 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
         ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    public function test_organisation_admin_can_create_one_without_cqc_field_if_cqc_flag_is_false()
+    {
+        config(['flags.cqc_location' => false]);
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => null,
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    public function test_organisation_admin_can_create_one_without_tags_field_if_tags_flag_is_false()
+    {
+        config(['flags.service_tags' => true]);
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => null,
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        config(['flags.service_tags' => false]);
+
         $response = $this->json('POST', '/core/v1/services', $payload);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -635,6 +845,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -648,7 +860,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
         ];
@@ -687,6 +899,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -700,7 +914,76 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
 
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_organisation_admin_cannot_create_one_with_tags()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        $tag1 = factory(Tag::class)->create();
+        $tag2 = factory(Tag::class)->create();
+        $tag3 = factory(Tag::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => true,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [
+                [
+                    'slug' => $tag1->slug,
+                    'label' => $tag1->label,
+                ],
+                [
+                    'slug' => $tag2->slug,
+                    'label' => $tag2->label,
+                ],
+                [
+                    'slug' => $tag3->slug,
+                    'label' => $tag3->label,
+                ],
+            ],
             'gallery_items' => [],
             'category_taxonomies' => [],
         ];
@@ -741,6 +1024,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -754,7 +1039,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [$taxonomy->id],
         ];
@@ -803,9 +1088,11 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
@@ -846,6 +1133,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -859,7 +1148,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ]);
@@ -901,6 +1190,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -914,7 +1205,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
@@ -926,6 +1217,7 @@ class ServicesTest extends TestCase
             [
                 'id' => Taxonomy::category()->children()->firstOrFail()->id,
                 'parent_id' => Taxonomy::category()->children()->firstOrFail()->parent_id,
+                'slug' => Taxonomy::category()->children()->firstOrFail()->slug,
                 'name' => Taxonomy::category()->children()->firstOrFail()->name,
                 'created_at' => Taxonomy::category()->children()->firstOrFail()->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => Taxonomy::category()->children()->firstOrFail()->updated_at->format(CarbonImmutable::ISO8601),
@@ -965,6 +1257,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -978,7 +1272,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [$taxonomy->id],
         ];
@@ -991,6 +1285,7 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment([
             'id' => $taxonomy->id,
             'parent_id' => $taxonomy->parent_id,
+            'slug' => $taxonomy->slug,
             'name' => $taxonomy->name,
             'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
             'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
@@ -1027,6 +1322,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1040,13 +1337,155 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_global_admin_can_create_one_with_tags()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        $taxonomy = factory(Taxonomy::class)->create();
+        $tag1 = factory(Tag::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [
+                [
+                    'slug' => $tag1->slug,
+                    'label' => $tag1->label,
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [
+                $taxonomy->id
+            ],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment([
+            'slug' => $tag1->slug,
+            'label' => $tag1->label,
+        ]);
+    }
+
+    public function test_global_admin_can_create_tags_when_creating_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        $taxonomy = factory(Taxonomy::class)->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [
+                [
+                    'slug' => 'tag-1',
+                    'label' => 'Tag One',
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [
+                $taxonomy->id
+            ],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment([
+            'slug' => 'tag-1',
+            'label' => 'Tag One',
+        ]);
+
+        $this->assertDatabaseHas('tags', [
+            'slug' => 'tag-1',
+            'label' => 'Tag One',
+        ]);
     }
 
     public function test_super_admin_can_create_one_with_referral_disclaimer_showing()
@@ -1081,6 +1520,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1094,7 +1535,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1140,6 +1581,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1153,7 +1596,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [$taxonomy->id],
         ];
@@ -1227,6 +1670,196 @@ class ServicesTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function global_admin_is_added_as_service_admin_when_organisation_admin_creates_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $globalAdmin = factory(User::class)->create()->makeGlobalAdmin();
+        $orgAdmin = factory(User::class)->create()->makeOrganisationAdmin($organisation);
+
+        //Given an organisation admin is logged in
+        Passport::actingAs($orgAdmin);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $responseData = json_decode($response->getContent());
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = $responseData->id;
+
+        Passport::actingAs($globalAdmin);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $service = Service::where('slug', 'test-service')->first();
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $service->id,
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $service->id,
+        ]);
+
+        $this->assertTrue($globalAdmin->isServiceWorker($service));
+        $this->assertTrue($globalAdmin->isServiceAdmin($service));
+        $this->assertTrue($globalAdmin->isOrganisationAdmin($service->organisation));
+    }
+
+    /**
+     * @test
+     */
+    public function global_admin_is_added_as_service_admin_when_other_global_admin_creates_one()
+    {
+        $organisation = factory(Organisation::class)->create();
+        $taxonomy = factory(Taxonomy::class)->create();
+        $globalAdmin1 = factory(User::class)->create()->makeGlobalAdmin();
+        $globalAdmin2 = factory(User::class)->create()->makeGlobalAdmin();
+
+        //Given an global admin is logged in
+        Passport::actingAs($globalAdmin1);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $responseData = $response->json('data');
+
+        $service = Service::find($responseData['id']);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin1->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin1->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin2->id,
+            'role_id' => Role::serviceAdmin()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertDatabaseHas((new UserRole)->getTable(), [
+            'user_id' => $globalAdmin2->id,
+            'role_id' => Role::serviceWorker()->id,
+            'service_id' => $responseData['id'],
+        ]);
+
+        $this->assertTrue($globalAdmin1->isServiceWorker($service));
+        $this->assertTrue($globalAdmin1->isServiceAdmin($service));
+        $this->assertTrue($globalAdmin1->isOrganisationAdmin($service->organisation));
+
+        $this->assertTrue($globalAdmin2->isServiceWorker($service));
+        $this->assertTrue($globalAdmin2->isServiceAdmin($service));
+        $this->assertTrue($globalAdmin2->isOrganisationAdmin($service->organisation));
+    }
+
     /*
      * Get a specific service.
      */
@@ -1235,6 +1868,8 @@ class ServicesTest extends TestCase
     {
         $service = factory(Service::class)->create();
         $taxonomy = factory(Taxonomy::class)->create();
+        $tag1 = factory(Tag::class)->create();
+
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
@@ -1250,6 +1885,10 @@ class ServicesTest extends TestCase
         ]);
         $service->serviceTaxonomies()->create([
             'taxonomy_id' => $taxonomy->id,
+        ]);
+
+        $service->tags()->attach([
+            $tag1->id,
         ]);
 
         $response = $this->json('GET', "/core/v1/services/{$service->id}");
@@ -1280,6 +1919,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -1298,9 +1938,19 @@ class ServicesTest extends TestCase
                 [
                     'id' => $taxonomy->id,
                     'parent_id' => $taxonomy->parent_id,
+                    'slug' => $taxonomy->slug,
                     'name' => $taxonomy->name,
                     'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
                     'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
+                ],
+            ],
+            'tags' => [
+                [
+                    'id' => $tag1->id,
+                    'slug' => $tag1->slug,
+                    'label' => $tag1->label,
+                    'created_at' => $tag1->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => $tag1->updated_at->format(CarbonImmutable::ISO8601),
                 ],
             ],
             'gallery_items' => [],
@@ -1358,6 +2008,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did You Know?',
@@ -1371,11 +2022,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'category_taxonomies' => [
                 [
                     'id' => $taxonomy->id,
                     'parent_id' => $taxonomy->parent_id,
+                    'slug' => $taxonomy->slug,
                     'name' => $taxonomy->name,
                     'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
                     'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
@@ -1476,6 +2128,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1539,6 +2193,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1568,6 +2224,73 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
+    public function test_service_admin_cannot_update_one_with_tags()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = factory(Taxonomy::class)->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => null,
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [
+                [
+                    'slug' => 'tag-1',
+                    'label' => 'Tag One',
+                ],
+            ],
+            'category_taxonomies' => [
+                $taxonomy->id,
+                $taxonomy->parent_id,
+            ],
+            'eligibility_types' => [
+                'custom' => [],
+                'taxonomies' => [],
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function test_global_admin_can_update_most_fields_for_one()
     {
         $service = factory(Service::class)->create([
@@ -1576,6 +2299,7 @@ class ServicesTest extends TestCase
         ]);
         $taxonomy = factory(Taxonomy::class)->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $tag1 = factory(Tag::class)->create();
         $user = factory(User::class)->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -1602,6 +2326,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1615,7 +2341,12 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [
+                [
+                    'slug' => $tag1->slug,
+                    'label' => $tag1->label,
+                ],
+            ],
             'gallery_items' => [],
             'category_taxonomies' => [
                 $taxonomy->id,
@@ -1665,6 +2396,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1727,6 +2459,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1786,6 +2519,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1848,6 +2582,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1907,6 +2643,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1929,6 +2667,63 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function test_service_admin_can_update_cqc_location_id()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'cqc_location_id' => null,
+        ]);
+        $taxonomy = factory(Taxonomy::class)->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $cqcLocationId = $this->faker->numerify('#-#########');
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $cqcLocationId,
+            'useful_infos' => [],
+            'offerings' => [],
+
+            'category_taxonomies' => [
+                $taxonomy->id,
+                $taxonomy->parent_id,
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $service->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $service->id)->firstOrFail();
+        $this->assertEquals($cqcLocationId, $updateRequest->data['cqc_location_id']);
     }
 
     public function test_service_admin_cannot_update_status()
@@ -1965,6 +2760,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2011,6 +2808,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2057,6 +2856,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2103,6 +2904,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => $this->faker->safeEmail,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2113,6 +2916,84 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function test_global_admin_can_create_tags_when_updating()
+    {
+        $service = factory(Service::class)->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+        $taxonomy = factory(Taxonomy::class)->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $user = factory(User::class)->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url,
+            'contact_name' => $this->faker->name,
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail,
+            'show_referral_disclaimer' => false,
+            'referral_method' => $service->referral_method,
+            'referral_button_text' => $service->referral_button_text,
+            'referral_email' => $service->referral_email,
+            'referral_url' => $service->referral_url,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [
+                [
+                    'slug' => 'tag-1',
+                    'label' => 'Tag One',
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+            'eligibility_types' => [
+                'custom' => [],
+                'taxonomies' => [],
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'slug' => 'tag-1',
+            'label' => 'Tag One',
+        ]);
+
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $service->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $service->id)->firstOrFail();
+        $this->assertEquals([[
+            'slug' => 'tag-1',
+            'label' => 'Tag One',
+        ]], $updateRequest->data['tags']);
     }
 
     public function test_referral_email_must_be_provided_when_referral_type_is_internal()
@@ -2149,6 +3030,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2197,6 +3080,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2248,6 +3133,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [],
             'offerings' => [],
 
@@ -2295,6 +3182,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => $service->referral_button_text,
             'referral_email' => $service->referral_email,
             'referral_url' => $service->referral_url,
+            'cqc_location_id' => $service->cqc_location_id,
             'useful_infos' => [],
 
             'category_taxonomies' => [],
@@ -2459,23 +3347,41 @@ class ServicesTest extends TestCase
 
     public function test_global_admin_can_update_organisation_id()
     {
+        $originalOrganisation = factory(Organisation::class)->create([
+            'name' => 'Original Organisation',
+        ]);
         $service = factory(Service::class)->create([
+            'organisation_id' => $originalOrganisation->id,
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = factory(Taxonomy::class)->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = factory(User::class)->create()->makeGlobalAdmin();
+        $newOrganisation = factory(Organisation::class)->create([
+            'name' => 'New Organisation',
+        ]);
+        $globalAdmin = factory(User::class)->create()->makeGlobalAdmin();
+        $originalOrganisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($service->organisation);
+        $newOrganisationAdmin = factory(User::class)->create()->makeOrganisationAdmin($newOrganisation);
 
-        Passport::actingAs($user);
+        $this->assertFalse($newOrganisationAdmin->isServiceAdmin($service));
+        $this->assertTrue($originalOrganisationAdmin->isServiceAdmin($service));
+
+        Passport::actingAs($globalAdmin);
 
         $payload = [
-            'organisation_id' => factory(Organisation::class)->create()->id,
+            'organisation_id' => $newOrganisation->id,
         ];
+
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['data' => $payload]);
+
+        $service->refresh();
+
+        $this->assertTrue($newOrganisationAdmin->isServiceAdmin($service));
+        $this->assertFalse($originalOrganisationAdmin->isServiceAdmin($service));
     }
 
     public function test_global_admin_can_update_organisation_id_with_preview_only()
@@ -2675,7 +3581,7 @@ class ServicesTest extends TestCase
 
         $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_guest_with_invalid_token_cannot_refresh()
@@ -2703,6 +3609,40 @@ class ServicesTest extends TestCase
                 'service_id' => $service->id,
             ])->id,
         ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'last_modified_at' => $now->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    public function test_service_worker_without_token_cannot_refresh()
+    {
+        $service = factory(Service::class)->create();
+
+        $user = factory(User::class)->create()->makeServiceWorker($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function test_service_admin_without_token_can_refresh()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $service = factory(Service::class)->create([
+            'last_modified_at' => Date::now()->subMonths(6),
+        ]);
+
+        $user = factory(User::class)->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $response = $this->putJson("/core/v1/services/{$service->id}/refresh");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -2795,6 +3735,7 @@ class ServicesTest extends TestCase
                     'referral_button_text',
                     'referral_email',
                     'referral_url',
+                    'ends_at',
                     'useful_infos' => [
                         [
                             'title',
@@ -2851,21 +3792,25 @@ class ServicesTest extends TestCase
         // Create taxonomies.
         $taxonomy = factory(Taxonomy::class)->create();
         $taxonomyOneDepthOne = $taxonomy->children()->create([
+            'slug' => 'taxonomy-one',
             'name' => 'Taxonomy One',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomyTwoDepthOne = $taxonomy->children()->create([
+            'slug' => 'taxonomy-two',
             'name' => 'Taxonomy Two',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomyThreeDepthOne = $taxonomy->children()->create([
+            'slug' => 'taxonomy-three',
             'name' => 'Taxonomy Three',
             'order' => 1,
             'depth' => 1,
         ]);
         $taxonomyFourDepthTwo = $taxonomyOneDepthOne->children()->create([
+            'slug' => 'taxonomy-four',
             'name' => 'Taxonomy Four',
             'order' => 1,
             'depth' => 2,
@@ -2902,6 +3847,45 @@ class ServicesTest extends TestCase
         $this->assertCount(2, $services);
         $this->assertSame($closelyRelatedService->id, $services[0]['id']);
         $this->assertSame($distantlyRelatedService->id, $services[1]['id']);
+    }
+
+    /*
+     * Disable stale.
+     */
+
+    public function test_guest_cannot_disable_stale()
+    {
+        $response = $this->putJson('/core/v1/services/disable-stale', [
+            'last_modified_at' => Date::today()->toDateString(),
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_super_admin_can_disable_stale()
+    {
+        $staleService = factory(Service::class)->create([
+            'last_modified_at' => '2020-02-01',
+        ]);
+        $currentService = factory(Service::class)->create([
+            'last_modified_at' => '2020-05-01',
+        ]);
+
+        Passport::actingAs(factory(User::class)->create()->makeSuperAdmin());
+
+        $response = $this->putJson('/core/v1/services/disable-stale', [
+            'last_modified_at' => '2020-03-01',
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas($staleService->getTable(), [
+            'id' => $staleService->id,
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+        $this->assertDatabaseHas($currentService->getTable(), [
+            'id' => $currentService->id,
+            'status' => Service::STATUS_ACTIVE,
+        ]);
     }
 
     /*
@@ -2974,6 +3958,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -2987,7 +3973,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
             'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
@@ -3030,6 +4016,7 @@ class ServicesTest extends TestCase
         unset($payload['offerings']);
         unset($payload['gallery_items']);
         unset($payload['category_taxonomies']);
+        unset($payload['tags']);
 
         $this->assertDatabaseHas('services', $payload);
     }
@@ -4429,6 +5416,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4442,7 +5431,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
@@ -4500,6 +5489,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4513,7 +5504,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
@@ -4584,6 +5575,8 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4597,7 +5590,7 @@ class ServicesTest extends TestCase
                     'order' => 1,
                 ],
             ],
-
+            'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
         ];
@@ -4963,6 +5956,7 @@ class ServicesTest extends TestCase
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -5027,6 +6021,8 @@ class ServicesTest extends TestCase
                 'referral_button_text' => $service->referral_button_text,
                 'referral_email' => $service->referral_email,
                 'referral_url' => $service->referral_url,
+                'cqc_location_id' => $service->cqc_location_id,
+                'ends_at' => null,
                 'useful_infos' => [],
                 'social_medias' => [
                     [

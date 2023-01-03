@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionPersona\DestroyRequest;
 use App\Http\Requests\CollectionPersona\IndexRequest;
@@ -15,7 +16,7 @@ use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CollectionPersonaController extends Controller
@@ -45,7 +46,7 @@ class CollectionPersonaController extends Controller
             $personas = $personaQuery->get();
         } else {
             $personas = $personaQuery->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
             ])
                 ->paginate(per_page($request->per_page));
         }
@@ -61,9 +62,9 @@ class CollectionPersonaController extends Controller
      * @param \App\Http\Requests\CollectionPersona\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $slugGenerator) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -75,6 +76,7 @@ class CollectionPersonaController extends Controller
             // Create the collection record.
             $persona = Collection::create([
                 'type' => Collection::TYPE_PERSONA,
+                'slug' => $slugGenerator->generate($request->name, table(Collection::class)),
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -84,6 +86,7 @@ class CollectionPersonaController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {
@@ -130,9 +133,9 @@ class CollectionPersonaController extends Controller
      * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Collection $collection)
+    public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Collection $collection)
     {
-        return DB::transaction(function () use ($request, $collection) {
+        return DB::transaction(function () use ($request, $slugGenerator, $collection) {
             // Parse the sideboxes.
             $sideboxes = array_map(function (array $sidebox): array {
                 return [
@@ -143,6 +146,9 @@ class CollectionPersonaController extends Controller
 
             // Update the collection record.
             $collection->update([
+                'slug' => $slugGenerator->compareEquals($request->name, $collection->slug)
+                    ? $collection->slug
+                    : $slugGenerator->generate($request->name, table(Collection::class)),
                 'name' => $request->name,
                 'meta' => [
                     'intro' => $request->intro,
@@ -154,6 +160,7 @@ class CollectionPersonaController extends Controller
                 ],
                 'order' => $request->order,
                 'enabled' => $request->enabled,
+                'homepage' => $request->homepage,
             ]);
 
             if ($request->filled('image_file_id')) {

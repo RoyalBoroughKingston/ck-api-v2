@@ -11,30 +11,22 @@ class NotifyServiceEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.referral_created.notify_service.email');
+        return config('gov_uk_notify.notifications_template_ids.referral_created.notify_service.email');
     }
 
     /**
-     * @return string|null
-     */
-    protected function getReference(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string
+     * @inheritDoc
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'emails.referral.created.notify_service.content';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSubject(): string
+    {
+        return 'emails.referral.created.notify_service.subject';
     }
 }

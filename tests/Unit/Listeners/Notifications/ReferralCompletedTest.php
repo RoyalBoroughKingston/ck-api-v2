@@ -40,6 +40,12 @@ class ReferralCompletedTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyRefereeEmail::class);
         Queue::assertPushed(NotifyRefereeEmail::class, function (NotifyRefereeEmail $email) {
+            $this->assertEquals(
+                config('gov_uk_notify.notifications_template_ids.referral_completed.notify_referee.email'),
+                $email->templateId
+            );
+            $this->assertEquals('emails.referral.completed.notify_referee.subject', $email->getSubject());
+            $this->assertEquals('emails.referral.completed.notify_referee.content', $email->getContent());
             $this->assertArrayHasKey('REFEREE_NAME', $email->values);
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
@@ -50,6 +56,12 @@ class ReferralCompletedTest extends TestCase
 
         Queue::assertPushedOn('notifications', NotifyClientEmail::class);
         Queue::assertPushed(NotifyClientEmail::class, function (NotifyClientEmail $email) {
+            $this->assertEquals(
+                config('gov_uk_notify.notifications_template_ids.referral_completed.notify_client.email'),
+                $email->templateId
+            );
+            $this->assertEquals('emails.referral.completed.notify_client.subject', $email->getSubject());
+            $this->assertEquals('emails.referral.completed.notify_client.content', $email->getContent());
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             return true;

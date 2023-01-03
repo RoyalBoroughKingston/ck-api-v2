@@ -24,9 +24,9 @@ class CollectionOrganisationEventsNestedPath extends PathItem
             ->parameters(
                 Parameter::path()
                     ->name('collection')
-                    ->description('The ID of the organisation event collection')
+                    ->description('The ID or slug of the organisation event collection')
                     ->required()
-                    ->schema(Schema::string()->format(Schema::FORMAT_UUID))
+                    ->schema(Schema::string())
             )
             ->operations(
                 ShowCollectionOrganisationEventOperation::create(),

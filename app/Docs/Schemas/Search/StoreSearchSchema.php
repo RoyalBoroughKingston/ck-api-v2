@@ -2,8 +2,8 @@
 
 namespace App\Docs\Schemas\Search;
 
-use App\Contracts\ServiceSearch as Search;
 use App\Models\Service;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
@@ -21,7 +21,7 @@ class StoreSearchSchema extends Schema
             ->properties(
                 Schema::integer('page'),
                 Schema::integer('per_page')
-                    ->default(config('ck.pagination_results')),
+                    ->default(config('local.pagination_results')),
                 Schema::string('query'),
                 Schema::string('category'),
                 Schema::string('persona'),
@@ -35,7 +35,7 @@ class StoreSearchSchema extends Schema
                     ),
                 Schema::boolean('is_free'),
                 Schema::string('order')
-                    ->enum(Search::ORDER_RELEVANCE, Search::ORDER_DISTANCE)
+                    ->enum(ElasticsearchQueryBuilder::ORDER_RELEVANCE, ElasticsearchQueryBuilder::ORDER_DISTANCE)
                     ->default('relevance'),
                 Schema::object('location')
                     ->required('lat', 'lon')
@@ -46,7 +46,7 @@ class StoreSearchSchema extends Schema
                             ->type(Schema::FORMAT_FLOAT)
                     ),
                 Schema::integer('distance')
-                    ->default(config('ck.search_distance')),
+                    ->default(config('local.search_distance')),
                 Schema::array('eligibilities')
                     ->items(
                         Schema::string()

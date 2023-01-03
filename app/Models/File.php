@@ -18,26 +18,36 @@ class File extends Model implements Responsable
 
     const MIME_TYPE_PNG = 'image/png';
 
-    const MIME_TYPE_JPG = 'image/jpeg';
+    const MIME_TYPE_JPG = 'image/jpg';
+
+    const MIME_TYPE_JPEG = 'image/jpeg';
 
     const MIME_TYPE_SVG = 'image/svg+xml';
 
     const MIME_TYPE_TXT = 'text/plain';
 
     const META_TYPE_RESIZED_IMAGE = 'resized_image';
+
     const META_TYPE_PENDING_ASSIGNMENT = 'pending_assignment';
 
     const META_PLACEHOLDER_FOR_ORGANISATION = 'organisation';
+
     const META_PLACEHOLDER_FOR_ORGANISATION_EVENT = 'organisation_event';
+
     const META_PLACEHOLDER_FOR_SERVICE = 'service';
+
     const META_PLACEHOLDER_FOR_COLLECTION_CATEGORY = 'collection_category';
+
     const META_PLACEHOLDER_FOR_COLLECTION_PERSONA = 'collection_persona';
+
     const META_PLACEHOLDER_FOR_LOCATION = 'location';
+
     const META_PLACEHOLDER_FOR_SERVICE_LOCATION = 'service_location';
 
     const PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS = 1;
 
     const WITH_PERIOD = true;
+
     const WITHOUT_PERIOD = false;
 
     /**
@@ -148,8 +158,8 @@ class File extends Model implements Responsable
      */
     public function resizedVersion(int $maxDimension = null): self
     {
-        // If no resize then return current instance.
-        if ($maxDimension === null) {
+        // If no resize or format is SVG then return current instance.
+        if ($maxDimension === null || $this->mime_type === self::MIME_TYPE_SVG) {
             return $this;
         }
 
@@ -262,6 +272,7 @@ class File extends Model implements Responsable
             static::MIME_TYPE_PNG => '.png',
             static::MIME_TYPE_SVG => '.svg',
             static::MIME_TYPE_JPG => '.jpg',
+            static::MIME_TYPE_JPEG => '.jpg',
             static::MIME_TYPE_TXT => '.txt',
         ];
 

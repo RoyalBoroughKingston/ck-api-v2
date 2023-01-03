@@ -5,12 +5,15 @@ namespace App\Services\DataPersistence;
 use App\Models\File;
 use App\Models\Model;
 use App\Models\Service;
+use App\Models\Tag;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Support\MissingValue;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ServicePersistenceService implements DataPersistenceService
 {
@@ -26,7 +29,7 @@ class ServicePersistenceService implements DataPersistenceService
         return $this->processAsUpdateRequest($request, $model);
     }
 
-    private function processAsUpdateRequest($request, $service = null)
+    private function processAsUpdateRequest(FormRequest $request, $service = null)
     {
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array
@@ -50,6 +53,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'contact_name' => $request->missing('contact_name'),
                 'contact_phone' => $request->missing('contact_phone'),
                 'contact_email' => $request->missing('contact_email'),
+                'cqc_location_id' => config('flags.cqc_location') ? $request->missing('cqc_location_id') : null,
                 'show_referral_disclaimer' => $request->missing('show_referral_disclaimer'),
                 'referral_method' => $request->missing('referral_method'),
                 'referral_button_text' => $request->missing('referral_button_text'),
@@ -58,32 +62,13 @@ class ServicePersistenceService implements DataPersistenceService
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'offerings' => $request->has('offerings') ? [] : new MissingValue(),
                 'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
+                'tags' => $request->has('tags') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missing('category_taxonomies'),
                 'eligibility_types' => $request->filled('eligibility_types') ? $request->eligibility_types : new MissingValue(),
                 'logo_file_id' => $request->missing('logo_file_id'),
+                'score' => $request->missing('score'),
+                'ends_at' => $request->missing('ends_at'),
             ]);
-
-            // if ($request->filled('gallery_items') && !$request->isPreview()) {
-            //     foreach ($request->gallery_items as $galleryItem) {
-            //         /** @var \App\Models\File $file */
-            //         $file = File::findOrFail($galleryItem['file_id'])->assigned();
-
-            //         // Create resized version for common dimensions.
-            //         foreach (config('ck.cached_image_dimensions') as $maxDimension) {
-            //             $file->resizedVersion($maxDimension);
-            //         }
-            //     }
-            // }
-
-            // if ($request->filled('logo_file_id') && !$request->isPreview()) {
-            //     /** @var \App\Models\File $file */
-            //     $file = File::findOrFail($request->logo_file_id)->assigned();
-
-            //     // Create resized version for common dimensions.
-            //     foreach (config('ck.cached_image_dimensions') as $maxDimension) {
-            //         $file->resizedVersion($maxDimension);
-            //     }
-            // }
 
             // Loop through each useful info.
             foreach ($request->input('useful_infos', []) as $usefulInfo) {
@@ -109,6 +94,14 @@ class ServicePersistenceService implements DataPersistenceService
                 ];
             }
 
+            // Loop through each tag.
+            foreach ($request->input('tags', []) as $tag) {
+                $data['tags'][] = [
+                    'slug' => Str::slug($tag['slug']),
+                    'label' => $tag['label'],
+                ];
+            }
+
             $updateRequest = new UpdateRequestModel([
                 'updateable_type' => $service ? UpdateRequestModel::EXISTING_TYPE_SERVICE : UpdateRequestModel::NEW_TYPE_SERVICE,
                 'updateable_id' => $service ? $service->id : null,
@@ -130,7 +123,7 @@ class ServicePersistenceService implements DataPersistenceService
         });
     }
 
-    private function processAsNewEntity($request)
+    private function processAsNewEntity(FormRequest $request)
     {
         return DB::transaction(function () use ($request) {
             $initialCreateData = [
@@ -151,13 +144,18 @@ class ServicePersistenceService implements DataPersistenceService
                 'contact_name' => $request->contact_name,
                 'contact_phone' => $request->contact_phone,
                 'contact_email' => $request->contact_email,
+                'cqc_location_id' => config('flags.cqc_location') ? $request->cqc_location_id : null,
                 'show_referral_disclaimer' => $request->show_referral_disclaimer,
                 'referral_method' => $request->referral_method,
                 'referral_button_text' => $request->referral_button_text,
                 'referral_email' => $request->referral_email,
                 'referral_url' => $request->referral_url,
                 'logo_file_id' => $request->logo_file_id,
+                'score' => $request->score,
                 'last_modified_at' => Date::now(),
+                'ends_at' => $request->filled('ends_at')
+                    ? Date::createFromFormat(CarbonImmutable::ISO8601, $request->ends_at)
+                    : null,
             ];
 
             foreach ($request->input('eligibility_types.custom', []) as $customEligibilityType => $value) {
@@ -175,7 +173,7 @@ class ServicePersistenceService implements DataPersistenceService
                     $file = File::findOrFail($galleryItem['file_id'])->assigned();
 
                     // Create resized version for common dimensions.
-                    foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                    foreach (config('local.cached_image_dimensions') as $maxDimension) {
                         $file->resizedVersion($maxDimension);
                     }
                 }
@@ -186,7 +184,7 @@ class ServicePersistenceService implements DataPersistenceService
                 $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                foreach (config('local.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
             }
@@ -213,6 +211,23 @@ class ServicePersistenceService implements DataPersistenceService
                 $service->serviceGalleryItems()->create([
                     'file_id' => $galleryItem['file_id'],
                 ]);
+            }
+
+            // Create the tag records.
+            if (config('flags.service_tags')) {
+                $tagIds = [];
+                foreach ($request->tags as $tagField) {
+                    $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
+                    if (null === $tag) {
+                        $tag = new Tag([
+                            'slug' => Str::slug($tagField['slug']),
+                            'label' => $tagField['label'],
+                        ]);
+                        $tag->save();
+                    }
+                    $tagIds[] = $tag->id;
+                }
+                $service->tags()->sync($tagIds);
             }
 
             // Create the category taxonomy records.

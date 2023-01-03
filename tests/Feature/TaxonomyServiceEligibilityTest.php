@@ -17,7 +17,6 @@ use Tests\TestCase;
 
 class TaxonomyServiceEligibilityTest extends TestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -47,6 +46,7 @@ class TaxonomyServiceEligibilityTest extends TestCase
                 [
                     'id',
                     'parent_id',
+                    'slug',
                     'name',
                     'order',
                     'children' => [],
@@ -305,6 +305,30 @@ class TaxonomyServiceEligibilityTest extends TestCase
             [
                 'id' => $testEligibilityTypeTaxonomy->id,
                 'parent_id' => $testEligibilityTypeTaxonomy->parent_id,
+                'slug' => $testEligibilityTypeTaxonomy->slug,
+                'name' => $testEligibilityTypeTaxonomy->name,
+                'order' => $testEligibilityTypeTaxonomy->order,
+                'children' => [],
+                'created_at' => $testEligibilityTypeTaxonomy->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $testEligibilityTypeTaxonomy->updated_at->format(CarbonImmutable::ISO8601),
+            ],
+        ]);
+    }
+
+    public function test_guest_can_view_one_by_slug()
+    {
+        $testEligibilityTypeTaxonomy = factory(Taxonomy::class)->create([
+            'parent_id' => $this->testserviceEligibilityType->id,
+        ]);
+
+        $response = $this->json('GET', "/core/v1/taxonomies/service-eligibilities/{$testEligibilityTypeTaxonomy->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            [
+                'id' => $testEligibilityTypeTaxonomy->id,
+                'parent_id' => $testEligibilityTypeTaxonomy->parent_id,
+                'slug' => $testEligibilityTypeTaxonomy->slug,
                 'name' => $testEligibilityTypeTaxonomy->name,
                 'order' => $testEligibilityTypeTaxonomy->order,
                 'children' => [],
@@ -412,16 +436,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
         Passport::actingAs($user);
 
         $eligibilityOne = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'one',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $eligibilityTwo = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'two',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $eligibilityThree = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'three',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -445,16 +472,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
         Passport::actingAs($user);
 
         $eligibilityOne = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'one',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $eligibilityTwo = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'two',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $eligibilityThree = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'three',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -478,16 +508,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
         Passport::actingAs($user);
 
         $eligibilityOne = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'one',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $eligibilityTwo = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'two',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $eligibilityThree = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'three',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -511,16 +544,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
         Passport::actingAs($user);
 
         $oldEligibilityOne = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'one',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $oldEligibilityTwo = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'two',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $oldEligibilityThree = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'three',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -533,16 +569,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
             },
         ]);
         $newEligibilityOne = $newParentEligibility->children()->create([
+            'slug' => 'one-1',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $newEligibilityTwo = $newParentEligibility->children()->create([
+            'slug' => 'two-1',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $newEligibilityThree = $newParentEligibility->children()->create([
+            'slug' => 'three-3',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -601,16 +640,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
         Passport::actingAs($user);
 
         $oldEligibilityOne = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'one',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $oldEligibilityTwo = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'two',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $oldEligibilityThree = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'three',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -623,16 +665,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
             },
         ]);
         $newEligibilityOne = $newParentEligibility->children()->create([
+            'slug' => 'one-1',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $newEligibilityTwo = $newParentEligibility->children()->create([
+            'slug' => 'two-1',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $newEligibilityThree = $newParentEligibility->children()->create([
+            'slug' => 'three-1',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -691,16 +736,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
         Passport::actingAs($user);
 
         $oldEligibilityOne = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'one',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $oldEligibilityTwo = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'two',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $oldEligibilityThree = $this->testserviceEligibilityType->children()->create([
+            'slug' => 'three',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,
@@ -713,16 +761,19 @@ class TaxonomyServiceEligibilityTest extends TestCase
             },
         ]);
         $newEligibilityOne = $newParentEligibility->children()->create([
+            'slug' => 'one-1',
             'name' => 'One',
             'order' => 1,
             'depth' => 1,
         ]);
         $newEligibilityTwo = $newParentEligibility->children()->create([
+            'slug' => 'two-1',
             'name' => 'Two',
             'order' => 2,
             'depth' => 1,
         ]);
         $newEligibilityThree = $newParentEligibility->children()->create([
+            'slug' => 'three-1',
             'name' => 'Three',
             'order' => 3,
             'depth' => 1,

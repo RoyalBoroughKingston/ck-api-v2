@@ -18,7 +18,7 @@ use App\Models\Organisation;
 use App\Models\Taxonomy;
 use App\Support\MissingValue;
 use Illuminate\Support\Facades\DB;
-use Spatie\QueryBuilder\Filter;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrganisationController extends Controller
@@ -43,9 +43,9 @@ class OrganisationController extends Controller
 
         $organisations = QueryBuilder::for($baseQuery)
             ->allowedFilters([
-                Filter::exact('id'),
+                AllowedFilter::exact('id'),
                 'name',
-                Filter::custom('has_permission', HasPermissionFilter::class),
+                AllowedFilter::custom('has_permission', new HasPermissionFilter()),
             ])
             ->allowedSorts('name')
             ->defaultSort('name')
@@ -81,7 +81,7 @@ class OrganisationController extends Controller
                 $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                foreach (config('local.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
             }
@@ -155,7 +155,7 @@ class OrganisationController extends Controller
                 $file = File::findOrFail($request->logo_file_id)->assigned();
 
                 // Create resized version for common dimensions.
-                foreach (config('ck.cached_image_dimensions') as $maxDimension) {
+                foreach (config('local.cached_image_dimensions') as $maxDimension) {
                     $file->resizedVersion($maxDimension);
                 }
             }

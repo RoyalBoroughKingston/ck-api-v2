@@ -9,6 +9,20 @@ use Illuminate\Support\Facades\Date;
 class LogEmailSender implements EmailSender
 {
     /**
+     * Global values to be included in language files.
+     *
+     * @var array
+     */
+    protected $globalValues = [];
+
+    public function __construct()
+    {
+        $globalValues['APP_NAME'] = config('app.name');
+        $globalValues['APP_ADMIN_URL'] = config('local.backend_uri');
+        $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
+    }
+
+    /**
      * @param \App\Emails\Email $email
      */
     public function send(Email $email)
@@ -16,7 +30,7 @@ class LogEmailSender implements EmailSender
         logger()->debug('Email sent at [' . Date::now()->toDateTimeString() . ']', [
             'to' => $email->to,
             'templateId' => $email->templateId,
-            'values' => $email->values,
+            'values' => array_merge($this->globalValues, $email->values),
             'reference' => $email->reference,
             'replyTo' => $email->replyTo,
         ]);

@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
-class CollectionOrganisationEventTest extends TestCase
+class CollectionOrganisationEventsTest extends TestCase
 {
     /**
      * Setup
@@ -52,6 +52,7 @@ class CollectionOrganisationEventTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCollection([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
@@ -289,6 +290,7 @@ class CollectionOrganisationEventTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'image_file_id',
@@ -400,6 +402,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -410,6 +413,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -420,6 +424,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -469,6 +474,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -479,6 +485,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -489,6 +496,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -538,6 +546,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -548,6 +557,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -558,6 +568,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -642,6 +653,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -652,6 +664,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -728,6 +741,7 @@ class CollectionOrganisationEventTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
@@ -752,6 +766,52 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $organisationEvent->id,
+            'slug' => $organisationEvent->slug,
+            'name' => $organisationEvent->name,
+            'intro' => $organisationEvent->meta['intro'],
+            'order' => $organisationEvent->order,
+            'enabled' => $organisationEvent->enabled,
+            'sideboxes' => $organisationEvent->meta['sideboxes'],
+            'created_at' => $organisationEvent->created_at->format(CarbonImmutable::ISO8601),
+            'updated_at' => $organisationEvent->updated_at->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    public function test_guest_can_view_one_by_slug()
+    {
+        $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
+
+        $response = $this->json('GET', "/core/v1/collections/organisation-events/{$organisationEvent->slug}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonResource([
+            'id',
+            'slug',
+            'name',
+            'intro',
+            'order',
+            'enabled',
+            'sideboxes' => [
+                '*' => [
+                    'title',
+                    'content',
+                ],
+            ],
+            'category_taxonomies' => [
+                '*' => [
+                    'id',
+                    'parent_id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'created_at',
+            'updated_at',
+        ]);
+        $response->assertJsonFragment([
+            'id' => $organisationEvent->id,
+            'slug' => $organisationEvent->slug,
             'name' => $organisationEvent->name,
             'intro' => $organisationEvent->meta['intro'],
             'order' => $organisationEvent->order,
@@ -877,6 +937,7 @@ class CollectionOrganisationEventTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
@@ -962,6 +1023,7 @@ class CollectionOrganisationEventTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'name',
             'intro',
             'order',
@@ -1008,6 +1070,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1019,6 +1082,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -1030,6 +1094,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -1043,6 +1108,7 @@ class CollectionOrganisationEventTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$third->id}", [
+            'slug' => 'third',
             'name' => 'Third',
             'intro' => 'Lorem ipsum',
             'order' => 1,
@@ -1069,6 +1135,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1080,6 +1147,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -1091,6 +1159,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -1104,6 +1173,7 @@ class CollectionOrganisationEventTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$first->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 2,
@@ -1130,6 +1200,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1141,6 +1212,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -1152,6 +1224,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -1165,6 +1238,7 @@ class CollectionOrganisationEventTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$first->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 3,
@@ -1191,6 +1265,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $organisationEvent = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1204,6 +1279,7 @@ class CollectionOrganisationEventTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$organisationEvent->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 0,
@@ -1227,6 +1303,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $organisationEvent = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1240,6 +1317,7 @@ class CollectionOrganisationEventTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$organisationEvent->id}", [
+            'slug' => 'first',
             'name' => 'First',
             'intro' => 'Lorem ipsum',
             'order' => 2,
@@ -1395,6 +1473,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1405,6 +1484,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -1415,6 +1495,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -1446,6 +1527,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1456,6 +1538,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -1466,6 +1549,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,
@@ -1497,6 +1581,7 @@ class CollectionOrganisationEventTest extends TestCase
         $user->makeSuperAdmin();
         $first = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'first',
             'name' => 'First',
             'order' => 1,
             'enabled' => true,
@@ -1507,6 +1592,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $second = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'second',
             'name' => 'Second',
             'order' => 2,
             'enabled' => true,
@@ -1517,6 +1603,7 @@ class CollectionOrganisationEventTest extends TestCase
         ]);
         $third = Collection::create([
             'type' => Collection::TYPE_ORGANISATION_EVENT,
+            'slug' => 'third',
             'name' => 'Third',
             'order' => 3,
             'enabled' => true,

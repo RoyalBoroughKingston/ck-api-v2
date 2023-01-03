@@ -34,15 +34,6 @@ def create_certificate_arn_parameter(template):
         )
     )
 
-def create_redirect_certificate_arn_parameter(template):
-    return template.add_parameter(
-        Parameter(
-            'Certificate301Arn',
-            Type='String',
-            Description='The ARN for the CloudFront distribution SSL certificate covering the domain to be 301 redirected (must be in us-east-1).'
-        )
-    )
-
 
 def create_vpc_parameter(template):
     return template.add_parameter(
@@ -60,6 +51,20 @@ def create_subnets_parameter(template):
             'Subnets',
             Type='List<AWS::EC2::Subnet::Id>',
             Description='The list of subnet IDs, for at least two Availability Zones in the region in your Virtual Private Cloud (VPC).'
+        )
+    )
+
+
+def create_database_username_parameter(template):
+    return template.add_parameter(
+        Parameter(
+            'DatabaseUsername',
+            Type='String',
+            Description='The database name and admin username',
+            MinLength='8',
+            MaxLength='36',
+            AllowedPattern='[a-zA-Z0-9_]*',
+            ConstraintDescription='Must only contain alphanumeric characters.'
         )
     )
 
@@ -223,10 +228,10 @@ def create_elasticsearch_instance_class_parameter(template):
             'ElasticsearchInstanceClass',
             Description='The Elasticseach instance class.',
             Type='String',
-            Default='t2.small.elasticsearch',
+            Default='t3.small.elasticsearch',
             AllowedValues=[
-                't2.small.elasticsearch',
-                't2.medium.elasticsearch'
+                't3.small.elasticsearch',
+                't3.medium.elasticsearch'
             ],
             ConstraintDescription='Must select a valid Elasticsearch instance type.'
         )
@@ -245,25 +250,13 @@ def create_elasticsearch_instance_count_parameter(template):
         )
     )
 
-def create_cname_redirect_parameter(template):
-    return template.add_parameter(
-    Parameter(
-        'Cname301',
-        Type='String',
-        Description='The CNAME that should be 301 redirected to the site CNAME.',
-        MinLength='1',
-        AllowedPattern='^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$',
-        ConstraintDescription='Must be a valid domain'
-    )
-)
-
 def create_cname_parameter(template):
     return template.add_parameter(
     Parameter(
         'Cname',
         Type='String',
         Description='The site CNAME.',
-        MinLength='1',
+        MinLength='4',
         AllowedPattern='^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$',
         ConstraintDescription='Must be a valid domain'
     )

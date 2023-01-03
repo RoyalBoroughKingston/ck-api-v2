@@ -19,11 +19,13 @@ class CollectionPersonaSchema extends Schema
             ->properties(
                 Schema::string('id')
                     ->format(Schema::FORMAT_UUID),
+                Schema::string('slug'),
                 Schema::string('name'),
                 Schema::string('intro'),
                 Schema::string('subtitle'),
                 Schema::integer('order'),
                 Schema::boolean('enabled'),
+                Schema::boolean('homepage'),
                 Schema::array('sideboxes')
                     ->maxItems(3)
                     ->items(

@@ -21,6 +21,7 @@ use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -130,6 +131,7 @@ class UpdateRequest extends FormRequest
                 new UkPhoneNumber('Service Contact Phone - Please enter a valid UK telephone number.'),
             ],
             'contact_email' => ['nullable', 'email', 'max:255'],
+            'cqc_location_id' => ['nullable', 'string', 'regex:/^\d\-\d+$/'],
             'show_referral_disclaimer' => [
                 'boolean',
                 new UserHasRole(
@@ -216,7 +218,7 @@ class UpdateRequest extends FormRequest
                     $this->service->referral_url
                 ),
             ],
-
+            'ends_at' => ['nullable', 'date_format:' . CarbonImmutable::ISO8601],
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
@@ -251,7 +253,7 @@ class UpdateRequest extends FormRequest
             'gallery_items.*.file_id' => [
                 'required_with:gallery_items.*',
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG),
                 new FileIsPendingAssignment(function (File $file) {
                     return $this->service
                         ->serviceGalleryItems()
@@ -259,6 +261,21 @@ class UpdateRequest extends FormRequest
                         ->exists();
                 }),
             ],
+
+            'tags' => [
+                'array',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->service->tags->only(['slug', 'label'])->all()
+                ),
+            ],
+            'tags.*' => ['array'],
+            'tags.*.slug' => ['required_with:tags.*', 'string', 'min:1', 'max:255', new Slug()],
+            'tags.*.label' => ['required_with:tags.*', 'string', 'min:1', 'max:255'],
 
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => [
@@ -286,8 +303,32 @@ class UpdateRequest extends FormRequest
             'logo_file_id' => [
                 'nullable',
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG),
                 new FileIsPendingAssignment(),
+            ],
+            'score' => [
+                'nullable',
+                'numeric',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::superAdmin()->id,
+                    ]),
+                    $this->service->score
+                ),
+                function ($attribute, $value, $fail) {
+                    if ($this->service->score !== $value &&
+                        !in_array($value, [
+                            Service::SCORE_POOR,
+                            Service::SCORE_BELOW_AVERAGE,
+                            Service::SCORE_AVERAGE,
+                            Service::SCORE_ABOVE_AVERAGE,
+                            Service::SCORE_EXCELLENT,
+                        ])) {
+                        $fail($attribute . ' should be between 1 and 5');
+                    }
+                },
             ],
         ];
     }

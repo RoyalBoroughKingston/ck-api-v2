@@ -1360,6 +1360,41 @@ class UsersTest extends TestCase
         ]);
     }
 
+    public function test_service_and_organisation_permissions_are_applied_when_updating_to_global_admin()
+    {
+        $invoker = factory(User::class)->create()->makeGlobalAdmin();
+        Passport::actingAs($invoker);
+
+        $service1 = factory(Service::class)->create();
+        $service2 = factory(Service::class)->create();
+        $user = factory(User::class)->create()->makeOrganisationAdmin($service1->organisation);
+
+        $response = $this->json('PUT', "/core/v1/users/{$user->id}", [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'password' => 'Pa$$w0rd',
+            'roles' => [
+                ['role' => Role::NAME_GLOBAL_ADMIN],
+            ],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment([
+            ['role' => Role::NAME_GLOBAL_ADMIN],
+        ]);
+
+        $this->assertTrue($user->isServiceWorker($service1));
+        $this->assertTrue($user->isServiceAdmin($service1));
+        $this->assertTrue($user->isOrganisationAdmin($service1->organisation));
+        $this->assertTrue($user->isServiceWorker($service2));
+        $this->assertTrue($user->isServiceAdmin($service2));
+        $this->assertTrue($user->isOrganisationAdmin($service2->organisation));
+        $this->assertEquals(7, $user->roles()->count());
+    }
+
     public function test_global_admin_cannot_update_super_admin()
     {
         $invoker = factory(User::class)->create()->makeGlobalAdmin();

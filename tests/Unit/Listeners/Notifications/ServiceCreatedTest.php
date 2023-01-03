@@ -32,11 +32,16 @@ class ServiceCreatedTest extends TestCase
         $listener->handle($event);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
-        Queue::assertPushed(NotifyGlobalAdminEmail::class,
+        Queue::assertPushed(
+            NotifyGlobalAdminEmail::class,
             function (NotifyGlobalAdminEmail $email) use ($service, $user) {
-                $this->assertEquals(config('ck.global_admin.email'), $email->to);
-                $this->assertEquals(config('ck.notifications_template_ids.service_created.notify_global_admin.email'),
-                    $email->templateId);
+                $this->assertEquals(config('local.global_admin.email'), $email->to);
+                $this->assertEquals(
+                    config('gov_uk_notify.notifications_template_ids.service_created.notify_global_admin.email'),
+                    $email->templateId
+                );
+                $this->assertEquals('emails.service.created.notify_global_admin.subject', $email->getSubject());
+                $this->assertEquals('emails.service.created.notify_global_admin.content', $email->getContent());
 
                 $this->assertEquals($service->name, $email->values['SERVICE_NAME']);
                 $this->assertEquals($user->full_name, $email->values['ORGANISATION_ADMIN_NAME']);
@@ -46,7 +51,8 @@ class ServiceCreatedTest extends TestCase
                 $this->assertEquals(backend_uri("/services/{$service->id}"), $email->values['SERVICE_URL']);
 
                 return true;
-            });
+            }
+        );
     }
 
     public function test_email_not_sent_to_global_admin_email_when_created_by_global_admin()

@@ -11,30 +11,22 @@ class NotifySubmitterEmail extends Email
      */
     protected function getTemplateId(): string
     {
-        return config('ck.notifications_template_ids.update_request_received.notify_submitter.email');
+        return config('gov_uk_notify.notifications_template_ids.update_request_received.notify_submitter.email');
     }
 
     /**
-     * @return string|null
-     */
-    protected function getReference(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getReplyTo(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @return string
+     * @inheritDoc
      */
     public function getContent(): string
     {
-        return 'Pending to be sent. Content will be filled once sent.';
+        return 'emails.update_request.received.notify_submitter.content';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSubject(): string
+    {
+        return 'emails.update_request.received.notify_submitter.subject';
     }
 }

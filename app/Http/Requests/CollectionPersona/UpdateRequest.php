@@ -53,6 +53,18 @@ class UpdateRequest extends FormRequest
                     $this->collection->enabled
                 ),
             ],
+            'homepage' => [
+                'required',
+                'boolean',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    $this->collection->enabled
+                ),
+            ],
             'sideboxes' => ['present', 'array', 'max:3'],
             'sideboxes.*' => ['array'],
             'sideboxes.*.title' => ['required_with:sideboxes.*', 'string'],

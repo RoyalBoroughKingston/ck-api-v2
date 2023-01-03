@@ -3,6 +3,7 @@
 namespace Tests\Unit\Listeners\Notifications;
 
 use App\Emails\PageFeedbackReceived\NotifyGlobalAdminEmail;
+use App\EmailSenders\MailgunEmailSender;
 use App\Events\EndpointHit;
 use App\Listeners\Notifications\PageFeedbackReceived;
 use App\Models\PageFeedback;
@@ -30,15 +31,20 @@ class PageFeedbackReceivedTest extends TestCase
         $listener->handle($event);
 
         Queue::assertPushedOn('notifications', NotifyGlobalAdminEmail::class);
-        Queue::assertPushed(NotifyGlobalAdminEmail::class,
+        Queue::assertPushed(
+            NotifyGlobalAdminEmail::class,
             function (NotifyGlobalAdminEmail $email) use ($pageFeedback) {
-                $this->assertEquals(config('ck.global_admin.email'), $email->to);
-                $this->assertEquals(config('ck.notifications_template_ids.page_feedback_received.notify_global_admin.email'),
-                    $email->templateId);
+                $this->assertEquals(config('local.global_admin.email'), $email->to);
+                $this->assertEquals(
+                    config('gov_uk_notify.notifications_template_ids.page_feedback_received.notify_global_admin.email'),
+                    $email->templateId
+                );
+                $this->assertEquals('emails.page_feedback.received.notify_global_admin.subject', $email->getSubject());
+                $this->assertEquals('emails.page_feedback.received.notify_global_admin.content', $email->getContent());
                 $this->assertArrayHasKey('FEEDBACK_URL', $email->values);
                 $this->assertArrayHasKey('FEEDBACK_CONTENT', $email->values);
-                $this->assertArrayHasKey('CONTACT_DETAILS_PROVIDED', $email->values);
                 return true;
-            });
+            }
+        );
     }
 }

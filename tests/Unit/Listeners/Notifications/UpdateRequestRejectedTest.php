@@ -45,6 +45,12 @@ class UpdateRequestRejectedTest extends TestCase
         Queue::assertPushed(
             \App\Emails\UpdateRequestRejected\NotifySubmitterEmail::class,
             function (\App\Emails\UpdateRequestRejected\NotifySubmitterEmail $email) {
+                $this->assertEquals(
+                    config('gov_uk_notify.notifications_template_ids.update_request_rejected.notify_submitter.email'),
+                    $email->templateId
+                );
+                $this->assertEquals('emails.update_request.rejected.notify_submitter.subject', $email->getSubject());
+                $this->assertEquals('emails.update_request.rejected.notify_submitter.content', $email->getContent());
                 $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
                 $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
                 $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
@@ -109,6 +115,12 @@ class UpdateRequestRejectedTest extends TestCase
         Queue::assertPushed(
             \App\Emails\OrganisationSignUpFormRejected\NotifySubmitterEmail::class,
             function (\App\Emails\OrganisationSignUpFormRejected\NotifySubmitterEmail $email) {
+                $this->assertEquals(
+                    config('gov_uk_notify.notifications_template_ids.organisation_sign_up_form_rejected.notify_submitter.email'),
+                    $email->templateId
+                );
+                $this->assertEquals('emails.organisation.sign_up_form.rejected.notify_submitter.subject', $email->getSubject());
+                $this->assertEquals('emails.organisation.sign_up_form.rejected.notify_submitter.content', $email->getContent());
                 $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
                 $this->assertArrayHasKey('ORGANISATION_NAME', $email->values);
                 $this->assertArrayHasKey('REQUEST_DATE', $email->values);

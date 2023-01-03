@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+use App\Contracts\VariableSubstituter;
+use App\VariableSubstitution\DoubleParenthesisVariableSubstituter;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
         Date::use(CarbonImmutable::class);
 
         // Geocode.
-        switch (config('ck.geocode_driver')) {
+        switch (config('geocode.geocode_driver')) {
             case 'google':
                 $this->app->singleton(\App\Contracts\Geocoder::class, \App\Geocode\GoogleGeocoder::class);
                 break;
@@ -30,19 +35,13 @@ class AppServiceProvider extends ServiceProvider
                 break;
         }
 
-        // Search.
-        switch (config('scout.driver')) {
-            case 'elastic':
-            default:
-                $this->app->singleton(\App\Contracts\ServiceSearch::class, \App\Search\ElasticsearchServiceSearch::class);
-                $this->app->singleton(\App\Contracts\EventSearch::class, \App\Search\ElasticsearchEventSearch::class);
-                break;
-        }
-
         // Email Sender.
-        switch (config('ck.email_driver')) {
+        switch (config('mail.driver')) {
             case 'gov':
                 $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\GovNotifyEmailSender::class);
+                break;
+            case 'mailgun':
+                $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\MailgunEmailSender::class);
                 break;
             case 'null':
                 $this->app->singleton(\App\Contracts\EmailSender::class, \App\EmailSenders\NullEmailSender::class);
@@ -54,9 +53,12 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // SMS Sender.
-        switch (config('ck.sms_driver')) {
+        switch (config('sms.sms_driver')) {
             case 'gov':
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\GovNotifySmsSender::class);
+                break;
+            case 'twilio':
+                $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\TwilioSmsSender::class);
                 break;
             case 'null':
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\NullSmsSender::class);
@@ -66,6 +68,28 @@ class AppServiceProvider extends ServiceProvider
                 $this->app->singleton(\App\Contracts\SmsSender::class, \App\SmsSenders\LogSmsSender::class);
                 break;
         }
+
+        // Variable substitution.
+        $this->app->bind(VariableSubstituter::class, DoubleParenthesisVariableSubstituter::class);
+
+        /**
+         * Flagged functionality.
+         */
+        Validator::extendImplicit('present_if_flagged', function ($attribute, $value, $parameters, $validator) {
+            switch ($attribute) {
+                case 'cqc_location_id':
+                    $flagged = config('flags.cqc_location');
+                    break;
+                case 'tags':
+                    $flagged = config('flags.service_tags');
+                    break;
+                default:
+                    $flagged = false;
+                    break;
+            }
+
+            return $flagged ? Arr::has($validator->getData(), $attribute) : true;
+        }, Lang::get('validation.present'));
     }
 
     /**

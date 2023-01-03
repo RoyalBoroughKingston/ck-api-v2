@@ -19,6 +19,7 @@ use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserHasRole;
 use App\Rules\VideoEmbed;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -105,6 +106,7 @@ class StoreRequest extends FormRequest
                 new UkPhoneNumber('Service Contact Phone - Please enter a valid UK telephone number.'),
             ],
             'contact_email' => ['present', 'nullable', 'email', 'max:255'],
+            'cqc_location_id' => ['present_if_flagged', 'nullable', 'string', 'regex:/^\d\-\d+$/'],
             'show_referral_disclaimer' => [
                 'required',
                 'boolean',
@@ -178,7 +180,7 @@ class StoreRequest extends FormRequest
                     null
                 ),
             ],
-
+            'ends_at' => ['present', 'nullable', 'date_format:' . CarbonImmutable::ISO8601],
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
@@ -197,17 +199,52 @@ class StoreRequest extends FormRequest
             'gallery_items.*.file_id' => [
                 'required_with:gallery_items.*',
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG),
                 new FileIsPendingAssignment(),
             ],
+
+            'tags' => [
+                'present_if_flagged',
+                'array',
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::globalAdmin()->id,
+                    ]),
+                    []
+                ),
+            ],
+            'tags.*' => ['array'],
+            'tags.*.slug' => ['required_with:tags.*', 'string', 'min:1', 'max:255', new Slug()],
+            'tags.*.label' => ['required_with:tags.*', 'string', 'min:1', 'max:255'],
 
             'category_taxonomies' => $this->categoryTaxonomiesRules(),
             'category_taxonomies.*' => ['exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'logo_file_id' => [
                 'nullable',
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG),
                 new FileIsPendingAssignment(),
+            ],
+            'score' => [
+                'nullable',
+                'numeric',
+                Rule::in([
+                    Service::SCORE_POOR,
+                    Service::SCORE_BELOW_AVERAGE,
+                    Service::SCORE_AVERAGE,
+                    Service::SCORE_ABOVE_AVERAGE,
+                    Service::SCORE_EXCELLENT,
+                ]),
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::superAdmin()->id,
+                    ]),
+                    null
+                ),
             ],
             'eligibility_types' => ['array'],
             'eligibility_types.taxonomies' => ['array'],

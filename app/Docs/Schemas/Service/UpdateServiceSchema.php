@@ -42,7 +42,9 @@ class UpdateServiceSchema extends Schema
                 'useful_infos',
                 'offerings',
                 'gallery_items',
-                'category_taxonomies'
+                'tags',
+                'category_taxonomies',
+                'ends_at'
             )
             ->properties(
                 Schema::string('name'),
@@ -56,6 +58,14 @@ class UpdateServiceSchema extends Schema
                     ),
                 Schema::string('status')
                     ->enum(Service::STATUS_ACTIVE, Service::STATUS_INACTIVE),
+                Schema::integer('score')
+                    ->enum(
+                        Service::SCORE_POOR,
+                        Service::SCORE_BELOW_AVERAGE,
+                        Service::SCORE_AVERAGE,
+                        Service::SCORE_ABOVE_AVERAGE,
+                        Service::SCORE_EXCELLENT
+                    ),
                 Schema::string('intro'),
                 Schema::string('description'),
                 Schema::string('wait_time')
@@ -81,6 +91,7 @@ class UpdateServiceSchema extends Schema
                 Schema::string('contact_name'),
                 Schema::string('contact_phone'),
                 Schema::string('contact_email'),
+                Schema::string('cqc_location_id'),
                 Schema::boolean('show_referral_disclaimer'),
                 Schema::string('referral_method')
                     ->enum(
@@ -115,11 +126,21 @@ class UpdateServiceSchema extends Schema
                                 ->format(Schema::FORMAT_UUID)
                         )
                     ),
+                Schema::array('tags')
+                    ->items(
+                        Schema::object()->properties(
+                            Schema::string('slug'),
+                            Schema::string('label')
+                        )
+                    ),
                 Schema::array('category_taxonomies')
                     ->items(
                         Schema::string()
                             ->format(Schema::FORMAT_UUID)
                     ),
+                Schema::string('ends_at')
+                    ->format(Schema::FORMAT_DATE_TIME)
+                    ->nullable(),
                 Schema::object('eligibility_types')
                     ->properties(
                         Schema::object('custom')

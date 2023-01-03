@@ -36,8 +36,11 @@ class Referral extends Model implements Notifiable
     ];
 
     const STATUS_NEW = 'new';
+
     const STATUS_IN_PROGRESS = 'in_progress';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_INCOMPLETED = 'incompleted';
 
     const REFERENCE_MAX_TRIES = 10;

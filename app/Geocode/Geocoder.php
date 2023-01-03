@@ -10,7 +10,7 @@ use App\Support\Coordinate;
 abstract class Geocoder implements GeocoderContract
 {
     /**
-     * @param \App\Support\Address $address
+     * @param  \App\Support\Address  $address
      * @return \App\Support\Coordinate|null
      */
     protected function retrieveFromCache(Address $address): ?Coordinate
@@ -25,8 +25,8 @@ abstract class Geocoder implements GeocoderContract
     }
 
     /**
-     * @param \App\Support\Address $address
-     * @param \App\Support\Coordinate|null $coordinate
+     * @param  \App\Support\Address  $address
+     * @param  \App\Support\Coordinate|null  $coordinate
      * @return \App\Models\CachedGeocodeResult
      */
     protected function saveToCache(Address $address, ?Coordinate $coordinate): CachedGeocodeResult
@@ -39,7 +39,7 @@ abstract class Geocoder implements GeocoderContract
     }
 
     /**
-     * @param \App\Support\Address $address
+     * @param  \App\Support\Address  $address
      * @return string
      */
     protected function normaliseAddress(Address $address): string

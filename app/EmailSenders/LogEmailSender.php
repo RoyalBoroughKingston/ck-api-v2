@@ -23,11 +23,11 @@ class LogEmailSender implements EmailSender
     }
 
     /**
-     * @param \App\Emails\Email $email
+     * @param  \App\Emails\Email  $email
      */
     public function send(Email $email)
     {
-        logger()->debug('Email sent at [' . Date::now()->toDateTimeString() . ']', [
+        logger()->debug('Email sent at ['.Date::now()->toDateTimeString().']', [
             'to' => $email->to,
             'templateId' => $email->templateId,
             'values' => array_merge($this->globalValues, $email->values),

@@ -22,8 +22,8 @@ class Coordinate implements Arrayable
     /**
      * Coordinate constructor.
      *
-     * @param float $lat
-     * @param float $lon
+     * @param  float  $lat
+     * @param  float  $lon
      */
     public function __construct(float $lat, float $lon)
     {
@@ -69,7 +69,7 @@ class Coordinate implements Arrayable
     }
 
     /**
-     * @param \App\Support\Coordinate $from
+     * @param  \App\Support\Coordinate  $from
      * @return float
      */
     public function distanceFrom(Coordinate $from): float

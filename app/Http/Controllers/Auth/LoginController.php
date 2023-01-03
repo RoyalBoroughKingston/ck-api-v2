@@ -45,14 +45,14 @@ class LoginController extends Controller
     /**
      * The user has been authenticated.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User $user
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     protected function authenticated(Request $request, User $user)
     {
         // If OTP is disabled then skip this method.
-        if (!config('local.otp_enabled')) {
+        if (! config('local.otp_enabled')) {
             return;
         }
 
@@ -103,9 +103,10 @@ EOT;
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @throws \Illuminate\Validation\ValidationException
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function otp(Request $request)
     {
@@ -143,7 +144,8 @@ EOT;
     /**
      * Redirect the user after determining they are locked out.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     protected function sendOtpLockoutResponse(Request $request)
@@ -160,9 +162,10 @@ EOT;
     /**
      * Get the failed login response instance.
      *
-     * @param \Illuminate\Http\Request $request
-     * @throws \Illuminate\Validation\ValidationException
+     * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
     protected function sendFailedOtpResponse(Request $request)
     {
@@ -174,7 +177,7 @@ EOT;
     /**
      * Get the throttle key for the given request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return string
      */
     protected function throttleKey(Request $request)
@@ -184,6 +187,6 @@ EOT;
             Str::lower($request->input($this->username()))
         );
 
-        return $key . '|' . $request->ip();
+        return $key.'|'.$request->ip();
     }
 }

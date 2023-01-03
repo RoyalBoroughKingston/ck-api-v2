@@ -229,8 +229,7 @@ class ServiceLocationTest extends TestCase
     }
 
     public function test_is_open_now_with_nth_occurrence_of_month_frequency_returns_true_if_lands_on_today_but_out_of_hours(
-    )
-    {
+    ) {
         $now = Date::createFromTimestamp(strtotime('second tuesday of august 2018'));
         Date::setTestNow($now->setTime(9, 0));
 

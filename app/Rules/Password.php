@@ -16,7 +16,7 @@ class Password implements Rule
     /**
      * Password constructor.
      *
-     * @param string|null $message
+     * @param  string|null  $message
      */
     public function __construct(?string $message = null)
     {
@@ -26,14 +26,14 @@ class Password implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         // Immediately fail if the value is not a string.
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return false;
         }
 
@@ -49,7 +49,7 @@ class Password implements Rule
      */
     public function message()
     {
-        return $this->message ?? 'The :attribute must be at least eight characters long, contain one uppercase letter, one lowercase letter, one number and one special character (' . static::ALLOWED_SPECIAL_CHARACTERS . ').';
+        return $this->message ?? 'The :attribute must be at least eight characters long, contain one uppercase letter, one lowercase letter, one number and one special character ('.static::ALLOWED_SPECIAL_CHARACTERS.').';
     }
 
     /**
@@ -73,7 +73,7 @@ class Password implements Rule
 
         return collect($characters)
             ->map(function (string $character) {
-                return '\\' . $character;
+                return '\\'.$character;
             })
             ->implode('');
     }

@@ -43,16 +43,16 @@ class Address
      * Address constructor.
      *
      * @param $address
-     * @param string $city
-     * @param string $county
-     * @param string $postcode
-     * @param string $country
+     * @param  string  $city
+     * @param  string  $county
+     * @param  string  $postcode
+     * @param  string  $country
      */
     public function __construct($address, string $city, string $county, string $postcode, string $country)
     {
-        $this->addressLine1 = (array)$address[0];
-        $this->addressLine2 = (array)$address[1] ?? null;
-        $this->addressLine3 = (array)$address[2] ?? null;
+        $this->addressLine1 = (array) $address[0];
+        $this->addressLine2 = (array) $address[1] ?? null;
+        $this->addressLine3 = (array) $address[2] ?? null;
         $this->city = $city;
         $this->county = $county;
         $this->postcode = $postcode;
@@ -61,10 +61,10 @@ class Address
 
     /**
      * @param $address
-     * @param string $city
-     * @param string $county
-     * @param string $postcode
-     * @param string $country
+     * @param  string  $city
+     * @param  string  $county
+     * @param  string  $postcode
+     * @param  string  $country
      * @return \App\Support\Address
      */
     public static function create($address, string $city, string $county, string $postcode, string $country): Address
@@ -90,7 +90,7 @@ class Address
             $this->postcode,
             $this->country,
         ], function ($value) {
-            return (bool)$value;
+            return (bool) $value;
         })));
     }
 }

@@ -27,7 +27,7 @@ If you have any feedback regarding this connection, or have not heard back withi
 
 Many thanks,
 The :APP_NAME Team
-            "
+            ",
         ],
         'notify_referee' => [
             'subject' => 'Confirmation of referral',
@@ -42,7 +42,7 @@ The referral ID is :REFERRAL_ID. If you have any feedback regarding this connect
 
 Many thanks,
 The :APP_NAME Team
-            "
+            ",
         ],
         'notify_service' => [
             'subject' => 'New Referral Received',
@@ -67,13 +67,13 @@ If you have any questions, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team
-            "
-        ]
+            ",
+        ],
     ],
     'completed' => [
         'notify_client' => [
             'subject' => 'Confirmation of referral',
-            'content' => "
+            'content' => '
 Hello,
 
 Your referral ID is :REFERRAL_ID.
@@ -86,7 +86,7 @@ If you have any feedback regarding this connection or believe the service did no
 
 Many thanks,
 The :APP_NAME Team
-            "
+            ',
         ],
         'notify_referee' => [
             'subject' => 'Referral Completed',
@@ -101,42 +101,42 @@ If you would like to leave any feedback on the referral or get in touch with us,
 
 Many thanks,
 The :APP_NAME Team
-            "
-        ]
+            ",
+        ],
     ],
     'incompleted' => [
         'notify_client' => [
             'subject' => 'Referral Incompleted',
-            'content' => "
+            'content' => '
 Hello :Customer name,
 
 Referral ID: :REFERRAL_ID
 
 Your referral to :SERVICE_NAME has been marked as incomplete with the following message:
 
-\":REFERRAL_STATUS\".
+":REFERRAL_STATUS".
 
 If you believe the service did not try to contact you, or you have any other feedback regarding the connection, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team.
-            "
+            ',
         ],
         'notify_referee' => [
             'subject' => 'Referral Incompleted',
-            'content' => "
+            'content' => '
 Hi :REFEREE_NAME,
 
 The referral you made to :SERVICE_NAME has been marked as incomplete with the following message:
 
-\":REFERRAL_STATUS\".
+":REFERRAL_STATUS".
 
 If you believe the service did not try to contact the client, or you have any other feedback regarding the connection, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team.
-            "
-        ]
+            ',
+        ],
     ],
     'unactioned' => [
         'notify_service' => [
@@ -159,13 +159,13 @@ If you have any questions, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team
-            "
-        ]
+            ",
+        ],
     ],
     'unactioned_still' => [
         'notify_global_admin' => [
             'subject' => ':REFERRAL_SERVICE_NAME has a referral about to expire',
-            'content' => "
+            'content' => '
 :REFERRAL_SERVICE_NAME has a referral about to expire. The details are as follows:
 
 - Referral made: :REFERRAL_CREATED_AT
@@ -184,7 +184,7 @@ Service Admin(s):
 
 Organisation Admin(s):
 :ORGANISATION_ADMINS
-            "
-        ]
-    ]
+            ',
+        ],
+    ],
 ];

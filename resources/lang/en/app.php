@@ -18,6 +18,6 @@ return [
     'admin_portal' => 'Admin Portal',
     'api_docs' => 'API documentation',
     'click_here_go' => 'Click here to go to the',
-    'click_here_to' => 'Click here to'
+    'click_here_to' => 'Click here to',
 
 ];

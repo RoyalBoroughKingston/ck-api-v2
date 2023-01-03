@@ -5,7 +5,7 @@ namespace App\Models\Mutators;
 trait CollectionMutators
 {
     /**
-     * @param string $meta
+     * @param  string  $meta
      * @return array
      */
     public function getMetaAttribute(string $meta): array
@@ -14,7 +14,7 @@ trait CollectionMutators
     }
 
     /**
-     * @param array $meta
+     * @param  array  $meta
      */
     public function setMetaAttribute(array $meta)
     {

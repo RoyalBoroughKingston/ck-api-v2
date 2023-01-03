@@ -13,7 +13,7 @@ return [
     'created' => [
         'notify_user' => [
             'subject' => 'Account Created',
-            'content' => "
+            'content' => '
 Hi :NAME,
 
 An account has been created for you using this email address. You can log in to the :APP_NAME  admin portal at:
@@ -26,13 +26,13 @@ If you have any questions, you can email us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME  Team
-            "
-        ]
+            ',
+        ],
     ],
     'roles_updated' => [
         'notify_user' => [
             'subject' => 'Permissions Updated',
-            'content' => "
+            'content' => '
 Hi :NAME,
 
 Your account has had its permissions updated.
@@ -47,7 +47,7 @@ If you have any questions, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME  Team
-            "
-        ]
-    ]
+            ',
+        ],
+    ],
 ];

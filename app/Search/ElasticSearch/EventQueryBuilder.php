@@ -141,7 +141,7 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
     }
 
     /**
-     * @param string $startsAfter
+     * @param  string  $startsAfter
      */
     public function applyStartsAfter(?string $startsAfter): void
     {
@@ -155,7 +155,7 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
     }
 
     /**
-     * @param string $endsBefore
+     * @param  string  $endsBefore
      */
     public function applyEndsBefore(?string $endsBefore): void
     {
@@ -182,7 +182,7 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
                 'path' => 'event_location',
                 'query' => [
                     'geo_distance' => [
-                        'distance' => $distance ? $distance . 'mi' : config('local.search_distance') . 'mi',
+                        'distance' => $distance ? $distance.'mi' : config('local.search_distance').'mi',
                         'event_location.location' => $coordinate->toArray(),
                     ],
                 ],

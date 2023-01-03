@@ -13,13 +13,13 @@ return [
     'scheduled' => [
         'notify_global_admin' => [
             'subject' => ' Scheduled report generated ',
-            'content' => "
+            'content' => '
 Hello,
 
 A :REPORT_FREQUENCY :REPORT_TYPE report has been generated.
 
 Please login to the admin system to view the report.
-            "
-        ]
-    ]
+            ',
+        ],
+    ],
 ];

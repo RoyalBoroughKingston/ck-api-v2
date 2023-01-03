@@ -83,9 +83,9 @@ class CreateOpenActiveTaxonomyTopLeveLParent extends Migration
     /**
      * Get all Open Active Taxonomy IDs.
      *
-     * @param array $rootId
-     * @param array $taxonomyIds
-     * @param mixed $rootIds
+     * @param  array  $rootId
+     * @param  array  $taxonomyIds
+     * @param  mixed  $rootIds
      * @return array
      */
     public function getDescendantTaxonomyIds($rootIds, $taxonomyIds = []): array

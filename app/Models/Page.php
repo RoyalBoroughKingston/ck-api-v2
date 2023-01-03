@@ -15,6 +15,7 @@ class Page extends Model
     use PageMutators;
     use PageScopes;
     use NodeTrait;
+
     /**
      * NodeTrait::usesSoftDelete and Laravel\Scout\Searchable::usesSoftDelete clash.
      */
@@ -133,7 +134,7 @@ class Page extends Model
                         $content[] = $contentBlock['value'];
                         break;
                     case 'cta':
-                        $content[] = $contentBlock['title'] . ' ' . $contentBlock['description'];
+                        $content[] = $contentBlock['title'].' '.$contentBlock['description'];
                         break;
                     default:
                         break;
@@ -219,14 +220,14 @@ class Page extends Model
      * and pass on to descendants (if disabled).
      * Children do not inherit enabled status, but must be enabled individually.
      *
-     * @param mixed $status
+     * @param  mixed  $status
      * @return \App\Models\Page
      */
     public function updateStatus($status): self
     {
         if ($this->parent && $this->parent->enabled === self::DISABLED) {
             $this->enabled = self::DISABLED;
-        } elseif (!is_null($status)) {
+        } elseif (! is_null($status)) {
             $this->enabled = $status;
         }
 
@@ -243,7 +244,7 @@ class Page extends Model
     /**
      * Update the parent relationship.
      *
-     * @param string $parentId
+     * @param  string  $parentId
      * @return \App\Models\Page
      */
     public function updateParent($parentId = false): self
@@ -261,12 +262,12 @@ class Page extends Model
     /**
      * Update the sibling order for the page.
      *
-     * @param int $order
+     * @param  int  $order
      * @return \App\Models\Page
      */
     public function updateOrder($order): self
     {
-        if (!is_null($order)) {
+        if (! is_null($order)) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
             $this->beforeOrAfterNode($siblingAtIndex, $siblingAtIndex->getLft() > $this->getLft());
         }
@@ -278,7 +279,7 @@ class Page extends Model
      * Update the image relationship.
      * Can be passed either null, the current image id or a new image id.
      *
-     * @param string $imageId
+     * @param  string  $imageId
      * @return \App\Models\Page
      */
     public function updateImage($imageId)
@@ -313,8 +314,8 @@ class Page extends Model
     /**
      * Update the collections relationship.
      *
-     * @param array $collectionIds
-     * @param mixed $collections
+     * @param  array  $collectionIds
+     * @param  mixed  $collections
      * @return \App\Models\Page
      */
     public function updateCollections($collectionIds)

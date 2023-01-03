@@ -13,7 +13,7 @@ class PageFeedbackReceived
     /**
      * Handle the event.
      *
-     * @param EndpointHit $event
+     * @param  EndpointHit  $event
      */
     public function handle(EndpointHit $event)
     {
@@ -26,7 +26,7 @@ class PageFeedbackReceived
     }
 
     /**
-     * @param \App\Models\PageFeedback $pageFeedback
+     * @param  \App\Models\PageFeedback  $pageFeedback
      */
     protected function notifyGlobalAdmins(PageFeedback $pageFeedback)
     {

@@ -32,7 +32,7 @@ $factory->define(Page::class, function (Faker $faker) {
 $factory->state(Page::class, 'withImage', [
     'image_file_id' => function () {
         return factory(File::class)->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
     },

@@ -42,6 +42,7 @@ class TaxonomyCategoriesTest extends TestCase
             foreach ($taxonomies as $taxonomy) {
                 if ($taxonomy->children()->count() === 0) {
                     $randomTaxonomy = $taxonomy;
+
                     return false;
                 }
             }
@@ -69,7 +70,7 @@ class TaxonomyCategoriesTest extends TestCase
         $this->json('GET', '/core/v1/taxonomies/categories');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 
@@ -311,6 +312,7 @@ class TaxonomyCategoriesTest extends TestCase
             foreach ($taxonomies as $taxonomy) {
                 if ($taxonomy->children()->count() === 0) {
                     $randomTaxonomy = $taxonomy;
+
                     return false;
                 }
             }
@@ -340,6 +342,7 @@ class TaxonomyCategoriesTest extends TestCase
             foreach ($taxonomies as $taxonomy) {
                 if ($taxonomy->children()->count() === 0) {
                     $randomTaxonomy = $taxonomy;
+
                     return false;
                 }
             }
@@ -371,6 +374,7 @@ class TaxonomyCategoriesTest extends TestCase
             foreach ($taxonomies as $taxonomy) {
                 if ($taxonomy->children()->count() === 0) {
                     $randomTaxonomy = $taxonomy;
+
                     return false;
                 }
             }
@@ -1001,6 +1005,7 @@ class TaxonomyCategoriesTest extends TestCase
             foreach ($taxonomies as $taxonomy) {
                 if ($taxonomy->children()->count() === 0) {
                     $randomTaxonomy = $taxonomy;
+
                     return false;
                 }
             }

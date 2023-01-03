@@ -9,8 +9,8 @@ trait PageScopes
     /**
      * Get the InformationPage sibling at given index.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $index
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  int  $index
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSiblingAtIndex(Builder $query, $index): Builder
@@ -21,8 +21,8 @@ trait PageScopes
     /**
      * Get the Landing Page descendants.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $uuid
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $uuid
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePageDescendants(Builder $query, $uuid): Builder

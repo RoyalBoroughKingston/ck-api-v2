@@ -92,7 +92,7 @@ class CreateScheduledReportsCommand extends Command
     }
 
     /**
-     * @param \App\Models\ReportSchedule $reportSchedule
+     * @param  \App\Models\ReportSchedule  $reportSchedule
      */
     protected function handleWeekly(ReportSchedule $reportSchedule)
     {
@@ -133,7 +133,7 @@ class CreateScheduledReportsCommand extends Command
     }
 
     /**
-     * @param \App\Models\ReportSchedule $reportSchedule
+     * @param  \App\Models\ReportSchedule  $reportSchedule
      */
     protected function handleMonthly(ReportSchedule $reportSchedule)
     {

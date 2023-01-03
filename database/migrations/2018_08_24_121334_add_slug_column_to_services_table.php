@@ -24,7 +24,7 @@ class AddSlugColumnToServicesTable extends Migration
                 do {
                     $slug = $iteration === 0
                         ? Str::slug($service->name)
-                        : Str::slug($service->name) . '-' . $iteration;
+                        : Str::slug($service->name).'-'.$iteration;
                     $iteration++;
                 } while (Service::query()->where('slug', $slug)->exists());
 

@@ -7,7 +7,7 @@ use App\Support\Time;
 trait RegularOpeningHourMutators
 {
     /**
-     * @param string $opensAt
+     * @param  string  $opensAt
      * @return \App\Support\Time
      */
     public function getOpensAtAttribute(string $opensAt): Time
@@ -16,7 +16,7 @@ trait RegularOpeningHourMutators
     }
 
     /**
-     * @param \App\Support\Time|string $opensAt
+     * @param  \App\Support\Time|string  $opensAt
      */
     public function setOpensAtAttribute($opensAt)
     {
@@ -26,7 +26,7 @@ trait RegularOpeningHourMutators
     }
 
     /**
-     * @param string $closesAt
+     * @param  string  $closesAt
      * @return \App\Support\Time
      */
     public function getClosesAtAttribute(string $closesAt): Time
@@ -35,7 +35,7 @@ trait RegularOpeningHourMutators
     }
 
     /**
-     * @param \App\Support\Time|string $closesAt
+     * @param  \App\Support\Time|string  $closesAt
      */
     public function setClosesAtAttribute($closesAt)
     {

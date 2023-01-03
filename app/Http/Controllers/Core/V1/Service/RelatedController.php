@@ -14,8 +14,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 class RelatedController extends Controller
 {
     /**
-     * @param \App\Http\Requests\Service\Related\Request $request
-     * @param \App\Models\Service $service
+     * @param  \App\Http\Requests\Service\Related\Request  $request
+     * @param  \App\Models\Service  $service
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(Request $request, Service $service)

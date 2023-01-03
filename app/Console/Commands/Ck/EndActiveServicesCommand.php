@@ -26,8 +26,9 @@ class EndActiveServicesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @throws \Throwable
      * @return mixed
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

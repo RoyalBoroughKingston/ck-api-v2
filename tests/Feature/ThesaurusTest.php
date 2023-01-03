@@ -15,8 +15,9 @@ class ThesaurusTest extends TestCase
     /**
      * Clean up the testing environment before the next test.
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @return void
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function tearDown(): void
     {

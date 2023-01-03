@@ -27,7 +27,7 @@ class TaxonomyServiceEligibilityController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\TaxonomyServiceEligibility\IndexRequest $request
+     * @param  \App\Http\Requests\TaxonomyServiceEligibility\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -48,7 +48,7 @@ class TaxonomyServiceEligibilityController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\TaxonomyServiceEligibility\StoreRequest $request
+     * @param  \App\Http\Requests\TaxonomyServiceEligibility\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
@@ -77,8 +77,8 @@ class TaxonomyServiceEligibilityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\TaxonomyServiceEligibility\ShowRequest $request
-     * @param \App\Models\Taxonomy $taxonomy
+     * @param  \App\Http\Requests\TaxonomyServiceEligibility\ShowRequest  $request
+     * @param  \App\Models\Taxonomy  $taxonomy
      * @return \App\Http\Resources\TaxonomyCategoryResource
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy)
@@ -97,8 +97,8 @@ class TaxonomyServiceEligibilityController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\TaxonomyServiceEligibility\UpdateRequest $request
-     * @param \App\Models\Taxonomy $taxonomy
+     * @param  \App\Http\Requests\TaxonomyServiceEligibility\UpdateRequest  $request
+     * @param  \App\Models\Taxonomy  $taxonomy
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Taxonomy $taxonomy)
@@ -129,8 +129,8 @@ class TaxonomyServiceEligibilityController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\TaxonomyServiceEligibility\DestroyRequest $request
-     * @param \App\Models\Taxonomy $taxonomy
+     * @param  \App\Http\Requests\TaxonomyServiceEligibility\DestroyRequest  $request
+     * @param  \App\Models\Taxonomy  $taxonomy
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $taxonomy)

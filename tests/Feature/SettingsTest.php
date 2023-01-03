@@ -305,7 +305,7 @@ class SettingsTest extends TestCase
         $this->getJson('/core/v1/settings');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 
@@ -403,7 +403,7 @@ class SettingsTest extends TestCase
         $this->putJson('/core/v1/settings', $this->settingsData);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_UPDATE);
+            return $event->getAction() === Audit::ACTION_UPDATE;
         });
     }
 
@@ -457,7 +457,7 @@ class SettingsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $this->settingsData['cms']['frontend']['banner']['image_file_id'] = $this->getResponseContent($imageResponse, 'data.id');
@@ -521,7 +521,7 @@ class SettingsTest extends TestCase
         $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $this->settingsData['cms']['frontend']['banner'] = [
@@ -557,7 +557,7 @@ class SettingsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $cmsValue = Setting::cms()->value;
@@ -586,7 +586,7 @@ class SettingsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $cmsValue = Setting::cms()->value;
@@ -600,7 +600,7 @@ class SettingsTest extends TestCase
         $this->get('/core/v1/settings/banner-image.png');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 

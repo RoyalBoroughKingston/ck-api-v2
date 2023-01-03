@@ -736,7 +736,7 @@ class UpdateRequestsTest extends TestCase
         $imagePayload = [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . self::BASE64_ENCODED_PNG,
+            'file' => 'data:image/png;base64,'.self::BASE64_ENCODED_PNG,
         ];
 
         $response = $this->json('POST', '/core/v1/files', $imagePayload);

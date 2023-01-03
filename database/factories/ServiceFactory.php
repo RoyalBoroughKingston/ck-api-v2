@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 $factory->define(Service::class, function (Faker $faker) {
-    $name = $faker->company . ' ' . $faker->word() . ' ' . mt_rand(1, 100000);
+    $name = $faker->company.' '.$faker->word().' '.mt_rand(1, 100000);
 
     return [
         'organisation_id' => function () {
             return factory(\App\Models\Organisation::class)->create()->id;
         },
-        'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
+        'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
         'name' => $name,
         'type' => Service::TYPE_SERVICE,
         'status' => Service::STATUS_ACTIVE,

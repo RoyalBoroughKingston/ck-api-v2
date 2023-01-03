@@ -50,6 +50,7 @@ class ReferralIncompletedTest extends TestCase
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_STATUS', $email->values);
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
+
             return true;
         });
 
@@ -64,6 +65,7 @@ class ReferralIncompletedTest extends TestCase
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_STATUS', $email->values);
+
             return true;
         });
     }
@@ -94,6 +96,7 @@ class ReferralIncompletedTest extends TestCase
         Queue::assertPushed(NotifyRefereeSms::class, function (NotifyRefereeSms $sms) {
             $this->assertArrayHasKey('REFEREE_NAME', $sms->values);
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+
             return true;
         });
 
@@ -101,6 +104,7 @@ class ReferralIncompletedTest extends TestCase
         Queue::assertPushed(NotifyClientSms::class, function (NotifyClientSms $sms) {
             $this->assertArrayHasKey('CLIENT_INITIALS', $sms->values);
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+
             return true;
         });
     }
@@ -133,6 +137,7 @@ class ReferralIncompletedTest extends TestCase
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_STATUS', $email->values);
+
             return true;
         });
 
@@ -140,6 +145,7 @@ class ReferralIncompletedTest extends TestCase
         Queue::assertPushed(NotifyClientSms::class, function (NotifyClientSms $sms) {
             $this->assertArrayHasKey('CLIENT_INITIALS', $sms->values);
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+
             return true;
         });
     }

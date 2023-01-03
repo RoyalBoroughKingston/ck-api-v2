@@ -37,6 +37,7 @@ class CreateScheduledReportsCommandTest extends TestCase
         Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) {
             $this->assertArrayHasKey('REPORT_FREQUENCY', $email->values);
             $this->assertArrayHasKey('REPORT_TYPE', $email->values);
+
             return true;
         });
     }
@@ -64,6 +65,7 @@ class CreateScheduledReportsCommandTest extends TestCase
         Queue::assertPushed(NotifyGlobalAdminEmail::class, function (NotifyGlobalAdminEmail $email) {
             $this->assertArrayHasKey('REPORT_FREQUENCY', $email->values);
             $this->assertArrayHasKey('REPORT_TYPE', $email->values);
+
             return true;
         });
     }

@@ -63,7 +63,7 @@ class UpdateRequest extends FormRequest
     }
 
     /**
-     * @param array $roles
+     * @param  array  $roles
      * @return array
      */
     protected function parseRoles(array $roles): array
@@ -107,7 +107,7 @@ class UpdateRequest extends FormRequest
     /**
      * Orders the roles array with the highest first.
      *
-     * @param array $roles
+     * @param  array  $roles
      * @return array
      */
     public function orderRoles(array $roles): array
@@ -164,12 +164,12 @@ class UpdateRequest extends FormRequest
             ],
             'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
             'roles.*.organisation_id' => [
-                'required_if:roles.*.role,' . Role::NAME_ORGANISATION_ADMIN,
+                'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,
                 'exists:organisations,id',
             ],
             'roles.*.service_id' => [
-                'required_if:roles.*.role,' . Role::NAME_SERVICE_WORKER,
-                'required_if:roles.*.role,' . Role::NAME_SERVICE_ADMIN,
+                'required_if:roles.*.role,'.Role::NAME_SERVICE_WORKER,
+                'required_if:roles.*.role,'.Role::NAME_SERVICE_ADMIN,
                 'exists:services,id',
             ],
         ];

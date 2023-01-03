@@ -193,7 +193,7 @@ class OrganisationSignUpFormTest extends TestCase
         $organisation = factory(Organisation::class)->create();
 
         factory(User::class)->create([
-            'email' => 'admin@organisation.org'
+            'email' => 'admin@organisation.org',
         ])->makeOrganisationAdmin($organisation);
 
         $userSubmission = [

@@ -54,19 +54,18 @@ EOT;
     }
 
     /**
-     * @param string $contents
-     *
+     * @param  string  $contents
      * @return bool
      */
     protected function saveToFile(string $contents): bool
     {
         $model = $this->argument('model');
 
-        if (!is_dir(app_path('Models/Mutators'))) {
+        if (! is_dir(app_path('Models/Mutators'))) {
             mkdir(app_path('Models/Mutators'));
         }
 
-        file_put_contents(app_path('Models/Mutators/' . $model . 'Mutators.php'), $contents);
+        file_put_contents(app_path('Models/Mutators/'.$model.'Mutators.php'), $contents);
 
         return true;
     }

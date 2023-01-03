@@ -28,7 +28,7 @@ class UpdateRequestController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\UpdateRequest\IndexRequest $request
+     * @param  \App\Http\Requests\UpdateRequest\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -63,8 +63,8 @@ class UpdateRequestController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\UpdateRequest\ShowRequest $request
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Http\Requests\UpdateRequest\ShowRequest  $request
+     * @param  \App\Models\UpdateRequest  $updateRequest
      * @return \App\Http\Resources\UpdateRequestResource
      */
     public function show(ShowRequest $request, UpdateRequest $updateRequest)
@@ -85,8 +85,8 @@ class UpdateRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\UpdateRequest\DestroyRequest $request
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Http\Requests\UpdateRequest\DestroyRequest  $request
+     * @param  \App\Models\UpdateRequest  $updateRequest
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, UpdateRequest $updateRequest)

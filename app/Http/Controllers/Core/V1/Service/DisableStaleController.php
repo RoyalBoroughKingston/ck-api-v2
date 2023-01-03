@@ -21,13 +21,13 @@ class DisableStaleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Service\DisableStale\UpdateRequest $request
-     * @param \App\Models\Service $service
+     * @param  \App\Http\Requests\Service\DisableStale\UpdateRequest  $request
+     * @param  \App\Models\Service  $service
      * @return \Illuminate\Http\Response
      */
     public function __invoke(UpdateRequest $request, Service $service)
     {
-        return DB::transaction(function () use ($request, $service) {
+        return DB::transaction(function () use ($request) {
             Service::query()
                 ->where('last_modified_at', '<', $request->last_modified_at)
                 ->update(['status' => Service::STATUS_INACTIVE]);

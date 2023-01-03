@@ -14,7 +14,7 @@ class ServiceCreated
     /**
      * Handle the event.
      *
-     * @param EndpointHit $event
+     * @param  EndpointHit  $event
      */
     public function handle(EndpointHit $event)
     {
@@ -24,14 +24,14 @@ class ServiceCreated
         }
 
         // Only send the notification if the user who created the service is not a global admin.
-        if (!$event->getUser()->isGlobalAdmin()) {
+        if (! $event->getUser()->isGlobalAdmin()) {
             $this->notifyGlobalAdmins($event->getModel(), $event->getUser());
         }
     }
 
     /**
-     * @param \App\Models\Service $service
-     * @param \App\Models\User $user
+     * @param  \App\Models\Service  $service
+     * @param  \App\Models\User  $user
      */
     protected function notifyGlobalAdmins(Service $service, User $user)
     {

@@ -339,16 +339,16 @@ class PageTest extends TestCase implements UsesElasticsearch
         $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonStructure([
-            "data" => [],
-            "links" => [],
-            "meta" => [
-                "current_page",
-                "from",
-                "last_page",
-                "path",
-                "per_page",
-                "to",
-                "total",
+            'data' => [],
+            'links' => [],
+            'meta' => [
+                'current_page',
+                'from',
+                'last_page',
+                'path',
+                'per_page',
+                'to',
+                'total',
             ],
 
         ]);

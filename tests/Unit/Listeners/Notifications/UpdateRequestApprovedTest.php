@@ -55,6 +55,7 @@ class UpdateRequestApprovedTest extends TestCase
                 $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
                 $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
                 $this->assertArrayHasKey('REQUEST_DATE', $email->values);
+
                 return true;
             }
         );
@@ -124,6 +125,7 @@ class UpdateRequestApprovedTest extends TestCase
                 $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
                 $this->assertArrayHasKey('ORGANISATION_NAME', $email->values);
                 $this->assertArrayHasKey('REQUEST_DATE', $email->values);
+
                 return true;
             }
         );

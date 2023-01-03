@@ -10,14 +10,14 @@ class Synonyms implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         foreach ($value as $synonym) {
-            if (!is_string($synonym)) {
+            if (! is_string($synonym)) {
                 return false;
             }
         }

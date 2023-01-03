@@ -18,7 +18,8 @@ class UpdateRequestApproved
     /**
      * Handle the event.
      *
-     * @param EndpointHit $event
+     * @param  EndpointHit  $event
+     *
      * @throws \Exception
      */
     public function handle(EndpointHit $event)
@@ -41,7 +42,8 @@ class UpdateRequestApproved
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
+     *
      * @throws \Exception
      */
     protected function notifySubmitterForExisting(UpdateRequest $updateRequest)
@@ -76,7 +78,8 @@ class UpdateRequestApproved
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
+     *
      * @throws \Exception
      */
     protected function notifySubmitterForNew(UpdateRequest $updateRequest)

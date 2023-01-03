@@ -27,7 +27,7 @@ class PageFeedbackController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\PageFeedback\IndexRequest $request
+     * @param  \App\Http\Requests\PageFeedback\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -54,7 +54,7 @@ class PageFeedbackController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\PageFeedback\StoreRequest $request
+     * @param  \App\Http\Requests\PageFeedback\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -78,8 +78,8 @@ class PageFeedbackController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\PageFeedback\ShowRequest $request
-     * @param \App\Models\PageFeedback $pageFeedback
+     * @param  \App\Http\Requests\PageFeedback\ShowRequest  $request
+     * @param  \App\Models\PageFeedback  $pageFeedback
      * @return \App\Http\Resources\PageFeedbackResource
      */
     public function show(ShowRequest $request, PageFeedback $pageFeedback)

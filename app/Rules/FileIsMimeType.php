@@ -15,7 +15,7 @@ class FileIsMimeType implements Rule
     /**
      * FileIsMimeType constructor.
      *
-     * @param string ...$mimeTypes
+     * @param  string  ...$mimeTypes
      */
     public function __construct(string ...$mimeTypes)
     {
@@ -25,8 +25,8 @@ class FileIsMimeType implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $fileId
+     * @param  string  $attribute
+     * @param  mixed  $fileId
      * @return bool
      */
     public function passes($attribute, $fileId)

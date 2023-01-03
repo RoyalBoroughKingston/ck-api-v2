@@ -42,6 +42,7 @@ class UserRolesUpdatedTest extends TestCase
             $this->assertArrayHasKey('NAME', $email->values);
             $this->assertArrayHasKey('OLD_PERMISSIONS', $email->values);
             $this->assertArrayHasKey('PERMISSIONS', $email->values);
+
             return true;
         });
     }

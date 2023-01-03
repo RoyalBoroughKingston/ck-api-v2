@@ -40,8 +40,8 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a from limit.
      *
-     * @param int $page
-     * @param int $perPage
+     * @param  int  $page
+     * @param  int  $perPage
      */
     protected function applyFrom(int $page, int $perPage): void
     {
@@ -51,7 +51,7 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a size limit.
      *
-     * @param int $perPage
+     * @param  int  $perPage
      */
     protected function applySize(int $perPage): void
     {
@@ -61,10 +61,10 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a match query.
      *
-     * @param string $field
-     * @param string $term
-     * @param int $boost
-     * @param mixed $fuzziness
+     * @param  string  $field
+     * @param  string  $term
+     * @param  int  $boost
+     * @param  mixed  $fuzziness
      */
     protected function addMatch(string $field, string $term, $boost = 1, $fuzziness = 'AUTO'): void
     {
@@ -83,9 +83,10 @@ abstract class ElasticsearchQueryBuilder
 
     /**
      * Add a match_phrase query.
-     * @param string $field
-     * @param string $term
-     * @param int $boost
+     *
+     * @param  string  $field
+     * @param  string  $term
+     * @param  int  $boost
      */
     protected function addMatchPhrase(string $field, string $term, $boost = 1): void
     {
@@ -104,8 +105,8 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a filter.
      *
-     * @param string $field
-     * @param mixed $value
+     * @param  string  $field
+     * @param  mixed  $value
      */
     public function addFilter(string $field, $value): void
     {

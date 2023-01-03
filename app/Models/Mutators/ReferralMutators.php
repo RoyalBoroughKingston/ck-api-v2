@@ -5,7 +5,7 @@ namespace App\Models\Mutators;
 trait ReferralMutators
 {
     /**
-     * @param string $name
+     * @param  string  $name
      * @return string
      */
     public function getNameAttribute(string $name): string
@@ -14,7 +14,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      */
     public function setNameAttribute(string $name)
     {
@@ -22,7 +22,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $email
+     * @param  string  $email
      * @return string|null
      */
     public function getEmailAttribute(?string $email): ?string
@@ -31,7 +31,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $email
+     * @param  string|null  $email
      */
     public function setEmailAttribute(?string $email)
     {
@@ -39,7 +39,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $phone
+     * @param  string|null  $phone
      * @return string|null
      */
     public function getPhoneAttribute(?string $phone): ?string
@@ -48,7 +48,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $phone
+     * @param  string|null  $phone
      */
     public function setPhoneAttribute(?string $phone)
     {
@@ -56,7 +56,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $otherContact
+     * @param  string|null  $otherContact
      * @return string|null
      */
     public function getOtherContactAttribute(?string $otherContact): ?string
@@ -65,7 +65,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $otherContact
+     * @param  string|null  $otherContact
      */
     public function setOtherContactAttribute(?string $otherContact)
     {
@@ -73,7 +73,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $postcodeOutwardCode
+     * @param  string|null  $postcodeOutwardCode
      * @return string|null
      */
     public function getPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode): ?string
@@ -82,7 +82,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $postcodeOutwardCode
+     * @param  string|null  $postcodeOutwardCode
      */
     public function setPostcodeOutwardCodeAttribute(?string $postcodeOutwardCode)
     {
@@ -90,7 +90,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $comments
+     * @param  string|null  $comments
      * @return string|null
      */
     public function getCommentsAttribute(?string $comments): ?string
@@ -99,7 +99,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $comments
+     * @param  string|null  $comments
      */
     public function setCommentsAttribute(?string $comments)
     {
@@ -107,7 +107,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $refereeName
+     * @param  string|null  $refereeName
      * @return string|null
      */
     public function getRefereeNameAttribute(?string $refereeName): ?string
@@ -116,7 +116,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $refereeName
+     * @param  string|null  $refereeName
      */
     public function setRefereeNameAttribute(?string $refereeName)
     {
@@ -124,7 +124,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $refereeEmail
+     * @param  string|null  $refereeEmail
      * @return string|null
      */
     public function getRefereeEmailAttribute(?string $refereeEmail): ?string
@@ -133,7 +133,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $refereeEmail
+     * @param  string|null  $refereeEmail
      */
     public function setRefereeEmailAttribute(?string $refereeEmail)
     {
@@ -141,7 +141,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string|null $refereePhone
+     * @param  string|null  $refereePhone
      * @return string|null
      */
     public function getRefereePhoneAttribute(?string $refereePhone): ?string
@@ -150,7 +150,7 @@ trait ReferralMutators
     }
 
     /**
-     * @param string $refereePhone
+     * @param  string  $refereePhone
      */
     public function setRefereePhoneAttribute(?string $refereePhone)
     {

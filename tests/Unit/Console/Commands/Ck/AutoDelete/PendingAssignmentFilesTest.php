@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Console\Commands\Ck\AutoDelete;
 
-use Tests\TestCase;
+use App\Console\Commands\Ck\AutoDelete\PendingAssignmentFilesCommand;
 use App\Models\File;
 use App\Models\Service;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Artisan;
-use App\Console\Commands\Ck\AutoDelete\PendingAssignmentFilesCommand;
+use Illuminate\Support\Facades\Date;
+use Tests\TestCase;
 
 class PendingAssignmentFilesTest extends TestCase
 {
@@ -45,8 +45,8 @@ class PendingAssignmentFilesTest extends TestCase
             ]);
 
         $galleryItem = $service->serviceGalleryItems()->create([
-                'file_id' => $dueForDeletionFile->id,
-            ]);
+            'file_id' => $dueForDeletionFile->id,
+        ]);
 
         Artisan::call(PendingAssignmentFilesCommand::class);
 

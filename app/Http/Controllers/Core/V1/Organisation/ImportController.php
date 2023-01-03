@@ -44,7 +44,7 @@ class ImportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Organisation\ImportRequest $request
+     * @param  \App\Http\Requests\Organisation\ImportRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function __invoke(ImportRequest $request)
@@ -73,7 +73,7 @@ class ImportController extends Controller
     /**
      * Validate the spreadsheet rows.
      *
-     * @param string $filePath
+     * @param  string  $filePath
      * @return array
      */
     public function validateSpreadsheet(string $filePath)
@@ -141,8 +141,7 @@ class ImportController extends Controller
     /**
      * Find exisiting Orgaisations that match rows in the spreadsheet.
      *
-     * @param array $rowIndex
-     *
+     * @param  array  $rowIndex
      * @return array
      */
     public function rowsExist(array $rowIndex)
@@ -161,7 +160,7 @@ class ImportController extends Controller
                 'select group_concat(distinct id order by id separator ";") as ids',
                 'group_concat(distinct name order by name separator ";") as results',
                 'count(name) as row_count',
-                $this->buildSqlReplaceCharacterSet('lower(trim(name))', $normaliseCharacters) . ' as normalised_col',
+                $this->buildSqlReplaceCharacterSet('lower(trim(name))', $normaliseCharacters).' as normalised_col',
             ]),
         ];
         $sql[] = 'FROM organisations';
@@ -170,7 +169,7 @@ class ImportController extends Controller
          * Ignore those organisations where the user has flagged the duplicate as allowed.
          */
         if (count($this->ignoreDuplicateIds)) {
-            $sql[] = 'where id NOT IN ("' . implode('","', $this->ignoreDuplicateIds) . '")';
+            $sql[] = 'where id NOT IN ("'.implode('","', $this->ignoreDuplicateIds).'")';
         }
 
         $sql[] = 'group by normalised_col';
@@ -178,7 +177,7 @@ class ImportController extends Controller
         /**
          * Filter to only take organisations that match with imported rows, or all existing duplicate named organisations are included.
          */
-        $sql[] = 'having normalised_col IN ("' . implode('","', $normalisedNames) . '")';
+        $sql[] = 'having normalised_col IN ("'.implode('","', $normalisedNames).'")';
         $sql[] = 'and row_count > 1';
 
         return DB::select(implode(' ', $sql));
@@ -187,9 +186,9 @@ class ImportController extends Controller
     /**
      * Wrap a string in SQL replace functions for a character set.
      *
-     * @param string $string
-     * @param array $replace
-     * @param string $replacement
+     * @param  string  $string
+     * @param  array  $replace
+     * @param  string  $replacement
      * @return string
      */
     public function buildSqlReplaceCharacterSet(string $string, array $replace, $replacement = '')
@@ -197,9 +196,9 @@ class ImportController extends Controller
         $sql = $string;
         foreach ($replace as $chr) {
             if ($chr === "'" || $chr === '"') {
-                $chr = '\\' . $chr;
+                $chr = '\\'.$chr;
             }
-            $sql = 'replace(' . $sql . ',"' . $chr . '","' . $replacement . '")';
+            $sql = 'replace('.$sql.',"'.$chr.'","'.$replacement.'")';
         }
 
         return $sql;
@@ -208,9 +207,10 @@ class ImportController extends Controller
     /**
      * Format the duplicate Organisations and store details of them.
      *
-     * @param array $duplicates
-     * @param array $headers
-     * @param array $nameIndex
+     * @param  array  $duplicates
+     * @param  array  $headers
+     * @param  array  $nameIndex
+     *
      * @throws App\Exceptions\DuplicateContentException
      */
     public function formatDuplicates(array $duplicates, array $headers, array $nameIndex)
@@ -281,7 +281,7 @@ class ImportController extends Controller
     /**
      * Import the uploaded file contents.
      *
-     * @param string $filePath
+     * @param  string  $filePath
      */
     public function importSpreadsheet(string $filePath)
     {
@@ -306,7 +306,7 @@ class ImportController extends Controller
                  * and add the meta fields to the Organisation row.
                  */
                 $organisationRow['name'] = preg_replace('/[^a-zA-Z0-9,\.\'\&\-" ]/', '', $organisationRow['name']);
-                $organisationRow['slug'] = Str::slug($organisationRow['name'] . ' ' . uniqid(), '-');
+                $organisationRow['slug'] = Str::slug($organisationRow['name'].' '.uniqid(), '-');
                 $organisationRow['created_at'] = Date::now();
                 $organisationRow['updated_at'] = Date::now();
 

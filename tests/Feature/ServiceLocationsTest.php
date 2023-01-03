@@ -12,7 +12,6 @@ use App\Models\Service;
 use App\Models\ServiceLocation;
 use App\Models\UpdateRequest;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Date;
@@ -117,7 +116,7 @@ class ServiceLocationsTest extends TestCase
         $this->json('GET', '/core/v1/service-locations');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 
@@ -260,7 +259,7 @@ class ServiceLocationsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $payload = [
@@ -269,7 +268,7 @@ class ServiceLocationsTest extends TestCase
             'name' => null,
             'regular_opening_hours' => [],
             'holiday_opening_hours' => [],
-            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id')
+            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
         ];
 
         $response = $this->json('POST', '/core/v1/service-locations', $payload);
@@ -656,7 +655,6 @@ class ServiceLocationsTest extends TestCase
      * Upload a specific service location's image.
      */
 
-
     public function test_organisation_admin_can_upload_image()
     {
         /** @var \App\Models\User $user */
@@ -668,7 +666,7 @@ class ServiceLocationsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $response = $this->json('POST', '/core/v1/service-locations', [

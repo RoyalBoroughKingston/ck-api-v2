@@ -12,9 +12,10 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 class LogoServiceOperation extends Operation
 {
     /**
-     * @param string|null $objectId
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @param  string|null  $objectId
      * @return static
+     *
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject
     {

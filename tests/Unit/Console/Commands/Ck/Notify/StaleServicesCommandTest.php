@@ -64,6 +64,7 @@ class StaleServicesCommandTest extends TestCase
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('SERVICE_URL', $email->values);
             $this->assertArrayHasKey('SERVICE_STILL_UP_TO_DATE_URL', $email->values);
+
             return true;
         });
     }
@@ -85,6 +86,7 @@ class StaleServicesCommandTest extends TestCase
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('SERVICE_URL', $email->values);
             $this->assertArrayHasKey('SERVICE_STILL_UP_TO_DATE_URL', $email->values);
+
             return true;
         });
     }
@@ -106,6 +108,7 @@ class StaleServicesCommandTest extends TestCase
             $this->assertArrayHasKey('SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('SERVICE_URL', $email->values);
             $this->assertArrayHasKey('SERVICE_STILL_UP_TO_DATE_URL', $email->values);
+
             return true;
         });
     }
@@ -192,6 +195,7 @@ class StaleServicesCommandTest extends TestCase
             $this->assertArrayHasKey('SERVICE_URL', $email->values);
             $this->assertArrayHasKey('SERVICE_ADMIN_NAMES', $email->values);
             $this->assertArrayHasKey('SERVICE_STILL_UP_TO_DATE_URL', $email->values);
+
             return true;
         });
     }

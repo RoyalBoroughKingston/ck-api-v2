@@ -103,7 +103,7 @@ class StoreRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                'unique:' . table(Service::class) . ',slug',
+                'unique:'.table(Service::class).',slug',
                 new Slug(),
             ],
             'service.name' => ['sometimes', 'required', 'string', 'min:1', 'max:255'],
@@ -193,7 +193,7 @@ class StoreRequest extends FormRequest
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function messages()
     {

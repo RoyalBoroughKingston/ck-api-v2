@@ -2,43 +2,43 @@
 
 namespace Tests\Feature;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Models\File;
-use App\Models\Role;
-use App\Models\User;
+use App\Events\EndpointHit;
 use App\Models\Audit;
+use App\Models\File;
+use App\Models\HolidayOpeningHour;
+use App\Models\Organisation;
+use App\Models\RegularOpeningHour;
+use App\Models\Role;
 use App\Models\Service;
+use App\Models\ServiceLocation;
+use App\Models\ServiceRefreshToken;
+use App\Models\ServiceTaxonomy;
+use App\Models\SocialMedia;
 use App\Models\Tag;
 use App\Models\Taxonomy;
+use App\Models\UpdateRequest;
+use App\Models\User;
 use App\Models\UserRole;
-use App\Events\EndpointHit;
-use App\Models\SocialMedia;
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Faker\Factory as Faker;
-use Illuminate\Support\Arr;
-use App\Models\Organisation;
-use App\Models\UpdateRequest;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Laravel\Passport\Passport;
-use App\Models\ServiceLocation;
-use App\Models\ServiceTaxonomy;
 use Illuminate\Http\UploadedFile;
-use App\Models\HolidayOpeningHour;
-use App\Models\RegularOpeningHour;
-use App\Models\ServiceRefreshToken;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Collection;
+use Laravel\Passport\Passport;
+use Tests\TestCase;
 
 class ServicesTest extends TestCase
 {
     /**
      * Create spreadsheets of services
      *
-     * @param Illuminate\Support\Collection $services
-     * @param array $serviceEligibilities
+     * @param  Illuminate\Support\Collection  $services
+     * @param  array  $serviceEligibilities
      * @return null
      **/
     public function createServiceSpreadsheets(\Illuminate\Support\Collection $services, $serviceEligibilities = null)
@@ -81,13 +81,14 @@ class ServicesTest extends TestCase
             'eligibility_taxonomies',
         ];
 
-        $services = $services->map(function ($service) use ($faker, $serviceEligibilities) {
+        $services = $services->map(function ($service) use ($serviceEligibilities) {
             $serviceAttributes = $service->getAttributes();
             $serviceAttributes['id'] = $service->id ?: uuid();
 
-            if (is_array($serviceEligibilities) && !empty($serviceEligibilities[$serviceAttributes['id']])) {
+            if (is_array($serviceEligibilities) && ! empty($serviceEligibilities[$serviceAttributes['id']])) {
                 $serviceAttributes['eligibility_taxonomies'] = implode(',', $serviceEligibilities[$serviceAttributes['id']]);
             }
+
             return $serviceAttributes;
         });
 
@@ -290,7 +291,7 @@ class ServicesTest extends TestCase
         $this->json('GET', '/core/v1/services');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 
@@ -329,10 +330,10 @@ class ServicesTest extends TestCase
     public function test_guest_can_sort_by_last_modified_at()
     {
         $serviceOne = factory(Service::class)->create([
-            'last_modified_at' => '2020-01-01 13:00:00'
+            'last_modified_at' => '2020-01-01 13:00:00',
         ]);
         $serviceTwo = factory(Service::class)->create([
-            'last_modified_at' => '2020-01-01 20:00:00'
+            'last_modified_at' => '2020-01-01 20:00:00',
         ]);
 
         $response = $this->json('GET', '/core/v1/services?sort=-last_modified_at');
@@ -520,7 +521,7 @@ class ServicesTest extends TestCase
             'referral_email' => null,
             'referral_url' => null,
             'cqc_location_id' => $this->faker->numerify('#-#########'),
-            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString().'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -585,7 +586,7 @@ class ServicesTest extends TestCase
             'referral_email' => null,
             'referral_url' => null,
             'cqc_location_id' => $this->faker->numerify('#-#########'),
-            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString().'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1402,7 +1403,7 @@ class ServicesTest extends TestCase
             ],
             'gallery_items' => [],
             'category_taxonomies' => [
-                $taxonomy->id
+                $taxonomy->id,
             ],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -1470,7 +1471,7 @@ class ServicesTest extends TestCase
             ],
             'gallery_items' => [],
             'category_taxonomies' => [
-                $taxonomy->id
+                $taxonomy->id,
             ],
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -3217,7 +3218,7 @@ class ServicesTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
@@ -3932,7 +3933,7 @@ class ServicesTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $payload = [
@@ -3983,11 +3984,10 @@ class ServicesTest extends TestCase
 
         $updateRequestId = $this->getResponseContent($response, 'id');
 
-
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas(table(UpdateRequest::class), [
             'id' => $updateRequestId,
-            'updateable_id' => null
+            'updateable_id' => null,
         ]);
         $updateRequest = UpdateRequest::where('id', $updateRequestId)->firstOrFail();
         $this->assertEquals($this->getResponseContent($imageResponse, 'data.id'), $updateRequest->data['logo_file_id']);
@@ -4052,7 +4052,6 @@ class ServicesTest extends TestCase
     /**
      * Bulk import services
      */
-
     public function test_guest_cannot_bulk_import()
     {
         Storage::fake('local');
@@ -4064,10 +4063,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -4086,10 +4085,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -4110,10 +4109,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -4136,10 +4135,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4175,10 +4174,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services, $organisation->id);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
@@ -4196,10 +4195,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
@@ -4217,10 +4216,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
@@ -4238,14 +4237,14 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $response = $this->json('GET', "/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name");
+        $response = $this->json('GET', '/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name');
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -4302,14 +4301,14 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
-        $response = $this->json('GET', "/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name");
+        $response = $this->json('GET', '/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name');
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -4375,7 +4374,7 @@ class ServicesTest extends TestCase
 
         foreach ($invalidFieldTypes as $data) {
             $data['organisation_id'] = $organisation->id;
-            $response = $this->json('POST', "/core/v1/services/import", $data);
+            $response = $this->json('POST', '/core/v1/services/import', $data);
             $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -4386,10 +4385,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -4405,10 +4404,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/octet-stream;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/octet-stream;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -4424,10 +4423,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -4465,10 +4464,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4514,10 +4513,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4554,10 +4553,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]));
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4576,10 +4575,10 @@ class ServicesTest extends TestCase
         ]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4625,8 +4624,8 @@ class ServicesTest extends TestCase
 
         $this->createServiceSpreadsheets($services);
 
-        $response = $this->json('POST', "/core/v1/services/import", [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        $response = $this->json('POST', '/core/v1/services/import', [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -4690,8 +4689,8 @@ class ServicesTest extends TestCase
 
         $this->createServiceSpreadsheets($services);
 
-        $response = $this->json('POST', "/core/v1/services/import", [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+        $response = $this->json('POST', '/core/v1/services/import', [
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -4704,8 +4703,8 @@ class ServicesTest extends TestCase
                             'row' => [],
                             'errors' => [
                                 'organisation_id' => [
-                                    "validation.uuid",
-                            "The organisation id field must contain an ID for an organisation you are an organisation admin for."
+                                    'validation.uuid',
+                                    'The organisation id field must contain an ID for an organisation you are an organisation admin for.',
                                 ],
                             ],
                         ],
@@ -4713,8 +4712,8 @@ class ServicesTest extends TestCase
                             'row' => [],
                             'errors' => [
                                 'organisation_id' => [
-                                    "The selected organisation id is invalid.",
-                            "The organisation id field must contain an ID for an organisation you are an organisation admin for."
+                                    'The selected organisation id is invalid.',
+                                    'The organisation id field must contain an ID for an organisation you are an organisation admin for.',
                                 ],
                             ],
                         ],
@@ -4748,10 +4747,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4774,10 +4773,10 @@ class ServicesTest extends TestCase
         ]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4802,10 +4801,10 @@ class ServicesTest extends TestCase
         Passport::actingAs($globalAdminUser);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -4821,10 +4820,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
@@ -4851,10 +4850,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4873,10 +4872,10 @@ class ServicesTest extends TestCase
         ]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -4897,10 +4896,10 @@ class ServicesTest extends TestCase
         Passport::actingAs($superAdminUser);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -4916,10 +4915,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
@@ -4950,10 +4949,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $serviceEligibilityTaxonomyIds->all()]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
@@ -4995,10 +4994,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $invalidServiceEligibilityTaxonomyIds]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -5025,7 +5024,7 @@ class ServicesTest extends TestCase
 
         $categoryTaxonomyIds = [];
         foreach (Taxonomy::category()->children as $taxonomyCategory) {
-            if (!$taxonomyCategory->children->isEmpty()) {
+            if (! $taxonomyCategory->children->isEmpty()) {
                 $categoryTaxonomyIds[] = $taxonomyCategory->children->first()->id;
             }
         }
@@ -5033,10 +5032,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $categoryTaxonomyIds]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson([
@@ -5085,10 +5084,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -5105,10 +5104,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -5138,10 +5137,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -5158,10 +5157,10 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
-        $response = $this->json('POST', "/core/v1/services/import", $data);
+        $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
@@ -5207,7 +5206,6 @@ class ServicesTest extends TestCase
     /**
      * Service Eligibilities
      */
-
     public function test_service_eligiblity_taxonomy_id_schema_on_index()
     {
         $service = factory(Service::class)
@@ -5701,7 +5699,7 @@ class ServicesTest extends TestCase
         $service = $service->fresh()->load('serviceEligibilities');
 
         foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
-            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
+            $this->assertEquals($customFieldValue, $service->{'eligibility_'.$customFieldName.'_custom'});
         }
     }
 
@@ -5760,7 +5758,7 @@ class ServicesTest extends TestCase
         }
 
         foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
-            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
+            $this->assertEquals($customFieldValue, $service->{'eligibility_'.$customFieldName.'_custom'});
         }
     }
 

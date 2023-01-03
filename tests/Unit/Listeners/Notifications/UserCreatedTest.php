@@ -35,6 +35,7 @@ class UserCreatedTest extends TestCase
             $this->assertEquals('emails.user.created.notify_user.content', $email->getContent());
             $this->assertArrayHasKey('NAME', $email->values);
             $this->assertArrayHasKey('PERMISSIONS', $email->values);
+
             return true;
         });
     }

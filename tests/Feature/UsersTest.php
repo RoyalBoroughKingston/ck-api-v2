@@ -2016,7 +2016,7 @@ class UsersTest extends TestCase
      */
 
     /**
-     * @param array $roles
+     * @param  array  $roles
      * @return array
      */
     protected function getCreateUserPayload(array $roles): array
@@ -2032,7 +2032,7 @@ class UsersTest extends TestCase
     }
 
     /**
-     * @param array $roles
+     * @param  array  $roles
      * @return array
      */
     protected function getUpdateUserPayload(array $roles): array

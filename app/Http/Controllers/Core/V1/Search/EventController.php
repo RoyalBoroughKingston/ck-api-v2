@@ -13,10 +13,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class EventController extends Controller
 {
     /**
-     * @param \App\Http\Requests\Search\Event\Request $request
-     * @param \App\Search\SearchCriteriaQuery $criteria
-     * @param \App\Search\ElasticSearch\EventQueryBuilder $builder
-     * @param \App\Search\ElasticSearch\EventEloquentMapper $mapper
+     * @param  \App\Http\Requests\Search\Event\Request  $request
+     * @param  \App\Search\SearchCriteriaQuery  $criteria
+     * @param  \App\Search\ElasticSearch\EventQueryBuilder  $builder
+     * @param  \App\Search\ElasticSearch\EventEloquentMapper  $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(

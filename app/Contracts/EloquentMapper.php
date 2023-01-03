@@ -9,7 +9,7 @@ interface EloquentMapper
     /**
      * Performs the search on the model and returns a paginated collection response.
      *
-     * @param array $esQuery
+     * @param  array  $esQuery
      * @return AnonymousResourceCollection
      */
     public function paginate(array $esQuery): AnonymousResourceCollection;

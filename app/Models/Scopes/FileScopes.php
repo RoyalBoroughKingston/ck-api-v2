@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Date;
 trait FileScopes
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePendingAssignmentDueForDeletion(Builder $query): Builder

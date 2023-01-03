@@ -158,7 +158,7 @@ class CollectionCategoriesTest extends TestCase
         $this->json('GET', '/core/v1/collections/categories');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 
@@ -249,11 +249,11 @@ class CollectionCategoriesTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -336,11 +336,11 @@ class CollectionCategoriesTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -389,11 +389,11 @@ class CollectionCategoriesTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -507,11 +507,11 @@ class CollectionCategoriesTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -546,11 +546,11 @@ class CollectionCategoriesTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -592,11 +592,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -668,11 +668,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -744,11 +744,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -820,11 +820,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -856,11 +856,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -915,11 +915,11 @@ class CollectionCategoriesTest extends TestCase
         $this->fakeEvents();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1072,11 +1072,11 @@ class CollectionCategoriesTest extends TestCase
         $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1097,11 +1097,11 @@ class CollectionCategoriesTest extends TestCase
         $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
 
-        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
+        $base64Image = 'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1121,11 +1121,11 @@ class CollectionCategoriesTest extends TestCase
         $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/jpeg',
         ]);
 
-        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
+        $base64Image = 'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1147,11 +1147,11 @@ class CollectionCategoriesTest extends TestCase
         $collectionCategory = Collection::categories()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1261,11 +1261,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1342,11 +1342,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1379,11 +1379,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1429,11 +1429,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1465,11 +1465,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1578,11 +1578,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1652,11 +1652,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1722,11 +1722,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1797,11 +1797,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1872,11 +1872,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1947,11 +1947,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1995,11 +1995,11 @@ class CollectionCategoriesTest extends TestCase
         $this->truncateCollectionCategories();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -2050,11 +2050,11 @@ class CollectionCategoriesTest extends TestCase
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = factory(File::class)->states('pending-assignment')->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 

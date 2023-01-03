@@ -20,7 +20,7 @@ class DateSanity implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
+     * @param  \Illuminate\Foundation\Http\FormRequest  $request
      */
     public function __construct(\Illuminate\Foundation\Http\FormRequest $request)
     {
@@ -40,8 +40,8 @@ class DateSanity implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)

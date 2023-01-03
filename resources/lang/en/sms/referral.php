@@ -19,7 +19,7 @@ return [
             You've made a connection on :APP_NAME :REFERRAL_ID. The service should contact you within 10 working days. Any feedback contact :CONTACT_EMAIL
 
             The :APP_NAME Team
-            "
+            ",
         ],
         'notify_referee' => [
             'content' => "
@@ -28,7 +28,7 @@ return [
             You've made a connection for a client on :APP_NAME :REFERRAL_ID. The service should contact them within 10 working days. Any feedback contact :CONTACT_EMAIL
 
             The :APP_NAME Team
-            "
+            ",
         ],
     ],
     'completed' => [
@@ -39,7 +39,7 @@ return [
             You've made a connection on :APP_NAME ((REFERRAL_ID)). The service should contact you within 10 working days. Any feedback contact :CONTACT_EMAIL
 
             The :APP_NAME Team
-            "
+            ",
         ],
         'notify_referee' => [
             'content' => "
@@ -50,8 +50,8 @@ return [
             Your client should have been contacted by now, but if they haven't then please contact them on :SERVICE_PHONE or by email at :SERVICE_EMAIL.
 
             The :APP_NAME Team
-            "
-        ]
+            ",
+        ],
     ],
     'incompleted' => [
         'notify_client' => [
@@ -63,7 +63,7 @@ return [
             For details: :CONTACT_EMAIL
 
             The :APP_NAME Team.
-            "
+            ",
         ],
         'notify_referee' => [
             'content' => "
@@ -75,7 +75,7 @@ return [
 
             Many thanks,
             The :APP_NAME Team.
-            "
-        ]
+            ",
+        ],
     ],
 ];

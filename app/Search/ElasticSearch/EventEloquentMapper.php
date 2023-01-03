@@ -35,7 +35,7 @@ class EventEloquentMapper implements EloquentMapper
         // Check if the query has been ordered by distance.
         $sorts = array_map(function ($order) {
             return is_array($order) ? array_keys($order)[0] : $order;
-        }, $esQuery['sort']?? []);
+        }, $esQuery['sort'] ?? []);
         $isOrderedByDistance = in_array('_geo_distance', $sorts);
 
         // Create the query to get the events, and keep ordering from Elasticsearch.
@@ -77,13 +77,13 @@ class EventEloquentMapper implements EloquentMapper
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $events
+     * @param  \Illuminate\Database\Eloquent\Collection  $events
      * @return \Illuminate\Database\Eloquent\Collection
      */
     protected function orderEventsByLocation(array $esQuery, Collection $events): Collection
     {
         return $events->filter(function (Event $event) {
-            return !$event->is_virtual;
+            return ! $event->is_virtual;
         })
             ->sortBy(function (Event $event) use ($esQuery) {
                 $location = $esQuery['sort'][0]['_geo_distance']['event_location.location'];

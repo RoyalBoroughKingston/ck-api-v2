@@ -14,10 +14,11 @@ class LogoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Organisation\Logo\ShowRequest $request
-     * @param \App\Models\Organisation $organisation
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param  \App\Http\Requests\Organisation\Logo\ShowRequest  $request
+     * @param  \App\Models\Organisation  $organisation
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function __invoke(ShowRequest $request, Organisation $organisation)
     {

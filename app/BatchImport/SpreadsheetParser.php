@@ -58,7 +58,7 @@ class SpreadsheetParser
     /**
      * Constructor.
      *
-     * @param mixed $chunkSize
+     * @param  mixed  $chunkSize
      */
     public function __construct($chunkSize = 2048)
     {
@@ -94,6 +94,7 @@ class SpreadsheetParser
      * Read the spreadsheet headers.
      *
      * @param type name
+     *
      * @author
      */
     public function readHeaders()

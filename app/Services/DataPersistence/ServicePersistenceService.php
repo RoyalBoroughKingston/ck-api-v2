@@ -112,7 +112,7 @@ class ServicePersistenceService implements DataPersistenceService
             // Only persist to the database if the user did not request a preview.
             if ($updateRequest->updateable_type === UpdateRequestModel::EXISTING_TYPE_SERVICE) {
                 // Preview currently only available for update operations
-                if (!$request->isPreview()) {
+                if (! $request->isPreview()) {
                     $updateRequest->save();
                 }
             } else {
@@ -159,7 +159,7 @@ class ServicePersistenceService implements DataPersistenceService
             ];
 
             foreach ($request->input('eligibility_types.custom', []) as $customEligibilityType => $value) {
-                $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
+                $fieldName = 'eligibility_'.$customEligibilityType.'_custom';
                 $initialCreateData[$fieldName] = $value;
             }
 
@@ -245,7 +245,7 @@ class ServicePersistenceService implements DataPersistenceService
     /**
      * Return a unique version of the proposed slug.
      *
-     * @param string $slug
+     * @param  string  $slug
      * @return string
      */
     public function uniqueSlug($slug)
@@ -255,7 +255,7 @@ class ServicePersistenceService implements DataPersistenceService
         do {
             $exists = DB::table((new Service())->getTable())->where('slug', $uniqueSlug)->exists();
             if ($exists) {
-                $uniqueSlug = $baseSlug . '-' . $suffix;
+                $uniqueSlug = $baseSlug.'-'.$suffix;
             }
             $suffix++;
         } while ($exists);

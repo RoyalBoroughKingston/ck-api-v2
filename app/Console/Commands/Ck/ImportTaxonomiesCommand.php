@@ -54,7 +54,7 @@ class ImportTaxonomiesCommand extends Command
     {
         parent::__construct();
 
-        $this->slugGenerator = resolve('App\Generators\UniqueSlugGenerator');
+        $this->slugGenerator = resolve(\App\Generators\UniqueSlugGenerator::class);
     }
 
     /**

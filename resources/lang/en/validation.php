@@ -11,14 +11,14 @@ return [
     | the validator class. Some of these rules have multiple versions such
     | as the size rules. Feel free to tweak each of these messages here.
     |
-     */
+    */
 
     'accepted' => 'The :attribute must be accepted.',
     'active_url' => 'The :attribute is not a valid URL.',
     'after' => 'The :attribute must be a date after :date.',
     'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
     'alpha' => 'The :attribute may only contain letters.',
-    'alpha_dash' => 'The :attribute may only contain letters, numbers, and dashes.',
+    'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
     'alpha_num' => 'The :attribute may only contain letters and numbers.',
     'array' => 'The :attribute must be an array.',
     'before' => 'The :attribute must be a date before :date.',
@@ -32,6 +32,7 @@ return [
     'boolean' => 'The :attribute field must be true or false.',
     'confirmed' => 'The :attribute confirmation does not match.',
     'date' => 'The :attribute is not a valid date.',
+    'date_equals' => 'The :attribute must be a date equal to :date.',
     'date_format' => 'The :attribute does not match the format :format.',
     'different' => 'The :attribute and :other must be different.',
     'digits' => 'The :attribute must be :digits digits.',
@@ -39,6 +40,7 @@ return [
     'dimensions' => 'The :attribute has invalid image dimensions.',
     'distinct' => 'The :attribute field has a duplicate value.',
     'email' => 'The :attribute must be a valid email address.',
+    'ends_with' => 'The :attribute must end with one of the following: :values.',
     'exists' => 'The selected :attribute is invalid.',
     'file' => 'The :attribute must be a file.',
     'filled' => 'The :attribute field must have a value.',
@@ -91,13 +93,14 @@ return [
     'not_in' => 'The selected :attribute is invalid.',
     'not_regex' => 'The :attribute format is invalid.',
     'numeric' => 'The :attribute must be a number.',
+    'password' => 'The password is incorrect.',
     'present' => 'The :attribute field must be present.',
     'regex' => 'The :attribute format is invalid.',
     'required' => 'The :attribute field is required.',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
-    'required_with_all' => 'The :attribute field is required when :values is present.',
+    'required_with_all' => 'The :attribute field is required when :values are present.',
     'required_without' => 'The :attribute field is required when :values is not present.',
     'required_without_all' => 'The :attribute field is required when none of :values are present.',
     'same' => 'The :attribute and :other must match.',
@@ -107,11 +110,13 @@ return [
         'string' => 'The :attribute must be :size characters.',
         'array' => 'The :attribute must contain :size items.',
     ],
+    'starts_with' => 'The :attribute must start with one of the following: :values.',
     'string' => 'The :attribute must be a string.',
     'timezone' => 'The :attribute must be a valid zone.',
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
+    'uuid' => 'The :attribute must be a valid UUID.',
 
     /*
     |--------------------------------------------------------------------------
@@ -122,17 +127,11 @@ return [
     | convention "attribute.rule" to name the lines. This makes it quick to
     | specify a specific custom language line for a given attribute rule.
     |
-     */
+    */
 
     'custom' => [
-        'social_medias' => [
-            'size' => 'This field is no longer accepted for services and should be set in the Organisation.',
-        ],
-        'address' => [
-            'not_found' => 'Address not found: :address',
-        ],
-        'service_eligibilities' => [
-            'not_found' => ':ids is not a Service Eligibility Taxonomy |:ids are not Service Eligibility Taxonomies',
+        'attribute-name' => [
+            'rule-name' => 'custom-message',
         ],
     ],
 
@@ -141,11 +140,11 @@ return [
     | Custom Validation Attributes
     |--------------------------------------------------------------------------
     |
-    | The following language lines are used to swap attribute place-holders
-    | with something more reader friendly such as E-Mail Address instead
-    | of "email". This simply helps us make messages a little cleaner.
+    | The following language lines are used to swap our attribute placeholder
+    | with something more reader friendly such as "E-Mail Address" instead
+    | of "email". This simply helps us make our message more expressive.
     |
-     */
+    */
 
     'attributes' => [],
 

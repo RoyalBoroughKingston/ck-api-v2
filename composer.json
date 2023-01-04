@@ -37,7 +37,8 @@
         "superbalist/laravel-google-cloud-storage": "^2.2.2",
         "symfony/yaml": "^4.3.4",
         "twilio/sdk": "^6.6",
-        "fruitcake/laravel-cors": "^0.11.0"
+        "fruitcake/laravel-cors": "^0.11.0",
+        "laravel/ui": "^2.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",

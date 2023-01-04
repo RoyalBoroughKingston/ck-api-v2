@@ -31,6 +31,20 @@ class User extends Authenticatable implements Notifiable
     use UserScopes;
 
     /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Determines if the primary key is a UUID.
+     *
+     * @var bool
+     */
+    protected $keyIsUuid = true;
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool

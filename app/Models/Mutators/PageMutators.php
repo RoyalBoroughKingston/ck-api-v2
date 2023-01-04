@@ -6,7 +6,8 @@ trait PageMutators
 {
     /**
      * Specify parent id attribute mutator.
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      */
     public function setParentAttribute($value)
     {
@@ -26,14 +27,15 @@ trait PageMutators
 
     /**
      * Specify content attribute mutator.
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      */
     public function setContentAttribute($value)
     {
         // Sanitize the JSON content field
 
         foreach ($value as $section => &$sectionContent) {
-            if (!empty($sectionContent['content'])) {
+            if (! empty($sectionContent['content'])) {
                 foreach ($sectionContent['content'] as &$content) {
                     if ($content['type'] === 'copy') {
                         $content['value'] = sanitize_markdown($content['value'] ?? '');

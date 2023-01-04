@@ -13,7 +13,7 @@ class UserRolesUpdated
     /**
      * Handle the event.
      *
-     * @param \App\Events\UserRolesUpdated $event
+     * @param  \App\Events\UserRolesUpdated  $event
      */
     public function handle(UserRolesUpdatedEvent $event)
     {
@@ -21,7 +21,7 @@ class UserRolesUpdated
     }
 
     /**
-     * @param \App\Events\UserRolesUpdated $event
+     * @param  \App\Events\UserRolesUpdated  $event
      */
     protected function notifyUser(UserRolesUpdatedEvent $event)
     {
@@ -69,8 +69,8 @@ class UserRolesUpdated
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $oldRoles
-     * @param \Illuminate\Database\Eloquent\Collection $newRoles
+     * @param  \Illuminate\Database\Eloquent\Collection  $oldRoles
+     * @param  \Illuminate\Database\Eloquent\Collection  $newRoles
      * @return \Illuminate\Database\Eloquent\Collection
      */
     protected function getRevokedRoles(Collection $oldRoles, Collection $newRoles): Collection
@@ -88,8 +88,8 @@ class UserRolesUpdated
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $oldRoles
-     * @param \Illuminate\Database\Eloquent\Collection $newRoles
+     * @param  \Illuminate\Database\Eloquent\Collection  $oldRoles
+     * @param  \Illuminate\Database\Eloquent\Collection  $newRoles
      * @return \Illuminate\Database\Eloquent\Collection
      */
     protected function getAddedRoles(Collection $oldRoles, Collection $newRoles): Collection
@@ -107,7 +107,7 @@ class UserRolesUpdated
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $roles
+     * @param  \Illuminate\Database\Eloquent\Collection  $roles
      * @return \Illuminate\Database\Eloquent\Collection
      */
     protected function filterHighestRoles(Collection $roles): Collection
@@ -138,27 +138,27 @@ class UserRolesUpdated
 
             // Only allow global admin if not also super admin.
             if ($userRole->isGlobalAdmin()) {
-                return !$isSuperAdmin;
+                return ! $isSuperAdmin;
             }
 
             // Only allow organisation admin if not also super admin or global admin.
             if ($userRole->isOrganisationAdmin()) {
-                return !$isSuperAdmin && !$isGlobalAdmin;
+                return ! $isSuperAdmin && ! $isGlobalAdmin;
             }
 
             // Only allow service admin if not also super admin, global admin or organisation admin.
             if ($userRole->isServiceAdmin()) {
-                return !$isSuperAdmin
-                    && !$isGlobalAdmin
-                    && !$isOrganisationAdmin($userRole);
+                return ! $isSuperAdmin
+                    && ! $isGlobalAdmin
+                    && ! $isOrganisationAdmin($userRole);
             }
 
             // Only allow service worker if not also super admin, global admin, organisation admin or service admin.
             if ($userRole->isServiceWorker()) {
-                return !$isSuperAdmin
-                    && !$isGlobalAdmin
-                    && !$isOrganisationAdmin($userRole)
-                    && !$isServiceAdmin($userRole);
+                return ! $isSuperAdmin
+                    && ! $isGlobalAdmin
+                    && ! $isOrganisationAdmin($userRole)
+                    && ! $isServiceAdmin($userRole);
             }
 
             throw new \Exception("User role invalid [{$userRole->role->name}]");

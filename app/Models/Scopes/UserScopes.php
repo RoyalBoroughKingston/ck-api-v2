@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 trait UserScopes
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeGlobalAdmins(Builder $query): Builder
@@ -21,8 +21,8 @@ trait UserScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $alias
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $alias
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithHighestRoleOrder(Builder $query, string $alias = 'highest_role_order'): Builder

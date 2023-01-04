@@ -13,9 +13,9 @@ use Spatie\QueryBuilder\Filters\Filter;
 class HasPermissionFilter implements Filter
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param $value
-     * @param string $property
+     * @param  string  $property
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function __invoke(Builder $query, $value, string $property): Builder
@@ -59,7 +59,7 @@ class HasPermissionFilter implements Filter
     /**
      * Gets the ID's of the organisations the user is an organisation admin for.
      *
-     * @param \App\Models\User $user
+     * @param  \App\Models\User  $user
      * @return array
      */
     protected function getAdministeredOrganisationIds(User $user): array
@@ -72,7 +72,7 @@ class HasPermissionFilter implements Filter
     /**
      * Gets the ID's of the services that belong to the organisations.
      *
-     * @param array $organisationIds
+     * @param  array  $organisationIds
      * @return array
      */
     protected function getServiceIdsForAdministeredOrganisations(array $organisationIds): array
@@ -86,7 +86,7 @@ class HasPermissionFilter implements Filter
     /**
      * Gets the ID's of the service the user is a service admin for.
      *
-     * @param \App\Models\User $user
+     * @param  \App\Models\User  $user
      * @return array
      */
     protected function getAdministeredServiceIds(User $user): array
@@ -100,8 +100,8 @@ class HasPermissionFilter implements Filter
     /**
      * Get the ID's for the users.
      *
-     * @param array $serviceIds
-     * @param array $blacklistedRoleIds Exclude users who have these roles
+     * @param  array  $serviceIds
+     * @param  array  $blacklistedRoleIds Exclude users who have these roles
      * @return array
      */
     protected function getUserIdsForServices(array $serviceIds, array $blacklistedRoleIds): array

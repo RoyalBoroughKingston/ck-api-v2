@@ -12,12 +12,12 @@ return [
     */
 
     'user' => [
-        'content' => "
+        'content' => '
         Hi
 
         :OTP_CODE is your authentication code for :APP_NAME
 
         The :APP_NAME Team
-        "
-    ]
+        ',
+    ],
 ];

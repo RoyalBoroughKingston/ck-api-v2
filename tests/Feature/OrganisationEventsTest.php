@@ -118,7 +118,7 @@ class OrganisationEventsTest extends TestCase
         $organisationEvent1 = factory(OrganisationEvent::class)->states('homepage')->create();
         $organisationEvent2 = factory(OrganisationEvent::class)->create();
 
-        $response = $this->json('GET', "/core/v1/organisation-events?filter[homepage]=1");
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[homepage]=1');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
@@ -155,7 +155,7 @@ class OrganisationEventsTest extends TestCase
             'end_time' => $endtime,
         ]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events");
+        $response = $this->json('GET', '/core/v1/organisation-events');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
@@ -197,7 +197,7 @@ class OrganisationEventsTest extends TestCase
             'end_time' => $endtime,
         ]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events");
+        $response = $this->json('GET', '/core/v1/organisation-events');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
@@ -235,7 +235,7 @@ class OrganisationEventsTest extends TestCase
             'end_time' => $endtime,
         ]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events");
+        $response = $this->json('GET', '/core/v1/organisation-events');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
@@ -348,7 +348,7 @@ class OrganisationEventsTest extends TestCase
             'is_virtual' => true,
         ]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events?filter[has_wheelchair_access]=1");
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_wheelchair_access]=1');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent2->id]);
@@ -357,7 +357,7 @@ class OrganisationEventsTest extends TestCase
         $response->assertJsonMissing(['id' => $organisationEvent3->id]);
         $response->assertJsonMissing(['id' => $organisationEvent5->id]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events?filter[has_induction_loop]=1");
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_induction_loop]=1');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent3->id]);
@@ -366,7 +366,7 @@ class OrganisationEventsTest extends TestCase
         $response->assertJsonMissing(['id' => $organisationEvent2->id]);
         $response->assertJsonMissing(['id' => $organisationEvent5->id]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events?filter[has_wheelchair_access]=1&filter[has_induction_loop]=1");
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_wheelchair_access]=1&filter[has_induction_loop]=1');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent4->id]);
@@ -375,7 +375,7 @@ class OrganisationEventsTest extends TestCase
         $response->assertJsonMissing(['id' => $organisationEvent3->id]);
         $response->assertJsonMissing(['id' => $organisationEvent5->id]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events?filter[has_wheelchair_access]=0");
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_wheelchair_access]=0');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
@@ -441,7 +441,7 @@ class OrganisationEventsTest extends TestCase
             'organisation_id' => $organisation2->id,
         ]);
 
-        $response = $this->json('GET', "/core/v1/organisation-events?filter[has_permission]=true");
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_permission]=true');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
@@ -460,7 +460,7 @@ class OrganisationEventsTest extends TestCase
         $this->json('GET', '/core/v1/organisation-events');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 
@@ -523,7 +523,7 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
@@ -1031,7 +1031,7 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
@@ -1087,7 +1087,7 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
@@ -1605,10 +1605,10 @@ class OrganisationEventsTest extends TestCase
 
         $now = new DateTime();
         $start = new Carbon($organisationEvent->start_date);
-        list($startHour, $startMinute, $startSecond) = explode(':', $organisationEvent->start_time);
+        [$startHour, $startMinute, $startSecond] = explode(':', $organisationEvent->start_time);
         $start->setTime($startHour, $startMinute, $startSecond);
         $end = new Carbon($organisationEvent->end_date);
-        list($endHour, $endMinute, $endSecond) = explode(':', $organisationEvent->end_time);
+        [$endHour, $endMinute, $endSecond] = explode(':', $organisationEvent->end_time);
         $end->setTime($endHour, $endMinute, $endSecond);
         $urlsafeTitle = urlencode($organisationEvent->title);
         $urlsafeIntro = urlencode($organisationEvent->intro);
@@ -1619,24 +1619,24 @@ class OrganisationEventsTest extends TestCase
             'VERSION:2.0',
             'PRODID:-//hacksw/handcal//NONSGML v1.0//EN',
             'BEGIN:VEVENT',
-            'UID:' . $organisationEvent->id,
-            'DTSTAMP:' . $now->format('Ymd\\THis\\Z'),
-            'ORGANIZER;CN=' . $organisationEvent->organiser_name . ':MAILTO:' . $organisationEvent->organiser_email,
-            'DTSTART:' . $start->format('Ymd\\THis\\Z'),
-            'DTEND:' . $end->format('Ymd\\THis\\Z'),
-            'SUMMARY:' . $organisationEvent->title,
-            'DESCRIPTION:' . $organisationEvent->intro,
-            'GEO:' . $organisationEvent->location->lat . ';' . $organisationEvent->location->lon,
-            'LOCATION:' . str_ireplace(',', '\,', $organisationEvent->location->toAddress()->__toString()),
+            'UID:'.$organisationEvent->id,
+            'DTSTAMP:'.$now->format('Ymd\\THis\\Z'),
+            'ORGANIZER;CN='.$organisationEvent->organiser_name.':MAILTO:'.$organisationEvent->organiser_email,
+            'DTSTART:'.$start->format('Ymd\\THis\\Z'),
+            'DTEND:'.$end->format('Ymd\\THis\\Z'),
+            'SUMMARY:'.$organisationEvent->title,
+            'DESCRIPTION:'.$organisationEvent->intro,
+            'GEO:'.$organisationEvent->location->lat.';'.$organisationEvent->location->lon,
+            'LOCATION:'.str_ireplace(',', '\,', $organisationEvent->location->toAddress()->__toString()),
             'END:VEVENT',
             'END:VCALENDAR',
         ]);
 
-        $this->assertEquals('https://calendar.google.com/calendar/render?action=TEMPLATE&dates=' . urlencode($start->format('Ymd\\THis\\Z') . '/' . $end->format('Ymd\\THis\\Z')) . '&details=' . $urlsafeTitle . '&location=' . $urlsafeLocation . '&text=' . $urlsafeIntro, $organisationEvent->googleCalendarlink);
+        $this->assertEquals('https://calendar.google.com/calendar/render?action=TEMPLATE&dates='.urlencode($start->format('Ymd\\THis\\Z').'/'.$end->format('Ymd\\THis\\Z')).'&details='.$urlsafeTitle.'&location='.$urlsafeLocation.'&text='.$urlsafeIntro, $organisationEvent->googleCalendarlink);
 
-        $this->assertEquals('https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&startdt=' . urlencode($start->format(DateTime::ATOM)) . '&enddt=' . urlencode($end->format(DateTime::ATOM)) . '&subject=' . $urlsafeTitle . '&location=' . $urlsafeLocation . '&body=' . $urlsafeIntro, $organisationEvent->microsoftCalendarLink);
+        $this->assertEquals('https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&startdt='.urlencode($start->format(DateTime::ATOM)).'&enddt='.urlencode($end->format(DateTime::ATOM)).'&subject='.$urlsafeTitle.'&location='.$urlsafeLocation.'&body='.$urlsafeIntro, $organisationEvent->microsoftCalendarLink);
 
-        $this->assertEquals(secure_url('/core/v1/organisation-events/' . $organisationEvent->id . '/event.ics'), $organisationEvent->appleCalendarLink);
+        $this->assertEquals(secure_url('/core/v1/organisation-events/'.$organisationEvent->id.'/event.ics'), $organisationEvent->appleCalendarLink);
 
         $response = $this->get($organisationEvent->appleCalendarLink);
 
@@ -1981,7 +1981,7 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $organisationEvent = factory(OrganisationEvent::class)->create();

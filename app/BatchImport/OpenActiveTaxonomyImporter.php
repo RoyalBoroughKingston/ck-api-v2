@@ -27,13 +27,13 @@ class OpenActiveTaxonomyImporter
 
     public function __construct()
     {
-        $this->slugGenerator = resolve('App\Generators\UniqueSlugGenerator');
+        $this->slugGenerator = resolve(\App\Generators\UniqueSlugGenerator::class);
     }
 
     /**
      * Fetch the Open Active taxonomy data and store it as a collection.
      *
-     * @param mixed $openActiveDirectoryUrl
+     * @param  mixed  $openActiveDirectoryUrl
      * @return array
      */
     public function fetchTaxonomies($openActiveDirectoryUrl)
@@ -42,7 +42,7 @@ class OpenActiveTaxonomyImporter
         try {
             $response = $client->get($openActiveDirectoryUrl);
             if (200 === $response->getStatusCode() && $response->getBody()->isReadable()) {
-                $data = json_decode((string)$response->getBody(), true);
+                $data = json_decode((string) $response->getBody(), true);
 
                 return $data['concept'];
             }
@@ -84,8 +84,8 @@ class OpenActiveTaxonomyImporter
     /**
      * Import the formatted taxonomies into the database.
      *
-     * @param \App\Models\Taxonomy $rootTaxonomy
-     * @param array $taxonomyImports
+     * @param  \App\Models\Taxonomy  $rootTaxonomy
+     * @param  array  $taxonomyImports
      */
     public function importTaxonomies(Taxonomy $openActiveCategory, array $taxonomyImports)
     {
@@ -106,9 +106,9 @@ class OpenActiveTaxonomyImporter
     /**
      * Map the imported data into an import friendly format.
      *
-     * @param \App\Models\Taxonomy $rootTaxonomy
+     * @param  \App\Models\Taxonomy  $rootTaxonomy
      * @param array openActiveTaxonomyData
-     * @param mixed $openActiveTaxonomyData
+     * @param  mixed  $openActiveTaxonomyData
      * @return array
      */
     public function mapOpenActiveTaxonomyImport(Taxonomy $rootTaxonomy, $openActiveTaxonomyData)
@@ -129,7 +129,7 @@ class OpenActiveTaxonomyImporter
     /**
      * Return the uuid component from an Open Active directory url.
      *
-     * @param string $identifierUrl
+     * @param  string  $identifierUrl
      * @return string
      */
     private function parseIdentifier(string $identifierUrl)
@@ -140,7 +140,7 @@ class OpenActiveTaxonomyImporter
     /**
      * Convert Open Active taxonomies into Taxonomy model data.
      *
-     * @param \App\Models\Taxonomy $rootTaxonomy
+     * @param  \App\Models\Taxonomy  $rootTaxonomy
      * @param array openActiveTaxonomyData
      * @return array
      */

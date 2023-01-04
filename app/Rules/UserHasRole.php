@@ -27,9 +27,9 @@ class UserHasRole implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\UserRole $userRole
-     * @param mixed $originalValue
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\UserRole  $userRole
+     * @param  mixed  $originalValue
      */
     public function __construct(User $user, UserRole $userRole, $originalValue)
     {
@@ -41,8 +41,8 @@ class UserHasRole implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)

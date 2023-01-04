@@ -193,7 +193,7 @@ class OrganisationSignUpFormTest extends TestCase
         $organisation = factory(Organisation::class)->create();
 
         factory(User::class)->create([
-            'email' => 'admin@organisation.org'
+            'email' => 'admin@organisation.org',
         ])->makeOrganisationAdmin($organisation);
 
         $userSubmission = [
@@ -365,6 +365,8 @@ class OrganisationSignUpFormTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->json('POST', '/core/v1/organisation-sign-up-forms');
+
+        dump($response);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }

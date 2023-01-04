@@ -24,7 +24,7 @@ class AddSlugColumnToOrganisationsTable extends Migration
                 do {
                     $slug = $iteration === 0
                         ? Str::slug($organisation->name)
-                        : Str::slug($organisation->name) . '-' . $iteration;
+                        : Str::slug($organisation->name).'-'.$iteration;
                     $iteration++;
                 } while (Organisation::query()->where('slug', $slug)->exists());
 

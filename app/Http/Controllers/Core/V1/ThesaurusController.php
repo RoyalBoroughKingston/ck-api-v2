@@ -27,9 +27,10 @@ class ThesaurusController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Thesaurus\IndexRequest $request
-     * @throws \Exception
+     * @param  \App\Http\Requests\Thesaurus\IndexRequest  $request
      * @return \App\Http\Responses\Thesaurus
+     *
+     * @throws \Exception
      */
     public function index(IndexRequest $request)
     {
@@ -67,9 +68,10 @@ class ThesaurusController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Thesaurus\UpdateRequest $request
-     * @throws \Exception
+     * @param  \App\Http\Requests\Thesaurus\UpdateRequest  $request
      * @return \App\Http\Responses\Thesaurus
+     *
+     * @throws \Exception
      */
     public function update(UpdateRequest $request)
     {
@@ -84,7 +86,7 @@ class ThesaurusController extends Controller
         // Fill out the arrays with empty strings to match the highest.
         foreach ($synonyms as &$synonym) {
             foreach (range(0, $highestCount - 1) as $index) {
-                if (!isset($synonym[$index])) {
+                if (! isset($synonym[$index])) {
                     $synonym[$index] = '';
                 }
             }

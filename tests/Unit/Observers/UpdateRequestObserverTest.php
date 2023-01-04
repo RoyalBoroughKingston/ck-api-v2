@@ -39,6 +39,7 @@ class UpdateRequestObserverTest extends TestCase
                 $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
                 $this->assertArrayHasKey('RESOURCE_NAME', $email->values);
                 $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
+
                 return true;
             }
         );
@@ -54,6 +55,7 @@ class UpdateRequestObserverTest extends TestCase
                 $this->assertArrayHasKey('RESOURCE_TYPE', $email->values);
                 $this->assertArrayHasKey('RESOURCE_ID', $email->values);
                 $this->assertArrayHasKey('REQUEST_URL', $email->values);
+
                 return true;
             }
         );
@@ -111,6 +113,7 @@ class UpdateRequestObserverTest extends TestCase
             function (\App\Emails\OrganisationSignUpFormReceived\NotifySubmitterEmail $email) {
                 $this->assertArrayHasKey('SUBMITTER_NAME', $email->values);
                 $this->assertArrayHasKey('ORGANISATION_NAME', $email->values);
+
                 return true;
             }
         );
@@ -124,6 +127,7 @@ class UpdateRequestObserverTest extends TestCase
             function (\App\Emails\OrganisationSignUpFormReceived\NotifyGlobalAdminEmail $email) {
                 $this->assertArrayHasKey('ORGANISATION_NAME', $email->values);
                 $this->assertArrayHasKey('REQUEST_URL', $email->values);
+
                 return true;
             }
         );

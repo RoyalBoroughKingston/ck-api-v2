@@ -12,7 +12,7 @@ use Illuminate\Http\Response;
 class BannerImageController extends Controller
 {
     /**
-     * @param \App\Http\Requests\Setting\BannerImage\ShowRequest $request
+     * @param  \App\Http\Requests\Setting\BannerImage\ShowRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request)

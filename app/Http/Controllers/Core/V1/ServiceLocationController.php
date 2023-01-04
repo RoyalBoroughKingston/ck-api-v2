@@ -33,7 +33,7 @@ class ServiceLocationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\ServiceLocation\IndexRequest $request
+     * @param  \App\Http\Requests\ServiceLocation\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -58,7 +58,7 @@ class ServiceLocationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\ServiceLocation\StoreRequest $request
+     * @param  \App\Http\Requests\ServiceLocation\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -123,8 +123,8 @@ class ServiceLocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\ServiceLocation\ShowRequest $request
-     * @param \App\Models\ServiceLocation $serviceLocation
+     * @param  \App\Http\Requests\ServiceLocation\ShowRequest  $request
+     * @param  \App\Models\ServiceLocation  $serviceLocation
      * @return \App\Http\Resources\ServiceLocationResource
      */
     public function show(ShowRequest $request, ServiceLocation $serviceLocation)
@@ -144,8 +144,8 @@ class ServiceLocationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\ServiceLocation\UpdateRequest $request
-     * @param \App\Models\ServiceLocation $serviceLocation
+     * @param  \App\Http\Requests\ServiceLocation\UpdateRequest  $request
+     * @param  \App\Models\ServiceLocation  $serviceLocation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, ServiceLocation $serviceLocation)
@@ -153,10 +153,10 @@ class ServiceLocationController extends Controller
         return DB::transaction(function () use ($request, $serviceLocation) {
             // Initialise the data array.
             $data = array_filter_missing([
-                'name' => $request->missing('name'),
+                'name' => $request->missingValue('name'),
                 'regular_opening_hours' => $request->has('regular_opening_hours') ? [] : new MissingValue(),
                 'holiday_opening_hours' => $request->has('holiday_opening_hours') ? [] : new MissingValue(),
-                'image_file_id' => $request->missing('image_file_id'),
+                'image_file_id' => $request->missingValue('image_file_id'),
             ]);
 
             // Loop through each regular opening hour to normalise and then append to the array.
@@ -215,8 +215,8 @@ class ServiceLocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\ServiceLocation\DestroyRequest $request
-     * @param \App\Models\ServiceLocation $serviceLocation
+     * @param  \App\Http\Requests\ServiceLocation\DestroyRequest  $request
+     * @param  \App\Models\ServiceLocation  $serviceLocation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, ServiceLocation $serviceLocation)

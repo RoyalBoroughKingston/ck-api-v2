@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 trait TaxonomyScopes
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeTopLevelCategories(Builder $query): Builder
@@ -16,7 +16,7 @@ trait TaxonomyScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrganisations(Builder $query): Builder
@@ -25,7 +25,7 @@ trait TaxonomyScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeTopLevelServiceEligibilities(Builder $query): Builder

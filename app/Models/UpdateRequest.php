@@ -63,7 +63,7 @@ class UpdateRequest extends Model
      */
     public function isExisting(): bool
     {
-        return !$this->isNew();
+        return ! $this->isNew();
     }
 
     /**
@@ -99,7 +99,7 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @param \App\Models\User|null $user
+     * @param  \App\Models\User|null  $user
      * @return \App\Models\UpdateRequest
      */
     public function apply(User $user = null): self
@@ -114,9 +114,10 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @param \App\Models\User|null $user
-     * @throws \Exception
+     * @param  \App\Models\User|null  $user
      * @return bool|null
+     *
+     * @throws \Exception
      */
     public function delete(User $user = null)
     {
@@ -142,7 +143,7 @@ class UpdateRequest extends Model
      */
     protected function createUpdateableInstance(): AppliesUpdateRequests
     {
-        $className = '\\App\\UpdateRequest\\' . Str::studly($this->updateable_type);
+        $className = '\\App\\UpdateRequest\\'.Str::studly($this->updateable_type);
 
         return resolve($className);
     }

@@ -51,8 +51,8 @@ abstract class Sms implements ShouldQueue
     /**
      * Sms constructor.
      *
-     * @param string $to
-     * @param array $values
+     * @param  string  $to
+     * @param  array  $values
      */
     public function __construct(string $to, array $values = [])
     {
@@ -102,7 +102,7 @@ abstract class Sms implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param \App\Contracts\SmsSender $smsSender
+     * @param  \App\Contracts\SmsSender  $smsSender
      */
     public function handle(SmsSender $smsSender)
     {

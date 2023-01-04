@@ -18,7 +18,8 @@ class UpdateRequestObserver
     /**
      * Handle to the update request "created" event.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
+     *
      * @throws \Exception
      */
     public function created(UpdateRequest $updateRequest)
@@ -38,7 +39,7 @@ class UpdateRequestObserver
 
     private function handleExistingUpdateRequest(UpdateRequest $updateRequest)
     {
-        if (!$this->ownerIsGlobalAdmin($updateRequest)) {
+        if (! $this->ownerIsGlobalAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForExisting($updateRequest);
         }
 
@@ -48,7 +49,7 @@ class UpdateRequestObserver
 
     private function handleNewUpdateRequest(UpdateRequest $updateRequest)
     {
-        if (!$this->ownerIsGlobalAdmin($updateRequest)) {
+        if (! $this->ownerIsGlobalAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForNew($updateRequest);
         }
     }
@@ -62,7 +63,7 @@ class UpdateRequestObserver
      * Removes the field present in the new update request from any
      * pending ones, for the same resource.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     protected function removeSameFieldsForPendingAndExisting(UpdateRequest $updateRequest)
     {
@@ -97,7 +98,7 @@ class UpdateRequestObserver
      * data objects. This is called after removing the same fields
      * for new update requests.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     protected function deleteEmptyPendingForExisting(UpdateRequest $updateRequest)
     {
@@ -112,7 +113,8 @@ class UpdateRequestObserver
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
+     *
      * @throws \Exception
      */
     protected function sendCreatedNotificationsForExisting(UpdateRequest $updateRequest)
@@ -163,7 +165,8 @@ class UpdateRequestObserver
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
+     *
      * @throws \Exception
      */
     protected function sendCreatedNotificationsForNew(UpdateRequest $updateRequest)

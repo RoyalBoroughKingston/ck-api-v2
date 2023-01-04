@@ -1054,7 +1054,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
             'eligibilities' => [
-                '12 - 15 years'],
+                '12 - 15 years', ],
         ]);
 
         $response->assertStatus(Response::HTTP_OK);

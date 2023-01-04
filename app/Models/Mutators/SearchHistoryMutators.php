@@ -5,7 +5,7 @@ namespace App\Models\Mutators;
 trait SearchHistoryMutators
 {
     /**
-     * @param string $query
+     * @param  string  $query
      * @return array
      */
     public function getQueryAttribute(string $query): array
@@ -14,7 +14,7 @@ trait SearchHistoryMutators
     }
 
     /**
-     * @param array $query
+     * @param  array  $query
      */
     public function setQueryAttribute(array $query)
     {

@@ -13,10 +13,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class PageController
 {
     /**
-     * @param \App\Http\Requests\Search\Page\Request $request
-     * @param \App\Search\SearchCriteriaQuery $criteria
-     * @param \App\Search\ElasticSearch\PageQueryBuilder $builder
-     * @param \App\Search\ElasticSearch\PageEloquentMapper $mapper
+     * @param  \App\Http\Requests\Search\Page\Request  $request
+     * @param  \App\Search\SearchCriteriaQuery  $criteria
+     * @param  \App\Search\ElasticSearch\PageQueryBuilder  $builder
+     * @param  \App\Search\ElasticSearch\PageEloquentMapper  $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(

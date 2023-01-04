@@ -14,7 +14,7 @@ return [
         'received' => [
             'notify_global_admin' => [
                 'subject' => 'Organisation Sign Up Form Submitted',
-                'content' => "
+                'content' => '
 Hello,
 
 An organisation sign up form has been submitted for :ORGANISATION_NAME.
@@ -24,11 +24,11 @@ Please review the request below before approving/rejecting:
 
 Many thanks,
 The :APP_NAME Team
-                "
-                ],
+                ',
+            ],
             'notify_submitter' => [
                 'subject' => 'Organisation Sign Up Form Submitted',
-                'content' => "
+                'content' => '
 Hi :SUBMITTER_NAME,
 
 Your request to register :ORGANISATION_NAME on :APP_NAME has been submitted and received. A member of the admin team will review it shortly.
@@ -37,13 +37,13 @@ If you have any questions, please get in touch at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team
-                "
-            ]
+                ',
+            ],
         ],
         'approved' => [
             'notify_submitter' => [
                 'subject' => 'Organisation Sign Up Form Approved ',
-                'content' => "
+                'content' => '
 Hi :SUBMITTER_NAME,
 
 Your request to register :ORGANISATION_NAME on :APP_NAME on :request_date has been approved.
@@ -56,13 +56,13 @@ If you have any questions, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team
-                "
-            ]
+                ',
             ],
-            'rejected' => [
-                'notify_submitter' => [
-                    'subject' => 'New Organisation not approved',
-                    'content' => "
+        ],
+        'rejected' => [
+            'notify_submitter' => [
+                'subject' => 'New Organisation not approved',
+                'content' => '
 Hi :SUBMITTER_NAME,
 
 Thank you for submitting your request to have :ORGANISATION_NAME listed on :APP_NAME.
@@ -75,8 +75,8 @@ If you have any questions, please contact us at :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team
-                    "
-                ]
-            ]
-    ]
+                    ',
+            ],
+        ],
+    ],
 ];

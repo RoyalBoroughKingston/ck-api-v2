@@ -24,6 +24,7 @@ class ForgotPasswordTest extends TestCase
             $this->assertEquals($user->email, $email->to);
             $this->assertEquals(config('gov_uk_notify.notifications_template_ids.password_reset.email'), $email->templateId);
             $this->assertArrayHasKey('PASSWORD_RESET_LINK', $email->values);
+
             return true;
         });
     }

@@ -39,6 +39,7 @@
 
         <server name="QUEUE_DRIVER" value="sync"/>
 
+        <server name="CACHE_DRIVER" value="redis"/>
         <server name="REDIS_HOST" value="redis-testing"/>
 
         <server name="GEOCODE_DRIVER" value="stub"/>

@@ -26,6 +26,7 @@ class LoginTest extends TestCase
         Queue::assertPushedOn('notifications', UserSms::class);
         Queue::assertPushed(UserSms::class, function (UserSms $sms) {
             $this->assertArrayHasKey('OTP_CODE', $sms->values);
+
             return true;
         });
     }

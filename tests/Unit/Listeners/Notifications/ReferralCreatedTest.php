@@ -2,20 +2,19 @@
 
 namespace Tests\Unit\Listeners\Notifications;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Service;
-use App\Models\Referral;
-use App\Events\EndpointHit;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Queue;
-use App\EmailSenders\MailgunEmailSender;
-use App\Sms\ReferralCreated\NotifyClientSms;
-use App\Sms\ReferralCreated\NotifyRefereeSms;
-use App\Listeners\Notifications\ReferralCreated;
 use App\Emails\ReferralCreated\NotifyClientEmail;
 use App\Emails\ReferralCreated\NotifyRefereeEmail;
 use App\Emails\ReferralCreated\NotifyServiceEmail;
+use App\Events\EndpointHit;
+use App\Listeners\Notifications\ReferralCreated;
+use App\Models\Referral;
+use App\Models\Service;
+use App\Models\User;
+use App\Sms\ReferralCreated\NotifyClientSms;
+use App\Sms\ReferralCreated\NotifyRefereeSms;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Queue;
+use Tests\TestCase;
 
 class ReferralCreatedTest extends TestCase
 {
@@ -53,6 +52,7 @@ class ReferralCreatedTest extends TestCase
             $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
+
             return true;
         });
 
@@ -67,6 +67,7 @@ class ReferralCreatedTest extends TestCase
             $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
+
             return true;
         });
 
@@ -84,6 +85,7 @@ class ReferralCreatedTest extends TestCase
             $this->assertArrayHasKey('CONTACT_INFO', $email->values);
             $this->assertArrayHasKey('REFERRAL_TYPE', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
+
             return true;
         });
     }
@@ -113,12 +115,14 @@ class ReferralCreatedTest extends TestCase
         Queue::assertPushedOn('notifications', NotifyRefereeSms::class);
         Queue::assertPushed(NotifyRefereeSms::class, function (NotifyRefereeSms $sms) {
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+
             return true;
         });
 
         Queue::assertPushedOn('notifications', NotifyClientSms::class);
         Queue::assertPushed(NotifyClientSms::class, function (NotifyClientSms $sms) {
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+
             return true;
         });
     }
@@ -151,12 +155,14 @@ class ReferralCreatedTest extends TestCase
             $this->assertArrayHasKey('REFERRAL_SERVICE_NAME', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
             $this->assertArrayHasKey('REFERRAL_ID', $email->values);
+
             return true;
         });
 
         Queue::assertPushedOn('notifications', NotifyClientSms::class);
         Queue::assertPushed(NotifyClientSms::class, function (NotifyClientSms $sms) {
             $this->assertArrayHasKey('REFERRAL_ID', $sms->values);
+
             return true;
         });
     }

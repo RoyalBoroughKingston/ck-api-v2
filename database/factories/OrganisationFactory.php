@@ -6,10 +6,10 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
 $factory->define(Organisation::class, function (Faker $faker) {
-    $name = $faker->company . ' ' . $faker->word() . ' ' . mt_rand(1, 100000);
+    $name = $faker->company.' '.$faker->word().' '.mt_rand(1, 100000);
 
     return [
-        'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
+        'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
         'name' => $name,
         'description' => 'This organisation provides x service.',
         'url' => $faker->url,

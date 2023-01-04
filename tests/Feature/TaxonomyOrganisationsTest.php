@@ -46,7 +46,7 @@ class TaxonomyOrganisationsTest extends TestCase
         $this->json('GET', '/core/v1/taxonomies/organisations');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 

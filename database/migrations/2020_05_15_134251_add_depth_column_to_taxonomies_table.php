@@ -43,7 +43,7 @@ class AddDepthColumnToTaxonomiesTable extends Migration
     }
 
     /**
-     * @param \stdClass $taxonomy
+     * @param  \stdClass  $taxonomy
      * @return int
      */
     protected function getDepth(stdClass $taxonomy): int

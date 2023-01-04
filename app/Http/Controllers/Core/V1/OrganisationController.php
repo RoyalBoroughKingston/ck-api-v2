@@ -34,7 +34,7 @@ class OrganisationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Organisation\IndexRequest $request
+     * @param  \App\Http\Requests\Organisation\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -59,7 +59,7 @@ class OrganisationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Organisation\StoreRequest $request
+     * @param  \App\Http\Requests\Organisation\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -109,8 +109,8 @@ class OrganisationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Organisation\ShowRequest $request
-     * @param \App\Models\Organisation $organisation
+     * @param  \App\Http\Requests\Organisation\ShowRequest  $request
+     * @param  \App\Models\Organisation  $organisation
      * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, Organisation $organisation)
@@ -129,25 +129,25 @@ class OrganisationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Organisation\UpdateRequest $request
-     * @param \App\Models\Organisation $organisation
+     * @param  \App\Http\Requests\Organisation\UpdateRequest  $request
+     * @param  \App\Models\Organisation  $organisation
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Organisation $organisation)
     {
         return DB::transaction(function () use ($request, $organisation) {
             $data = array_filter_missing([
-                'slug' => $request->missing('slug'),
-                'name' => $request->missing('name'),
-                'description' => $request->missing('description', function ($description) {
+                'slug' => $request->missingValue('slug'),
+                'name' => $request->missingValue('name'),
+                'description' => $request->missingValue('description', function ($description) {
                     return sanitize_markdown($description);
                 }),
-                'url' => $request->missing('url'),
-                'email' => $request->missing('email'),
-                'phone' => $request->missing('phone'),
-                'logo_file_id' => $request->missing('logo_file_id'),
+                'url' => $request->missingValue('url'),
+                'email' => $request->missingValue('email'),
+                'phone' => $request->missingValue('phone'),
+                'logo_file_id' => $request->missingValue('logo_file_id'),
                 'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
-                'category_taxonomies' => $request->missing('category_taxonomies'),
+                'category_taxonomies' => $request->missingValue('category_taxonomies'),
             ]);
 
             if ($request->filled('logo_file_id')) {
@@ -183,8 +183,8 @@ class OrganisationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\Organisation\DestroyRequest $request
-     * @param \App\Models\Organisation $organisation
+     * @param  \App\Http\Requests\Organisation\DestroyRequest  $request
+     * @param  \App\Models\Organisation  $organisation
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Organisation $organisation)

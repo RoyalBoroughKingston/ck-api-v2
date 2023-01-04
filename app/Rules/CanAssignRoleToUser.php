@@ -23,8 +23,8 @@ class CanAssignRoleToUser implements Rule
     /**
      * CanAssignRoleToUser constructor.
      *
-     * @param \App\Models\User $user
-     * @param array|null $newRoles
+     * @param  \App\Models\User  $user
+     * @param  array|null  $newRoles
      */
     public function __construct(User $user, array $newRoles = null)
     {
@@ -35,14 +35,14 @@ class CanAssignRoleToUser implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $role
+     * @param  string  $attribute
+     * @param  mixed  $role
      * @return bool
      */
     public function passes($attribute, $role)
     {
         // Immediately fail if the value is not an array.
-        if (!$this->validate($role)) {
+        if (! $this->validate($role)) {
             return false;
         }
 
@@ -54,29 +54,29 @@ class CanAssignRoleToUser implements Rule
         switch ($role['role']) {
             case Role::NAME_SERVICE_WORKER:
                 $service = Service::findOrFail($role['service_id']);
-                if (!$this->user->canMakeServiceWorker($service)) {
+                if (! $this->user->canMakeServiceWorker($service)) {
                     return false;
                 }
                 break;
             case Role::NAME_SERVICE_ADMIN:
                 $service = Service::findOrFail($role['service_id']);
-                if (!$this->user->canMakeServiceAdmin($service)) {
+                if (! $this->user->canMakeServiceAdmin($service)) {
                     return false;
                 }
                 break;
             case Role::NAME_ORGANISATION_ADMIN:
                 $organisation = Organisation::findOrFail($role['organisation_id']);
-                if (!$this->user->canMakeOrganisationAdmin($organisation)) {
+                if (! $this->user->canMakeOrganisationAdmin($organisation)) {
                     return false;
                 }
                 break;
             case Role::NAME_GLOBAL_ADMIN:
-                if (!$this->user->canMakeGlobalAdmin()) {
+                if (! $this->user->canMakeGlobalAdmin()) {
                     return false;
                 }
                 break;
             case Role::NAME_SUPER_ADMIN:
-                if (!$this->user->canMakeSuperAdmin()) {
+                if (! $this->user->canMakeSuperAdmin()) {
                     return false;
                 }
                 break;
@@ -104,12 +104,12 @@ class CanAssignRoleToUser implements Rule
     protected function validate($role): bool
     {
         // check if array.
-        if (!is_array($role)) {
+        if (! is_array($role)) {
             return false;
         }
 
         // check if role key provided.
-        if (!isset($role['role'])) {
+        if (! isset($role['role'])) {
             return false;
         }
 
@@ -117,12 +117,12 @@ class CanAssignRoleToUser implements Rule
         switch ($role['role']) {
             case Role::NAME_SERVICE_WORKER:
             case Role::NAME_SERVICE_ADMIN:
-                if (!isset($role['service_id']) || !is_string($role['service_id'])) {
+                if (! isset($role['service_id']) || ! is_string($role['service_id'])) {
                     return false;
                 }
                 break;
             case Role::NAME_ORGANISATION_ADMIN:
-                if (!isset($role['organisation_id']) || !is_string($role['organisation_id'])) {
+                if (! isset($role['organisation_id']) || ! is_string($role['organisation_id'])) {
                     return false;
                 }
                 break;
@@ -132,7 +132,7 @@ class CanAssignRoleToUser implements Rule
     }
 
     /**
-     * @param array $role
+     * @param  array  $role
      * @return bool
      */
     protected function shouldSkip(array $role): bool
@@ -157,7 +157,7 @@ class CanAssignRoleToUser implements Rule
     }
 
     /**
-     * @param array $roles
+     * @param  array  $roles
      * @return array
      */
     protected function parseRoles(array $roles): array

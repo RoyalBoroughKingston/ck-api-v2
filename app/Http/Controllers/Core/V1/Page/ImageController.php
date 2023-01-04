@@ -13,10 +13,11 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Page\Image\ShowRequest $request
-     * @param \App\Models\Page $page
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param  \App\Http\Requests\Page\Image\ShowRequest  $request
+     * @param  \App\Models\Page  $page
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function __invoke(ShowRequest $request, Page $page)
     {

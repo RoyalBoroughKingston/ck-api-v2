@@ -43,20 +43,20 @@ trait StoresSpreadsheets
     /**
      * Import a base64 encode spreadsheet.
      *
-     * @param string $spreadsheet
+     * @param  string  $spreadsheet
      * @return array
      */
     public function processSpreadsheet(string $spreadsheet)
     {
         $filePath = $this->storeBase64FileString($spreadsheet, 'batch-upload');
 
-        if (!Storage::disk('local')->exists($filePath) || !is_readable(Storage::disk('local')->path($filePath))) {
+        if (! Storage::disk('local')->exists($filePath) || ! is_readable(Storage::disk('local')->path($filePath))) {
             throw new FileNotFoundException($filePath);
         }
 
         $this->rejected = $this->validateSpreadsheet($filePath);
 
-        if (!count($this->rejected)) {
+        if (! count($this->rejected)) {
             try {
                 $this->imported = $this->importSpreadsheet($filePath);
             } catch (\App\Exceptions\DuplicateContentException $e) {
@@ -65,7 +65,7 @@ trait StoresSpreadsheets
             } catch (\Exception $e) {
                 Storage::disk('local')->delete($filePath);
 
-                abort(500, $e->getMessage() . $e->getTraceAsString());
+                abort(500, $e->getMessage().$e->getTraceAsString());
             }
         }
 
@@ -75,10 +75,11 @@ trait StoresSpreadsheets
     /**
      * Store a Base 64 encoded data string.
      *
-     * @param string $file_data
-     * @param string $path
-     * @throws Illuminate\Validation\ValidationException
+     * @param  string  $file_data
+     * @param  string  $path
      * @return string
+     *
+     * @throws Illuminate\Validation\ValidationException
      */
     protected function storeBase64FileString(string $file_data, string $path)
     {
@@ -86,7 +87,7 @@ trait StoresSpreadsheets
         if (count($matches) < 3) {
             throw ValidationException::withMessages(['spreadsheet' => 'Invalid Base64 Excel data']);
         }
-        if (!$file_blob = base64_decode(trim($matches[2]), true)) {
+        if (! $file_blob = base64_decode(trim($matches[2]), true)) {
             throw ValidationException::withMessages(['spreadsheet' => 'Invalid Base64 Excel data']);
         }
 
@@ -96,27 +97,28 @@ trait StoresSpreadsheets
     /**
      * Store a binary file blob and update the models properties.
      *
-     * @param string $blob
-     * @param string $path
-     * @param string $mime_type
-     * @param string $ext
+     * @param  string  $blob
+     * @param  string  $path
+     * @param  string  $mime_type
+     * @param  string  $ext
      * @return string
      */
     protected function storeBinaryUpload(string $blob, string $path, $mime_type = null, $ext = null)
     {
-        $path = empty($path) ? '' : trim($path, '/') . '/';
+        $path = empty($path) ? '' : trim($path, '/').'/';
         $mime_type = $mime_type ?? $this->getFileStringMimeType($blob);
         $ext = $ext ?? $this->guessFileExtension($mime_type);
-        $filename = md5($blob) . '.' . $ext;
-        Storage::disk('local')->put($path . $filename, $blob);
+        $filename = md5($blob).'.'.$ext;
+        Storage::disk('local')->put($path.$filename, $blob);
 
-        return $path . $filename;
+        return $path.$filename;
     }
 
     /**
      * Get the mime type of a binary file string.
      *
      * @var string
+     *
      * @return string
      */
     protected function getFileStringMimeType(string $file_str)
@@ -131,7 +133,7 @@ trait StoresSpreadsheets
     /**
      * Guess the extension for a file from it's mime-type.
      *
-     * @param string $mime_type
+     * @param  string  $mime_type
      * @return string
      */
     protected function guessFileExtension(string $mime_type)

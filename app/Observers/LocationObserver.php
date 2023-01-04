@@ -9,7 +9,7 @@ class LocationObserver
     /**
      * Handle the location "updated" event.
      *
-     * @param \App\Models\Location $location
+     * @param  \App\Models\Location  $location
      */
     public function updated(Location $location)
     {
@@ -19,7 +19,7 @@ class LocationObserver
     /**
      * Handle the organisation "deleting" event.
      *
-     * @param \App\Models\Location $location
+     * @param  \App\Models\Location  $location
      */
     public function deleting(Location $location)
     {
@@ -30,7 +30,7 @@ class LocationObserver
     /**
      * Handle the organisation "deleted" event.
      *
-     * @param \App\Models\Location $location
+     * @param  \App\Models\Location  $location
      */
     public function deleted(Location $location)
     {

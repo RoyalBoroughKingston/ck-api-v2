@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\DB;
 trait OrganisationEventScopes
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $dateString
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $dateString
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeEndsAfter(Builder $query, $dateString): Builder
@@ -22,8 +22,8 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $dateString
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $dateString
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeEndsBefore(Builder $query, $dateString): Builder
@@ -32,8 +32,8 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $dateString
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $dateString
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeStartsAfter(Builder $query, $dateString): Builder
@@ -42,8 +42,8 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $dateString
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $dateString
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeStartsBefore(Builder $query, $dateString): Builder
@@ -52,8 +52,8 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $required
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $required
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeHasWheelchairAccess(Builder $query, $required): Builder
@@ -63,13 +63,13 @@ trait OrganisationEventScopes
             $query->select(DB::raw(1))
                 ->from($locationsTable)
                 ->whereRaw("$locationsTable.id = {$this->getTable()}.location_id")
-                ->where("$locationsTable.has_wheelchair_access", (bool)$required);
+                ->where("$locationsTable.has_wheelchair_access", (bool) $required);
         });
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $required
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $required
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeHasInductionLoop(Builder $query, $required): Builder
@@ -79,13 +79,13 @@ trait OrganisationEventScopes
             $query->select(DB::raw(1))
                 ->from($locationsTable)
                 ->whereRaw("$locationsTable.id = {$this->getTable()}.location_id")
-                ->where("$locationsTable.has_induction_loop", (bool)$required);
+                ->where("$locationsTable.has_induction_loop", (bool) $required);
         });
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $required
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $required
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeInCollections(Builder $query, ...$collectionIds): Builder
@@ -101,7 +101,7 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCollectionTaxonomies(Builder $query): Builder
@@ -114,8 +114,8 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \App\Models\OrganisationEvent $organisationEvent
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \App\Models\OrganisationEvent  $organisationEvent
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCollections(Builder $query): Builder

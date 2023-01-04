@@ -36,13 +36,13 @@ To review the service, follow this link: :SERVICE_URL
 
 Many thanks,
 The :APP_NAME Team
-            "
-        ]
+            ",
+        ],
     ],
     'updated' => [
         'notify_global_admin' => [
             'subject' => ':SERVICE_NAME page on :APP_NAME - Inactive for 1 year',
-            'content' => "
+            'content' => '
 :SERVICE_NAME on :APP_NAME has not been updated in over 12 months.
 
 View the page on :APP_NAME:
@@ -60,10 +60,10 @@ Reset the clock:
 
 You can disable the page in the backend:
 :SERVICE_URL
-            "
+            ',
         ],
         'notify_service_admin' => [
-            'subject' => ':SERVICE_NAME page on :APP_NAME'    ,
+            'subject' => ':SERVICE_NAME page on :APP_NAME',
             'content' => "
 Hello,
 
@@ -100,15 +100,15 @@ Contact us by email: :CONTACT_EMAIL
 
 Many thanks,
 The :APP_NAME Team
-            "
-        ]
+            ",
+        ],
     ],
     'disabled' => [
         'notify_global_admin' => [
             'subject' => 'Disabled :SERVICE_NAME page on :APP_NAME',
-            'content' => "
+            'content' => '
 :SERVICE_NAME on :APP_NAME has been marked as disabled after not being updated for over a year.
-"
-        ]
+',
+        ],
     ],
 ];

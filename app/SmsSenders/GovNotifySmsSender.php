@@ -23,7 +23,7 @@ class GovNotifySmsSender implements SmsSender
     }
 
     /**
-     * @param \App\Sms\Sms $sms
+     * @param  \App\Sms\Sms  $sms
      */
     public function send(Sms $sms)
     {

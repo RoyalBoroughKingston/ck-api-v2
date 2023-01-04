@@ -16,9 +16,9 @@ class GalleryItemController extends Controller
     /**
      * GalleryItemController the specified resource.
      *
-     * @param \App\Http\Requests\Service\Logo\ShowRequest $request
-     * @param \App\Models\Service $service
-     * @param \App\Models\File $file
+     * @param  \App\Http\Requests\Service\Logo\ShowRequest  $request
+     * @param  \App\Models\Service  $service
+     * @param  \App\Models\File  $file
      * @return \App\Models\File|\Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, Service $service, File $file)
@@ -33,7 +33,7 @@ class GalleryItemController extends Controller
 
             // Abort if the update request does not contain the file ID.
             abort_if(
-                !in_array(
+                ! in_array(
                     $file->id,
                     Arr::pluck($updateRequest->data['gallery_items'] ?? [], 'file_id')
                 ),

@@ -41,6 +41,7 @@ class UnactionedReferralsCommandTest extends TestCase
             $this->assertArrayHasKey('REFERRAL_TYPE', $email->values);
             $this->assertArrayHasKey('REFERRAL_CONTACT_METHOD', $email->values);
             $this->assertArrayHasKey('REFERRAL_DAYS_LEFT', $email->values);
+
             return true;
         });
     }

@@ -51,8 +51,8 @@ abstract class Email implements ShouldQueue
     /**
      * Email constructor.
      *
-     * @param string $to
-     * @param array $values
+     * @param  string  $to
+     * @param  array  $values
      */
     public function __construct(string $to, array $values = [])
     {
@@ -110,7 +110,7 @@ abstract class Email implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param \App\Contracts\EmailSender $emailSender
+     * @param  \App\Contracts\EmailSender  $emailSender
      */
     public function handle(EmailSender $emailSender)
     {

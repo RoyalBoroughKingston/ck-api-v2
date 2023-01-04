@@ -6,10 +6,11 @@ class Resizer
 {
     /**
      * Based upon the following Stack Overflow answer:.
+     *
      * @link https://stackoverflow.com/a/16774644/5745438
      *
-     * @param string $srcImageContent
-     * @param int $maxDimension
+     * @param  string  $srcImageContent
+     * @param  int  $maxDimension
      * @return string
      */
     public function resize(string $srcImageContent, int $maxDimension): string
@@ -35,7 +36,7 @@ class Resizer
 
     /**
      * @param $imageResource
-     * @param int $maxDimension
+     * @param  int  $maxDimension
      * @return array
      */
     protected function getDimensions($imageResource, int $maxDimension): array
@@ -66,7 +67,7 @@ class Resizer
 
     /**
      * @param $srcImageResource
-     * @param array $dimensions
+     * @param  array  $dimensions
      * @return resource
      */
     protected function createDestinationImageResource($srcImageResource, array $dimensions)

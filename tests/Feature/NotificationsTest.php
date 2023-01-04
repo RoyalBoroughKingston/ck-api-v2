@@ -227,7 +227,7 @@ class NotificationsTest extends TestCase
 
         $this->json('GET', '/core/v1/notifications');
 
-        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user, $notification) {
+        Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($user) {
             return ($event->getAction() === Audit::ACTION_READ) &&
                 ($event->getUser()->id === $user->id);
         });

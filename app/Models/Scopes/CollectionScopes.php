@@ -12,7 +12,7 @@ trait CollectionScopes
     /**
      * Get only category collections.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCategories(Builder $query): Builder
@@ -23,7 +23,7 @@ trait CollectionScopes
     /**
      * Get only persona collections.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePersonas(Builder $query): Builder
@@ -34,7 +34,7 @@ trait CollectionScopes
     /**
      * Get only organisation-event collections.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrganisationEvents(Builder $query): Builder
@@ -43,8 +43,8 @@ trait CollectionScopes
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \App\Models\Collection $collection
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \App\Models\Collection  $collection
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeServices(Builder $query, Collection $collection): Builder

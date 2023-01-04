@@ -52,7 +52,7 @@ class UnactionedReferralsCommand extends Command
     }
 
     /**
-     * @param \App\Models\Referral $referral
+     * @param  \App\Models\Referral  $referral
      */
     protected function sendEmails(Referral $referral)
     {
@@ -77,7 +77,7 @@ class UnactionedReferralsCommand extends Command
                 'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
                 'REFERRAL_CONTACT_METHOD' => $contactMethod,
                 'REFERRAL_DAYS_LEFT' => Date::now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('local.working_days_for_service_to_respond'))),
-                'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri') . '/referrals',
+                'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri').'/referrals',
             ]));
 
             // Send a copy of the email to the global admin team.
@@ -89,7 +89,7 @@ class UnactionedReferralsCommand extends Command
                 'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
                 'REFERRAL_CONTACT_METHOD' => $contactMethod,
                 'REFERRAL_DAYS_LEFT' => Date::now()->diffInWeekdays($referral->created_at->copy()->addWeekdays(config('local.working_days_for_service_to_respond'))),
-                'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri') . '/referrals',
+                'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri').'/referrals',
             ]));
 
             // Output a success message.

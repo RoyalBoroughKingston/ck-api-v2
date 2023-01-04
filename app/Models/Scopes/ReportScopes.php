@@ -169,8 +169,8 @@ EOT;
     /**
      * Referral Export Report query.
      *
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
+     * @param  \Carbon\CarbonImmutable|null  $startsAt
+     * @param  \Carbon\CarbonImmutable|null  $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getReferralExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -212,8 +212,8 @@ EOT;
     /**
      * Feedback Export Report query.
      *
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
+     * @param  \Carbon\CarbonImmutable|null  $startsAt
+     * @param  \Carbon\CarbonImmutable|null  $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getFeedbackExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -235,8 +235,8 @@ EOT;
     /**
      * Audit Export Report query.
      *
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
+     * @param  \Carbon\CarbonImmutable|null  $startsAt
+     * @param  \Carbon\CarbonImmutable|null  $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getAuditExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -262,8 +262,8 @@ EOT;
     /**
      * Search Histories Export Report query.
      *
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
+     * @param  \Carbon\CarbonImmutable|null  $startsAt
+     * @param  \Carbon\CarbonImmutable|null  $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getSearchHistoriesExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -287,8 +287,8 @@ EOT;
     /**
      * Update Request Export Report query.
      *
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
+     * @param  \Carbon\CarbonImmutable|null  $startsAt
+     * @param  \Carbon\CarbonImmutable|null  $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getUpdateRequestExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection

@@ -64,7 +64,7 @@ class TaxonomyServiceEligibilityTest extends TestCase
         $this->json('GET', '/core/v1/taxonomies/service-eligibilities');
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
-            return ($event->getAction() === Audit::ACTION_READ);
+            return $event->getAction() === Audit::ACTION_READ;
         });
     }
 

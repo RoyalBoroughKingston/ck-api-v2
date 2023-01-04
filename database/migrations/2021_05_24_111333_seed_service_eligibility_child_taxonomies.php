@@ -38,8 +38,9 @@ class SeedServiceEligibilityChildTaxonomies extends Migration
     /**
      * Load the Service Eligibility taxonomies into an array.
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @return array
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function loadServiceEligibilityTaxonomies(): array
     {

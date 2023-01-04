@@ -36,6 +36,7 @@ class StillUnactionedReferralsCommandTest extends TestCase
             $this->assertArrayHasKey('SERVICE_WORKERS', $email->values);
             $this->assertArrayHasKey('SERVICE_ADMINS', $email->values);
             $this->assertArrayHasKey('ORGANISATION_ADMINS', $email->values);
+
             return true;
         });
     }

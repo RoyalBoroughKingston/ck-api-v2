@@ -31,7 +31,7 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Location\IndexRequest $request
+     * @param  \App\Http\Requests\Location\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -77,7 +77,7 @@ class LocationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Location\StoreRequest $request
+     * @param  \App\Http\Requests\Location\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -121,8 +121,8 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Location\ShowRequest $request
-     * @param \App\Models\Location $location
+     * @param  \App\Http\Requests\Location\ShowRequest  $request
+     * @param  \App\Models\Location  $location
      * @return \App\Http\Resources\LocationResource
      */
     public function show(ShowRequest $request, Location $location)
@@ -141,8 +141,8 @@ class LocationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Location\UpdateRequest $request
-     * @param \App\Models\Location $location
+     * @param  \App\Http\Requests\Location\UpdateRequest  $request
+     * @param  \App\Models\Location  $location
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Location $location)
@@ -151,18 +151,18 @@ class LocationController extends Controller
             $updateRequest = $location->updateRequests()->create([
                 'user_id' => $request->user()->id,
                 'data' => array_filter_missing([
-                    'address_line_1' => $request->missing('address_line_1'),
-                    'address_line_2' => $request->missing('address_line_2'),
-                    'address_line_3' => $request->missing('address_line_3'),
-                    'city' => $request->missing('city'),
-                    'county' => $request->missing('county'),
-                    'postcode' => $request->missing('postcode'),
-                    'country' => $request->missing('country'),
-                    'accessibility_info' => $request->missing('accessibility_info'),
-                    'has_wheelchair_access' => $request->missing('has_wheelchair_access'),
-                    'has_induction_loop' => $request->missing('has_induction_loop'),
-                    'has_accessible_toilet' => $request->missing('has_accessible_toilet'),
-                    'image_file_id' => $request->missing('image_file_id'),
+                    'address_line_1' => $request->missingValue('address_line_1'),
+                    'address_line_2' => $request->missingValue('address_line_2'),
+                    'address_line_3' => $request->missingValue('address_line_3'),
+                    'city' => $request->missingValue('city'),
+                    'county' => $request->missingValue('county'),
+                    'postcode' => $request->missingValue('postcode'),
+                    'country' => $request->missingValue('country'),
+                    'accessibility_info' => $request->missingValue('accessibility_info'),
+                    'has_wheelchair_access' => $request->missingValue('has_wheelchair_access'),
+                    'has_induction_loop' => $request->missingValue('has_induction_loop'),
+                    'has_accessible_toilet' => $request->missingValue('has_accessible_toilet'),
+                    'image_file_id' => $request->missingValue('image_file_id'),
                 ]),
             ]);
 
@@ -185,8 +185,8 @@ class LocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\Location\DestroyRequest $request
-     * @param \App\Models\Location $location
+     * @param  \App\Http\Requests\Location\DestroyRequest  $request
+     * @param  \App\Models\Location  $location
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Location $location)

@@ -21,7 +21,7 @@ class SettingController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\Setting\IndexRequest $request
+     * @param  \App\Http\Requests\Setting\IndexRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(IndexRequest $request)
@@ -32,7 +32,7 @@ class SettingController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\Setting\UpdateRequest $request
+     * @param  \App\Http\Requests\Setting\UpdateRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateRequest $request)

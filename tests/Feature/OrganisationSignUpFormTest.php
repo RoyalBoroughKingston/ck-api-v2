@@ -366,6 +366,8 @@ class OrganisationSignUpFormTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/organisation-sign-up-forms');
 
+        dump($response);
+
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 

@@ -44,7 +44,7 @@
 
         <server name="GEOCODE_DRIVER" value="stub"/>
 
-        <server name="EMAIL_DRIVER" value='"null"'/>
+        <server name="EMAIL_MAILER" value='"null"'/>
 
         <server name="SMS_DRIVER" value='"null"'/>
 

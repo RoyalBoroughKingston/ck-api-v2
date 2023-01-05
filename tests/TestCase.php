@@ -10,7 +10,7 @@ use App\Models\Taxonomy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
@@ -187,7 +187,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * @param  \Illuminate\Foundation\Testing\TestResponse  $response
+     * @param  \Illuminate\Testing\TestResponse  $response
      */
     protected function dumpResponse(TestResponse $response)
     {
@@ -195,7 +195,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * @param  \Illuminate\Foundation\Testing\TestResponse  $response
+     * @param  \Illuminate\Testing\TestResponse  $response
      * @param  string|null  $key
      * @return array|string
      */

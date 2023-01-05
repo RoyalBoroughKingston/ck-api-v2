@@ -19,8 +19,8 @@ class CreateTagsTable extends Migration
         });
 
         Schema::create('service_tag', function (Blueprint $table) {
-            $table->foreignUuid('service_id', 'services');
-            $table->foreignUuid('tag_id', 'tags');
+            $table->foreignUuidKeyColumn('service_id', 'services');
+            $table->foreignUuidKeyColumn('tag_id', 'tags');
             $table->unique(['service_id', 'tag_id']);
             $table->timestamps();
         });

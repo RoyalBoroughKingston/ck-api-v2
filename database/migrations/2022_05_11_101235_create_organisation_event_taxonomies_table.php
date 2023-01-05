@@ -13,8 +13,8 @@ class CreateOrganisationEventTaxonomiesTable extends Migration
     {
         Schema::create('organisation_event_taxonomies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('organisation_event_id', 'organisation_events');
-            $table->foreignUuid('taxonomy_id', 'taxonomies');
+            $table->foreignUuidKeyColumn('organisation_event_id', 'organisation_events');
+            $table->foreignUuidKeyColumn('taxonomy_id', 'taxonomies');
             $table->timestamps();
         });
     }

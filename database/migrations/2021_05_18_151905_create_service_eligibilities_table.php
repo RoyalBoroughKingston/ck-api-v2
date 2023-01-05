@@ -13,8 +13,8 @@ class CreateServiceEligibilitiesTable extends Migration
     {
         Schema::create('service_eligibilities', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
-            $table->foreignUuid('taxonomy_id', 'taxonomies');
+            $table->foreignUuidKeyColumn('service_id', 'services');
+            $table->foreignUuidKeyColumn('taxonomy_id', 'taxonomies');
             $table->timestamps();
         });
     }

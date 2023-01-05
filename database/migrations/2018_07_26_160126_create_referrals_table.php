@@ -13,7 +13,7 @@ class CreateReferralsTable extends Migration
     {
         Schema::create('referrals', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id', 'services');
+            $table->foreignUuidKeyColumn('service_id', 'services');
             $table->char('reference', 10)->unique();
             $table->enum('status', ['new', 'in_progress', 'completed', 'incompleted']);
             $table->text('name');
@@ -27,7 +27,7 @@ class CreateReferralsTable extends Migration
             $table->text('referee_name')->nullable();
             $table->text('referee_email')->nullable();
             $table->text('referee_phone')->nullable();
-            $table->nullableForeignUuid('organisation_taxonomy_id', 'taxonomies');
+            $table->nullableForeignUuidKeyColumn('organisation_taxonomy_id', 'taxonomies');
             $table->string('organisation')->nullable();
             $table->timestamps();
         });

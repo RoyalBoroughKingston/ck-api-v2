@@ -34,7 +34,7 @@ class UpdateSocialMediasAddPolymorphicFields extends Migration
     {
         DB::transaction(function () {
             Schema::table('social_medias', function (Blueprint $table) {
-                $table->nullableForeignUuid('service_id', 'services');
+                $table->nullableForeignUuidKeyColumn('service_id', 'services');
             });
 
             DB::update('update social_medias set service_id = sociable_id where sociable_type = ? and sociable_id is not null', ['services']);

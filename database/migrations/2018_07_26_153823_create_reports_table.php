@@ -13,8 +13,8 @@ class CreateReportsTable extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('report_type_id', 'report_types');
-            $table->foreignUuid('file_id', 'files');
+            $table->foreignUuidKeyColumn('report_type_id', 'report_types');
+            $table->foreignUuidKeyColumn('file_id', 'files');
             $table->timestamps();
         });
     }

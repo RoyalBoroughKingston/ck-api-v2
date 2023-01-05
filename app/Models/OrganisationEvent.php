@@ -34,24 +34,13 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      * @var array
      */
     protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
         'is_free' => 'boolean',
         'is_virtual' => 'boolean',
         'homepage' => 'boolean',
         'start_time' => 'string',
-        'end_time' => 'string',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'created_at',
-        'updated_at',
-    ];
+        'end_time' => 'string',    ];
 
     /**
      * The Elasticsearch index configuration class.

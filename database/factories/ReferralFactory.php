@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Referral;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReferralFactory extends Factory
 {

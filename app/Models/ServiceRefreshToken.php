@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ServiceRefreshToken extends Model
 {
     use HasFactory;
-
     use Mutators\ServiceRefreshTokenMutators;
     use Relationships\ServiceRefreshTokenRelationships;
     use Scopes\ServiceRefreshTokenScopes;

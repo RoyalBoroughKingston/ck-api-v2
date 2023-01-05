@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Emails\Email;
 use App\Models\Mutators\ReferralMutators;
 use App\Models\Relationships\ReferralRelationships;
@@ -11,13 +10,13 @@ use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
 use App\Sms\Sms;
 use Exception;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Str;
 
 class Referral extends Model implements Notifiable
 {
     use HasFactory;
-
     use DispatchesJobs;
     use Notifications;
     use ReferralMutators;

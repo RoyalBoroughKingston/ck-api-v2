@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Laravel;
-use App\Http\Controllers\Passport\AuthorizationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('oauth/authorize', [App\Http\Controllers\Passport\AuthorizationController::class, 'authorize']);

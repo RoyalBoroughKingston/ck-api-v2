@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Http\Requests\ServiceLocation\UpdateRequest as Request;
 use App\Models\Mutators\ServiceLocationMutators;
 use App\Models\Relationships\ServiceLocationRelationships;
@@ -13,6 +12,7 @@ use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Date;
@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 class ServiceLocation extends Model implements AppliesUpdateRequests
 {
     use HasFactory;
-
     use ServiceLocationMutators;
     use ServiceLocationRelationships;
     use ServiceLocationScopes;

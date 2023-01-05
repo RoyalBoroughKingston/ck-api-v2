@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Emails\Email;
 use App\Emails\PasswordReset\UserEmail;
 use App\Exceptions\CannotRevokeRoleException;
@@ -14,6 +13,7 @@ use App\Notifications\Notifications;
 use App\Sms\Sms;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -24,7 +24,6 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable implements Notifiable
 {
     use HasFactory;
-
     use DispatchesJobs;
     use HasApiTokens;
     use Notifications;

@@ -4,6 +4,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Collection;
 use App\Models\File;

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Contracts\Geocoder;
 use App\Http\Requests\Location\UpdateRequest as Request;
 use App\Models\Mutators\LocationMutators;
@@ -14,6 +13,7 @@ use App\Support\Coordinate;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 class Location extends Model implements AppliesUpdateRequests
 {
     use HasFactory;
-
     use LocationMutators;
     use LocationRelationships;
     use LocationScopes;

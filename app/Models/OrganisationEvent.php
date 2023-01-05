@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\IndexConfigurators\EventsIndexConfigurator;
 use App\Models\Mutators\OrganisationEventMutators;
@@ -14,6 +13,7 @@ use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +23,6 @@ use ScoutElastic\Searchable;
 class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxonomyRelationships
 {
     use HasFactory;
-
     use OrganisationEventMutators;
     use OrganisationEventRelationships;
     use OrganisationEventScopes;

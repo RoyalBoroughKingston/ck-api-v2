@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Http\Request;
-use Illuminate\Cache\RateLimiting\Limit;
 use App\Models\Collection;
 use App\Models\Organisation;
 use App\Models\Page;
 use App\Models\Service;
 use App\Models\Taxonomy;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
@@ -37,7 +37,7 @@ class RouteServiceProvider extends ServiceProvider
 
             $this->mapPassportRoutes();
         });
-// Resolve by ID first, then resort to slug.
+        // Resolve by ID first, then resort to slug.
         Route::bind('organisation', function ($value) {
             return Organisation::query()->find($value)
                 ?? Organisation::query()->where('slug', '=', $value)->first()
@@ -70,7 +70,8 @@ class RouteServiceProvider extends ServiceProvider
             return Taxonomy::query()->find($value)
                 ?? Taxonomy::query()->where('slug', $value)->first()
                 ?? abort(Response::HTTP_NOT_FOUND);
-        });    }
+        });
+    }
 
     /**
      * Define the routes for the application.

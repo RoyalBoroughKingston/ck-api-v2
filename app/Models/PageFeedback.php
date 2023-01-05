@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Mutators\PageFeedbackMutators;
 use App\Models\Relationships\PageFeedbackRelationships;
 use App\Models\Scopes\PageFeedbackScopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PageFeedback extends Model
 {
     use HasFactory;
-
     use PageFeedbackMutators;
     use PageFeedbackRelationships;
     use PageFeedbackScopes;

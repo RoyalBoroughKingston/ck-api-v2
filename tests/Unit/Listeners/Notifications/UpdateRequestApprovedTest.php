@@ -18,9 +18,9 @@ class UpdateRequestApprovedTest extends TestCase
     {
         Queue::fake();
 
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
         $updateRequest = $organisation->updateRequests()->create([
-            'user_id' => factory(User::class)->create()->id,
+            'user_id' => User::factory()->create()->id,
             'data' => [
                 'slug' => 'test-org',
                 'name' => 'Test Org',
@@ -32,7 +32,7 @@ class UpdateRequestApprovedTest extends TestCase
         ]);
 
         $request = Request::create('')->setUserResolver(function () {
-            return factory(User::class)->create();
+            return User::factory()->create();
         });
         $event = EndpointHit::onUpdate($request, '', $updateRequest);
         $listener = new UpdateRequestApproved();

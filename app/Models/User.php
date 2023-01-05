@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Emails\Email;
 use App\Emails\PasswordReset\UserEmail;
 use App\Exceptions\CannotRevokeRoleException;
@@ -22,6 +23,8 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements Notifiable
 {
+    use HasFactory;
+
     use DispatchesJobs;
     use HasApiTokens;
     use Notifications;

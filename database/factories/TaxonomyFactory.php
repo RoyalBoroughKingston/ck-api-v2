@@ -1,11 +1,21 @@
 <?php
 
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Taxonomy;
-use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
-$factory->define(Taxonomy::class, function (Faker $faker) {
-    $name = $faker->unique()->words(3, true);
+class TaxonomyFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $name = $this->faker->unique()->words(3, true);
 
     return [
         'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
@@ -14,17 +24,23 @@ $factory->define(Taxonomy::class, function (Faker $faker) {
         'order' => 0,
         'depth' => 2,
     ];
-});
+    }
 
-$factory->state(Taxonomy::class, 'lga-standards', [
-    'parent_id' => function () {
-        return Taxonomy::category()->children()->where('name', 'LGA Standards')->value('id');
-    },
+    public function lgaStandards()
+    {
+        return $this->state(function () {
+            ['parent_id' => function () {
+    return Taxonomy::category()->children()->where('name', 'LGA Standards')->value('id');
+}]
+        });
+    }
 
-]);
-
-$factory->state(Taxonomy::class, 'open-active', [
-    'parent_id' => function () {
-        return Taxonomy::category()->children()->where('name', 'OpenActive')->value('id');
-    },
-]);
+    public function openActive()
+    {
+        return $this->state(function () {
+            ['parent_id' => function () {
+    return Taxonomy::category()->children()->where('name', 'OpenActive')->value('id');
+}]
+        });
+    }
+}

@@ -43,8 +43,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_service_name()
     {
-        $service1 = factory(Service::class)->create(['name' => 'Thisisatest']);
-        $service2 = factory(Service::class)->create(['name' => 'Should not match']);
+        $service1 = Service::factory()->create(['name' => 'Thisisatest']);
+        $service2 = Service::factory()->create(['name' => 'Should not match']);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -70,8 +70,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_service_description()
     {
-        $service1 = factory(Service::class)->create(['description' => 'Thisisatest']);
-        $service2 = factory(Service::class)->create(['description' => 'Should not match']);
+        $service1 = Service::factory()->create(['description' => 'Thisisatest']);
+        $service2 = Service::factory()->create(['description' => 'Should not match']);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -97,7 +97,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_taxonomy_name()
     {
-        $service1 = factory(Service::class)->create();
+        $service1 = Service::factory()->create();
         $taxonomy = Taxonomy::category()->children()->create([
             'slug' => 'thisisatest',
             'name' => 'Thisisatest',
@@ -106,7 +106,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
         $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
-        $service2 = factory(Service::class)->create();
+        $service2 = Service::factory()->create();
         $taxonomy = Taxonomy::category()->children()->create([
             'slug' => 'should-not-match',
             'name' => 'Should not match',
@@ -135,7 +135,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_partial_taxonomy_name()
     {
-        $service1 = factory(Service::class)->create();
+        $service1 = Service::factory()->create();
         $taxonomy = Taxonomy::category()->children()->create([
             'slug' => 'phpunit-taxonomy',
             'name' => 'PHPUnit Taxonomy',
@@ -144,7 +144,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
         $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
-        $service2 = factory(Service::class)->create();
+        $service2 = Service::factory()->create();
         $taxonomy = Taxonomy::category()->children()->create([
             'slug' => 'should-not-match',
             'name' => 'Should not match',
@@ -173,10 +173,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_organisation_name()
     {
-        $organisation1 = factory(Organisation::class)->create(['name' => 'Thisisatest']);
-        $organisation2 = factory(Organisation::class)->create(['name' => 'Should not match']);
-        $service1 = factory(Service::class)->create(['organisation_id' => $organisation1->id]);
-        $service2 = factory(Service::class)->create(['organisation_id' => $organisation2->id]);
+        $organisation1 = Organisation::factory()->create(['name' => 'Thisisatest']);
+        $organisation2 = Organisation::factory()->create(['name' => 'Should not match']);
+        $service1 = Service::factory()->create(['organisation_id' => $organisation1->id]);
+        $service2 = Service::factory()->create(['organisation_id' => $organisation2->id]);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -200,33 +200,33 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_ranks_service_name_equivalent_to_organisation_name()
     {
-        $organisation = factory(Organisation::class)->create(['name' => 'Thisisatest']);
-        $serviceWithRelevantOrganisationName = factory(Service::class)->create([
+        $organisation = Organisation::factory()->create(['name' => 'Thisisatest']);
+        $serviceWithRelevantOrganisationName = Service::factory()->create([
             'name' => 'Relevant Organisation',
             'intro' => 'Service Intro',
             'description' => 'Service description',
             'organisation_id' => $organisation->id,
         ]);
         $serviceWithRelevantOrganisationName->save();
-        $serviceWithRelevantServiceName = factory(Service::class)->create([
+        $serviceWithRelevantServiceName = Service::factory()->create([
             'name' => 'Thisisatest',
             'intro' => 'Service Intro',
             'description' => 'Service description',
         ]);
         $serviceWithRelevantServiceName->save();
-        $serviceWithRelevantIntro = factory(Service::class)->create([
+        $serviceWithRelevantIntro = Service::factory()->create([
             'name' => 'Relevant Intro',
             'intro' => 'Thisisatest',
             'description' => 'Service description',
         ]);
         $serviceWithRelevantIntro->save();
-        $serviceWithRelevantDescription = factory(Service::class)->create([
+        $serviceWithRelevantDescription = Service::factory()->create([
             'name' => 'Relevant Description',
             'intro' => 'Service Intro',
             'description' => 'Thisisatest',
         ]);
         $serviceWithRelevantDescription->save();
-        $serviceWithRelevantTaxonomy = factory(Service::class)->create([
+        $serviceWithRelevantTaxonomy = Service::factory()->create([
             'name' => 'Relevant Taxonomy',
             'intro' => 'Service Intro',
             'description' => 'Service description',
@@ -254,8 +254,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_ranks_perfect_match_above_fuzzy_match()
     {
-        $service1 = factory(Service::class)->create(['name' => 'Thisisatest']);
-        $service2 = factory(Service::class)->create(['name' => 'Thsiisatst']);
+        $service1 = Service::factory()->create(['name' => 'Thisisatest']);
+        $service2 = Service::factory()->create(['name' => 'Thsiisatst']);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -278,11 +278,11 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_service_intro()
     {
-        $service1 = factory(Service::class)->create([
+        $service1 = Service::factory()->create([
             'intro' => 'This is a service that helps the homeless find temporary housing.',
         ]);
 
-        $service2 = factory(Service::class)->create([
+        $service2 = Service::factory()->create([
             'intro' => 'This is a service that helps provide food.',
         ]);
 
@@ -310,7 +310,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_single_word_from_service_description()
     {
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'description' => 'This is a service that helps to homeless find temporary housing.',
         ]);
 
@@ -324,11 +324,11 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_multiple_words_from_service_description()
     {
-        $service1 = factory(Service::class)->create([
+        $service1 = Service::factory()->create([
             'description' => 'This is a service that helps to homeless find temporary housing.',
         ]);
 
-        $service2 = factory(Service::class)->create([
+        $service2 = Service::factory()->create([
             'intro' => 'This is a service that helps provide food.',
         ]);
 
@@ -352,9 +352,9 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_filter_by_wait_time_works()
     {
-        $oneMonthWaitTimeService = factory(Service::class)->create(['wait_time' => Service::WAIT_TIME_MONTH]);
-        $twoWeeksWaitTimeService = factory(Service::class)->create(['wait_time' => Service::WAIT_TIME_TWO_WEEKS]);
-        $oneWeekWaitTimeService = factory(Service::class)->create(['wait_time' => Service::WAIT_TIME_ONE_WEEK]);
+        $oneMonthWaitTimeService = Service::factory()->create(['wait_time' => Service::WAIT_TIME_MONTH]);
+        $twoWeeksWaitTimeService = Service::factory()->create(['wait_time' => Service::WAIT_TIME_TWO_WEEKS]);
+        $oneWeekWaitTimeService = Service::factory()->create(['wait_time' => Service::WAIT_TIME_ONE_WEEK]);
 
         $response = $this->json('POST', '/core/v1/search', [
             'wait_time' => Service::WAIT_TIME_TWO_WEEKS,
@@ -368,8 +368,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_filter_by_is_free_works()
     {
-        $paidService = factory(Service::class)->create(['is_free' => false]);
-        $freeService = factory(Service::class)->create(['is_free' => true]);
+        $paidService = Service::factory()->create(['is_free' => false]);
+        $freeService = Service::factory()->create(['is_free' => true]);
 
         $response = $this->json('POST', '/core/v1/search', [
             'is_free' => true,
@@ -382,18 +382,18 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_order_by_location_works()
     {
-        $service = factory(Service::class)->create();
-        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service->id]);
+        $service = Service::factory()->create();
+        $serviceLocation = ServiceLocation::factory()->create(['service_id' => $service->id]);
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 19.955, 'lon' => 19.955]);
         $service->save();
 
-        $service2 = factory(Service::class)->create();
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $service2 = Service::factory()->create();
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 20, 'lon' => 20]);
         $service2->save();
 
-        $service3 = factory(Service::class)->create();
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $service3 = Service::factory()->create();
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 20.05, 'lon' => 20.05]);
         $service3->save();
 
@@ -416,7 +416,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_and_filter_works()
     {
-        $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
+        $service = Service::factory()->create(['name' => 'Ayup Digital']);
         $collection = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
             'slug' => 'self-help',
@@ -434,7 +434,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
-        $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
+        $differentService = Service::factory()->create(['name' => 'Ayup Digital']);
         $differentCollection = Collection::create([
             'type' => Collection::TYPE_PERSONA,
             'slug' => 'refugees',
@@ -464,7 +464,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_and_filter_works_when_query_does_not_match()
     {
-        $service = factory(Service::class)->create(['name' => 'Ayup Digital']);
+        $service = Service::factory()->create(['name' => 'Ayup Digital']);
         $collection = Collection::create([
             'type' => Collection::TYPE_CATEGORY,
             'slug' => 'self-help',
@@ -482,7 +482,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $service->save();
 
-        $differentService = factory(Service::class)->create(['name' => 'Ayup Digital']);
+        $differentService = Service::factory()->create(['name' => 'Ayup Digital']);
         $differentCollection = Collection::create([
             'type' => Collection::TYPE_PERSONA,
             'slug' => 'refugees',
@@ -511,11 +511,11 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_only_active_services_returned()
     {
-        $activeService = factory(Service::class)->create([
+        $activeService = Service::factory()->create([
             'name' => 'Testing Service',
             'status' => Service::STATUS_ACTIVE,
         ]);
-        $inactiveService = factory(Service::class)->create([
+        $inactiveService = Service::factory()->create([
             'name' => 'Testing Service',
             'status' => Service::STATUS_INACTIVE,
         ]);
@@ -531,18 +531,18 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_order_by_location_return_services_less_than_limited_miles_away()
     {
-        $service1 = factory(Service::class)->create();
-        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        $service1 = Service::factory()->create();
+        $serviceLocation = ServiceLocation::factory()->create(['service_id' => $service1->id]);
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 0, 'lon' => 0]);
         $service1->save();
 
-        $service2 = factory(Service::class)->create();
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $service2 = Service::factory()->create();
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 45, 'lon' => 90]);
         $service2->save();
 
-        $service3 = factory(Service::class)->create();
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $service3 = Service::factory()->create();
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 180]);
         $service3->save();
 
@@ -563,20 +563,20 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     public function test_order_by_location_return_services_less_than_1_mile_away()
     {
         // > 1 mile
-        $service1 = factory(Service::class)->create();
-        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        $service1 = Service::factory()->create();
+        $serviceLocation = ServiceLocation::factory()->create(['service_id' => $service1->id]);
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 51.469954129107016, 'lon' => -0.3973609967291171]);
         $service1->save();
 
         // < 1 mile
-        $service2 = factory(Service::class)->create();
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $service2 = Service::factory()->create();
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 51.46813624630186, 'lon' => -0.38543053111827796]);
         $service2->save();
 
         // > 1 mile
-        $service3 = factory(Service::class)->create();
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $service3 = Service::factory()->create();
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 51.47591520714541, 'lon' => -0.41139431461981674]);
         $service3->save();
 
@@ -597,24 +597,24 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_order_by_relevance_with_location_return_services_less_than_limited_miles_away()
     {
-        $service1 = factory(Service::class)->create();
-        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        $service1 = Service::factory()->create();
+        $serviceLocation = ServiceLocation::factory()->create(['service_id' => $service1->id]);
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 0, 'lon' => 0]);
         $service1->save();
 
-        $service2 = factory(Service::class)->create(['name' => 'Test Name']);
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $service2 = Service::factory()->create(['name' => 'Test Name']);
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 45.01, 'lon' => 90.01]);
         $service2->save();
 
-        $organisation3 = factory(Organisation::class)->create(['name' => 'Test Name']);
-        $service3 = factory(Service::class)->create(['organisation_id' => $organisation3->id]);
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $organisation3 = Organisation::factory()->create(['name' => 'Test Name']);
+        $service3 = Service::factory()->create(['organisation_id' => $organisation3->id]);
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 45, 'lon' => 90]);
         $service3->save();
 
-        $service4 = factory(Service::class)->create();
-        $serviceLocation4 = factory(ServiceLocation::class)->create(['service_id' => $service4->id]);
+        $service4 = Service::factory()->create();
+        $serviceLocation4 = ServiceLocation::factory()->create(['service_id' => $service4->id]);
         DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 90, 'lon' => 180]);
         $service4->save();
 
@@ -642,27 +642,27 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     public function test_order_by_relevance_with_location_return_services_less_than_1_mile_away()
     {
         // Not relevant > 1 mile
-        $service1 = factory(Service::class)->create();
-        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        $service1 = Service::factory()->create();
+        $serviceLocation = ServiceLocation::factory()->create(['service_id' => $service1->id]);
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 51.469954129107016, 'lon' => -0.3973609967291171]);
         $service1->save();
 
         // Relevant < 1 mile
-        $service2 = factory(Service::class)->create(['intro' => 'Thisisatest']);
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $service2 = Service::factory()->create(['intro' => 'Thisisatest']);
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 51.46813624630186, 'lon' => -0.38543053111827796]);
         $service2->save();
 
         // Relevant < 1 mile
-        $organisation3 = factory(Organisation::class)->create(['name' => 'Thisisatest']);
-        $service3 = factory(Service::class)->create(['organisation_id' => $organisation3->id]);
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $organisation3 = Organisation::factory()->create(['name' => 'Thisisatest']);
+        $service3 = Service::factory()->create(['organisation_id' => $organisation3->id]);
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 51.46933926508632, 'lon' => -0.3745729484111921]);
         $service3->save();
 
         // Relevant > 1 mile
-        $service4 = factory(Service::class)->create(['name' => 'Thisisatest']);
-        $serviceLocation4 = factory(ServiceLocation::class)->create(['service_id' => $service4->id]);
+        $service4 = Service::factory()->create(['name' => 'Thisisatest']);
+        $serviceLocation4 = ServiceLocation::factory()->create(['service_id' => $service4->id]);
         DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 51.46741441979822, 'lon' => -0.40152378521657234]);
         $service4->save();
 
@@ -736,22 +736,22 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $collection3->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
 
         // Service 1 is in Collection 1
-        $service1 = factory(Service::class)->create(['name' => 'Foo Bar']);
+        $service1 = Service::factory()->create(['name' => 'Foo Bar']);
         $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
         $service1->save();
 
         // Service 2 is in Collection 2
-        $service2 = factory(Service::class)->create(['name' => 'Foo Bim']);
+        $service2 = Service::factory()->create(['name' => 'Foo Bim']);
         $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $service2->save();
 
         // Service 3 is in Collection 2
-        $service3 = factory(Service::class)->create(['name' => 'Foo Foo']);
+        $service3 = Service::factory()->create(['name' => 'Foo Foo']);
         $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $service3->save();
 
         // Service 4 is in Collection 3
-        $service4 = factory(Service::class)->create(['name' => 'Foo Baz']);
+        $service4 = Service::factory()->create(['name' => 'Foo Baz']);
         $service4->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
         $service4->save();
 
@@ -800,23 +800,23 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $collection2->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
 
         // Service 1 is in Collection 1
-        $service1 = factory(Service::class)->create(['name' => 'Bar']);
+        $service1 = Service::factory()->create(['name' => 'Bar']);
         $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
-        $serviceLocation1 = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        $serviceLocation1 = ServiceLocation::factory()->create(['service_id' => $service1->id]);
         DB::table('locations')->where('id', $serviceLocation1->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
         $service1->save();
 
         // Service 2 is in Collection 2
-        $service2 = factory(Service::class)->create(['name' => 'Bim']);
+        $service2 = Service::factory()->create(['name' => 'Bim']);
         $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
         $service2->save();
 
         // Service 3 is in Collection 2
-        $service3 = factory(Service::class)->create(['name' => 'Foo']);
+        $service3 = Service::factory()->create(['name' => 'Foo']);
         $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 90]);
         $service3->save();
 
@@ -883,31 +883,31 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $collection3->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
 
         // Service 1 is in Collection 1
-        $service1 = factory(Service::class)->create(['name' => 'Service 1 Bar']);
+        $service1 = Service::factory()->create(['name' => 'Service 1 Bar']);
         $service1->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
-        $serviceLocation1 = factory(ServiceLocation::class)->create(['service_id' => $service1->id]);
+        $serviceLocation1 = ServiceLocation::factory()->create(['service_id' => $service1->id]);
         DB::table('locations')->where('id', $serviceLocation1->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
         $service1->save();
 
         // Service 2 is in Collection 2
-        $service2 = factory(Service::class)->create(['name' => 'Service 2 Baz']);
+        $service2 = Service::factory()->create(['name' => 'Service 2 Baz']);
         $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
-        $serviceLocation2 = factory(ServiceLocation::class)->create(['service_id' => $service2->id]);
+        $serviceLocation2 = ServiceLocation::factory()->create(['service_id' => $service2->id]);
         DB::table('locations')->where('id', $serviceLocation2->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
         $service2->save();
 
         // Service 3 is in Collection 2
-        $service3 = factory(Service::class)->create(['name' => 'Service 3 Foo']);
+        $service3 = Service::factory()->create(['name' => 'Service 3 Foo']);
         $service3->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service3->id]);
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 90]);
         $service3->save();
 
         // Service 4 is in Collection 3
-        $service4 = factory(Service::class)->create(['name' => 'Service 4 Baz']);
+        $service4 = Service::factory()->create(['name' => 'Service 4 Baz']);
         $service4->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
-        $serviceLocation4 = factory(ServiceLocation::class)->create(['service_id' => $service4->id]);
+        $serviceLocation4 = ServiceLocation::factory()->create(['service_id' => $service4->id]);
         DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
         $service4->save();
 
@@ -931,7 +931,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     public function test_query_matches_eligibility_name()
     {
         // Given a service has an eligibility age group taxonomy of 12 - 15 years
-        $service = factory(Service::class)
+        $service = Service::factory()
             ->create();
 
         $parentTaxonomy = Taxonomy::serviceEligibility()
@@ -965,7 +965,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     public function test_no_results_when_query_does_not_match_eligibility_name()
     {
         // Given a service has an eligibility age group taxonomy of 12 - 15 years
-        $service = factory(Service::class)
+        $service = Service::factory()
             ->create();
 
         $parentTaxonomy = Taxonomy::serviceEligibility()
@@ -996,7 +996,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_service_returned_in_result_if_it_has_no_eligibility_taxonomies_related_to_parent_of_searched_eligibility()
     {
-        $service = factory(Service::class)
+        $service = Service::factory()
             ->create();
 
         $service->save();
@@ -1016,10 +1016,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     {
         $serviceEligibility1 = Taxonomy::where('name', '12 - 15 years')->firstOrFail();
         $serviceEligibility2 = Taxonomy::where('name', '16 - 18 years')->firstOrFail();
-        $service1 = factory(Service::class)->create(['name' => 'Thisisatest']);
-        $service2 = factory(Service::class)->create(['intro' => 'Thisisatest']);
-        $service3 = factory(Service::class)->create(['description' => 'Thisisatest']);
-        $service4 = factory(Service::class)->create();
+        $service1 = Service::factory()->create(['name' => 'Thisisatest']);
+        $service2 = Service::factory()->create(['intro' => 'Thisisatest']);
+        $service3 = Service::factory()->create(['description' => 'Thisisatest']);
+        $service4 = Service::factory()->create();
         $taxonomy = Taxonomy::category()->children()->create([
             'slug' => 'thisisatest',
             'name' => 'Thisisatest',
@@ -1068,13 +1068,13 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     public function test_service_ranks_higher_if_eligibility_match()
     {
         // Given a service called Alpha Ltd has no eligibility age group taxonomies specified
-        $serviceA = factory(Service::class)
+        $serviceA = Service::factory()
             ->create([
                 'name' => 'Alpha Ltd',
             ]);
 
         // And a service called Beta Ltd has an eligibility age group taxonomy of 12 - 15 years
-        $serviceB = factory(Service::class)
+        $serviceB = Service::factory()
             ->create([
                 'name' => 'Beta Ltd',
             ]);
@@ -1135,7 +1135,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             ->where(['name' => '19 - 20 years'])
             ->first();
 
-        $serviceA = factory(Service::class)
+        $serviceA = Service::factory()
             ->create([
                 'name' => 'Single Eligibility',
             ]);
@@ -1144,7 +1144,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'taxonomy_id' => $taxonomyA->id,
         ]);
 
-        $serviceB = factory(Service::class)
+        $serviceB = Service::factory()
             ->create([
                 'name' => 'Double Eligibility',
             ]);
@@ -1154,7 +1154,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             ['taxonomy_id' => $taxonomyB->id],
         ]);
 
-        $serviceC = factory(Service::class)
+        $serviceC = Service::factory()
             ->create([
                 'name' => 'Multiple Eligibility',
             ]);
@@ -1165,7 +1165,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             ['taxonomy_id' => $taxonomyC->id],
         ]);
 
-        $serviceD = factory(Service::class)
+        $serviceD = Service::factory()
             ->create([
                 'name' => 'All Eligibilities by default',
             ]);
@@ -1201,13 +1201,13 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             ->first();
 
         // Given a service called Alpha Ltd has no eligibility taxonomies specified
-        $serviceA = factory(Service::class)
+        $serviceA = Service::factory()
             ->create([
                 'name' => 'Alpha Ltd',
             ]);
 
         // And a service called Bravo Ltd has matches one of the eligibility taxonomy terms that we will search for
-        $serviceB = factory(Service::class)
+        $serviceB = Service::factory()
             ->create([
                 'name' => 'Bravo Ltd',
             ]);
@@ -1221,7 +1221,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceB->serviceEligibilities()->create(['taxonomy_id' => $taxonomyIdsB]);
 
         // And a service called Charlie Ltd matches two of the eligibility taxonomy terms that we will search for
-        $serviceC = factory(Service::class)
+        $serviceC = Service::factory()
             ->create([
                 'name' => 'Charlie Ltd',
             ]);
@@ -1236,7 +1236,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceC->serviceEligibilities()->createMany($taxonomyIdsC->toArray());
 
         // And a service called Delta Ltd matches all of the eligibility taxonomy terms that we will search for
-        $serviceD = factory(Service::class)
+        $serviceD = Service::factory()
             ->create([
                 'name' => 'Delta Ltd',
             ]);
@@ -1251,7 +1251,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceD->serviceEligibilities()->createMany($taxonomyIdsD->toArray());
 
         // And a Service called Inactive Service that matches all of the eligiblity taxonomies but is inactive
-        $serviceIA = factory(Service::class)
+        $serviceIA = Service::factory()
             ->create([
                 'name' => 'Inactive Service',
                 'status' => Service::STATUS_INACTIVE,
@@ -1289,16 +1289,16 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_services_with_a_higher_score_are_more_relevant()
     {
-        $organisation = factory(\App\Models\Organisation::class)->create();
+        $organisation = \App\Models\Organisation::factory()->create();
         $serviceParams = [
             'organisation_id' => $organisation->id,
             'name' => 'Testing Service',
             'intro' => 'Service Intro',
             'description' => 'Service description',
         ];
-        $service3 = factory(Service::class)->create(array_merge($serviceParams, ['score' => 3]));
-        $service5 = factory(Service::class)->create(array_merge($serviceParams, ['score' => 5]));
-        $service0 = factory(Service::class)->create(array_merge($serviceParams, ['score' => 0]));
+        $service3 = Service::factory()->create(array_merge($serviceParams, ['score' => 3]));
+        $service5 = Service::factory()->create(array_merge($serviceParams, ['score' => 5]));
+        $service0 = Service::factory()->create(array_merge($serviceParams, ['score' => 0]));
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Testing Service',
@@ -1314,7 +1314,7 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_service_scores_are_secondary_to_distance()
     {
-        $organisation = factory(\App\Models\Organisation::class)->create();
+        $organisation = \App\Models\Organisation::factory()->create();
         $serviceParams = [
             'organisation_id' => $organisation->id,
             'name' => 'Testing Service',
@@ -1322,13 +1322,13 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'description' => 'Service description',
         ];
 
-        $service5 = factory(Service::class)->create(array_merge($serviceParams, ['score' => 5]));
-        $serviceLocation = factory(ServiceLocation::class)->create(['service_id' => $service5->id]);
+        $service5 = Service::factory()->create(array_merge($serviceParams, ['score' => 5]));
+        $serviceLocation = ServiceLocation::factory()->create(['service_id' => $service5->id]);
         DB::table('locations')->where('id', $serviceLocation->location->id)->update(['lat' => 45.01, 'lon' => 90.01]);
         $service5->save();
 
-        $service0 = factory(Service::class)->create(array_merge($serviceParams, ['score' => 0]));
-        $serviceLocation3 = factory(ServiceLocation::class)->create(['service_id' => $service0->id]);
+        $service0 = Service::factory()->create(array_merge($serviceParams, ['score' => 0]));
+        $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service0->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 45, 'lon' => 90]);
         $service0->save();
 

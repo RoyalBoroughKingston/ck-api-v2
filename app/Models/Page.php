@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\IndexConfigurators\PagesIndexConfigurator;
 use App\Models\Mutators\PageMutators;
 use App\Models\Relationships\PageRelationships;
@@ -11,6 +12,8 @@ use ScoutElastic\Searchable;
 
 class Page extends Model
 {
+    use HasFactory;
+
     use PageRelationships;
     use PageMutators;
     use PageScopes;

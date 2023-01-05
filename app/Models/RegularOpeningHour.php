@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Mutators\RegularOpeningHourMutators;
 use App\Models\Relationships\RegularOpeningHourRelationships;
 use App\Models\Scopes\RegularOpeningHourScopes;
 
 class RegularOpeningHour extends Model
 {
+    use HasFactory;
+
     use RegularOpeningHourMutators;
     use RegularOpeningHourRelationships;
     use RegularOpeningHourScopes;

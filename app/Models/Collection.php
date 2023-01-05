@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Mutators\CollectionMutators;
 use App\Models\Relationships\CollectionRelationships;
 use App\Models\Scopes\CollectionScopes;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Collection extends Model
 {
+    use HasFactory;
+
     use CollectionMutators;
     use CollectionRelationships;
     use CollectionScopes;

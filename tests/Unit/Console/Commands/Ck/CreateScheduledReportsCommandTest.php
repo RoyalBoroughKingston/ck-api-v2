@@ -18,7 +18,7 @@ class CreateScheduledReportsCommandTest extends TestCase
     {
         Queue::fake();
 
-        $reportSchedule = factory(ReportSchedule::class)->create([
+        $reportSchedule = ReportSchedule::factory()->create([
             'report_type_id' => ReportType::usersExport()->id,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_WEEKLY,
         ]);
@@ -46,7 +46,7 @@ class CreateScheduledReportsCommandTest extends TestCase
     {
         Queue::fake();
 
-        $reportSchedule = factory(ReportSchedule::class)->create([
+        $reportSchedule = ReportSchedule::factory()->create([
             'report_type_id' => ReportType::servicesExport()->id,
             'repeat_type' => ReportSchedule::REPEAT_TYPE_MONTHLY,
         ]);

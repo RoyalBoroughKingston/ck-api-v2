@@ -18,7 +18,7 @@ class PageFeedbackReceivedTest extends TestCase
         Queue::fake();
 
         $request = Request::create('')->setUserResolver(function () {
-            return factory(User::class)->create();
+            return User::factory()->create();
         });
         $pageFeedback = PageFeedback::create([
             'url' => 'https://example.com',

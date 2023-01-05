@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
      */
     protected function createOrganisations(int $count = 10)
     {
-        $organisations = factory(Organisation::class, $count)->create();
+        $organisations = Organisation::factory()->count($count)->create();
         $services = [];
 
         foreach ($organisations as $organisation) {
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
      */
     protected function createServices(Organisation $organisation, int $count = 5)
     {
-        return factory(Service::class, $count)->create(['organisation_id' => $organisation->id]);
+        return Service::factory()->count($count)->create(['organisation_id' => $organisation->id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class DatabaseSeeder extends Seeder
      */
     protected function createServiceLocations(Service $service, int $count = 2)
     {
-        return factory(ServiceLocation::class, $count)->create(['service_id' => $service->id]);
+        return ServiceLocation::factory()->count($count)->create(['service_id' => $service->id]);
     }
 }

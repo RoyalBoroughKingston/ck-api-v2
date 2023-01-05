@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Http\Requests\Organisation\UpdateRequest as UpdateOrganisationRequest;
 use App\Models\Mutators\OrganisationMutators;
 use App\Models\Relationships\OrganisationRelationships;
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRelationships
 {
+    use HasFactory;
+
     use OrganisationMutators;
     use OrganisationRelationships;
     use OrganisationScopes;

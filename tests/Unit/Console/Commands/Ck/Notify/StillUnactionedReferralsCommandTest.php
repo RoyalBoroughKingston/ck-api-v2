@@ -16,7 +16,7 @@ class StillUnactionedReferralsCommandTest extends TestCase
     {
         Queue::fake();
 
-        factory(Referral::class)->create([
+        Referral::factory()->create([
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
             'status' => Referral::STATUS_NEW,

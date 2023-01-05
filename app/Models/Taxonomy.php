@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Mutators\TaxonomyMutators;
 use App\Models\Relationships\TaxonomyRelationships;
 use App\Models\Scopes\TaxonomyScopes;
 
 class Taxonomy extends Model
 {
+    use HasFactory;
+
     use TaxonomyMutators;
     use TaxonomyRelationships;
     use TaxonomyScopes;

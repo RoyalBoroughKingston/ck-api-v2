@@ -114,7 +114,7 @@ class SitemapTest extends TestCase
     public function getSitemapIncludesServices200()
     {
         /** @var \App\Models\Service $service */
-        $service = factory(Service::class)->create();
+        $service = Service::factory()->create();
         $included = false;
 
         $response = $this->get('/sitemap');
@@ -142,7 +142,7 @@ class SitemapTest extends TestCase
     public function getSitemapIncludesOrganisations200()
     {
         /** @var \App\Models\Organisation $organisation */
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
         $included = false;
 
         $response = $this->get('/sitemap');
@@ -226,7 +226,7 @@ class SitemapTest extends TestCase
     public function getSitemapIncludesPages200()
     {
         /** @var \App\Models\Page $page */
-        $page = factory(Page::class)->create();
+        $page = Page::factory()->create();
         $included = false;
 
         $response = $this->get('/sitemap');

@@ -143,7 +143,7 @@ class OrganisationSignUpFormTest extends TestCase
     {
         $this->fakeEvents();
 
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
 
         $userSubmission = [
             'first_name' => $this->faker->firstName,
@@ -190,9 +190,9 @@ class OrganisationSignUpFormTest extends TestCase
     {
         $this->fakeEvents();
 
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
 
-        factory(User::class)->create([
+        User::factory()->create([
             'email' => 'admin@organisation.org',
         ])->makeOrganisationAdmin($organisation);
 
@@ -221,7 +221,7 @@ class OrganisationSignUpFormTest extends TestCase
     {
         $this->fakeEvents();
 
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
 
         $user1Submission = [
             'first_name' => $this->faker->firstName,
@@ -329,7 +329,7 @@ class OrganisationSignUpFormTest extends TestCase
      */
     public function guest_cannot_sign_up_with_new_organisation_which_matches_existing_organisation()
     {
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
 
         $userSubmission = [
             'first_name' => $this->faker->firstName,
@@ -357,9 +357,9 @@ class OrganisationSignUpFormTest extends TestCase
     public function test_service_worker_cannot_create_one()
     {
         /** @var \App\Models\Service $service */
-        $service = factory(Service::class)->create();
+        $service = Service::factory()->create();
         /** @var \App\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->makeServiceWorker($service);
 
         Passport::actingAs($user);
@@ -372,9 +372,9 @@ class OrganisationSignUpFormTest extends TestCase
     public function test_service_admin_cannot_create_one()
     {
         /** @var \App\Models\Service $service */
-        $service = factory(Service::class)->create();
+        $service = Service::factory()->create();
         /** @var \App\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->makeServiceAdmin($service);
 
         Passport::actingAs($user);
@@ -387,9 +387,9 @@ class OrganisationSignUpFormTest extends TestCase
     public function test_organisation_admin_cannot_create_one()
     {
         /** @var \App\Models\Organisation $organisation */
-        $organisation = factory(Organisation::class)->create();
+        $organisation = Organisation::factory()->create();
         /** @var \App\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->makeOrganisationAdmin($organisation);
 
         Passport::actingAs($user);
@@ -404,7 +404,7 @@ class OrganisationSignUpFormTest extends TestCase
         /**
          * @var \App\Models\User $user
          */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -419,7 +419,7 @@ class OrganisationSignUpFormTest extends TestCase
         /**
          * @var \App\Models\User $user
          */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->makeSuperAdmin();
 
         Passport::actingAs($user);

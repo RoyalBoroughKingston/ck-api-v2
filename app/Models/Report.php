@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Mutators\ReportMutators;
 use App\Models\Relationships\ReportRelationships;
 use App\Models\Scopes\ReportScopes;
@@ -15,6 +16,8 @@ use Illuminate\Support\Str;
 
 class Report extends Model
 {
+    use HasFactory;
+
     use ReportMutators;
     use ReportRelationships;
     use ReportScopes;

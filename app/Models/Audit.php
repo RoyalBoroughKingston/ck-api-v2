@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Mutators\AuditMutators;
 use App\Models\Relationships\AuditRelationships;
 use App\Models\Scopes\AuditScopes;
 
 class Audit extends Model
 {
+    use HasFactory;
+
     use AuditMutators;
     use AuditRelationships;
     use AuditScopes;

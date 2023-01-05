@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\IndexConfigurators\EventsIndexConfigurator;
 use App\Models\Mutators\OrganisationEventMutators;
@@ -21,6 +22,8 @@ use ScoutElastic\Searchable;
 
 class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxonomyRelationships
 {
+    use HasFactory;
+
     use OrganisationEventMutators;
     use OrganisationEventRelationships;
     use OrganisationEventScopes;

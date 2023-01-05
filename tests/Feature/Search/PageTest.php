@@ -41,7 +41,7 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_page_title()
     {
-        $page = factory(Page::class)->create();
+        $page = Page::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => $page->title,
@@ -57,7 +57,7 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_page_content()
     {
-        $page = factory(Page::class)->states('landingPage')->create();
+        $page = Page::factory()->landingPage()->create();
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => $page->content['introduction']['content'][0]['value'],
@@ -70,7 +70,7 @@ class PageTest extends TestCase implements UsesElasticsearch
             'id' => $page->id,
         ]);
 
-        $page = factory(Page::class)->states('landingPage')->create([
+        $page = Page::factory()->landingPage()->create([
             'content' => [
                 'introduction' => [
                     'content' => [
@@ -115,7 +115,7 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_single_word_from_page_content()
     {
-        $page = factory(Page::class)->create([
+        $page = Page::factory()->create([
             'content' => [
                 'introduction' => [
                     'content' => [
@@ -140,7 +140,7 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_multiple_words_from_page_content()
     {
-        $page = factory(Page::class)->create([
+        $page = Page::factory()->create([
             'content' => [
                 'introduction' => [
                     'content' => [
@@ -165,8 +165,8 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_ranks_page_title_above_page_content()
     {
-        $page1 = factory(Page::class)->create(['title' => 'Thisisatest']);
-        $page2 = factory(Page::class)->create([
+        $page1 = Page::factory()->create(['title' => 'Thisisatest']);
+        $page2 = Page::factory()->create([
             'content' => [
                 'introduction' => [
                     'content' => [
@@ -202,13 +202,13 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_collection_name()
     {
-        $page1 = factory(Page::class)->create();
-        $page1->updateCollections([factory(Collection::class)->create([
+        $page1 = Page::factory()->create();
+        $page1->updateCollections([Collection::factory()->create([
             'name' => 'Thisisatest',
         ])->id]);
 
-        $page2 = factory(Page::class)->create();
-        $page2->updateCollections([factory(Collection::class)->create([
+        $page2 = Page::factory()->create();
+        $page2->updateCollections([Collection::factory()->create([
             'name' => 'Should not match',
         ])->id]);
 
@@ -238,16 +238,16 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_partial_collection_name()
     {
-        $page1 = factory(Page::class)->create();
+        $page1 = Page::factory()->create();
         $page1->updateCollections([
-            factory(Collection::class)->create([
+            Collection::factory()->create([
                 'name' => 'Testword Anotherphrase',
             ])->id,
         ]);
 
-        $page2 = factory(Page::class)->create();
+        $page2 = Page::factory()->create();
         $page2->updateCollections([
-            factory(Collection::class)->create([
+            Collection::factory()->create([
                 'name' => 'Should not match',
             ])->id,
         ]);
@@ -278,8 +278,8 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_ranks_perfect_match_above_fuzzy_match()
     {
-        $page1 = factory(Page::class)->create(['title' => 'Thisisatest']);
-        $page2 = factory(Page::class)->create(['title' => 'Thsiisatst']);
+        $page1 = Page::factory()->create(['title' => 'Thisisatest']);
+        $page2 = Page::factory()->create(['title' => 'Thsiisatst']);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
@@ -304,11 +304,11 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_only_enabled_pages_returned()
     {
-        $activePage = factory(Page::class)->create([
+        $activePage = Page::factory()->create([
             'title' => 'Testing Page',
             'enabled' => Page::ENABLED,
         ]);
-        $inactivePage = factory(Page::class)->create([
+        $inactivePage = Page::factory()->create([
             'title' => 'Testing Page',
             'enabled' => Page::DISABLED,
         ]);
@@ -326,7 +326,7 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_returns_paginated_result_set()
     {
-        $pages = factory(Page::class, 30)->create([
+        $pages = Page::factory()->count(30)->create([
             'title' => 'Testing Page',
         ]);
 

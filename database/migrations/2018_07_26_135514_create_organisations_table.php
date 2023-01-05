@@ -13,7 +13,7 @@ class CreateOrganisationsTable extends Migration
     {
         Schema::create('organisations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->nullableForeignUuid('logo_file_id', 'files');
+            $table->nullableForeignUuidKeyColumn('logo_file_id', 'files');
             $table->string('name');
             $table->text('description');
             $table->string('url');

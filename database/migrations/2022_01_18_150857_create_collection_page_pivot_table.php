@@ -12,8 +12,8 @@ class CreateCollectionPagePivotTable extends Migration
     public function up()
     {
         Schema::create('collection_page', function (Blueprint $table) {
-            $table->foreignUuid('page_id', 'pages');
-            $table->foreignUuid('collection_id', 'collections');
+            $table->foreignUuidKeyColumn('page_id', 'pages');
+            $table->foreignUuidKeyColumn('collection_id', 'collections');
             $table->timestamps();
         });
     }

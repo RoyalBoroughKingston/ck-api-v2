@@ -22,7 +22,7 @@ class CreateInformationPagesTable extends Migration
         });
 
         Schema::table('information_pages', function (Blueprint $table) {
-            $table->nullableForeignUuid('image_file_id', 'files');
+            $table->nullableForeignUuidKeyColumn('image_file_id', 'files');
         });
     }
 

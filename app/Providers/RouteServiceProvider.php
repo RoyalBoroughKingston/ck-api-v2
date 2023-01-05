@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
 use App\Models\Collection;
 use App\Models\Organisation;
 use App\Models\Page;
@@ -34,9 +37,16 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        parent::boot();
+        $this->configureRateLimiting();
 
-        // Resolve by ID first, then resort to slug.
+        $this->routes(function () {
+            $this->mapApiRoutes();
+
+            $this->mapWebRoutes();
+
+            $this->mapPassportRoutes();
+        });
+// Resolve by ID first, then resort to slug.
         Route::bind('organisation', function ($value) {
             return Organisation::query()->find($value)
                 ?? Organisation::query()->where('slug', '=', $value)->first()
@@ -69,20 +79,11 @@ class RouteServiceProvider extends ServiceProvider
             return Taxonomy::query()->find($value)
                 ?? Taxonomy::query()->where('slug', $value)->first()
                 ?? abort(Response::HTTP_NOT_FOUND);
-        });
-    }
+        });    }
 
     /**
      * Define the routes for the application.
      */
-    public function map()
-    {
-        $this->mapApiRoutes();
-
-        $this->mapWebRoutes();
-
-        $this->mapPassportRoutes();
-    }
 
     /**
      * Define the "web" routes for the application.
@@ -115,5 +116,17 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware(['web', 'auth'])
             ->group(base_path('routes/passport.php'));
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 }

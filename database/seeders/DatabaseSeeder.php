@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Models\Organisation;
 use App\Models\Service;
 use App\Models\ServiceLocation;

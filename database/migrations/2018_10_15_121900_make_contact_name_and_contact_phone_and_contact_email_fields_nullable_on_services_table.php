@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MakeContactNameAndContactPhoneAndContactEmailFieldsNullableOnServicesTable extends Migration
+return new class extends Migration
 {
     /**
      * MakeContactNameAndContactPhoneAndContactEmailFieldsNullableOnServicesTable constructor.
@@ -37,4 +37,4 @@ class MakeContactNameAndContactPhoneAndContactEmailFieldsNullableOnServicesTable
             $table->string('contact_email')->nullable(false)->change();
         });
     }
-}
+};

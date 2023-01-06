@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
-class UpdateReportTypes extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -88,4 +88,4 @@ class UpdateReportTypes extends Migration
             'updated_at' => $now,
         ]);
     }
-}
+};

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class SeedServiceEligibilityChildTaxonomies extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -50,4 +50,4 @@ class SeedServiceEligibilityChildTaxonomies extends Migration
 
         return $taxonomies;
     }
-}
+};

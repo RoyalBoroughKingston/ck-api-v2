@@ -26,7 +26,7 @@
         "laravel/passport": "^10.0",
         "laravel/tinker": "^2.5",
         "lcobucci/jwt": "~3.4",
-        "league/flysystem-aws-s3-v3": "~1.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "mailgun/mailgun-php": "^3.0",
         "nyholm/psr7": "^1.2",
         "php-http/guzzle6-adapter": "^2.0",

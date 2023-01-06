@@ -13,15 +13,13 @@ class PendingAssignmentFilesTest extends TestCase
 {
     public function test_auto_delete_works()
     {
-        $newPendingAssignmentFile = factory(File::class)
-            ->states('pending-assignment')
+        $newPendingAssignmentFile = File::factory()->pendingAssignment()
             ->create([
                 'created_at' => Date::today(),
                 'updated_at' => Date::today(),
             ]);
 
-        $dueForDeletionFile = factory(File::class)
-            ->states('pending-assignment')
+        $dueForDeletionFile = File::factory()->pendingAssignment()
             ->create([
                 'created_at' => Date::today()->subDays(File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS),
                 'updated_at' => Date::today()->subDays(File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS),
@@ -35,10 +33,9 @@ class PendingAssignmentFilesTest extends TestCase
 
     public function test_auto_delete_leaves_no_orphans()
     {
-        $service = factory(Service::class)->create();
+        $service = Service::factory()->create();
 
-        $dueForDeletionFile = factory(File::class)
-            ->states('pending-assignment')
+        $dueForDeletionFile = File::factory()->pendingAssignment()
             ->create([
                 'created_at' => Date::today()->subDays(File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS),
                 'updated_at' => Date::today()->subDays(File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS),

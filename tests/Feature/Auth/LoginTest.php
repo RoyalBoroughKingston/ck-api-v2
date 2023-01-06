@@ -16,7 +16,7 @@ class LoginTest extends TestCase
 
         Queue::fake();
 
-        $user = factory(User::class)->create(['password' => bcrypt('password')]);
+        $user = User::factory()->create(['password' => bcrypt('password')]);
 
         $this->post(route('login'), [
             'email' => $user->email,

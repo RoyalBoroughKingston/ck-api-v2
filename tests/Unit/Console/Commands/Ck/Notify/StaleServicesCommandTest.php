@@ -21,11 +21,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(5),
         ]);
 
-        factory(User::class)->create()->makeServiceAdmin($service);
+        User::factory()->create()->makeServiceAdmin($service);
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -36,11 +36,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(13),
         ]);
 
-        factory(User::class)->create()->makeServiceAdmin($service);
+        User::factory()->create()->makeServiceAdmin($service);
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -51,11 +51,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(6),
         ]);
 
-        factory(User::class)->create()->makeServiceAdmin($service);
+        User::factory()->create()->makeServiceAdmin($service);
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -73,11 +73,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(12),
         ]);
 
-        factory(User::class)->create()->makeServiceAdmin($service);
+        User::factory()->create()->makeServiceAdmin($service);
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -95,11 +95,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(9),
         ]);
 
-        factory(User::class)->create()->makeServiceAdmin($service);
+        User::factory()->create()->makeServiceAdmin($service);
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -117,11 +117,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(9),
         ]);
 
-        factory(User::class)->create()->makeServiceWorker($service);
+        User::factory()->create()->makeServiceWorker($service);
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -132,11 +132,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        factory(Service::class)->create([
+        Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(9),
         ]);
 
-        factory(User::class)->create()->makeGlobalAdmin();
+        User::factory()->create()->makeGlobalAdmin();
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -151,11 +151,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        factory(Service::class)->create([
+        Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(11),
         ]);
 
-        factory(User::class)->create()->makeSuperAdmin();
+        User::factory()->create()->makeSuperAdmin();
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -166,11 +166,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        factory(Service::class)->create([
+        Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(13),
         ]);
 
-        factory(User::class)->create()->makeSuperAdmin();
+        User::factory()->create()->makeSuperAdmin();
 
         Artisan::call(StaleServicesCommand::class);
 
@@ -181,11 +181,11 @@ class StaleServicesCommandTest extends TestCase
     {
         Queue::fake();
 
-        factory(Service::class)->create([
+        Service::factory()->create([
             'last_modified_at' => Date::now()->subMonths(12),
         ]);
 
-        factory(User::class)->create()->makeSuperAdmin();
+        User::factory()->create()->makeSuperAdmin();
 
         Artisan::call(StaleServicesCommand::class);
 

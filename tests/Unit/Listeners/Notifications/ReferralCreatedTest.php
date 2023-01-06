@@ -22,11 +22,11 @@ class ReferralCreatedTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
             'referral_email' => $this->faker->safeEmail,
         ]);
-        $referral = factory(Referral::class)->create([
+        $referral = Referral::factory()->create([
             'service_id' => $service->id,
             'email' => 'test@example.com',
             'referee_email' => 'test@example.com',
@@ -34,7 +34,7 @@ class ReferralCreatedTest extends TestCase
         ]);
 
         $request = Request::create('')->setUserResolver(function () {
-            return factory(User::class)->create();
+            return User::factory()->create();
         });
         $event = EndpointHit::onCreate($request, '', $referral);
         $listener = new ReferralCreated();
@@ -94,11 +94,11 @@ class ReferralCreatedTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
             'referral_email' => $this->faker->safeEmail,
         ]);
-        $referral = factory(Referral::class)->create([
+        $referral = Referral::factory()->create([
             'service_id' => $service->id,
             'phone' => '07700000000',
             'referee_phone' => '07700000000',
@@ -106,7 +106,7 @@ class ReferralCreatedTest extends TestCase
         ]);
 
         $request = Request::create('')->setUserResolver(function () {
-            return factory(User::class)->create();
+            return User::factory()->create();
         });
         $event = EndpointHit::onCreate($request, '', $referral);
         $listener = new ReferralCreated();
@@ -131,11 +131,11 @@ class ReferralCreatedTest extends TestCase
     {
         Queue::fake();
 
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
             'referral_email' => $this->faker->safeEmail,
         ]);
-        $referral = factory(Referral::class)->create([
+        $referral = Referral::factory()->create([
             'service_id' => $service->id,
             'email' => 'test@example.com',
             'phone' => '07700000000',
@@ -144,7 +144,7 @@ class ReferralCreatedTest extends TestCase
         ]);
 
         $request = Request::create('')->setUserResolver(function () {
-            return factory(User::class)->create();
+            return User::factory()->create();
         });
         $event = EndpointHit::onCreate($request, '', $referral);
         $listener = new ReferralCreated();

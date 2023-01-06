@@ -22,7 +22,7 @@ class SpreadsheetParserTest extends TestCase
 
         Storage::fake('local');
 
-        $organisations = factory(Organisation::class, 20)->create();
+        $organisations = Organisation::factory()->count(20)->create();
 
         $headers = [
             'name',

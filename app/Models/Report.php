@@ -10,11 +10,13 @@ use Closure;
 use Exception;
 use Generator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
 class Report extends Model
 {
+    use HasFactory;
     use ReportMutators;
     use ReportRelationships;
     use ReportScopes;

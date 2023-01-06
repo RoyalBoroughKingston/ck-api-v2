@@ -13,7 +13,7 @@ class ForgotPasswordTest extends TestCase
     {
         Queue::fake();
 
-        $user = factory(User::class)->create()->makeSuperAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
 
         $this->post(route('password.email'), [
             'email' => $user->email,

@@ -50,7 +50,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsEmptyQueryAsGuest()
     {
-        factory(OrganisationEvent::class, 5)->create();
+        OrganisationEvent::factory()->count(5)->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'page' => 1,
@@ -66,7 +66,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchTitleAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create();
+        $event = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => $event->title,
@@ -85,7 +85,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchSingleWordFromTitleAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create([
+        $event = OrganisationEvent::factory()->create([
             'title' => 'Quick Brown Fox',
         ]);
 
@@ -104,7 +104,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchMultipleWordsFromTitleAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create([
+        $event = OrganisationEvent::factory()->create([
             'title' => 'Quick Brown Fox',
         ]);
 
@@ -123,7 +123,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchIntroAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create();
+        $event = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => $event->intro,
@@ -142,7 +142,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchSingleWordFromIntroAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create([
+        $event = OrganisationEvent::factory()->create([
             'intro' => 'This is an event that helps to homeless find temporary housing.',
         ]);
 
@@ -161,7 +161,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchMultipleWordsFromIntroAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create([
+        $event = OrganisationEvent::factory()->create([
             'intro' => 'This is an event that helps to homeless find temporary housing.',
         ]);
 
@@ -180,7 +180,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchDescriptionAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create();
+        $event = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => $event->description,
@@ -199,7 +199,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchSingleWordFromDescriptionAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create([
+        $event = OrganisationEvent::factory()->create([
             'description' => '<p>This is an event that helps to homeless find temporary housing.</p>',
         ]);
 
@@ -218,7 +218,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchMultipleWordsFromDescriptionAsGuest()
     {
-        $event = factory(OrganisationEvent::class)->create([
+        $event = OrganisationEvent::factory()->create([
             'description' => '<p>This is an event that helps to homeless find temporary housing.</p>',
         ]);
 
@@ -237,7 +237,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsMatchCategoryNameAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
         ]);
         $taxonomy1 = Taxonomy::category()->children()->create([
@@ -249,7 +249,7 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event1->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
         $event1->save();
 
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
@@ -290,8 +290,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankTitleAboveIntroAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create(['title' => 'Thisisatest']);
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
+        $event2 = OrganisationEvent::factory()->create([
             'intro' => 'Thisisatest',
         ]);
 
@@ -322,8 +322,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankTitleAboveDescriptionAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create(['title' => 'Thisisatest']);
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
+        $event2 = OrganisationEvent::factory()->create([
             'description' => '<p>Thisisatest</p>',
         ]);
 
@@ -354,8 +354,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankIntroAboveDescriptionAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create(['intro' => 'Thisisatest']);
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create(['intro' => 'Thisisatest']);
+        $event2 = OrganisationEvent::factory()->create([
             'description' => '<p>Thisisatest</p>',
         ]);
 
@@ -386,8 +386,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankPerfectMatchAboveCloseMatchAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create(['title' => 'Thisisatest']);
-        $event2 = factory(OrganisationEvent::class)->create(['title' => 'Thsiisatst']);
+        $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
+        $event2 = OrganisationEvent::factory()->create(['title' => 'Thsiisatst']);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Thisisatest',
@@ -416,7 +416,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankDescriptionAboveCategoryNameAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'description' => '<p>Quick Brown Fox</p>',
         ]);
         $taxonomy1 = Taxonomy::category()->children()->create([
@@ -428,7 +428,7 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event1->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
         $event1->save();
 
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'description' => '<p>Lazy Dog</p>',
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
@@ -479,7 +479,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByCollectionNameAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
         ]);
         $collection1 = Collection::create([
@@ -499,7 +499,7 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event1->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
         $event1->save();
 
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
         ]);
         $collection2 = Collection::create([
@@ -546,8 +546,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByisFreeAsGuest()
     {
-        $paidEvent = factory(OrganisationEvent::class)->states('nonFree')->create();
-        $freeEvent = factory(OrganisationEvent::class)->create();
+        $paidEvent = OrganisationEvent::factory()->nonFree()->create();
+        $freeEvent = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_free' => true,
@@ -563,8 +563,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByNotisFreeAsGuest()
     {
-        $paidEvent = factory(OrganisationEvent::class)->states('nonFree')->create();
-        $freeEvent = factory(OrganisationEvent::class)->create();
+        $paidEvent = OrganisationEvent::factory()->nonFree()->create();
+        $freeEvent = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_free' => false,
@@ -580,8 +580,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByisVirtualAsGuest()
     {
-        $locatedEvent = factory(OrganisationEvent::class)->states('notVirtual')->create();
-        $virtualEvent = factory(OrganisationEvent::class)->create();
+        $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
+        $virtualEvent = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_virtual' => true,
@@ -597,8 +597,8 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByNotisVirtualAsGuest()
     {
-        $locatedEvent = factory(OrganisationEvent::class)->states('notVirtual')->create();
-        $virtualEvent = factory(OrganisationEvent::class)->create();
+        $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
+        $virtualEvent = OrganisationEvent::factory()->create();
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_virtual' => false,
@@ -614,12 +614,12 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByHasWheelchairAsGuest()
     {
-        $locatedEvent = factory(OrganisationEvent::class)->states('notVirtual')->create();
-        $virtualEvent = factory(OrganisationEvent::class)->create();
-        $locatedEventWheelchairAccess = factory(OrganisationEvent::class)->create([
+        $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
+        $virtualEvent = OrganisationEvent::factory()->create();
+        $locatedEventWheelchairAccess = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'has_wheelchair_access' => true,
                 ])->id;
             },
@@ -640,12 +640,12 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByHasInductionLoopAsGuest()
     {
-        $locatedEvent = factory(OrganisationEvent::class)->states('notVirtual')->create();
-        $virtualEvent = factory(OrganisationEvent::class)->create();
-        $locatedEventInductionLoop = factory(OrganisationEvent::class)->create([
+        $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
+        $virtualEvent = OrganisationEvent::factory()->create();
+        $locatedEventInductionLoop = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'has_induction_loop' => true,
                 ])->id;
             },
@@ -666,12 +666,12 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsFilterByHasAccessibleToiletAsGuest()
     {
-        $locatedEvent = factory(OrganisationEvent::class)->states('notVirtual')->create();
-        $virtualEvent = factory(OrganisationEvent::class)->create();
-        $locatedEventAccessibleToilet = factory(OrganisationEvent::class)->create([
+        $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
+        $virtualEvent = OrganisationEvent::factory()->create();
+        $locatedEventAccessibleToilet = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'has_accessible_toilet' => true,
                 ])->id;
             },
@@ -692,12 +692,12 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsOnlyFutureDatesReturnedAsGuest()
     {
-        $futureEvent = factory(OrganisationEvent::class)->create([
+        $futureEvent = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
             'start_date' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
             'end_date' => $this->faker->dateTimeBetween('+2 week', '+3 weeks'),
         ]);
-        $pastEvent = factory(OrganisationEvent::class)->create([
+        $pastEvent = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
             'start_date' => $this->faker->dateTimeBetween('-3 week', '-2 weeks'),
             'end_date' => $this->faker->dateTimeBetween('-2 week', '-1 weeks'),
@@ -725,19 +725,19 @@ class EventTest extends TestCase implements UsesElasticsearch
         $endtime = $this->faker->time('H:i:s', '+1 hour');
         $starttime = $this->faker->time('H:i:s', 'now');
 
-        $organisationEvent1 = factory(OrganisationEvent::class)->create([
+        $organisationEvent1 = OrganisationEvent::factory()->create([
             'start_date' => $date1->format('Y-m-d'),
             'end_date' => $date1->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
-        $organisationEvent2 = factory(OrganisationEvent::class)->create([
+        $organisationEvent2 = OrganisationEvent::factory()->create([
             'start_date' => $date2->format('Y-m-d'),
             'end_date' => $date2->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
-        $organisationEvent3 = factory(OrganisationEvent::class)->create([
+        $organisationEvent3 = OrganisationEvent::factory()->create([
             'start_date' => $date3->format('Y-m-d'),
             'end_date' => $date3->format('Y-m-d'),
             'start_time' => $starttime,
@@ -768,19 +768,19 @@ class EventTest extends TestCase implements UsesElasticsearch
         $endtime = $this->faker->time('H:i:s', '+1 hour');
         $starttime = $this->faker->time('H:i:s', 'now');
 
-        $organisationEvent1 = factory(OrganisationEvent::class)->create([
+        $organisationEvent1 = OrganisationEvent::factory()->create([
             'start_date' => $date1->format('Y-m-d'),
             'end_date' => $date1->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
-        $organisationEvent2 = factory(OrganisationEvent::class)->create([
+        $organisationEvent2 = OrganisationEvent::factory()->create([
             'start_date' => $date2->format('Y-m-d'),
             'end_date' => $date2->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
-        $organisationEvent3 = factory(OrganisationEvent::class)->create([
+        $organisationEvent3 = OrganisationEvent::factory()->create([
             'start_date' => $date3->format('Y-m-d'),
             'end_date' => $date3->format('Y-m-d'),
             'start_time' => $starttime,
@@ -811,19 +811,19 @@ class EventTest extends TestCase implements UsesElasticsearch
         $endtime = $this->faker->time('H:i:s', '+1 hour');
         $starttime = $this->faker->time('H:i:s', 'now');
 
-        $organisationEvent1 = factory(OrganisationEvent::class)->create([
+        $organisationEvent1 = OrganisationEvent::factory()->create([
             'start_date' => $date1->format('Y-m-d'),
             'end_date' => $date1->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
-        $organisationEvent2 = factory(OrganisationEvent::class)->create([
+        $organisationEvent2 = OrganisationEvent::factory()->create([
             'start_date' => $date2->format('Y-m-d'),
             'end_date' => $date2->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
-        $organisationEvent3 = factory(OrganisationEvent::class)->create([
+        $organisationEvent3 = OrganisationEvent::factory()->create([
             'start_date' => $date3->format('Y-m-d'),
             'end_date' => $date3->format('Y-m-d'),
             'start_time' => $starttime,
@@ -851,30 +851,30 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsOrderByLocationReturnEventsLessThan5MilesAwayAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 0,
                     'lon' => 0,
                 ])->id;
             },
         ]);
 
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 45,
                     'lon' => 90,
                 ])->id;
             },
         ]);
 
-        $event3 = factory(OrganisationEvent::class)->create([
+        $event3 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 90,
                     'lon' => 180,
                 ])->id;
@@ -901,30 +901,30 @@ class EventTest extends TestCase implements UsesElasticsearch
     public function searchEventsOrderByLocationReturnServicesLessThan1MileAwayAsGuest()
     {
         // > 1 mile
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.469954129107016, 'lon' => -0.3973609967291171,
                 ])->id;
             },
         ]);
 
         // < 1 mile
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.46813624630186, 'lon' => -0.38543053111827796,
                 ])->id;
             },
         ]);
 
         // > 1 mile
-        $event3 = factory(OrganisationEvent::class)->create([
+        $event3 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.47591520714541, 'lon' => -0.41139431461981674,
                 ])->id;
             },
@@ -950,44 +950,44 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsOrderByRelevanceWithLocationReturnEventsLessThan5MilesAwayAsGuest()
     {
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 0,
                     'lon' => 0,
                 ])->id;
             },
         ]);
 
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'title' => 'Test Name',
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 45.001,
                     'lon' => 90.001,
                 ])->id;
             },
         ]);
 
-        $event3 = factory(OrganisationEvent::class)->create([
+        $event3 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 45,
                     'lon' => 90,
                 ])->id;
             },
             'organisation_id' => function () {
-                return factory(Organisation::class)->create(['name' => 'Test Name'])->id;
+                return Organisation::factory()->create(['name' => 'Test Name'])->id;
             },
         ]);
 
-        $event4 = factory(OrganisationEvent::class)->create([
+        $event4 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 90,
                     'lon' => 180,
                 ])->id;
@@ -1021,10 +1021,10 @@ class EventTest extends TestCase implements UsesElasticsearch
     public function searchEventsOrderByRelevanceWithLocationReturnEventsLessThan1MileAwayAsGuest()
     {
         // Not relevant > 1 mile
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.469954129107016,
                     'lon' => -0.3973609967291171,
                 ])->id;
@@ -1032,11 +1032,11 @@ class EventTest extends TestCase implements UsesElasticsearch
         ]);
 
         // Relevant < 1 mile
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'intro' => 'Thisisatest',
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.46813624630186,
                     'lon' => -0.38543053111827796,
                 ])->id;
@@ -1044,11 +1044,11 @@ class EventTest extends TestCase implements UsesElasticsearch
         ]);
 
         // Relevant < 1 mile
-        $event3 = factory(OrganisationEvent::class)->create([
+        $event3 = OrganisationEvent::factory()->create([
             'title' => 'Thisisatest',
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.46933926508632,
                     'lon' => -0.3745729484111921,
                 ])->id;
@@ -1056,11 +1056,11 @@ class EventTest extends TestCase implements UsesElasticsearch
         ]);
 
         // Relevant > 1 mile
-        $event4 = factory(OrganisationEvent::class)->create([
+        $event4 = OrganisationEvent::factory()->create([
             'title' => 'Thisisatest',
             'is_virtual' => false,
             'location_id' => function () {
-                return factory(Location::class)->create([
+                return Location::factory()->create([
                     'lat' => 51.46741441979822,
                     'lon' => -0.40152378521657234,
                 ])->id;
@@ -1094,19 +1094,19 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsOrderByStartDate()
     {
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
             'start_date' => $this->faker->dateTimeBetween('+1 day', '+2 days'),
             'end_date' => $this->faker->dateTimeBetween('+2 days', '+3 days'),
         ]);
 
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
             'start_date' => $this->faker->dateTimeBetween('+4 days', '+5 days'),
             'end_date' => $this->faker->dateTimeBetween('+6 days', '+7 days'),
         ]);
 
-        $event3 = factory(OrganisationEvent::class)->create([
+        $event3 = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
             'start_date' => $this->faker->dateTimeBetween('+8 days', '+9 days'),
             'end_date' => $this->faker->dateTimeBetween('+10 days', '+11 days'),
@@ -1168,13 +1168,13 @@ class EventTest extends TestCase implements UsesElasticsearch
         $collection->collectionTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
 
         // Create 3 events
-        $event1 = factory(OrganisationEvent::class)->create([
+        $event1 = OrganisationEvent::factory()->create([
             'title' => 'Gold Co.',
         ]);
-        $event2 = factory(OrganisationEvent::class)->create([
+        $event2 = OrganisationEvent::factory()->create([
             'title' => 'Silver Co.',
         ]);
-        $event3 = factory(OrganisationEvent::class)->create([
+        $event3 = OrganisationEvent::factory()->create([
             'title' => 'Bronze Co.',
         ]);
 
@@ -1210,7 +1210,7 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsReturnsPaginatedResultSetAsGuest()
     {
-        $events = factory(OrganisationEvent::class, 30)->create([
+        $events = OrganisationEvent::factory()->count(30)->create([
             'title' => 'Testing Page',
         ]);
 

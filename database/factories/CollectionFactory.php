@@ -24,7 +24,7 @@ class CollectionFactory extends Factory
             'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
             'name' => $name,
             'meta' => [
-                'intro' => $this->faker->sentence,
+                'intro' => $this->faker->sentence(),
                 'sideboxes' => [],
                 'image_file_id' => $imageId,
             ],
@@ -39,8 +39,8 @@ class CollectionFactory extends Factory
             return [
                 'type' => Collection::TYPE_PERSONA,
                 'meta' => [
-                    'intro' => $this->faker->sentence,
-                    'subtitle' => $this->faker->sentence,
+                    'intro' => $this->faker->sentence(),
+                    'subtitle' => $this->faker->sentence(),
                     'sideboxes' => [],
                 ],
                 'order' => Collection::personas()->count() + 1,

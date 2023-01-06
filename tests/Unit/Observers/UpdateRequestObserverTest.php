@@ -69,9 +69,9 @@ class UpdateRequestObserverTest extends TestCase
             'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM,
             'data' => [
                 'user' => [
-                    'first_name' => $this->faker->firstName,
-                    'last_name' => $this->faker->lastName,
-                    'email' => $this->faker->safeEmail,
+                    'first_name' => $this->faker->firstName(),
+                    'last_name' => $this->faker->lastName(),
+                    'email' => $this->faker->safeEmail(),
                     'phone' => random_uk_phone(),
                 ],
                 'organisation' => [
@@ -94,10 +94,10 @@ class UpdateRequestObserverTest extends TestCase
                     'fees_url' => null,
                     'testimonial' => null,
                     'video_embed' => null,
-                    'url' => $this->faker->url,
-                    'contact_name' => $this->faker->name,
+                    'url' => $this->faker->url(),
+                    'contact_name' => $this->faker->name(),
                     'contact_phone' => random_uk_phone(),
-                    'contact_email' => $this->faker->safeEmail,
+                    'contact_email' => $this->faker->safeEmail(),
                     'useful_infos' => [],
                     'offerings' => [],
                 ],

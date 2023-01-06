@@ -69,7 +69,7 @@ class PageFactory extends Factory
                             ],
                             [
                                 'type' => 'cta',
-                                'title' => $this->faker->sentence,
+                                'title' => $this->faker->sentence(),
                                 'description' => $this->faker->realText(),
                                 'url' => $this->faker->url(),
                                 'buttonText' => $this->faker->words(3, true),
@@ -84,7 +84,7 @@ class PageFactory extends Factory
                             ],
                             [
                                 'type' => 'cta',
-                                'title' => $this->faker->sentence,
+                                'title' => $this->faker->sentence(),
                                 'description' => $this->faker->realText(),
                                 'url' => $this->faker->url(),
                                 'buttonText' => $this->faker->words(3, true),

@@ -2194,7 +2194,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => null,
                             'url' => $this->faker->url(),
                             'buttonText' => $this->faker->words(3, true),
@@ -2221,7 +2221,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => $this->faker->url(),
                             'buttonText' => null,
@@ -2248,7 +2248,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => 'foo',
                             'buttonText' => $this->faker->words(3, true),
@@ -2291,7 +2291,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => $this->faker->url(),
                             'buttonText' => $this->faker->words(3, true),
@@ -2332,7 +2332,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => $this->faker->url(),
                             'buttonText' => $this->faker->words(3, true),
@@ -2347,7 +2347,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => $this->faker->url(),
                             'buttonText' => $this->faker->words(3, true),
@@ -2367,7 +2367,7 @@ class PagesTest extends TestCase
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => $this->faker->url(),
                             'buttonText' => $this->faker->words(3, true),

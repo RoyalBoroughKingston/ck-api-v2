@@ -17,8 +17,8 @@ class AuditFactory extends Factory
     {
         return [
             'action' => Arr::random([Audit::ACTION_CREATE, Audit::ACTION_READ, Audit::ACTION_UPDATE, Audit::ACTION_DELETE]),
-            'description' => $this->faker->sentence,
-            'ip_address' => $this->faker->ipv4,
+            'description' => $this->faker->sentence(),
+            'ip_address' => $this->faker->ipv4(),
         ];
     }
 }

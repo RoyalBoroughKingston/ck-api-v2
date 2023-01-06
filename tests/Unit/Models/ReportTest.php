@@ -573,10 +573,10 @@ class ReportTest extends TestCase
         // Create a single referral.
         $referral = Referral::factory()->create([
             'referral_consented_at' => Date::now(),
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->email,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->email(),
             'referee_phone' => '07700000000',
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         // Generate the report.

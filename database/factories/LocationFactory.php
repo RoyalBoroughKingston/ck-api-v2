@@ -14,10 +14,10 @@ class LocationFactory extends Factory
     public function definition()
     {
         return [
-            'address_line_1' => $this->faker->streetAddress,
-            'city' => $this->faker->city,
+            'address_line_1' => $this->faker->streetAddress(),
+            'city' => $this->faker->city(),
             'county' => 'West Yorkshire',
-            'postcode' => $this->faker->postcode,
+            'postcode' => $this->faker->postcode(),
             'country' => 'United Kingdom',
             'has_wheelchair_access' => false,
             'has_induction_loop' => false,

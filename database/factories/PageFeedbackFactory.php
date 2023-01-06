@@ -14,8 +14,8 @@ class PageFeedbackFactory extends Factory
     public function definition()
     {
         return [
-            'url' => $this->faker->url,
-            'feedback' => $this->faker->sentence,
+            'url' => $this->faker->url(),
+            'feedback' => $this->faker->sentence(),
         ];
     }
 }

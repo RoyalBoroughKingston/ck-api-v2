@@ -6,7 +6,6 @@ use App\Models\File;
 use App\Models\Location;
 use App\Models\Organisation;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\File;
 
 class OrganisationEventFactory extends Factory
 {

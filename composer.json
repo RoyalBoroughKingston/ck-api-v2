@@ -39,13 +39,14 @@
         "laravel/ui": "^3.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.2",
+        "brianium/paratest": "^6.8",
+        "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.16",
+        "friendsofphp/php-cs-fixer": "^3.2",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
         "pda/pheanstalk": "~4.0",
-        "phpunit/phpunit": "^9.5.10",
-        "facade/ignition": "^2.5"
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "psr-4": {

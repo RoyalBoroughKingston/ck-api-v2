@@ -75,7 +75,7 @@ class ServiceFactory extends Factory
 
     public function withCustomEligibilities()
     {
-        return $this->afterCreating(function (Service $service, Faker $faker) {
+        return $this->afterCreating(function (Service $service) {
             $service->eligibility_age_group_custom = 'custom age group';
             $service->eligibility_disability_custom = 'custom disability';
             $service->eligibility_gender_custom = 'custom gender';
@@ -90,7 +90,7 @@ class ServiceFactory extends Factory
 
     public function withSocialMedia()
     {
-        return $this->afterCreating(function (Service $service, Faker $faker) {
+        return $this->afterCreating(function (Service $service) {
             $service->socialMedias()->create([
                 'type' => SocialMedia::TYPE_INSTAGRAM,
                 'url' => 'https://www.instagram.com/ayupdigital/',
@@ -100,7 +100,7 @@ class ServiceFactory extends Factory
 
     public function withUsefulInfo()
     {
-        return $this->afterCreating(function (Service $service, Faker $faker) {
+        return $this->afterCreating(function (Service $service) {
             $service->usefulInfos()->create([
                 'title' => 'Did You Know?',
                 'description' => 'This is a test description',
@@ -111,7 +111,7 @@ class ServiceFactory extends Factory
 
     public function withOfferings()
     {
-        return $this->afterCreating(function (Service $service, Faker $faker) {
+        return $this->afterCreating(function (Service $service) {
             $service->offerings()->create([
                 'offering' => 'Weekly club',
                 'order' => 1,

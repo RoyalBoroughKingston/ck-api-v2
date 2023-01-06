@@ -17,7 +17,7 @@ class TaxonomyFactory extends Factory
     {
         $name = $this->faker->unique()->words(3, true);
 
-    return [
+        return [
         'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
         'name' => $name,
         'parent_id' => Taxonomy::category()->children()->first()->id,
@@ -29,18 +29,14 @@ class TaxonomyFactory extends Factory
     public function lgaStandards()
     {
         return $this->state(function () {
-            ['parent_id' => function () {
-    return Taxonomy::category()->children()->where('name', 'LGA Standards')->value('id');
-}]
+            return ['parent_id' => Taxonomy::category()->children()->where('name', 'LGA Standards')->value('id')];
         });
     }
 
     public function openActive()
     {
         return $this->state(function () {
-            ['parent_id' => function () {
-    return Taxonomy::category()->children()->where('name', 'OpenActive')->value('id');
-}]
+            return ['parent_id' => Taxonomy::category()->children()->where('name', 'OpenActive')->value('id')];
         });
     }
 }

@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (AddressNotFoundException $e) {
+        $this->renderable(function (AddressNotFoundException $e) {
             return response()->json([
                 'errors' => [
                     'address_not_found' => [__('validation.custom.address.not_found', ['address' => $e->getMessage()])],

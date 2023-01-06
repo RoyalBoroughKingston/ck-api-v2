@@ -17,24 +17,24 @@
     </testsuite>
   </testsuites>
   <php>
-    <server name="BCRYPT_ROUNDS" value="4"/>
-    <server name="APP_ENV" value="testing"/>
-    <server name="LOG_CHANNEL" value="testing"/>
-    <server name="DB_HOST" value="mysql-testing"/>
-    <server name="FILESYSTEM_CLOUD" value="testing_cloud"/>
-    <server name="SESSION_DRIVER" value="array"/>
-    <server name="SESSION_LIFETIME" value="20"/>
-    <server name="QUEUE_CONNECTION" value="sync"/>
-    <server name="CACHE_DRIVER" value="redis"/>
-    <server name="REDIS_HOST" value="redis-testing"/>
-    <server name="GEOCODE_DRIVER" value="stub"/>
-    <server name="MAIL_MAILER" value="&quot;null&quot;"/>
-    <server name="SMS_DRIVER" value="&quot;null&quot;"/>
-    <server name="SCOUT_ELASTIC_HOST" value="elasticsearch"/>
-    <server name="SCOUT_PREFIX" value="testing_"/>
-    <server name="OTP_ENABLED" value="(true)"/>
-    <server name="CQC_LOCATION" value="(true)"/>
-    <server name="SERVICE_TAGS" value="(true)"/>
-    <server name="TELESCOPE_ENABLED" value="false"/>
+    <env name="BCRYPT_ROUNDS" value="4"/>
+    <env name="APP_ENV" value="testing"/>
+    <env name="LOG_CHANNEL" value="testing"/>
+    <env name="DB_HOST" value="mysql-testing"/>
+    <env name="FILESYSTEM_CLOUD" value="testing_cloud"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="SESSION_LIFETIME" value="20"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <env name="CACHE_DRIVER" value="redis"/>
+    <env name="REDIS_HOST" value="redis-testing"/>
+    <env name="GEOCODE_DRIVER" value="stub"/>
+    <env name="MAIL_MAILER" value="&quot;null&quot;"/>
+    <env name="SMS_DRIVER" value="&quot;null&quot;"/>
+    <env name="SCOUT_ELASTIC_HOST" value="elasticsearch"/>
+    <env name="SCOUT_PREFIX" value="testing_"/>
+    <env name="OTP_ENABLED" value="(true)"/>
+    <env name="CQC_LOCATION" value="(true)"/>
+    <env name="SERVICE_TAGS" value="(true)"/>
+    <env name="TELESCOPE_ENABLED" value="false"/>
   </php>
 </phpunit>

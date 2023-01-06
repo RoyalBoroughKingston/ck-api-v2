@@ -35,7 +35,6 @@
         "superbalist/laravel-google-cloud-storage": "^2.2.2",
         "symfony/yaml": "^5.4",
         "twilio/sdk": "^6.6",
-        "fruitcake/laravel-cors": "^2.0",
         "laravel/ui": "^3.0"
     },
     "require-dev": {

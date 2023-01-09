@@ -8,7 +8,7 @@ use App\Models\Relationships\PageRelationships;
 use App\Models\Scopes\PageScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kalnoy\Nestedset\NodeTrait;
-use ScoutElastic\Searchable;
+use Laravel\Scout\Searchable;
 
 class Page extends Model
 {

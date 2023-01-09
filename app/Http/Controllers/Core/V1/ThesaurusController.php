@@ -35,7 +35,7 @@ class ThesaurusController extends Controller
     public function index(IndexRequest $request)
     {
         $thesaurus = cache()->rememberForever(static::CACHE_KEY, function (): array {
-            $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
+            $content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/thesaurus.csv');
             $thesaurus = csv_to_array($content);
 
             $thesaurus = collect($thesaurus)->map(function (array $synonyms) {
@@ -103,7 +103,7 @@ class ThesaurusController extends Controller
         $thesaurus = array_to_csv($synonyms);
 
         // Save the string to the thesaurus.
-        Storage::cloud()->put('elasticsearch/thesaurus.csv', $thesaurus);
+        Storage::disk(config('filesystems.cloud'))->put('elasticsearch/thesaurus.csv', $thesaurus);
 
         // Clear the cache.
         cache()->forget(static::CACHE_KEY);

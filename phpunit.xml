@@ -30,6 +30,7 @@
     <env name="GEOCODE_DRIVER" value="stub"/>
     <env name="MAIL_MAILER" value="&quot;null&quot;"/>
     <env name="SMS_DRIVER" value="&quot;null&quot;"/>
+    <env name="SCOUT_DRIVER" value="elastic"/>
     <env name="SCOUT_ELASTIC_HOST" value="elasticsearch"/>
     <env name="SCOUT_PREFIX" value="testing_"/>
     <env name="OTP_ENABLED" value="(true)"/>

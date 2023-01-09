@@ -82,7 +82,7 @@ class File extends Model implements Responsable
      */
     public function getContent(): string
     {
-        return Storage::cloud()->get($this->path());
+        return Storage::disk(config('filesystems.cloud'))->get($this->path());
     }
 
     /**
@@ -109,7 +109,7 @@ class File extends Model implements Responsable
      */
     public function upload(string $content): File
     {
-        Storage::cloud()->put($this->path(), $content, $this->visibility());
+        Storage::disk(config('filesystems.cloud'))->put($this->path(), $content, $this->visibility());
 
         return $this;
     }
@@ -119,7 +119,7 @@ class File extends Model implements Responsable
      */
     public function url(): string
     {
-        return Storage::cloud()->url($this->path());
+        return Storage::disk(config('filesystems.cloud'))->url($this->path());
     }
 
     /**
@@ -127,7 +127,7 @@ class File extends Model implements Responsable
      */
     public function deleteFromDisk()
     {
-        Storage::cloud()->delete($this->path());
+        Storage::disk(config('filesystems.cloud'))->delete($this->path());
     }
 
     /**

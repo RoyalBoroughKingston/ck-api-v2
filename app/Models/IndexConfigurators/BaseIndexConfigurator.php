@@ -44,11 +44,10 @@ class BaseIndexConfigurator extends IndexConfigurator
      */
     protected function getStopWords(): array
     {
-        try {
-            $content = Storage::cloud()->get('elasticsearch/stop-words.csv');
-        } catch (FileNotFoundException $exception) {
+        if (!$content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/stop-words.csv')) {
             return [];
         }
+
         $stopWords = csv_to_array($content);
 
         $stopWords = collect($stopWords)->map(function (array $stopWord) {
@@ -63,11 +62,10 @@ class BaseIndexConfigurator extends IndexConfigurator
      */
     protected function getThesaurus(): array
     {
-        try {
-            $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
-        } catch (FileNotFoundException $exception) {
+        if (!$content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/thesaurus.csv')) {
             return [];
         }
+
         $thesaurus = csv_to_array($content);
 
         $thesaurus = collect($thesaurus)->map(function (array $synonyms) {

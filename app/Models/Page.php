@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\IndexConfigurators\PagesIndexConfigurator;
 use App\Models\Mutators\PageMutators;
 use App\Models\Relationships\PageRelationships;
 use App\Models\Scopes\PageScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kalnoy\Nestedset\NodeTrait;
-use Laravel\Scout\Searchable;
+use ElasticScoutDriverPlus\Searchable;
 
 class Page extends Model
 {
@@ -57,67 +56,12 @@ class Page extends Model
     ];
 
     /**
-     * The Elasticsearch index configuration class.
-     *
-     * @var string
-     */
-    protected $indexConfigurator = PagesIndexConfigurator::class;
-
-    /**
      * Allows you to set different search algorithms.
      *
      * @var array
      */
     protected $searchRules = [
         //
-    ];
-
-    /**
-     * The mapping for the fields.
-     *
-     * @var array
-     */
-    protected $mapping = [
-        'properties' => [
-            'id' => ['type' => 'keyword'],
-            'enabled' => ['type' => 'boolean'],
-            'title' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'content' => [
-                'properties' => [
-                    'introduction' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                    'about' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                    'info_pages' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                    'collections' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                ],
-            ],
-            'collection_categories' => ['type' => 'text'],
-            'collection_personas' => ['type' => 'text'],
-        ],
     ];
 
     /**

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as UpdateServiceRequest;
-use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
@@ -28,7 +27,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
+use ElasticScoutDriverPlus\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
 {
@@ -96,69 +95,12 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     ];
 
     /**
-     * The Elasticsearch index configuration class.
-     *
-     * @var string
-     */
-    protected $indexConfigurator = ServicesIndexConfigurator::class;
-
-    /**
      * Allows you to set different search algorithms.
      *
      * @var array
      */
     protected $searchRules = [
         //
-    ];
-
-    /**
-     * The mapping for the fields.
-     *
-     * @var array
-     */
-    protected $mapping = [
-        'properties' => [
-            'id' => ['type' => 'keyword'],
-            'name' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'intro' => ['type' => 'text'],
-            'description' => ['type' => 'text'],
-            'wait_time' => ['type' => 'keyword'],
-            'is_free' => ['type' => 'boolean'],
-            'status' => ['type' => 'keyword'],
-            'score' => ['type' => 'integer'],
-            'organisation_name' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'taxonomy_categories' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'collection_categories' => ['type' => 'keyword'],
-            'collection_personas' => ['type' => 'keyword'],
-            'service_locations' => [
-                'type' => 'nested',
-                'properties' => [
-                    'id' => ['type' => 'keyword'],
-                    'location' => ['type' => 'geo_point'],
-                ],
-            ],
-            'service_eligibilities' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-        ],
     ];
 
     /**

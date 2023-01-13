@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Contracts\QueryBuilder;
-use App\Models\Collection;
-use App\Search\SearchCriteriaQuery;
-use App\Support\Coordinate;
 use Carbon\Carbon;
+use App\Models\Collection;
+use App\Support\Coordinate;
+use Illuminate\Support\Arr;
+use App\Contracts\QueryBuilder;
+use App\Search\SearchCriteriaQuery;
 
 class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {
@@ -20,35 +21,25 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
     public function __construct()
     {
         $this->esQuery = [
-            'query' => [
-                'function_score' => [
-                    'query' => [
-                        'bool' => [
-                            'must' => [
-                                'bool' => [
-                                    'should' => [],
-                                ],
-                            ],
-                            'filter' => [],
-                        ],
+            'function_score' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [],
+                        'should' => [],
+                        'filter' => [],
                     ],
-                    'functions' => [],
                 ],
+                'functions' => [],
             ],
         ];
 
-        $this->matchPath = 'query.function_score.query.bool.must.bool.should';
-        $this->filterPath = 'query.function_score.query.bool.filter';
+        $this->mustPath = 'function_score.query.bool.must';
+        $this->shouldPath = 'function_score.query.bool.should';
+        $this->filterPath = 'function_score.query.bool.filter';
     }
 
-    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): array
+    public function build(SearchCriteriaQuery $query): array
     {
-        $page = page($page);
-        $perPage = per_page($perPage);
-
-        $this->applyFrom($page, $perPage);
-        $this->applySize($perPage);
-
         if ($query->hasQuery()) {
             $this->applyQuery($query->getQuery());
         }
@@ -91,22 +82,18 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
             }
         }
 
-        // dump($this->esQuery);
-
         return $this->esQuery;
     }
 
     protected function applyQuery(string $query): void
     {
-        $this->addMatch('title', $query, 3);
-        $this->addMatch('organisation_name', $query, 3);
-        $this->addMatch('intro', $query, 2);
-        $this->addMatch('description', $query, 1.5);
-        $this->addMatch('taxonomy_categories', $query);
+        $this->addMatch('title', $query, $this->shouldPath, 3);
+        $this->addMatch('organisation_name', $query, $this->shouldPath, 3);
+        $this->addMatch('intro', $query, $this->shouldPath, 2);
+        $this->addMatch('description', $query, $this->shouldPath, 1.5);
+        $this->addMatch('taxonomy_categories', $query, $this->shouldPath);
 
-        if (empty($this->esQuery['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'])) {
-            $this->esQuery['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'] = 1;
-        }
+        $this->addMinimumShouldMatch();
     }
 
     protected function applyCategories(array $categorySlugs): void
@@ -146,11 +133,13 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
     public function applyStartsAfter(?string $startsAfter): void
     {
         if ($startsAfter) {
-            $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+            $filters = Arr::get($this->esQuery, $this->filterPath);
+            $filters[] = [
                 'range' => [
                     'start_date' => ['gte' => Carbon::parse($startsAfter)->toDateTimeLocalString()],
                 ],
             ];
+            Arr::set($this->esQuery, $this->filterPath, $filters);
         }
     }
 
@@ -159,25 +148,28 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
      */
     public function applyEndsBefore(?string $endsBefore): void
     {
+        $filters = Arr::get($this->esQuery, $this->filterPath);
         if ($endsBefore) {
-            $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+            $filters[] = [
                 'range' => [
                     'end_date' => ['lte' => Carbon::parse($endsBefore)->toDateTimeLocalString()],
                 ],
             ];
         } else {
-            $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+            $filters[] = [
                 'range' => [
                     'end_date' => ['gte' => 'now/d'],
                 ],
             ];
         }
+        Arr::set($this->esQuery, $this->filterPath, $filters);
     }
 
     protected function applyLocation(Coordinate $coordinate, ?int $distance): void
     {
+        $filters = Arr::get($this->esQuery, $this->filterPath);
         // Add filter for listings within a search distance miles radius.
-        $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+        $filters[] = [
             'nested' => [
                 'path' => 'event_location',
                 'query' => [
@@ -188,9 +180,10 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
                 ],
             ],
         ];
+        Arr::set($this->esQuery, $this->filterPath, $filters);
 
         // Apply scoring for favouring results closer to the coordinate.
-        $this->esQuery['query']['function_score']['functions'][] = [
+        $this->esQuery['function_score']['functions'][] = [
             'gauss' => [
                 'event_location.location' => [
                     'origin' => $coordinate->toArray(),
@@ -202,7 +195,8 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
 
     protected function applyHasWheelchairAccess(bool $hasWheelchairAccess): void
     {
-        $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+        $filters = Arr::get($this->esQuery, $this->filterPath);
+        $filters[] = [
             'nested' => [
                 'path' => 'event_location',
                 'query' => [
@@ -212,11 +206,13 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
                 ],
             ],
         ];
+        Arr::set($this->esQuery, $this->filterPath, $filters);
     }
 
     protected function applyHasInductionLoop(bool $hasInductionLoop): void
     {
-        $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+        $filters = Arr::get($this->esQuery, $this->filterPath);
+        $filters[] = [
             'nested' => [
                 'path' => 'event_location',
                 'query' => [
@@ -226,11 +222,13 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
                 ],
             ],
         ];
+        Arr::set($this->esQuery, $this->filterPath, $filters);
     }
 
     protected function applyHasAccessibleToilet(bool $hasAccessibleToilet): void
     {
-        $this->esQuery['query']['function_score']['query']['bool']['filter'][] = [
+        $filters = Arr::get($this->esQuery, $this->filterPath);
+        $filters[] = [
             'nested' => [
                 'path' => 'event_location',
                 'query' => [
@@ -240,6 +238,7 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
                 ],
             ],
         ];
+        Arr::set($this->esQuery, $this->filterPath, $filters);
     }
 
     protected function applyOrder(string $order, Coordinate $coordinate): void
@@ -267,5 +266,16 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
         }
 
         $this->esQuery['sort'][] = '_score';
+    }
+
+    protected function addMinimumShouldMatch()
+    {
+        $bool = Arr::get($this->esQuery, 'function_score.query.bool');
+        if (empty($bool['minimum_should_match'])) {
+            $bool['minimum_should_match'] = 1;
+        } else {
+            $bool['minimum_should_match']++;
+        }
+        Arr::set($this->esQuery, 'function_score.query.bool', $bool);
     }
 }

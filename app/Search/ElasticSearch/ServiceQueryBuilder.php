@@ -2,59 +2,47 @@
 
 namespace App\Search\ElasticSearch;
 
-use App\Contracts\QueryBuilder;
-use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Search\SearchCriteriaQuery;
+use App\Models\Collection;
 use App\Support\Coordinate;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
+use App\Contracts\QueryBuilder;
+use App\Search\SearchCriteriaQuery;
 
 class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {
     public function __construct()
     {
         $this->esQuery = [
-            'query' => [
-                'function_score' => [
-                    'query' => [
-                        'bool' => [
-                            'must' => [
-                                'bool' => [
-                                    'should' => [],
-                                ],
-                            ],
-                            'filter' => [
-                                'bool' => [
-                                    'must' => [],
-                                ],
-                            ],
-                        ],
+            'function_score' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [],
+                        'should' => [],
+                        'filter' => [],
                     ],
-                    'functions' => [
-                        [
-                            'field_value_factor' => [
-                                'field' => 'score',
-                                'missing' => 1,
-                                'modifier' => 'ln1p',
-                            ],
+                ],
+                'functions' => [
+                    [
+                        'field_value_factor' => [
+                            'field' => 'score',
+                            'missing' => 1,
+                            'modifier' => 'ln1p',
                         ],
                     ],
                 ],
             ],
         ];
 
-        $this->matchPath = 'query.function_score.query.bool.must.bool.should';
-        $this->filterPath = 'query.function_score.query.bool.filter.bool.must';
+        $this->mustPath = 'function_score.query.bool.must';
+        $this->shouldPath = 'function_score.query.bool.should';
+        $this->filterPath = 'function_score.query.bool.filter';
     }
 
-    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): array
+    public function build(SearchCriteriaQuery $query): array
     {
-        $page = page($page);
-        $perPage = per_page($perPage);
-
-        $this->applyFrom($page, $perPage);
-        $this->applySize($perPage);
         $this->applyStatus(Service::STATUS_ACTIVE);
 
         if ($query->hasQuery()) {
@@ -99,15 +87,13 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
 
     protected function applyQuery(string $query): void
     {
-        $this->addMatch('name', $query, 3);
-        $this->addMatch('organisation_name', $query, 3);
-        $this->addMatch('intro', $query, 2);
-        $this->addMatch('description', $query, 1.5);
-        $this->addMatch('taxonomy_categories', $query);
+        $this->addMatch('name', $query, $this->shouldPath, 3);
+        $this->addMatch('organisation_name', $query, $this->shouldPath, 3);
+        $this->addMatch('intro', $query, $this->shouldPath, 2);
+        $this->addMatch('description', $query, $this->shouldPath, 1.5);
+        $this->addMatch('taxonomy_categories', $query, $this->shouldPath);
 
-        if (empty($this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'])) {
-            $this->query['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'] = 1;
-        }
+        $this->addMinimumShouldMatch();
     }
 
     protected function applyCategories(array $categorySlugs): void
@@ -192,23 +178,13 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
 
                 $this->addFilter('service_eligibilities.keyword', array_merge($serviceEligibilityTypeNames, [$serviceEligibilityTypeAllName]));
 
-                if (empty($this->esQuery['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'])) {
-                    $this->esQuery['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match'] = 1;
-                } else {
-                    $this->esQuery['query']['function_score']['query']['bool']['must']['bool']['minimum_should_match']++;
-                }
+                $this->addMinimumShouldMatch();
 
                 foreach ($serviceEligibilityTypeNames as $serviceEligibilityTypeName) {
-                    $this->esQuery['query']['function_score']['query']['bool']['must']['bool']['should'][] = [
-                        'term' => [
-                            'service_eligibilities.keyword' => [
-                                'value' => $serviceEligibilityTypeName,
-                            ],
-                        ],
-                    ];
+                    $this->addTerm('service_eligibilities.keyword', $serviceEligibilityTypeName);
                 }
 
-                $this->addMatch('service_eligibilities', $serviceEligibilityTypeAllName, 0);
+                $this->addMatch('service_eligibilities', $serviceEligibilityTypeAllName, null, 0);
             }
         }
     }
@@ -216,7 +192,8 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
     protected function applyLocation(Coordinate $coordinate, ?int $distance): void
     {
         // Add filter for listings within a search distance miles radius, or national.
-        $this->esQuery['query']['function_score']['query']['bool']['filter']['bool']['must'][] = [
+        $matches = Arr::get($this->esQuery, $this->mustPath);
+        $matches[] = [
             'nested' => [
                 'path' => 'service_locations',
                 'query' => [
@@ -227,9 +204,10 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                 ],
             ],
         ];
+        Arr::set($this->esQuery, $this->mustPath, $matches);
 
         // Apply scoring for favouring results closer to the coordinate.
-        $this->esQuery['query']['function_score']['functions'][] = [
+        $this->esQuery['function_score']['functions'][] = [
             'gauss' => [
                 'service_locations.location' => [
                     'origin' => $coordinate->toArray(),
@@ -251,5 +229,16 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                 ],
             ];
         }
+    }
+
+    protected function addMinimumShouldMatch()
+    {
+        $bool = Arr::get($this->esQuery, 'function_score.query.bool');
+        if (empty($bool['minimum_should_match'])) {
+            $bool['minimum_should_match'] = 1;
+        } else {
+            $bool['minimum_should_match']++;
+        }
+        Arr::set($this->esQuery, 'function_score.query.bool', $bool);
     }
 }

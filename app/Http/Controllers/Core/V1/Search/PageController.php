@@ -30,13 +30,11 @@ class PageController
             $criteria->setQuery($request->input('query'));
         }
 
-        $query = $builder->build(
-            $criteria,
+        // Perform the search.
+        return $mapper->paginate(
+            $builder->build($criteria),
             $request->input('page'),
             $request->input('per_page')
         );
-
-        // Perform the search.
-        return $mapper->paginate($query);
     }
 }

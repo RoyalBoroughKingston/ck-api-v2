@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use ElasticAdapter\Indices\Mapping;
-use ElasticAdapter\Indices\Settings;
 use ElasticMigrations\Facades\Index;
 use ElasticMigrations\MigrationInterface;
 use App\Search\ElasticSearch\Settings\ServicesIndexSettings;
@@ -58,13 +56,6 @@ final class CreateServiceIndex implements MigrationInterface
             ],
         ],
     ];
-
-    /**
-     * The settings for the index.
-     *
-     * @var array
-     */
-    protected $settings = [];
 
     /**
      * Run the migration.

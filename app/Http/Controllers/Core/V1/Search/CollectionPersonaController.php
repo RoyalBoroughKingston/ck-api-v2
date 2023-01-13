@@ -26,12 +26,10 @@ class CollectionPersonaController extends Controller
     ): AnonymousResourceCollection {
         $criteria->setPersonas([$request->input('persona')]);
 
-        $query = $builder->build(
-            $criteria,
+        return $mapper->paginate(
+            $builder->build($criteria),
             $request->input('page'),
             $request->input('per_page')
         );
-
-        return $mapper->paginate($query);
     }
 }

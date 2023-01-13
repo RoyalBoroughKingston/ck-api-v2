@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
-use App\Models\IndexConfigurators\EventsIndexConfigurator;
 use App\Models\Mutators\OrganisationEventMutators;
 use App\Models\Relationships\OrganisationEventRelationships;
 use App\Models\Scopes\OrganisationEventScopes;
@@ -42,23 +41,18 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         'is_virtual' => 'boolean',
         'homepage' => 'boolean',
         'start_time' => 'string',
-        'end_time' => 'string',    ];
-
-    /**
-     * The Elasticsearch index configuration class.
-     *
-     * @var string
-     */
-    protected $indexConfigurator = EventsIndexConfigurator::class;
-
-    /**
-     * Allows you to set different search algorithms.
-     *
-     * @var array
-     */
-    protected $searchRules = [
-        //
+        'end_time' => 'string',
     ];
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'events';
+    }
 
     /**
      * Get the indexable data array for the model.
@@ -69,14 +63,14 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     {
         $organisationEvent = [
             'id' => $this->id,
-            'title' => $this->title,
-            'intro' => $this->intro,
-            'description' => $this->description,
+            'title' => $this->onlyAlphaNumeric($this->title),
+            'intro' => $this->onlyAlphaNumeric($this->intro),
+            'description' => $this->onlyAlphaNumeric($this->description),
             'start_date' => $this->start_date->setTimeFromTimeString($this->start_time)->toDateTimeLocalString(),
             'end_date' => $this->end_date->setTimeFromTimeString($this->end_time)->toDateTimeLocalString(),
             'is_free' => $this->is_free,
             'is_virtual' => $this->is_virtual,
-            'organisation_name' => $this->organisation->name,
+            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => $this->collections()->pluck('name')->toArray(),
             'event_location' => null,

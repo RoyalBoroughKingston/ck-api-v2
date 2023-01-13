@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use ElasticAdapter\Indices\Mapping;
-use ElasticAdapter\Indices\Settings;
 use ElasticMigrations\Facades\Index;
 use ElasticMigrations\MigrationInterface;
 use App\Search\ElasticSearch\Settings\EventsIndexSettings;
@@ -65,19 +63,12 @@ final class CreateOrganisationEventIndex implements MigrationInterface
     ];
 
     /**
-     * The settings for the index.
-     *
-     * @var array
-     */
-    protected $settings = [];
-
-    /**
      * Run the migration.
      */
     public function up(): void
     {
         $settings = (new EventsIndexSettings())->getSettings();
-        Index::createIfNotExistsRaw('organisation-events', $this->mapping, $settings);
+        Index::createIfNotExistsRaw('events', $this->mapping, $settings);
     }
 
     /**
@@ -85,6 +76,6 @@ final class CreateOrganisationEventIndex implements MigrationInterface
      */
     public function down(): void
     {
-        Index::dropIfExists('organisation-events');
+        Index::dropIfExists('events');
     }
 }

@@ -40,13 +40,8 @@ class CollectionPersonaQueryBuilder extends ElasticsearchQueryBuilder implements
         $this->filterPath = 'query.function_score.query.bool.filter';
     }
 
-    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): array
+    public function build(SearchCriteriaQuery $query): array
     {
-        $page = page($page);
-        $perPage = per_page($perPage);
-
-        $this->applyFrom($page, $perPage);
-        $this->applySize($perPage);
         $this->applyStatus(Service::STATUS_ACTIVE);
         $this->applyPersona($query->getPersonas()[0]);
 

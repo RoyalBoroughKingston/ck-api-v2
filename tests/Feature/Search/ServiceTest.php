@@ -46,6 +46,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service1 = Service::factory()->create(['name' => 'Thisisatest']);
         $service2 = Service::factory()->create(['name' => 'Should not match']);
 
+        dump('ID', $service1->id);
+        dump('SearchableArray', $service1->toSearchableArray());
+        dump('Search Result', Service::search('name:Thisisatest')->raw());
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
         ]);

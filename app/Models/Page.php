@@ -56,13 +56,34 @@ class Page extends Model
     ];
 
     /**
-     * Allows you to set different search algorithms.
+     * Get the name of the index associated with the model.
      *
-     * @var array
+     * @return string
      */
-    protected $searchRules = [
-        //
-    ];
+    public function searchableAs()
+    {
+        return 'pages';
+    }
+
+    /**
+     * Get the value used to index the model.
+     *
+     * @return mixed
+     */
+    public function getScoutKey()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the key name used to index the model.
+     *
+     * @return mixed
+     */
+    public function getScoutKeyName()
+    {
+        return 'id';
+    }
 
     /**
      * Get the indexable data array for the model.
@@ -77,10 +98,10 @@ class Page extends Model
             foreach ($sectionContent['content'] as $i => $contentBlock) {
                 switch ($contentBlock['type']) {
                     case 'copy':
-                        $content[] = $contentBlock['value'];
+                        $content[] = $this->onlyAlphaNumeric($contentBlock['value']);
                         break;
                     case 'cta':
-                        $content[] = $contentBlock['title'].' '.$contentBlock['description'];
+                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'].' '.$contentBlock['description']);
                         break;
                     default:
                         break;
@@ -96,7 +117,7 @@ class Page extends Model
         return [
             'id' => $this->id,
             'enabled' => $this->enabled,
-            'title' => $this->title,
+            'title' => $this->onlyAlphaNumeric($this->title),
             'content' => $contentSections,
             'collection_categories' => $this->collections()->where('type', Collection::TYPE_CATEGORY)->pluck('name')->all(),
             'collection_personas' => $this->collections()->where('type', Collection::TYPE_PERSONA)->pluck('name')->all(),

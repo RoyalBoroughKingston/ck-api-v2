@@ -4,73 +4,66 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Contracts\EloquentMapper;
-use App\Http\Resources\ServiceResource;
-use App\Models\SearchHistory;
 use App\Models\Service;
-use App\Models\ServiceLocation;
 use App\Support\Coordinate;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\SearchHistory;
+use App\Models\ServiceLocation;
+use App\Contracts\EloquentMapper;
 use Illuminate\Pagination\Paginator;
+use App\Http\Resources\ServiceResource;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use ElasticScoutDriverPlus\Decorators\SearchResult;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ServiceEloquentMapper implements EloquentMapper
 {
-    public function paginate(array $esQuery): AnonymousResourceCollection
+    public function paginate(array $esQuery, int $page = null, int $perPage = null): AnonymousResourceCollection
     {
-        $response = Service::searchRaw($esQuery);
+        dump($esQuery);
+        $page = page($page);
+        $perPage = per_page($perPage);
+
+        $response = Service::searchQuery($esQuery)
+            ->size($perPage)
+            ->from(($page - 1) * $perPage)
+            ->execute();
+
+        dump('Hits', $response->hits());
+        dump('Models', $response->models());
+        dump('Documents', $response->documents());
 
         $this->logMetrics($esQuery, $response);
 
-        // Extract the hits from the array.
-        $hits = $response['hits']['hits'];
-
-        // Get all of the ID's for the services from the hits.
-        $serviceIds = collect($hits)->map->_id->toArray();
-
-        // Implode the service ID's so we can sort by them in database.
-        $serviceIdsImploded = implode("','", $serviceIds);
-        $serviceIdsImploded = "'$serviceIdsImploded'";
-
-        // Check if the query has been ordered by distance.
+        /**
+         * Order the fetched service locations by distance.
+         * @todo Potential solution to the order nested locations in Elasticsearch: https://stackoverflow.com/a/43440405
+         */
         $isOrderedByDistance = isset($esQuery['sort']);
-
-        // Create the query to get the services, and keep ordering from Elasticsearch.
-        $services = Service::query()
-            ->with('serviceLocations.location')
-            ->whereIn('id', $serviceIds)
-            ->orderByRaw("FIELD(id,$serviceIdsImploded)")
-            ->get();
-
-        // Order the fetched service locations by distance.
-        // TODO: Potential solution to the order nested locations in Elasticsearch: https://stackoverflow.com/a/43440405
-        if ($isOrderedByDistance) {
-            $services = $this->orderServicesByLocation($esQuery, $services);
-        }
+        $services = $isOrderedByDistance? $this->orderServicesByLocation($esQuery, $response->models()) : $response->models();
 
         // If paginated, then create a new pagination instance.
         $services = new LengthAwarePaginator(
             $services,
-            $response['hits']['total']['value'],
-            $esQuery['size'],
-            ($esQuery['from'] / $esQuery['size']) + 1,
+            $response->total(),
+            $perPage,
+            $page,
             ['path' => Paginator::resolveCurrentPath()]
         );
 
         return ServiceResource::collection($services);
     }
 
-    protected function logMetrics(array $esQuery, array $response): void
+    public function logMetrics(array $esQuery, SearchResult $response): void
     {
-        $query = $esQuery['query']['function_score'];
+        $query = $esQuery['function_score'];
         if (isset($esQuery['sort'])) {
             $query['sort'] = $esQuery['sort'];
         }
 
         SearchHistory::create([
             'query' => $query,
-            'count' => $response['hits']['total']['value'],
+            'count' => $response->total(),
         ]);
     }
 

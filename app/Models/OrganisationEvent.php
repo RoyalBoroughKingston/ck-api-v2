@@ -11,13 +11,13 @@ use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
+use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
-use ElasticScoutDriverPlus\Searchable;
 
 class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxonomyRelationships
 {
@@ -76,7 +76,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
             'event_location' => null,
         ];
 
-        if (! $this->is_virtual) {
+        if (!$this->is_virtual) {
             $organisationEvent['event_location'] = [
                 'id' => $this->location->id,
                 'location' => [
@@ -95,7 +95,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     /**
      * Check if the update request is valid.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
@@ -121,7 +121,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     /**
      * Apply the update request.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -129,7 +129,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $data = $updateRequest->data;
 
         // Update the Image File entity if new
-        if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && ! empty($data['image_file_id'])) {
+        if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['image_file_id'])->assigned();
 
@@ -184,7 +184,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
      *
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     public function getData(array $data): array
@@ -226,10 +226,9 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

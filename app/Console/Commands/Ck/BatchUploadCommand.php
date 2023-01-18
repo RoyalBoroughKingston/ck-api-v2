@@ -39,9 +39,8 @@ class BatchUploadCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws \Exception
+     * @return mixed
      */
     public function handle()
     {

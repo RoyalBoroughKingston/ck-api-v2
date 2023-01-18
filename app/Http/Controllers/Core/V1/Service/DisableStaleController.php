@@ -21,8 +21,8 @@ class DisableStaleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\Service\DisableStale\UpdateRequest  $request
-     * @param  \App\Models\Service  $service
+     * @param \App\Http\Requests\Service\DisableStale\UpdateRequest $request
+     * @param \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
     public function __invoke(UpdateRequest $request, Service $service)

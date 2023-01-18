@@ -11,7 +11,7 @@ class AuditLogger implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  EndpointHit  $event
+     * @param EndpointHit $event
      */
     public function handle(EndpointHit $event)
     {

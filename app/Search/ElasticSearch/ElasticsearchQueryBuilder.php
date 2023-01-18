@@ -47,10 +47,10 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a match query.
      *
-     * @param  string  $field
-     * @param  string  $term
-     * @param  int  $boost
-     * @param  mixed  $fuzziness
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     * @param mixed $fuzziness
      */
     protected function addMatch(string $field, string $term, string $path = null, $boost = 1, $fuzziness = 'AUTO'): void
     {
@@ -71,9 +71,9 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a match_phrase query.
      *
-     * @param  string  $field
-     * @param  string  $term
-     * @param  int  $boost
+     * @param string $field
+     * @param string $term
+     * @param int $boost
      */
     protected function addMatchPhrase(string $field, string $term, string $path = null, $boost = 1): void
     {
@@ -93,9 +93,9 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a term query.
      *
-     * @param  string  $field
-     * @param  string  $term
-     * @param  int  $boost
+     * @param string $field
+     * @param string $term
+     * @param int $boost
      */
     protected function addTerm(string $field, string $term, string $path = null, $boost = 1): void
     {
@@ -113,10 +113,30 @@ abstract class ElasticsearchQueryBuilder
     }
 
     /**
+     * Add a terms query.
+     *
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     */
+    protected function addTerms(string $field, array $terms, string $path = null, $boost = 1): void
+    {
+        $path = $path?? $this->mustPath;
+        $matches = Arr::get($this->esQuery, $path);
+        $matches[] = [
+            'terms' => [
+                $field => $terms,
+                'boost' => $boost,
+            ],
+        ];
+        Arr::set($this->esQuery, $path, $matches);
+    }
+
+    /**
      * Add a filter.
      *
-     * @param  string  $field
-     * @param  mixed  $value
+     * @param string $field
+     * @param mixed $value
      */
     public function addFilter(string $field, $value): void
     {

@@ -84,7 +84,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
             $isOpenNow = Time::now()->between($regularOpeningHour->opens_at, $regularOpeningHour->closes_at);
 
             // If not, then continue to the next opening hour.
-            if (! $isOpenNow) {
+            if (!$isOpenNow) {
                 continue;
             }
 
@@ -96,19 +96,19 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
                         return true;
                     }
                     break;
-                // If monthly then check that the day of the month is the same as today.
+                    // If monthly then check that the day of the month is the same as today.
                 case RegularOpeningHour::FREQUENCY_MONTHLY:
                     if (Date::today()->day === $regularOpeningHour->day_of_month) {
                         return true;
                     }
                     break;
-                // If fortnightly then check that today falls directly on a multiple of 2 weeks.
+                    // If fortnightly then check that today falls directly on a multiple of 2 weeks.
                 case RegularOpeningHour::FREQUENCY_FORTNIGHTLY:
                     if (fmod(Date::today()->diffInDays($regularOpeningHour->starts_at) / CarbonImmutable::DAYS_PER_WEEK, 2) === 0.0) {
                         return true;
                     }
                     break;
-                // If nth occurrence of month then check today is the same occurrence.
+                    // If nth occurrence of month then check today is the same occurrence.
                 case RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH:
                     $occurrence = occurrence($regularOpeningHour->occurrence_of_month);
                     $weekday = weekday($regularOpeningHour->weekday);
@@ -129,7 +129,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     /**
      * Check if the update request is valid.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
@@ -149,7 +149,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     /**
      * Apply the update request.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -210,7 +210,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
      *
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     public function getData(array $data): array
@@ -229,10 +229,9 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
+use App\Search\ElasticSearch\Settings\EventsIndexSettings;
 use ElasticMigrations\Facades\Index;
 use ElasticMigrations\MigrationInterface;
-use App\Search\ElasticSearch\Settings\EventsIndexSettings;
 
 final class CreateOrganisationEventIndex implements MigrationInterface
 {

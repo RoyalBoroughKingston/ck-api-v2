@@ -5,7 +5,7 @@ namespace App\Models\Mutators;
 trait NotificationMutators
 {
     /**
-     * @param  string  $recipient
+     * @param string $recipient
      * @return string
      */
     public function getRecipientAttribute(string $recipient): string
@@ -14,7 +14,7 @@ trait NotificationMutators
     }
 
     /**
-     * @param  string  $recipient
+     * @param string $recipient
      */
     public function setRecipientAttribute(string $recipient)
     {
@@ -22,7 +22,7 @@ trait NotificationMutators
     }
 
     /**
-     * @param  string  $message
+     * @param string $message
      * @return string
      */
     public function getMessageAttribute(string $message): string
@@ -31,7 +31,7 @@ trait NotificationMutators
     }
 
     /**
-     * @param  string  $message
+     * @param string $message
      */
     public function setMessageAttribute(string $message)
     {

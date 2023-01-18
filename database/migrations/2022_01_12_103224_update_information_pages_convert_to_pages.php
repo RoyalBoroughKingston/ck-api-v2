@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -27,16 +27,16 @@ return new class extends Migration {
 
         foreach ($content as $id => $copy) {
             DB::table('pages')
-                    ->where('id', $id)
-                    ->update([
-                        'content' => json_encode([
-                            'introduction' => [
-                                'label' => 'Page content',
-                                'hint' => 'This is the largest content of the page. Use formatting to improve readability and impact.',
-                                'copy' => [$copy],
-                            ],
-                        ]),
-                    ]);
+                ->where('id', $id)
+                ->update([
+                    'content' => json_encode([
+                        'introduction' => [
+                            'label' => 'Page content',
+                            'hint' => 'This is the largest content of the page. Use formatting to improve readability and impact.',
+                            'copy' => [$copy],
+                        ],
+                    ]),
+                ]);
         }
     }
 
@@ -61,8 +61,8 @@ return new class extends Migration {
             $copy = json_decode($contentJson);
             $copy = $copy['content']['introduction']['copy'][0] ?? null;
             DB::table('pages')
-                    ->where('id', $id)
-                    ->update($copy);
+                ->where('id', $id)
+                ->update($copy);
         }
     }
 };

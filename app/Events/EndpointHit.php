@@ -60,10 +60,10 @@ class EndpointHit
     /**
      * Create a new event instance.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $action
-     * @param  string  $description
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Http\Request $request
+     * @param string $action
+     * @param string $description
+     * @param \Illuminate\Database\Eloquent\Model $model
      */
     protected function __construct(Request $request, string $action, string $description, Model $model = null)
     {
@@ -80,9 +80,9 @@ class EndpointHit
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $message
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onCreate(Request $request, string $message, Model $model = null): self
@@ -91,9 +91,9 @@ class EndpointHit
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $message
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onRead(Request $request, string $message, Model $model = null): self
@@ -102,9 +102,9 @@ class EndpointHit
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $message
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onUpdate(Request $request, string $message, Model $model = null): self
@@ -113,9 +113,9 @@ class EndpointHit
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $message
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Http\Request $request
+     * @param string $message
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return \App\Events\EndpointHit
      */
     public static function onDelete(Request $request, string $message, Model $model = null): self
@@ -188,8 +188,8 @@ class EndpointHit
     }
 
     /**
-     * @param  string  $model
-     * @param  string|null  $action
+     * @param string $model
+     * @param string|null $action
      * @return bool
      */
     public function isFor(string $model, string $action = null): bool
@@ -200,12 +200,12 @@ class EndpointHit
     }
 
     /**
-     * @param  string  $model
-     * @param  string|null  $action
+     * @param string $model
+     * @param string|null $action
      * @return bool
      */
     public function isntFor(string $model, string $action = null): bool
     {
-        return ! $this->isFor($model, $action);
+        return !$this->isFor($model, $action);
     }
 }

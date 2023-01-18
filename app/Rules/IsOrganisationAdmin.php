@@ -16,7 +16,7 @@ class IsOrganisationAdmin implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
      */
     public function __construct(User $user)
     {
@@ -26,14 +26,14 @@ class IsOrganisationAdmin implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         // Immediately fail if the value is not a string.
-        if (! is_string($value)) {
+        if (!is_string($value)) {
             return false;
         }
 

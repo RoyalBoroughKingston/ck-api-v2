@@ -17,6 +17,7 @@ use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Carbon\CarbonImmutable;
+use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +28,6 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Str;
-use ElasticScoutDriverPlus\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
 {
@@ -116,8 +116,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $serviceEligibilityNames = $serviceEligibilities->pluck('name')->toArray();
         $serviceEligibilityRoot = Taxonomy::serviceEligibility();
         foreach ($serviceEligibilityRoot->children as $serviceEligibilityType) {
-            if (! $serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
-                $serviceEligibilityNames[] = $serviceEligibilityType->name.' All';
+            if (!$serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
+                $serviceEligibilityNames[] = $serviceEligibilityType->name . ' All';
             }
         }
 
@@ -163,7 +163,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Check if the update request is valid.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
@@ -194,7 +194,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Apply the update request.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -202,7 +202,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $data = $updateRequest->data;
 
         // Update the Logo File entity if new
-        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && ! empty($data['logo_file_id'])) {
+        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && !empty($data['logo_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
@@ -342,7 +342,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
      *
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     public function getData(array $data): array
@@ -385,7 +385,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  \App\Emails\Email  $email
+     * @param \App\Emails\Email $email
      */
     public function sendEmailToContact(Email $email)
     {
@@ -393,7 +393,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  \App\Sms\Sms  $sms
+     * @param \App\Sms\Sms $sms
      */
     public function sendSmsToContact(Sms $sms)
     {
@@ -401,7 +401,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  string  $waitTime
+     * @param string $waitTime
      * @return bool
      */
     public static function waitTimeIsValid(string $waitTime): bool
@@ -424,10 +424,9 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

@@ -7,8 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -24,7 +23,7 @@ return new class extends Migration
                 do {
                     $slug = $iteration === 0
                     ? Str::slug($page->title)
-                    : Str::slug($page->title).'-'.$iteration;
+                    : Str::slug($page->title) . '-' . $iteration;
                     $iteration++;
                 } while (Page::query()->where('slug', $slug)->exists());
 

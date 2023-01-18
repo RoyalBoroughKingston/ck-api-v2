@@ -13,10 +13,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class PageController
 {
     /**
-     * @param  \App\Http\Requests\Search\Page\Request  $request
-     * @param  \App\Search\SearchCriteriaQuery  $criteria
-     * @param  \App\Search\ElasticSearch\PageQueryBuilder  $builder
-     * @param  \App\Search\ElasticSearch\PageEloquentMapper  $mapper
+     * @param \App\Http\Requests\Search\Page\Request $request
+     * @param \App\Search\SearchCriteriaQuery $criteria
+     * @param \App\Search\ElasticSearch\PageQueryBuilder $builder
+     * @param \App\Search\ElasticSearch\PageEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(
@@ -30,11 +30,22 @@ class PageController
             $criteria->setQuery($request->input('query'));
         }
 
+        // Get the pagination values
+        $page = page($request->input('page'));
+        $perPage = per_page($request->input('per_page'));
+
+        // Create the query
+        $esQuery = $builder->build(
+            $criteria,
+            $page,
+            $perPage
+        );
+
         // Perform the search.
         return $mapper->paginate(
-            $builder->build($criteria),
-            $request->input('page'),
-            $request->input('per_page')
+            $esQuery,
+            $page,
+            $perPage
         );
     }
 }

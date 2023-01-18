@@ -10,9 +10,9 @@ use Spatie\QueryBuilder\Filters\Filter;
 class HasPermissionFilter implements Filter
 {
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param $value
-     * @param  string  $property
+     * @param string $property
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function __invoke(Builder $query, $value, string $property): Builder

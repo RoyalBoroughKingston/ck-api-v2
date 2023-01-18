@@ -16,7 +16,7 @@ class FileIsPendingAssignment implements Rule
     /**
      * FileIsPendingAssignment constructor.
      *
-     * @param  callable|null  $callback Called if the file is not pending assignment
+     * @param callable|null $callback Called if the file is not pending assignment
      */
     public function __construct(callable $callback = null)
     {
@@ -26,8 +26,8 @@ class FileIsPendingAssignment implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $fileId
+     * @param string $attribute
+     * @param mixed $fileId
      * @return bool
      */
     public function passes($attribute, $fileId)

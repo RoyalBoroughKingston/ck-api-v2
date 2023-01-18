@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
+use App\Search\ElasticSearch\Settings\PagesIndexSettings;
 use ElasticMigrations\Facades\Index;
 use ElasticMigrations\MigrationInterface;
-use App\Search\ElasticSearch\Settings\PagesIndexSettings;
 
 final class CreatePageIndex implements MigrationInterface
 {

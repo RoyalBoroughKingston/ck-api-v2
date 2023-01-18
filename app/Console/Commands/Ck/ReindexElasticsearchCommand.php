@@ -2,16 +2,12 @@
 
 namespace App\Console\Commands\Ck;
 
-use App\Models\IndexConfigurators\EventsIndexConfigurator;
-use App\Models\IndexConfigurators\PagesIndexConfigurator;
-use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\OrganisationEvent;
 use App\Models\Page;
 use App\Models\Service;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
-use Throwable;
 
 class ReindexElasticsearchCommand extends Command
 {

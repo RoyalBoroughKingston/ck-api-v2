@@ -13,10 +13,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class EventController extends Controller
 {
     /**
-     * @param  \App\Http\Requests\Search\Event\Request  $request
-     * @param  \App\Search\SearchCriteriaQuery  $criteria
-     * @param  \App\Search\ElasticSearch\EventQueryBuilder  $builder
-     * @param  \App\Search\ElasticSearch\EventEloquentMapper  $mapper
+     * @param \App\Http\Requests\Search\Event\Request $request
+     * @param \App\Search\SearchCriteriaQuery $criteria
+     * @param \App\Search\ElasticSearch\EventQueryBuilder $builder
+     * @param \App\Search\ElasticSearch\EventEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(
@@ -89,11 +89,22 @@ class EventController extends Controller
             $criteria->setOrder($request->input('order'));
         }
 
+        // Get the pagination values
+        $page = page($request->input('page'));
+        $perPage = per_page($request->input('per_page'));
+
+        // Create the query
+        $esQuery = $builder->build(
+            $criteria,
+            $page,
+            $perPage
+        );
+
         // Perform the search.
         return $mapper->paginate(
-            $builder->build($criteria),
-            $request->input('page'),
-            $request->input('per_page')
+            $esQuery,
+            $page,
+            $perPage
         );
     }
 }

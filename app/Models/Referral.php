@@ -48,10 +48,9 @@ class Referral extends Model implements Notifiable
     const REFERENCE_MAX_TRIES = 10;
 
     /**
-     * @param  int  $tries
-     * @return string
-     *
+     * @param int $tries
      * @throws \Exception
+     * @return string
      */
     public function generateReference(int $tries = 0): string
     {
@@ -72,7 +71,7 @@ class Referral extends Model implements Notifiable
     }
 
     /**
-     * @param  \App\Emails\Email  $email
+     * @param \App\Emails\Email $email
      */
     public function sendEmailToClient(Email $email)
     {
@@ -80,7 +79,7 @@ class Referral extends Model implements Notifiable
     }
 
     /**
-     * @param  \App\Sms\Sms  $sms
+     * @param \App\Sms\Sms $sms
      */
     public function sendSmsToClient(Sms $sms)
     {
@@ -88,7 +87,7 @@ class Referral extends Model implements Notifiable
     }
 
     /**
-     * @param  \App\Emails\Email  $email
+     * @param \App\Emails\Email $email
      */
     public function sendEmailToReferee(Email $email)
     {
@@ -96,7 +95,7 @@ class Referral extends Model implements Notifiable
     }
 
     /**
-     * @param  \App\Sms\Sms  $sms
+     * @param \App\Sms\Sms $sms
      */
     public function sendSmsToReferee(Sms $sms)
     {
@@ -140,9 +139,9 @@ class Referral extends Model implements Notifiable
     }
 
     /**
-     * @param  \App\Models\User  $user
-     * @param  string  $to
-     * @param  string|null  $comments
+     * @param \App\Models\User $user
+     * @param string $to
+     * @param string|null $comments
      * @return \App\Models\StatusUpdate
      */
     public function updateStatus(User $user, string $to, string $comments = null): StatusUpdate

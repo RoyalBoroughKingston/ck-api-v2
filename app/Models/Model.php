@@ -47,7 +47,7 @@ abstract class Model extends BaseModel
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array  $attributes
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -71,7 +71,7 @@ abstract class Model extends BaseModel
     }
 
     /**
-     * @param  string  $name
+     * @param string $name
      * @return bool
      */
     public function hasAppend(string $name): bool
@@ -80,12 +80,12 @@ abstract class Model extends BaseModel
     }
 
     /**
-     * Strips all non alpha numeric characters from a string
+     * Strips all non alpha numeric characters from a string.
      *
      * @param string $string
      * @return string
      * @author
-     **/
+     */
     public function onlyAlphaNumeric($string)
     {
         return preg_replace('/[^\w\d\s]+/i', '', $string);

@@ -151,7 +151,7 @@ class StoreRequest extends FormRequest
                 ),
             ],
             'referral_email' => [
-                'required_if:referral_method,'.Service::REFERRAL_METHOD_INTERNAL,
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
                 'present',
                 'nullable',
                 'email',
@@ -166,7 +166,7 @@ class StoreRequest extends FormRequest
                 ),
             ],
             'referral_url' => [
-                'required_if:referral_method,'.Service::REFERRAL_METHOD_EXTERNAL,
+                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
                 'present',
                 'nullable',
                 'url',
@@ -180,7 +180,7 @@ class StoreRequest extends FormRequest
                     null
                 ),
             ],
-            'ends_at' => ['present', 'nullable', 'date_format:'.CarbonImmutable::ISO8601],
+            'ends_at' => ['present', 'nullable', 'date_format:' . CarbonImmutable::ISO8601],
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],

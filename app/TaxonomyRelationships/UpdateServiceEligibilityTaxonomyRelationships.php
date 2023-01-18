@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 trait UpdateServiceEligibilityTaxonomyRelationships
 {
     /**
-     * @param  \Illuminate\Support\Collection  $taxonomies
+     * @param \Illuminate\Support\Collection $taxonomies
      * @return \App\Models\Model
      */
     public function syncEligibilityRelationships(Collection $taxonomies): Model
@@ -27,7 +27,7 @@ trait UpdateServiceEligibilityTaxonomyRelationships
     }
 
     /**
-     * @param  \App\Models\Taxonomy  $taxonomy
+     * @param \App\Models\Taxonomy $taxonomy
      * @return \App\Models\Model
      */
     protected function createEligibilityRelationship(Taxonomy $taxonomy): Model

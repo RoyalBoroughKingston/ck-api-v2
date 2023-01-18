@@ -2,14 +2,15 @@
 
 namespace App\Search\ElasticSearch;
 
+use App\Contracts\QueryBuilder;
+use App\Models\Collection;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\Collection;
+use App\Search\SearchCriteriaQuery;
 use App\Support\Coordinate;
+use ElasticScoutDriverPlus\Builders\SearchRequestBuilder;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
-use App\Contracts\QueryBuilder;
-use App\Search\SearchCriteriaQuery;
 
 class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {
@@ -41,7 +42,7 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
         $this->filterPath = 'function_score.query.bool.filter';
     }
 
-    public function build(SearchCriteriaQuery $query): array
+    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): SearchRequestBuilder
     {
         $this->applyStatus(Service::STATUS_ACTIVE);
 
@@ -71,13 +72,17 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
 
         if ($query->hasLocation()) {
             $this->applyLocation($query->getLocation(), $query->getDistance());
-
-            if ($query->hasOrder()) {
-                $this->applyOrder($query->getOrder(), $query->getLocation());
-            }
         }
 
-        return $this->esQuery;
+        $searchQuery = Service::searchQuery($this->esQuery)
+            ->size($perPage)
+            ->from(($page - 1) * $perPage);
+
+        if ($query->hasOrder()) {
+            $searchQuery->sortRaw($this->applyOrder($query));
+        }
+
+        return $searchQuery;
     }
 
     protected function applyStatus(string $status): void
@@ -117,11 +122,11 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
     }
 
     /**
-     * @param  string  $waitTime
+     * @param string $waitTime
      */
     protected function applyWaitTime(string $waitTime): void
     {
-        if (! Service::waitTimeIsValid($waitTime)) {
+        if (!Service::waitTimeIsValid($waitTime)) {
             throw new InvalidArgumentException("The wait time [$waitTime] is not valid");
         }
 
@@ -168,23 +173,32 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
         $eligibilities = Taxonomy::whereIn('name', $eligibilityNames)->get();
         $eligibilityIds = $eligibilities->pluck('id')->all();
 
+        // Iterate over the children of the root Service Eligibility taxonomy as 'types'
         foreach (Taxonomy::serviceEligibility()->children as $serviceEligibilityType) {
+            // If the eligibilities are descendants of the Service Eligibility type
             if ($serviceEligibilityTypeOptionIds = $serviceEligibilityType->filterDescendants($eligibilityIds)) {
-                $serviceEligibilityTypeNames = $eligibilities->filter(function ($eligibility) use ($serviceEligibilityTypeOptionIds) {
-                    return in_array($eligibility->id, $serviceEligibilityTypeOptionIds);
-                })->pluck('name')->all();
+                // Get the eligibility names
+                $serviceEligibilityTypeNames = $eligibilities->filter(
+                    function ($eligibility) use ($serviceEligibilityTypeOptionIds) {
+                        return in_array($eligibility->id, $serviceEligibilityTypeOptionIds);
+                    }
+                )->pluck('name')->all();
 
-                $serviceEligibilityTypeAllName = $serviceEligibilityType->name.' All';
+                // Create the Service Eligibility type name
+                $serviceEligibilityTypeAllName = $serviceEligibilityType->name . ' All';
 
+                // Filter by service eligibility names and type name
                 $this->addFilter('service_eligibilities.keyword', array_merge($serviceEligibilityTypeNames, [$serviceEligibilityTypeAllName]));
 
                 $this->addMinimumShouldMatch();
 
+                // Add terms for each name which will add to score
                 foreach ($serviceEligibilityTypeNames as $serviceEligibilityTypeName) {
-                    $this->addTerm('service_eligibilities.keyword', $serviceEligibilityTypeName);
+                    $this->addTerm('service_eligibilities.keyword', $serviceEligibilityTypeName, $this->shouldPath);
                 }
 
-                $this->addMatch('service_eligibilities', $serviceEligibilityTypeAllName, null, 0);
+                // Add a match for the type name which will not add to score
+                $this->addMatch('service_eligibilities', $serviceEligibilityTypeAllName, $this->shouldPath, 0);
             }
         }
     }
@@ -198,7 +212,7 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                 'path' => 'service_locations',
                 'query' => [
                     'geo_distance' => [
-                        'distance' => $distance ? $distance.'mi' : config('local.search_distance').'mi',
+                        'distance' => $distance ? $distance . 'mi' : config('local.search_distance') . 'mi',
                         'service_locations.location' => $coordinate->toArray(),
                     ],
                 ],
@@ -217,18 +231,20 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
         ];
     }
 
-    protected function applyOrder(string $order, Coordinate $coordinate): void
+    protected function applyOrder(SearchCriteriaQuery $query): array
     {
-        if ($order === static::ORDER_DISTANCE) {
-            $this->esQuery['sort'] = [
+        if ($query->getOrder() === static::ORDER_DISTANCE) {
+            return [
                 [
                     '_geo_distance' => [
-                        'service_locations.location' => $coordinate->toArray(),
+                        'service_locations.location' => $query->getLocation()->toArray(),
                         'nested_path' => 'service_locations',
                     ],
                 ],
             ];
         }
+
+        return ['_score'];
     }
 
     protected function addMinimumShouldMatch()

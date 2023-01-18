@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * @var \Carbon\CarbonImmutable
      */
@@ -37,9 +36,8 @@ return new class extends Migration
     /**
      * Load the Open Eligibility taxonomies into an array.
      *
-     * @return array
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return array
      */
     protected function loadOpenEligibilityTaxonomies(): array
     {

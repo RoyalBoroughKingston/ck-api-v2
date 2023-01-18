@@ -53,7 +53,7 @@ class Collection extends Model
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Collection  $taxonomies
+     * @param \Illuminate\Database\Eloquent\Collection $taxonomies
      * @return \App\Models\Collection
      */
     public function syncCollectionTaxonomies(EloquentCollection $taxonomies): Collection
@@ -70,10 +70,9 @@ class Collection extends Model
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function personaPlaceholderLogo(int $maxDimension = null)
     {
@@ -89,10 +88,9 @@ class Collection extends Model
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function categoryPlaceholderLogo(int $maxDimension = null)
     {
@@ -108,10 +106,9 @@ class Collection extends Model
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function organisationEventPlaceholderLogo(int $maxDimension = null)
     {

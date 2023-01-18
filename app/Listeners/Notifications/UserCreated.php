@@ -14,7 +14,7 @@ class UserCreated
     /**
      * Handle the event.
      *
-     * @param  EndpointHit  $event
+     * @param EndpointHit $event
      */
     public function handle(EndpointHit $event)
     {
@@ -27,7 +27,7 @@ class UserCreated
     }
 
     /**
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
      */
     protected function notifyUser(User $user)
     {

@@ -24,7 +24,7 @@ class NotificationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Http\Requests\Notification\IndexRequest  $request
+     * @param \App\Http\Requests\Notification\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -49,8 +49,8 @@ class NotificationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\Notification\ShowRequest  $request
-     * @param  \App\Models\Notification  $notification
+     * @param \App\Http\Requests\Notification\ShowRequest $request
+     * @param \App\Models\Notification $notification
      * @return \App\Http\Resources\NotificationResource
      */
     public function show(ShowRequest $request, Notification $notification)

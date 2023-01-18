@@ -11,10 +11,9 @@ class ReferralResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     *
+     * @param \Illuminate\Http\Request $request
      * @throws \Exception
+     * @return array
      */
     public function toArray($request)
     {

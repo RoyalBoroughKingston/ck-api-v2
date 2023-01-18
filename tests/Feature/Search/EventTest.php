@@ -52,6 +52,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     {
         OrganisationEvent::factory()->count(5)->create();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'page' => 1,
             'per_page' => 20,
@@ -67,6 +69,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     public function searchEventsMatchTitleAsGuest()
     {
         $event = OrganisationEvent::factory()->create();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => $event->title,
@@ -89,6 +93,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'title' => 'Quick Brown Fox',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'brown',
             'page' => 1,
@@ -108,6 +114,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'title' => 'Quick Brown Fox',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'quick fox',
             'page' => 1,
@@ -124,6 +132,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     public function searchEventsMatchIntroAsGuest()
     {
         $event = OrganisationEvent::factory()->create();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => $event->intro,
@@ -146,6 +156,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'intro' => 'This is an event that helps to homeless find temporary housing.',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'homeless',
             'page' => 1,
@@ -165,6 +177,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'intro' => 'This is an event that helps to homeless find temporary housing.',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'temporary housing',
             'page' => 1,
@@ -181,6 +195,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     public function searchEventsMatchDescriptionAsGuest()
     {
         $event = OrganisationEvent::factory()->create();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => $event->description,
@@ -203,6 +219,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'description' => '<p>This is an event that helps to homeless find temporary housing.</p>',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'homeless',
             'page' => 1,
@@ -221,6 +239,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event = OrganisationEvent::factory()->create([
             'description' => '<p>This is an event that helps to homeless find temporary housing.</p>',
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'temporary housing',
@@ -261,6 +281,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event2->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $event2->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Quick Brown Fox',
             'page' => 1,
@@ -295,6 +317,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'intro' => 'Thisisatest',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Thisisatest',
             'order' => 'relevance',
@@ -326,6 +350,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event2 = OrganisationEvent::factory()->create([
             'description' => '<p>Thisisatest</p>',
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Thisisatest',
@@ -359,6 +385,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'description' => '<p>Thisisatest</p>',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Thisisatest',
             'order' => 'relevance',
@@ -388,6 +416,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     {
         $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
         $event2 = OrganisationEvent::factory()->create(['title' => 'Thsiisatst']);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Thisisatest',
@@ -439,6 +469,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         ]);
         $event2->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $event2->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Quick Brown Fox',
@@ -519,6 +551,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event2->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $event2->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Event title',
             'category' => 'quick-brown-fox',
@@ -549,6 +583,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $paidEvent = OrganisationEvent::factory()->nonFree()->create();
         $freeEvent = OrganisationEvent::factory()->create();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_free' => true,
         ]);
@@ -565,6 +601,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     {
         $paidEvent = OrganisationEvent::factory()->nonFree()->create();
         $freeEvent = OrganisationEvent::factory()->create();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_free' => false,
@@ -583,6 +621,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_virtual' => true,
         ]);
@@ -599,6 +639,8 @@ class EventTest extends TestCase implements UsesElasticsearch
     {
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'is_virtual' => false,
@@ -624,6 +666,8 @@ class EventTest extends TestCase implements UsesElasticsearch
                 ])->id;
             },
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'has_wheelchair_access' => true,
@@ -651,6 +695,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             },
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'has_induction_loop' => true,
         ]);
@@ -676,6 +722,8 @@ class EventTest extends TestCase implements UsesElasticsearch
                 ])->id;
             },
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'has_accessible_toilet' => true,
@@ -703,11 +751,14 @@ class EventTest extends TestCase implements UsesElasticsearch
             'end_date' => $this->faker->dateTimeBetween('-2 week', '-1 weeks'),
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Testing Dates',
             'page' => 1,
             'per_page' => 20,
         ]);
+
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $futureEvent->id]);
@@ -743,6 +794,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
+
+        sleep(1);
 
         $from = clone $date1;
         $from->modify('-1 day');
@@ -787,6 +840,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'end_time' => $endtime,
         ]);
 
+        sleep(1);
+
         $to = clone $date1;
         $to->modify('+1 day');
 
@@ -829,6 +884,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'start_time' => $starttime,
             'end_time' => $endtime,
         ]);
+
+        sleep(1);
 
         $from = clone $date1;
         $to = clone $date1;
@@ -881,6 +938,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             },
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'order' => 'distance',
             'location' => [
@@ -929,6 +988,8 @@ class EventTest extends TestCase implements UsesElasticsearch
                 ])->id;
             },
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'order' => 'distance',
@@ -993,6 +1054,8 @@ class EventTest extends TestCase implements UsesElasticsearch
                 ])->id;
             },
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Test Name',
@@ -1067,6 +1130,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             },
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Thisisatest',
             'order' => 'relevance',
@@ -1111,6 +1176,8 @@ class EventTest extends TestCase implements UsesElasticsearch
             'start_date' => $this->faker->dateTimeBetween('+8 days', '+9 days'),
             'end_date' => $this->faker->dateTimeBetween('+10 days', '+11 days'),
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Testing',
@@ -1191,6 +1258,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event3->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
         $event3->save(); // Update the Elasticsearch index.
 
+        sleep(1);
+
         // Assert that when searching by collection, the events with more taxonomies are ranked higher.
         $response = $this->json('POST', '/core/v1/search/events', [
             'order' => 'relevance',
@@ -1213,6 +1282,8 @@ class EventTest extends TestCase implements UsesElasticsearch
         $events = OrganisationEvent::factory()->count(30)->create([
             'title' => 'Testing Page',
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Testing',

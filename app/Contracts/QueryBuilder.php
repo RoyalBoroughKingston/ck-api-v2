@@ -3,14 +3,17 @@
 namespace App\Contracts;
 
 use App\Search\SearchCriteriaQuery;
+use ElasticScoutDriverPlus\Builders\SearchRequestBuilder;
 
 interface QueryBuilder
 {
     /**
      * Build the search query.
      *
-     * @param  App\Search\SearchCriteriaQuery  $query
+     * @param App\Search\SearchCriteriaQuery $query
+     * @param int $page
+     * @param int $perPage
      * @return array
      */
-    public function build(SearchCriteriaQuery $query): array;
+    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): SearchRequestBuilder;
 }

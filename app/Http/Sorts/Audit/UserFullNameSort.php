@@ -9,9 +9,9 @@ use Spatie\QueryBuilder\Sorts\Sort;
 class UserFullNameSort implements Sort
 {
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param $descending
-     * @param  string  $property
+     * @param string $property
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function __invoke(Builder $query, $descending, string $property): Builder

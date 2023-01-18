@@ -37,7 +37,7 @@ class Setting extends Model implements Responsable
     public $timestamps = false;
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function toResponse($request): JsonResponse
@@ -56,7 +56,7 @@ class Setting extends Model implements Responsable
     /**
      * Transform the response.
      *
-     * @param  array  $value
+     * @param array $value
      * @return array
      */
     protected function transform(array $value): array

@@ -66,7 +66,7 @@ class File extends Model implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function toResponse($request)
@@ -104,7 +104,7 @@ class File extends Model implements Responsable
     }
 
     /**
-     * @param  string  $content
+     * @param string $content
      * @return \App\Models\File
      */
     public function upload(string $content): File
@@ -131,7 +131,7 @@ class File extends Model implements Responsable
     }
 
     /**
-     * @param  string  $content
+     * @param string $content
      * @return \App\Models\File
      */
     public function uploadBase64EncodedFile(string $content): File
@@ -145,7 +145,7 @@ class File extends Model implements Responsable
     /**
      * @deprecated you should now use the uploadBase64EncodedFile() method instead
      *
-     * @param  string  $content
+     * @param string $content
      * @return \App\Models\File
      */
     public function uploadBase64EncodedPng(string $content): File
@@ -156,7 +156,7 @@ class File extends Model implements Responsable
     /**
      * Get a file record which is a resized version of the current instance.
      *
-     * @param  int|null  $maxDimension
+     * @param int|null $maxDimension
      * @return \App\Models\File
      */
     public function resizedVersion(int $maxDimension = null): self
@@ -207,12 +207,11 @@ class File extends Model implements Responsable
     /**
      * Get a file record which is a resized version of the specified placeholder.
      *
-     * @param  int  $maxDimension
-     * @param  string  $placeholderFor
-     * @return \App\Models\File
-     *
+     * @param int $maxDimension
+     * @param string $placeholderFor
      * @throws \InvalidArgumentException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \App\Models\File
      */
     public static function resizedPlaceholder(int $maxDimension, string $placeholderFor): self
     {
@@ -227,7 +226,7 @@ class File extends Model implements Responsable
             static::META_PLACEHOLDER_FOR_SERVICE_LOCATION,
         ];
 
-        if (! in_array($placeholderFor, $validPlaceholdersFor)) {
+        if (!in_array($placeholderFor, $validPlaceholdersFor)) {
             throw new \InvalidArgumentException("Invalid placeholder name [$placeholderFor]");
         }
 
@@ -266,8 +265,8 @@ class File extends Model implements Responsable
     }
 
     /**
-     * @param  string  $mimeType
-     * @param  bool  $withPeriod
+     * @param string $mimeType
+     * @param bool $withPeriod
      * @return string
      */
     public static function extensionFromMime(string $mimeType, bool $withPeriod = true): string
@@ -280,7 +279,7 @@ class File extends Model implements Responsable
             static::MIME_TYPE_TXT => '.txt',
         ];
 
-        if (! array_key_exists($mimeType, $map)) {
+        if (!array_key_exists($mimeType, $map)) {
             throw new \InvalidArgumentException("The mime type [$mimeType] is not supported.");
         }
 

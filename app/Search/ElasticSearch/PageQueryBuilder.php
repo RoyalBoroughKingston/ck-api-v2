@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Models\Page;
-use Illuminate\Support\Arr;
 use App\Contracts\QueryBuilder;
+use App\Models\Page;
 use App\Search\SearchCriteriaQuery;
+use ElasticScoutDriverPlus\Builders\SearchRequestBuilder;
+use Illuminate\Support\Arr;
 
 class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 {
@@ -26,7 +27,7 @@ class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
         $this->filterPath = 'bool.filter';
     }
 
-    public function build(SearchCriteriaQuery $query): array
+    public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): SearchRequestBuilder
     {
         if ($query->hasQuery()) {
             $this->applyQuery($query->getQuery());
@@ -34,7 +35,9 @@ class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 
         $this->applyStatus(Page::ENABLED);
 
-        return $this->esQuery;
+        return Page::searchQuery($this->esQuery)
+            ->size($perPage)
+            ->from(($page - 1) * $perPage);
     }
 
     protected function applyStatus(bool $enabled): void

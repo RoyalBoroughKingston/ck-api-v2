@@ -34,8 +34,8 @@ class Notification extends Model
     ];
 
     /**
-     * @param  \App\Emails\Email  $email
-     * @param  \App\Notifications\Notifiable|null  $notifiable
+     * @param \App\Emails\Email $email
+     * @param \App\Notifications\Notifiable|null $notifiable
      */
     public static function sendEmail(Email $email, Notifiable $notifiable = null)
     {
@@ -56,8 +56,8 @@ class Notification extends Model
     }
 
     /**
-     * @param  \App\Sms\Sms  $sms
-     * @param  \App\Notifications\Notifiable|null  $notifiable
+     * @param \App\Sms\Sms $sms
+     * @param \App\Notifications\Notifiable|null $notifiable
      */
     public static function sendSms(Sms $sms, Notifiable $notifiable = null)
     {

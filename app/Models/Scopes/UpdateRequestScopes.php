@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 trait UpdateRequestScopes
 {
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeNew(Builder $query): Builder
@@ -18,7 +18,7 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeExisting(Builder $query): Builder
@@ -27,8 +27,8 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $id
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeServiceId(Builder $query, $id): Builder
@@ -41,8 +41,8 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $id
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeServiceLocationId(Builder $query, $id): Builder
@@ -55,8 +55,8 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $id
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeLocationId(Builder $query, $id): Builder
@@ -69,8 +69,8 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $id
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrganisationId(Builder $query, $id): Builder
@@ -83,8 +83,8 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $id
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrganisationEventId(Builder $query, $id): Builder
@@ -97,8 +97,8 @@ trait UpdateRequestScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $alias
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $alias
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithEntry(Builder $query, string $alias = 'entry'): Builder
@@ -175,7 +175,7 @@ EOT;
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePending(Builder $query): Builder

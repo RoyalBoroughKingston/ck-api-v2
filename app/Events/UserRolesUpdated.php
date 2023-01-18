@@ -30,9 +30,9 @@ class UserRolesUpdated
     /**
      * UserPermissionsUpdated constructor.
      *
-     * @param  \App\Models\User  $user
-     * @param  \Illuminate\Database\Eloquent\Collection  $oldRoles
-     * @param  \Illuminate\Database\Eloquent\Collection  $newRoles
+     * @param \App\Models\User $user
+     * @param \Illuminate\Database\Eloquent\Collection $oldRoles
+     * @param \Illuminate\Database\Eloquent\Collection $newRoles
      */
     public function __construct(User $user, Collection $oldRoles, Collection $newRoles)
     {

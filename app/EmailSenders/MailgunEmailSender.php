@@ -26,7 +26,7 @@ class MailgunEmailSender implements EmailSender
     /**
      * Create the email subject from the language file and the email values.
      *
-     * @param  Email  $email
+     * @param Email $email
      * @return string
      */
     public function createSubject(Email $email)
@@ -40,7 +40,7 @@ class MailgunEmailSender implements EmailSender
     /**
      * Create the email content from the language file and the email values.
      *
-     * @param  Email  $email
+     * @param Email $email
      * @return string
      */
     public function createContent(Email $email)
@@ -54,7 +54,7 @@ class MailgunEmailSender implements EmailSender
     /**
      * Create the email content from the language file and the email values.
      *
-     * @param  Email  $email
+     * @param Email $email
      * @return string
      */
     public function createHtmlContent(Email $email)
@@ -92,7 +92,7 @@ class MailgunEmailSender implements EmailSender
         $email->notification->update(['message' => $content]);
 
         if (config('app.debug')) {
-            logger()->debug('Email sent', (array) $response);
+            logger()->debug('Email sent', (array)$response);
         }
     }
 }

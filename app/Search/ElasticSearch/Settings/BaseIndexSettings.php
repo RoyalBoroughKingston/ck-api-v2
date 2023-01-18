@@ -2,7 +2,6 @@
 
 namespace App\Search\ElasticSearch\Settings;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 

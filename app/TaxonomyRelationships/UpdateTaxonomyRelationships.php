@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 trait UpdateTaxonomyRelationships
 {
     /**
-     * @param  \Illuminate\Support\Collection  $taxonomies
+     * @param \Illuminate\Support\Collection $taxonomies
      * @return \App\Models\Model
      */
     public function syncTaxonomyRelationships(Collection $taxonomies): Model
@@ -26,7 +26,7 @@ trait UpdateTaxonomyRelationships
     }
 
     /**
-     * @param  \App\Models\Taxonomy  $taxonomy
+     * @param \App\Models\Taxonomy $taxonomy
      * @return \App\Models\Model
      */
     protected function createTaxonomyRelationships(Taxonomy $taxonomy): Model

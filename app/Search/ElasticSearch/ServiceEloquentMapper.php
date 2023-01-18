@@ -4,43 +4,33 @@ declare(strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
-use App\Models\Service;
-use App\Support\Coordinate;
-use App\Models\SearchHistory;
-use App\Models\ServiceLocation;
 use App\Contracts\EloquentMapper;
-use Illuminate\Pagination\Paginator;
 use App\Http\Resources\ServiceResource;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\SearchHistory;
+use App\Models\Service;
+use App\Models\ServiceLocation;
+use App\Support\Coordinate;
+use ElasticScoutDriverPlus\Builders\SearchRequestBuilder;
 use ElasticScoutDriverPlus\Decorators\SearchResult;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class ServiceEloquentMapper implements EloquentMapper
 {
-    public function paginate(array $esQuery, int $page = null, int $perPage = null): AnonymousResourceCollection
+    public function paginate(SearchRequestBuilder $esQuery, int $page = null, int $perPage = null): AnonymousResourceCollection
     {
-        dump($esQuery);
-        $page = page($page);
-        $perPage = per_page($perPage);
+        $queryRequest = $esQuery->buildSearchRequest()->toArray();
+        $response = $esQuery->execute();
 
-        $response = Service::searchQuery($esQuery)
-            ->size($perPage)
-            ->from(($page - 1) * $perPage)
-            ->execute();
-
-        dump('Hits', $response->hits());
-        dump('Models', $response->models());
-        dump('Documents', $response->documents());
-
-        $this->logMetrics($esQuery, $response);
+        $this->logMetrics($queryRequest, $response);
 
         /**
          * Order the fetched service locations by distance.
          * @todo Potential solution to the order nested locations in Elasticsearch: https://stackoverflow.com/a/43440405
          */
-        $isOrderedByDistance = isset($esQuery['sort']);
-        $services = $isOrderedByDistance? $this->orderServicesByLocation($esQuery, $response->models()) : $response->models();
+        $services = $this->orderServicesByLocation($queryRequest, $response->models());
 
         // If paginated, then create a new pagination instance.
         $services = new LengthAwarePaginator(
@@ -54,30 +44,33 @@ class ServiceEloquentMapper implements EloquentMapper
         return ServiceResource::collection($services);
     }
 
-    public function logMetrics(array $esQuery, SearchResult $response): void
+    public function logMetrics(array $queryRequest, SearchResult $response): void
     {
-        $query = $esQuery['function_score'];
-        if (isset($esQuery['sort'])) {
-            $query['sort'] = $esQuery['sort'];
-        }
-
         SearchHistory::create([
-            'query' => $query,
+            'query' => $queryRequest,
             'count' => $response->total(),
         ]);
     }
 
-    protected function orderServicesByLocation(array $esQuery, Collection $services): Collection
+    protected function orderServicesByLocation(array $queryRequest, Collection $services): Collection
     {
-        return $services->each(function (Service $service) use ($esQuery) {
-            $service->serviceLocations = $service->serviceLocations->sortBy(
-                function (ServiceLocation $serviceLocation) use ($esQuery) {
-                    $location = $esQuery['sort'][0]['_geo_distance']['service_locations.location'];
-                    $location = new Coordinate($location['lat'], $location['lon']);
+        $locations = array_filter($queryRequest['body']['sort']?? [], function ($key) {
+            return $key === '_geo_distance';
+        }, ARRAY_FILTER_USE_KEY);
 
-                    return $location->distanceFrom($serviceLocation->location->toCoordinate());
-                }
-            );
-        });
+        if (count($locations)) {
+            return $services->each(function (Service $service) use ($locations) {
+                $service->serviceLocations = $service->serviceLocations->sortBy(
+                    function (ServiceLocation $serviceLocation) use ($locations) {
+                        $location = $locations[0]['_geo_distance']['service_locations.location'];
+                        $location = new Coordinate($location['lat'], $location['lon']);
+
+                        return $location->distanceFrom($serviceLocation->location->toCoordinate());
+                    }
+                );
+            });
+        }
+
+        return $services;
     }
 }

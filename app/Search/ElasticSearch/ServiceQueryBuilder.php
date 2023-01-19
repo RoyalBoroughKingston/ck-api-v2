@@ -44,6 +44,9 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
 
     public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): SearchRequestBuilder
     {
+        $page = page($page);
+        $perPage = per_page($perPage);
+
         $this->applyStatus(Service::STATUS_ACTIVE);
 
         if ($query->hasQuery()) {

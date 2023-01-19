@@ -4700,7 +4700,7 @@ class ServicesTest extends TestCase
                             'row' => [],
                             'errors' => [
                                 'organisation_id' => [
-                                    'validation.uuid',
+                                    __('validation.uuid', ['attribute' => 'organisation id']),
                                     'The organisation id field must contain an ID for an organisation you are an organisation admin for.',
                                 ],
                             ],

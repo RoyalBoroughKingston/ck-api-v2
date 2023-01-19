@@ -29,6 +29,9 @@ class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 
     public function build(SearchCriteriaQuery $query, int $page = null, int $perPage = null): SearchRequestBuilder
     {
+        $page = page($page);
+        $perPage = per_page($perPage);
+
         if ($query->hasQuery()) {
             $this->applyQuery($query->getQuery());
         }

@@ -158,8 +158,14 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'social_medias' => [
+            'size' => 'This field is no longer accepted for services and should be set in the Organisation.',
+        ],
+        'address' => [
+            'not_found' => 'Address not found: :address',
+        ],
+        'service_eligibilities' => [
+            'not_found' => ':ids is not a Service Eligibility Taxonomy |:ids are not Service Eligibility Taxonomies',
         ],
     ],
 

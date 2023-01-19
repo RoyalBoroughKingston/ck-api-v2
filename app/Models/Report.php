@@ -400,9 +400,8 @@ class Report extends Model
 
             if ($row->distance) {
                 $distance = json_decode($row->distance);
-                $lat = $distance->{'service_locations.location'}->lat;
-                $lon = $distance->{'service_locations.location'}->lon;
-                $coordinate = (!$lat !== null && $lon !== null) ? implode(',', [$lat, $lon]) : null;
+                $location = $distance->{'service_locations.location'}?? $distance->{'event_location.location'};
+                $coordinate = empty($location) ? null : implode(',', [$location->lat, $location->lon]);
             }
 
             return [

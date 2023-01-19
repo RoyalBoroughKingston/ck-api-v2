@@ -20,6 +20,9 @@ class EventEloquentMapper implements EloquentMapper
 {
     public function paginate(SearchRequestBuilder $esQuery, int $page = null, int $perPage = null): AnonymousResourceCollection
     {
+        $page = page($page);
+        $perPage = per_page($perPage);
+
         $queryRequest = $esQuery->buildSearchRequest()->toArray();
         $response = $esQuery->execute();
 

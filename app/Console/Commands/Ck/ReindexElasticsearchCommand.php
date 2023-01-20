@@ -37,7 +37,7 @@ class ReindexElasticsearchCommand extends Command
         }
 
         $this->line('Drop all elastic search indices and re-run migrations');
-        $this->call('elastic:migrate:fresh');
+        $this->call('elastic:migrate:fresh', ['--force']);
 
         if (Schema::hasTable((new Service())->getTable())) {
             $this->import(Service::class);

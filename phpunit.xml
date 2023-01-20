@@ -22,7 +22,7 @@
     <env name="LOG_CHANNEL" value="testing"/>
     <env name="DB_HOST" value="mysql-testing"/>
     <env name="FILESYSTEM_CLOUD" value="testing_cloud"/>
-    <env name="SESSION_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="database"/>
     <env name="SESSION_LIFETIME" value="20"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="CACHE_DRIVER" value="redis"/>

@@ -95,16 +95,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     ];
 
     /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return 'services';
-    }
-
-    /**
      * Get the indexable data array for the model.
      *
      * @return array

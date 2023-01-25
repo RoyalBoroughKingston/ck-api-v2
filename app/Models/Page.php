@@ -56,36 +56,6 @@ class Page extends Model
     ];
 
     /**
-     * Get the name of the index associated with the model.
-     *
-     * @return string
-     */
-    public function searchableAs()
-    {
-        return 'pages';
-    }
-
-    /**
-     * Get the value used to index the model.
-     *
-     * @return mixed
-     */
-    public function getScoutKey()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Get the key name used to index the model.
-     *
-     * @return mixed
-     */
-    public function getScoutKeyName()
-    {
-        return 'id';
-    }
-
-    /**
      * Get the indexable data array for the model.
      *
      * @return array

@@ -25,6 +25,7 @@ class ServiceEloquentMapper implements EloquentMapper
         $perPage = per_page($perPage);
 
         $queryRequest = $esQuery->buildSearchRequest()->toArray();
+
         $response = $esQuery->execute();
 
         $this->logMetrics($queryRequest, $response);

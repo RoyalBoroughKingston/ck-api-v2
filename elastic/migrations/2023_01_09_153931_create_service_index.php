@@ -18,24 +18,38 @@ final class CreateServiceIndex implements MigrationInterface
             'id' => ['type' => 'keyword'],
             'name' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            'intro' => ['type' => 'text'],
-            'description' => ['type' => 'text'],
+            'intro' => [
+                'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
+            ],
+            'description' => [
+                'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
+            ],
             'wait_time' => ['type' => 'keyword'],
             'is_free' => ['type' => 'boolean'],
             'status' => ['type' => 'keyword'],
             'score' => ['type' => 'integer'],
             'organisation_name' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
             ],
             'taxonomy_categories' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
@@ -51,6 +65,8 @@ final class CreateServiceIndex implements MigrationInterface
             ],
             'service_eligibilities' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
@@ -64,7 +80,8 @@ final class CreateServiceIndex implements MigrationInterface
     public function up(): void
     {
         $settings = (new ServicesIndexSettings())->getSettings();
-        Index::createIfNotExistsRaw('services', $this->mapping, $settings);
+        Index::dropIfExists('services');
+        Index::createRaw('services', $this->mapping, $settings);
     }
 
     /**

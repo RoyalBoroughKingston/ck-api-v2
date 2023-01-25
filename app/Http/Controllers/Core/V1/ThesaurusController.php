@@ -10,6 +10,7 @@ use App\Http\Requests\Thesaurus\UpdateRequest;
 use App\Http\Responses\Thesaurus;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ThesaurusController extends Controller

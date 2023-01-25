@@ -15,9 +15,15 @@ class BaseIndexSettings
         return [
             'analysis' => [
                 'analyzer' => [
-                    'default' => [
+                    'english_analyser' => [
+                        'type' => 'custom',
                         'tokenizer' => 'standard',
-                        'filter' => ['lowercase', 'synonym', 'stopwords'],
+                        'filter' => [
+                            'lowercase',
+                            'synonym',
+                            'stop',
+                            'stopwords'
+                        ],
                     ],
                 ],
                 'filter' => [
@@ -39,7 +45,7 @@ class BaseIndexSettings
      */
     protected function getStopWords(): array
     {
-        if (!$content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/stop-words.csv')) {
+        if (!$content = Storage::cloud()->get('elasticsearch/stop-words.csv')) {
             return [];
         }
 
@@ -57,7 +63,7 @@ class BaseIndexSettings
      */
     protected function getThesaurus(): array
     {
-        if (!$content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/thesaurus.csv')) {
+        if (!$content = Storage::cloud()->get('elasticsearch/thesaurus.csv')) {
             return [];
         }
 

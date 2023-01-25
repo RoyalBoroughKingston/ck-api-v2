@@ -19,12 +19,22 @@ final class CreateOrganisationEventIndex implements MigrationInterface
             'enabled' => ['type' => 'boolean'],
             'title' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            'intro' => ['type' => 'text'],
-            'description' => ['type' => 'text'],
+            'intro' => [
+                'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
+            ],
+            'description' => [
+                'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
+            ],
             'start_date' => [
                 'type' => 'date',
                 'format' => 'strict_date_hour_minute_second',
@@ -39,12 +49,16 @@ final class CreateOrganisationEventIndex implements MigrationInterface
             'has_induction_loop' => ['type' => 'boolean'],
             'organisation_name' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
             ],
             'taxonomy_categories' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
@@ -69,7 +83,8 @@ final class CreateOrganisationEventIndex implements MigrationInterface
     public function up(): void
     {
         $settings = (new EventsIndexSettings())->getSettings();
-        Index::createIfNotExistsRaw('events', $this->mapping, $settings);
+        Index::dropIfExists('events');
+        Index::createRaw('events', $this->mapping, $settings);
     }
 
     /**

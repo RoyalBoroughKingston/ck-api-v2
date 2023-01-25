@@ -51,7 +51,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      */
     public function searchableAs()
     {
-        return 'events';
+        return config('scout.prefix') . 'events';
     }
 
     /**

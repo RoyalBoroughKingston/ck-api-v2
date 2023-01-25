@@ -19,6 +19,8 @@ final class CreatePageIndex implements MigrationInterface
             'enabled' => ['type' => 'boolean'],
             'title' => [
                 'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
                 'fields' => [
                     'keyword' => ['type' => 'keyword'],
                 ],
@@ -27,32 +29,72 @@ final class CreatePageIndex implements MigrationInterface
                 'properties' => [
                     'introduction' => [
                         'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
+                            'title' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
+                            'content' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
                         ],
                     ],
                     'about' => [
                         'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
+                            'title' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
+                            'content' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
                         ],
                     ],
                     'info_pages' => [
                         'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
+                            'title' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
+                            'content' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
                         ],
                     ],
                     'collections' => [
                         'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
+                            'title' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
+                            'content' => [
+                                'type' => 'text',
+                                'analyzer' => 'english_analyser',
+                                'search_analyzer' => 'english_analyser',
+                            ],
                         ],
                     ],
                 ],
             ],
-            'collection_categories' => ['type' => 'text'],
-            'collection_personas' => ['type' => 'text'],
+            'collection_categories' => [
+                'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
+            ],
+            'collection_personas' => [
+                'type' => 'text',
+                'analyzer' => 'english_analyser',
+                'search_analyzer' => 'english_analyser',
+            ],
         ],
     ];
 
@@ -62,7 +104,8 @@ final class CreatePageIndex implements MigrationInterface
     public function up(): void
     {
         $settings = (new PagesIndexSettings())->getSettings();
-        Index::createIfNotExistsRaw('pages', $this->mapping, $settings);
+        Index::dropIfExists('pages');
+        Index::createRaw('pages', $this->mapping, $settings);
     }
 
     /**

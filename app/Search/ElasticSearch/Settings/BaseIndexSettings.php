@@ -22,7 +22,7 @@ class BaseIndexSettings
                             'lowercase',
                             'synonym',
                             'stop',
-                            'stopwords'
+                            'stopwords',
                         ],
                     ],
                 ],

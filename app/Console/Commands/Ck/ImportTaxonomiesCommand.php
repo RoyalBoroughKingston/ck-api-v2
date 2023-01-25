@@ -60,9 +60,8 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws \Exception
+     * @return mixed
      */
     public function handle()
     {
@@ -74,7 +73,7 @@ class ImportTaxonomiesCommand extends Command
             $this->warn('Dry Run, no data will be committed, delete option ignored');
         }
 
-        $this->line('Fetching '.$csvUrl);
+        $this->line('Fetching ' . $csvUrl);
 
         $records = $this->fetchTaxonomyRecords($csvUrl);
 
@@ -91,7 +90,7 @@ class ImportTaxonomiesCommand extends Command
                 $this->warn('Unable to import all records. Failed records:');
                 $this->table(['ID', 'Name', 'Parent ID'], $this->failedRows);
             } else {
-                $this->info('All records imported. Total records imported: '.$importCount);
+                $this->info('All records imported. Total records imported: ' . $importCount);
             }
         } else {
             $this->info('Spreadsheet could not be uploaded');
@@ -107,8 +106,9 @@ class ImportTaxonomiesCommand extends Command
      */
     public function deleteAllTaxonomies()
     {
-        DB::table((new ServiceTaxonomy())->getTable())->truncate();
-        DB::table((new CollectionTaxonomy())->getTable())->truncate();
+        $taxonomyIds = $this->getDescendantTaxonomyIds([Taxonomy::category()->id]);
+        DB::table((new ServiceTaxonomy())->getTable())->whereIn('taxonomy_id', $taxonomyIds)->delete();
+        DB::table((new CollectionTaxonomy())->getTable())->whereIn('taxonomy_id', $taxonomyIds)->delete();
         DB::table((new UpdateRequest())->getTable())->whereIn(
             'updateable_type',
             [
@@ -117,7 +117,6 @@ class ImportTaxonomiesCommand extends Command
             ]
         )->delete();
 
-        $taxonomyIds = $this->getDescendantTaxonomyIds([Taxonomy::category()->id]);
         Schema::disableForeignKeyConstraints();
         DB::table((new Taxonomy())->getTable())->whereIn('id', $taxonomyIds)->delete();
         Schema::enableForeignKeyConstraints();
@@ -126,9 +125,9 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Get all the Caregory Taxonomy IDs.
      *
-     * @param  array  $rootId
-     * @param  array  $taxonomyIds
-     * @param  mixed  $rootIds
+     * @param array $rootId
+     * @param array $taxonomyIds
+     * @param mixed $rootIds
      * @return array
      */
     public function getDescendantTaxonomyIds($rootIds, $taxonomyIds = []): array
@@ -148,7 +147,7 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Get the Taxonomy records to import.
      *
-     * @param  string  $csvUrl
+     * @param string $csvUrl
      * @return array || Null
      */
     public function fetchTaxonomyRecords(string $csvUrl)
@@ -171,9 +170,9 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Import the Taxonomy records into the database.
      *
-     * @param  array  $taxonomyRecords
-     * @param  bool  $refresh
-     * @param  bool  $dryrun
+     * @param array $taxonomyRecords
+     * @param bool $refresh
+     * @param bool $dryrun
      * @return bool|int
      */
     public function importTaxonomyRecords(array $taxonomyRecords, bool $refresh, bool $dryrun)
@@ -183,7 +182,7 @@ class ImportTaxonomiesCommand extends Command
             DB::beginTransaction();
         }
 
-        if (! is_uuid($taxonomyRecords[0][0])) {
+        if (!is_uuid($taxonomyRecords[0][0])) {
             array_shift($taxonomyRecords);
         }
 
@@ -198,13 +197,13 @@ class ImportTaxonomiesCommand extends Command
 
         $taxonomyImports = $this->mapTaxonomyDepth($taxonomyImports);
 
-        if ($refresh && ! $dryrun) {
+        if ($refresh && !$dryrun) {
             $this->deleteAllTaxonomies();
         }
 
         DB::table((new Taxonomy())->getTable())->insert($taxonomyImports);
 
-        if (! $dryrun && App::environment() != 'testing') {
+        if (!$dryrun && App::environment() != 'testing') {
             $this->info('Commiting transaction');
             DB::commit();
         }
@@ -215,8 +214,8 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Sanity check the records before converting them to format for import.
      *
-     * @param  array  $records
-     * @param  bool  $refresh
+     * @param array $records
+     * @param bool $refresh
      * @return array
      */
     public function prepareImports(array $records, bool $refresh): array
@@ -230,11 +229,11 @@ class ImportTaxonomiesCommand extends Command
          */
         foreach ($records as $record) {
             $failedRow = null;
-            if (! is_uuid($record[0]) || (! empty($record[2]) && ! in_array($record[2], $parentIds))) {
+            if (!is_uuid($record[0]) || (!empty($record[2]) && !in_array($record[2], $parentIds))) {
                 $failedRow = $record;
                 $failedRow[] = 'ID or parent ID invalid';
             }
-            if (! $refresh && DB::table((new Taxonomy())->getTable())->where('id', $record[0])->exists()) {
+            if (!$refresh && DB::table((new Taxonomy())->getTable())->where('id', $record[0])->exists()) {
                 $failedRow = $failedRow ?? $record;
                 $failedRow[] = 'Taxonomy exists';
             }
@@ -255,7 +254,7 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Convert the flat array to a collection of associative array with UUID keys.
      *
-     * @param  array  $records
+     * @param array $records
      * @return array
      */
     public function mapToIdKeys(array $records): array
@@ -284,7 +283,7 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Calculate the depth of each Taxonomy record.
      *
-     * @param  array  $records
+     * @param array $records
      * @return array
      */
     public function mapTaxonomyDepth(array $records): array
@@ -299,9 +298,9 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Walk through the levels of child records and record the depth.
      *
-     * @param  array  $parentIds
-     * @param  array  $records
-     * @param  int  $depth
+     * @param array $parentIds
+     * @param array $records
+     * @param int $depth
      * @return array
      */
     public function calculateTaxonomyDepth($parentIds, &$records, $depth = 1): array
@@ -314,7 +313,7 @@ class ImportTaxonomiesCommand extends Command
                 // Set the depth
                 $record['depth'] = $depth;
                 // Add to the array of parent nodes to pass through to the next depth
-                if (! in_array($id, $newParentIds)) {
+                if (!in_array($id, $newParentIds)) {
                     $newParentIds[] = $id;
                 }
             }

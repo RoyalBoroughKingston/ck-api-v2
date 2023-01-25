@@ -26,8 +26,8 @@ class OrganisationEventFactory extends Factory
             'end_date' => $date->format('Y-m-d'),
             'start_time' => $starttime,
             'end_time' => $endtime,
-            'intro' => $this->faker->sentence,
-            'description' => $this->faker->paragraph,
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
             'is_free' => true,
             'fees_text' => null,
             'fees_url' => null,
@@ -54,8 +54,8 @@ class OrganisationEventFactory extends Factory
         return $this->state(function () {
             return [
                 'is_free' => false,
-                'fees_text' => $this->faker->sentence,
-                'fees_url' => $this->faker->url,
+                'fees_text' => $this->faker->sentence(),
+                'fees_url' => $this->faker->url(),
             ];
         });
     }
@@ -64,10 +64,10 @@ class OrganisationEventFactory extends Factory
     {
         return $this->state(function () {
             return [
-                'organiser_name' => $this->faker->name,
+                'organiser_name' => $this->faker->name(),
                 'organiser_phone' => random_uk_phone(),
-                'organiser_email' => $this->faker->safeEmail,
-                'organiser_url' => $this->faker->url,
+                'organiser_email' => $this->faker->safeEmail(),
+                'organiser_url' => $this->faker->url(),
             ];
         });
     }
@@ -77,8 +77,8 @@ class OrganisationEventFactory extends Factory
         return $this->state(function () {
             return [
                 'booking_title' => $this->faker->sentence(3),
-                'booking_summary' => $this->faker->sentence,
-                'booking_url' => $this->faker->url,
+                'booking_summary' => $this->faker->sentence(),
+                'booking_url' => $this->faker->url(),
                 'booking_cta' => $this->faker->words(2, true),
             ];
         });

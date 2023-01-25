@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as UpdateServiceRequest;
-use App\Models\IndexConfigurators\ServicesIndexConfigurator;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
@@ -18,6 +17,7 @@ use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Carbon\CarbonImmutable;
+use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Str;
-use ScoutElastic\Searchable;
 
 class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
 {
@@ -96,72 +95,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     ];
 
     /**
-     * The Elasticsearch index configuration class.
-     *
-     * @var string
-     */
-    protected $indexConfigurator = ServicesIndexConfigurator::class;
-
-    /**
-     * Allows you to set different search algorithms.
-     *
-     * @var array
-     */
-    protected $searchRules = [
-        //
-    ];
-
-    /**
-     * The mapping for the fields.
-     *
-     * @var array
-     */
-    protected $mapping = [
-        'properties' => [
-            'id' => ['type' => 'keyword'],
-            'name' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'intro' => ['type' => 'text'],
-            'description' => ['type' => 'text'],
-            'wait_time' => ['type' => 'keyword'],
-            'is_free' => ['type' => 'boolean'],
-            'status' => ['type' => 'keyword'],
-            'score' => ['type' => 'integer'],
-            'organisation_name' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'taxonomy_categories' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'collection_categories' => ['type' => 'keyword'],
-            'collection_personas' => ['type' => 'keyword'],
-            'service_locations' => [
-                'type' => 'nested',
-                'properties' => [
-                    'id' => ['type' => 'keyword'],
-                    'location' => ['type' => 'geo_point'],
-                ],
-            ],
-            'service_eligibilities' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-        ],
-    ];
-
-    /**
      * Get the indexable data array for the model.
      *
      * @return array
@@ -173,21 +106,21 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $serviceEligibilityNames = $serviceEligibilities->pluck('name')->toArray();
         $serviceEligibilityRoot = Taxonomy::serviceEligibility();
         foreach ($serviceEligibilityRoot->children as $serviceEligibilityType) {
-            if (! $serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
-                $serviceEligibilityNames[] = $serviceEligibilityType->name.' All';
+            if (!$serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
+                $serviceEligibilityNames[] = $serviceEligibilityType->name . ' All';
             }
         }
 
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'intro' => $this->intro,
-            'description' => $this->description,
+            'name' => $this->onlyAlphaNumeric($this->name),
+            'intro' => $this->onlyAlphaNumeric($this->intro),
+            'description' => $this->onlyAlphaNumeric($this->description),
             'wait_time' => $this->wait_time,
             'is_free' => $this->is_free,
             'status' => $this->status,
             'score' => $this->score,
-            'organisation_name' => $this->organisation->name,
+            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => static::collections($this)->where('type', Collection::TYPE_CATEGORY)->pluck('name')->toArray(),
             'collection_personas' => static::collections($this)->where('type', Collection::TYPE_PERSONA)->pluck('name')->toArray(),
@@ -220,7 +153,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Check if the update request is valid.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
@@ -251,7 +184,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Apply the update request.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -259,7 +192,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $data = $updateRequest->data;
 
         // Update the Logo File entity if new
-        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && ! empty($data['logo_file_id'])) {
+        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && !empty($data['logo_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
@@ -399,7 +332,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
      *
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     public function getData(array $data): array
@@ -442,7 +375,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  \App\Emails\Email  $email
+     * @param \App\Emails\Email $email
      */
     public function sendEmailToContact(Email $email)
     {
@@ -450,7 +383,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  \App\Sms\Sms  $sms
+     * @param \App\Sms\Sms $sms
      */
     public function sendSmsToContact(Sms $sms)
     {
@@ -458,7 +391,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  string  $waitTime
+     * @param string $waitTime
      * @return bool
      */
     public static function waitTimeIsValid(string $waitTime): bool
@@ -481,10 +414,9 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

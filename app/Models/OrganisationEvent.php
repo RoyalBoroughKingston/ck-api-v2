@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
-use App\Models\IndexConfigurators\EventsIndexConfigurator;
 use App\Models\Mutators\OrganisationEventMutators;
 use App\Models\Relationships\OrganisationEventRelationships;
 use App\Models\Scopes\OrganisationEventScopes;
@@ -12,13 +11,13 @@ use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
+use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
-use ScoutElastic\Searchable;
 
 class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxonomyRelationships
 {
@@ -42,78 +41,18 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         'is_virtual' => 'boolean',
         'homepage' => 'boolean',
         'start_time' => 'string',
-        'end_time' => 'string',    ];
-
-    /**
-     * The Elasticsearch index configuration class.
-     *
-     * @var string
-     */
-    protected $indexConfigurator = EventsIndexConfigurator::class;
-
-    /**
-     * Allows you to set different search algorithms.
-     *
-     * @var array
-     */
-    protected $searchRules = [
-        //
+        'end_time' => 'string',
     ];
 
     /**
-     * The mapping for the fields.
+     * Get the name of the index associated with the model.
      *
-     * @var array
+     * @return string
      */
-    protected $mapping = [
-        'properties' => [
-            'id' => ['type' => 'keyword'],
-            'enabled' => ['type' => 'boolean'],
-            'title' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'intro' => ['type' => 'text'],
-            'description' => ['type' => 'text'],
-            'start_date' => [
-                'type' => 'date',
-                'format' => 'strict_date_hour_minute_second',
-            ],
-            'end_date' => [
-                'type' => 'date',
-                'format' => 'strict_date_hour_minute_second',
-            ],
-            'is_free' => ['type' => 'boolean'],
-            'is_virtual' => ['type' => 'boolean'],
-            'has_wheelchair_access' => ['type' => 'boolean'],
-            'has_induction_loop' => ['type' => 'boolean'],
-            'organisation_name' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'taxonomy_categories' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'collection_categories' => ['type' => 'keyword'],
-            'event_location' => [
-                'type' => 'nested',
-                'properties' => [
-                    'id' => ['type' => 'keyword'],
-                    'location' => ['type' => 'geo_point'],
-                    'has_wheelchair_access' => ['type' => 'boolean'],
-                    'has_induction_loop' => ['type' => 'boolean'],
-                    'has_accessible_toilet' => ['type' => 'boolean'],
-                ],
-            ],
-        ],
-    ];
+    public function searchableAs()
+    {
+        return config('scout.prefix') . 'events';
+    }
 
     /**
      * Get the indexable data array for the model.
@@ -124,20 +63,20 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     {
         $organisationEvent = [
             'id' => $this->id,
-            'title' => $this->title,
-            'intro' => $this->intro,
-            'description' => $this->description,
+            'title' => $this->onlyAlphaNumeric($this->title),
+            'intro' => $this->onlyAlphaNumeric($this->intro),
+            'description' => $this->onlyAlphaNumeric($this->description),
             'start_date' => $this->start_date->setTimeFromTimeString($this->start_time)->toDateTimeLocalString(),
             'end_date' => $this->end_date->setTimeFromTimeString($this->end_time)->toDateTimeLocalString(),
             'is_free' => $this->is_free,
             'is_virtual' => $this->is_virtual,
-            'organisation_name' => $this->organisation->name,
+            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => $this->collections()->pluck('name')->toArray(),
             'event_location' => null,
         ];
 
-        if (! $this->is_virtual) {
+        if (!$this->is_virtual) {
             $organisationEvent['event_location'] = [
                 'id' => $this->location->id,
                 'location' => [
@@ -156,7 +95,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     /**
      * Check if the update request is valid.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
@@ -182,7 +121,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     /**
      * Apply the update request.
      *
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -190,7 +129,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $data = $updateRequest->data;
 
         // Update the Image File entity if new
-        if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && ! empty($data['image_file_id'])) {
+        if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['image_file_id'])->assigned();
 
@@ -245,7 +184,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
      *
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     public function getData(array $data): array
@@ -287,10 +226,9 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     }
 
     /**
-     * @param  int|null  $maxDimension
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
+     * @param int|null $maxDimension
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

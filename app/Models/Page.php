@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\IndexConfigurators\PagesIndexConfigurator;
 use App\Models\Mutators\PageMutators;
 use App\Models\Relationships\PageRelationships;
 use App\Models\Scopes\PageScopes;
+use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kalnoy\Nestedset\NodeTrait;
-use ScoutElastic\Searchable;
 
 class Page extends Model
 {
@@ -57,70 +56,6 @@ class Page extends Model
     ];
 
     /**
-     * The Elasticsearch index configuration class.
-     *
-     * @var string
-     */
-    protected $indexConfigurator = PagesIndexConfigurator::class;
-
-    /**
-     * Allows you to set different search algorithms.
-     *
-     * @var array
-     */
-    protected $searchRules = [
-        //
-    ];
-
-    /**
-     * The mapping for the fields.
-     *
-     * @var array
-     */
-    protected $mapping = [
-        'properties' => [
-            'id' => ['type' => 'keyword'],
-            'enabled' => ['type' => 'boolean'],
-            'title' => [
-                'type' => 'text',
-                'fields' => [
-                    'keyword' => ['type' => 'keyword'],
-                ],
-            ],
-            'content' => [
-                'properties' => [
-                    'introduction' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                    'about' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                    'info_pages' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                    'collections' => [
-                        'properties' => [
-                            'title' => ['type' => 'text'],
-                            'content' => ['type' => 'text'],
-                        ],
-                    ],
-                ],
-            ],
-            'collection_categories' => ['type' => 'text'],
-            'collection_personas' => ['type' => 'text'],
-        ],
-    ];
-
-    /**
      * Get the indexable data array for the model.
      *
      * @return array
@@ -133,10 +68,10 @@ class Page extends Model
             foreach ($sectionContent['content'] as $i => $contentBlock) {
                 switch ($contentBlock['type']) {
                     case 'copy':
-                        $content[] = $contentBlock['value'];
+                        $content[] = $this->onlyAlphaNumeric($contentBlock['value']);
                         break;
                     case 'cta':
-                        $content[] = $contentBlock['title'].' '.$contentBlock['description'];
+                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'] . ' ' . $contentBlock['description']);
                         break;
                     default:
                         break;
@@ -152,7 +87,7 @@ class Page extends Model
         return [
             'id' => $this->id,
             'enabled' => $this->enabled,
-            'title' => $this->title,
+            'title' => $this->onlyAlphaNumeric($this->title),
             'content' => $contentSections,
             'collection_categories' => $this->collections()->where('type', Collection::TYPE_CATEGORY)->pluck('name')->all(),
             'collection_personas' => $this->collections()->where('type', Collection::TYPE_PERSONA)->pluck('name')->all(),
@@ -222,14 +157,14 @@ class Page extends Model
      * and pass on to descendants (if disabled).
      * Children do not inherit enabled status, but must be enabled individually.
      *
-     * @param  mixed  $status
+     * @param mixed $status
      * @return \App\Models\Page
      */
     public function updateStatus($status): self
     {
         if ($this->parent && $this->parent->enabled === self::DISABLED) {
             $this->enabled = self::DISABLED;
-        } elseif (! is_null($status)) {
+        } elseif (!is_null($status)) {
             $this->enabled = $status;
         }
 
@@ -246,7 +181,7 @@ class Page extends Model
     /**
      * Update the parent relationship.
      *
-     * @param  string  $parentId
+     * @param string $parentId
      * @return \App\Models\Page
      */
     public function updateParent($parentId = false): self
@@ -264,12 +199,12 @@ class Page extends Model
     /**
      * Update the sibling order for the page.
      *
-     * @param  int  $order
+     * @param int $order
      * @return \App\Models\Page
      */
     public function updateOrder($order): self
     {
-        if (! is_null($order)) {
+        if (!is_null($order)) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
             $this->beforeOrAfterNode($siblingAtIndex, $siblingAtIndex->getLft() > $this->getLft());
         }
@@ -281,7 +216,7 @@ class Page extends Model
      * Update the image relationship.
      * Can be passed either null, the current image id or a new image id.
      *
-     * @param  string  $imageId
+     * @param string $imageId
      * @return \App\Models\Page
      */
     public function updateImage($imageId)
@@ -316,8 +251,8 @@ class Page extends Model
     /**
      * Update the collections relationship.
      *
-     * @param  array  $collectionIds
-     * @param  mixed  $collections
+     * @param array $collectionIds
+     * @param mixed $collections
      * @return \App\Models\Page
      */
     public function updateCollections($collectionIds)

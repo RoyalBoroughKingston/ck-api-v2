@@ -23,7 +23,7 @@ class GovNotifyEmailSender implements EmailSender
     }
 
     /**
-     * @param  \App\Emails\Email  $email
+     * @param \App\Emails\Email $email
      */
     public function send(Email $email)
     {

@@ -24,51 +24,38 @@ abstract class ElasticsearchQueryBuilder
     protected $esQuery;
 
     /**
-     * Path to add match and match_phrase queries.
+     * Path to add must queries.
      *
-     * @var array
+     * @var string
      */
-    protected $matchPath;
+    protected $mustPath;
+
+    /**
+     * Path to add should queries.
+     *
+     * @var string
+     */
+    protected $shouldPath;
 
     /**
      * Path to add filter queries.
      *
-     * @var array
+     * @var string
      */
     protected $filterPath;
 
     /**
-     * Add a from limit.
-     *
-     * @param  int  $page
-     * @param  int  $perPage
-     */
-    protected function applyFrom(int $page, int $perPage): void
-    {
-        $this->esQuery['from'] = ($page - 1) * $perPage;
-    }
-
-    /**
-     * Add a size limit.
-     *
-     * @param  int  $perPage
-     */
-    protected function applySize(int $perPage): void
-    {
-        $this->esQuery['size'] = $perPage;
-    }
-
-    /**
      * Add a match query.
      *
-     * @param  string  $field
-     * @param  string  $term
-     * @param  int  $boost
-     * @param  mixed  $fuzziness
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     * @param mixed $fuzziness
      */
-    protected function addMatch(string $field, string $term, $boost = 1, $fuzziness = 'AUTO'): void
+    protected function addMatch(string $field, string $term, string $path = null, $boost = 1, $fuzziness = 'AUTO'): void
     {
-        $matches = Arr::get($this->esQuery, $this->matchPath);
+        $path = $path?? $this->mustPath;
+        $matches = Arr::get($this->esQuery, $path);
         $matches[] = [
             'match' => [
                 $field => [
@@ -78,19 +65,20 @@ abstract class ElasticsearchQueryBuilder
                 ],
             ],
         ];
-        Arr::set($this->esQuery, $this->matchPath, $matches);
+        Arr::set($this->esQuery, $path, $matches);
     }
 
     /**
      * Add a match_phrase query.
      *
-     * @param  string  $field
-     * @param  string  $term
-     * @param  int  $boost
+     * @param string $field
+     * @param string $term
+     * @param int $boost
      */
-    protected function addMatchPhrase(string $field, string $term, $boost = 1): void
+    protected function addMatchPhrase(string $field, string $term, string $path = null, $boost = 1): void
     {
-        $matches = Arr::get($this->esQuery, $this->matchPath);
+        $path = $path?? $this->mustPath;
+        $matches = Arr::get($this->esQuery, $path);
         $matches[] = [
             'match_phrase' => [
                 $field => [
@@ -99,14 +87,56 @@ abstract class ElasticsearchQueryBuilder
                 ],
             ],
         ];
-        Arr::set($this->esQuery, $this->matchPath, $matches);
+        Arr::set($this->esQuery, $path, $matches);
+    }
+
+    /**
+     * Add a term query.
+     *
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     */
+    protected function addTerm(string $field, string $term, string $path = null, $boost = 1): void
+    {
+        $path = $path?? $this->mustPath;
+        $matches = Arr::get($this->esQuery, $path);
+        $matches[] = [
+            'term' => [
+                $field => [
+                    'value' => $term,
+                    'boost' => $boost,
+                ],
+            ],
+        ];
+        Arr::set($this->esQuery, $path, $matches);
+    }
+
+    /**
+     * Add a terms query.
+     *
+     * @param string $field
+     * @param string $term
+     * @param int $boost
+     */
+    protected function addTerms(string $field, array $terms, string $path = null, $boost = 1): void
+    {
+        $path = $path?? $this->mustPath;
+        $matches = Arr::get($this->esQuery, $path);
+        $matches[] = [
+            'terms' => [
+                $field => $terms,
+                'boost' => $boost,
+            ],
+        ];
+        Arr::set($this->esQuery, $path, $matches);
     }
 
     /**
      * Add a filter.
      *
-     * @param  string  $field
-     * @param  mixed  $value
+     * @param string $field
+     * @param mixed $value
      */
     public function addFilter(string $field, $value): void
     {

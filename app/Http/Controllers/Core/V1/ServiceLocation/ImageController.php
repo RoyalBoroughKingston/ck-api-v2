@@ -14,11 +14,10 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\ServiceLocation\Image\ShowRequest  $request
-     * @param  \App\Models\ServiceLocation  $serviceLocation
-     * @return \Illuminate\Http\Response
-     *
+     * @param \App\Http\Requests\ServiceLocation\Image\ShowRequest $request
+     * @param \App\Models\ServiceLocation $serviceLocation
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, ServiceLocation $serviceLocation)
     {
@@ -40,7 +39,7 @@ class ImageController extends Controller
         }
 
         // Return the file, or placeholder if the file is null.
-        return optional($file)->resizedVersion($request->max_dimension)
+        return $file?->resizedVersion($request->max_dimension)
             ?? ServiceLocation::placeholderImage($request->max_dimension);
     }
 }

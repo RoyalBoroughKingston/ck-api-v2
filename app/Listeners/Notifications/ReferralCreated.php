@@ -17,7 +17,7 @@ class ReferralCreated
     /**
      * Handle the event.
      *
-     * @param  EndpointHit  $event
+     * @param EndpointHit $event
      */
     public function handle(EndpointHit $event)
     {
@@ -35,7 +35,7 @@ class ReferralCreated
     }
 
     /**
-     * @param  \App\Models\Referral  $referral
+     * @param \App\Models\Referral $referral
      */
     protected function notifyClient(Referral $referral)
     {
@@ -57,7 +57,7 @@ class ReferralCreated
     }
 
     /**
-     * @param  \App\Models\Referral  $referral
+     * @param \App\Models\Referral $referral
      */
     protected function notifyReferee(Referral $referral)
     {
@@ -78,7 +78,7 @@ class ReferralCreated
     }
 
     /**
-     * @param  \App\Models\Referral  $referral
+     * @param \App\Models\Referral $referral
      */
     protected function notifyService(Referral $referral)
     {
@@ -100,7 +100,7 @@ class ReferralCreated
             'CONTACT_INFO' => $contactInfo,
             'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
             'REFERRAL_CONTACT_METHOD' => $contactMethod,
-            'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri').'/referrals',
+            'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri') . '/referrals',
         ]));
     }
 }

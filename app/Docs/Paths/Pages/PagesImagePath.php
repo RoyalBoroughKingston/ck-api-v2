@@ -11,10 +11,9 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class PagesImagePath extends PathItem
 {
     /**
-     * @param  string|null  $objectId
-     * @return static
-     *
+     * @param string|null $objectId
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @return static
      */
     public static function create(string $objectId = null): BaseObject
     {

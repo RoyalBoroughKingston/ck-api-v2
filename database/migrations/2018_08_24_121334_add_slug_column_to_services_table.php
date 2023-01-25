@@ -7,8 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class AddSlugColumnToServicesTable extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -24,7 +23,7 @@ class AddSlugColumnToServicesTable extends Migration
                 do {
                     $slug = $iteration === 0
                         ? Str::slug($service->name)
-                        : Str::slug($service->name).'-'.$iteration;
+                        : Str::slug($service->name) . '-' . $iteration;
                     $iteration++;
                 } while (Service::query()->where('slug', $slug)->exists());
 
@@ -47,4 +46,4 @@ class AddSlugColumnToServicesTable extends Migration
             $table->dropColumn('slug');
         });
     }
-}
+};

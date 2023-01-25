@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCollectionPagePivotTable extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -25,4 +24,4 @@ class CreateCollectionPagePivotTable extends Migration
     {
         Schema::dropIfExists('collection_page');
     }
-}
+};

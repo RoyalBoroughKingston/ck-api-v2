@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Date;
 trait ReferralScopes
 {
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $workingDays
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $workingDays
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeUnactioned(Builder $query, int $workingDays): Builder
@@ -22,7 +22,7 @@ trait ReferralScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeDueForDeletion(Builder $query): Builder
@@ -35,8 +35,8 @@ trait ReferralScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $alias
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $alias
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithStatusLastUpdatedAt(Builder $query, string $alias = 'status_last_updated_at'): Builder

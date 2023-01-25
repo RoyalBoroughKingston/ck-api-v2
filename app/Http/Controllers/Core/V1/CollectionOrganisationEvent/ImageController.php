@@ -13,11 +13,10 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\CollectionCategory\Image\ShowRequest  $request
-     * @param  \App\Models\Collection  $collection
-     * @return \Illuminate\Http\Response
-     *
+     * @param \App\Http\Requests\CollectionCategory\Image\ShowRequest $request
+     * @param \App\Models\Collection $collection
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, Collection $collection)
     {
@@ -27,6 +26,6 @@ class ImageController extends Controller
         $file = File::find($collection->meta['image_file_id'] ?? null);
 
         // Return the file, or placeholder if the file is null.
-        return optional($file)->resizedVersion($request->max_dimension) ?? Collection::organisationEventPlaceholderLogo($request->max_dimension);
+        return $file?->resizedVersion($request->max_dimension) ?? Collection::organisationEventPlaceholderLogo($request->max_dimension);
     }
 }

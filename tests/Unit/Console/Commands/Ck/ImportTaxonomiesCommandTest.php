@@ -160,6 +160,7 @@ class ImportTaxonomiesCommandTest extends TestCase
 
         $currentTaxonomyCount = count($cmd->getDescendantTaxonomyIds([Taxonomy::category()->id]));
 
+
         $rootTaxonomies = Taxonomy::factory()->count(3)->create();
 
         $rootTaxonomies->each(function ($taxonomy) {

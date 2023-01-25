@@ -169,8 +169,8 @@ EOT;
     /**
      * Referral Export Report query.
      *
-     * @param  \Carbon\CarbonImmutable|null  $startsAt
-     * @param  \Carbon\CarbonImmutable|null  $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getReferralExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -212,8 +212,8 @@ EOT;
     /**
      * Feedback Export Report query.
      *
-     * @param  \Carbon\CarbonImmutable|null  $startsAt
-     * @param  \Carbon\CarbonImmutable|null  $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getFeedbackExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -235,8 +235,8 @@ EOT;
     /**
      * Audit Export Report query.
      *
-     * @param  \Carbon\CarbonImmutable|null  $startsAt
-     * @param  \Carbon\CarbonImmutable|null  $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getAuditExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -262,8 +262,8 @@ EOT;
     /**
      * Search Histories Export Report query.
      *
-     * @param  \Carbon\CarbonImmutable|null  $startsAt
-     * @param  \Carbon\CarbonImmutable|null  $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getSearchHistoriesExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection
@@ -273,9 +273,9 @@ EOT;
                 'search_histories.count as count',
                 'search_histories.created_at as created_at',
             ])
-            ->selectRaw('ifnull(json_unquote(search_histories.query->"$.query.bool.must.bool.should[0].match_phrase.name.query"),json_unquote(search_histories.query->"$.query.bool.must.bool.should[0].match.name.query")) as query')
-            ->selectRaw('json_unquote(search_histories.query->"$.sort[0]._geo_distance") as distance')
-            ->whereRaw('json_contains_path(search_histories.query, "one", "$.query.bool.must.bool.should[0].match_phrase.name.query", "$.query.bool.must.bool.should[0].match.name.query") = 1')
+            ->selectRaw('ifnull(json_unquote(search_histories.query->"$.body.query.function_score.query.bool.should[0].match.name.query"),ifnull(json_unquote(search_histories.query->"$.body.query.bool.must.should[0].match.title.query"),json_unquote(search_histories.query->"$.body.query.function_score.query.bool.should[0].match.title.query"))) as query')
+            ->selectRaw('json_unquote(search_histories.query->"$.body.sort[0]._geo_distance") as distance')
+            ->whereRaw('json_contains_path(search_histories.query, "one", "$.body.query.function_score.query.bool.should[0].match.name.query", "$.body.query.bool.must.should[0].match.title.query", "$.body.query.function_score.query.bool.should[0].match.title.query") = 1')
             ->when($startsAt && $endsAt, function ($query) use ($startsAt, $endsAt) {
                 // When date range provided, filter search histories which were created between the date range.
                 $query->whereBetween('search_histories.created_at', [$startsAt, $endsAt]);
@@ -287,8 +287,8 @@ EOT;
     /**
      * Update Request Export Report query.
      *
-     * @param  \Carbon\CarbonImmutable|null  $startsAt
-     * @param  \Carbon\CarbonImmutable|null  $endsAt
+     * @param \Carbon\CarbonImmutable|null $startsAt
+     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \Illuminate\Support\Collection
      */
     public function getUpdateRequestExportResults(CarbonImmutable $startsAt = null, CarbonImmutable $endsAt = null): Collection

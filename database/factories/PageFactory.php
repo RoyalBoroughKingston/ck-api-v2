@@ -41,10 +41,10 @@ class PageFactory extends Factory
     {
         return $this->state(function () {
             return [
-                    'image_file_id' => File::factory()->create(
-                        ['filename' => Str::random() . '.png', 'mime_type' => 'image/png']
-                    ),
-                ];
+                'image_file_id' => File::factory()->create(
+                    ['filename' => Str::random() . '.png', 'mime_type' => 'image/png']
+                ),
+            ];
         });
     }
 
@@ -69,7 +69,7 @@ class PageFactory extends Factory
                             ],
                             [
                                 'type' => 'cta',
-                                'title' => $this->faker->sentence,
+                                'title' => $this->faker->sentence(),
                                 'description' => $this->faker->realText(),
                                 'url' => $this->faker->url(),
                                 'buttonText' => $this->faker->words(3, true),
@@ -84,7 +84,7 @@ class PageFactory extends Factory
                             ],
                             [
                                 'type' => 'cta',
-                                'title' => $this->faker->sentence,
+                                'title' => $this->faker->sentence(),
                                 'description' => $this->faker->realText(),
                                 'url' => $this->faker->url(),
                                 'buttonText' => $this->faker->words(3, true),
@@ -100,7 +100,7 @@ class PageFactory extends Factory
                         'content' => [
                             [
                                 'type' => 'copy',
-                                'value' => $this->faker->realText()]]],
+                                'value' => $this->faker->realText(), ], ], ],
                     'collections' => [
                         'title' => $this->faker->sentence(),
                         'content' => [

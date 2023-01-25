@@ -11,14 +11,14 @@ class Postcode implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         // Immediately fail if the value is not a string.
-        if (! is_string($value)) {
+        if (!is_string($value)) {
             return false;
         }
 

@@ -27,16 +27,16 @@ class DoubleParenthesisVariableSubstituter implements VariableSubstituter
     }
 
     /**
-     * @param  array  $variables
+     * @param array $variables
      */
     protected function validateVariables(array $variables): void
     {
         foreach ($variables as $key => $value) {
-            if (! is_string($key)) {
+            if (!is_string($key)) {
                 throw new \InvalidArgumentException('The variable keys must be strings.');
             }
 
-            if (! is_scalar($value)) {
+            if (!is_scalar($value)) {
                 throw new \InvalidArgumentException('The variable values must be scalars.');
             }
         }

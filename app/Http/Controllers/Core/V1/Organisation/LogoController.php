@@ -14,11 +14,10 @@ class LogoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\Organisation\Logo\ShowRequest  $request
-     * @param  \App\Models\Organisation  $organisation
-     * @return \Illuminate\Http\Response
-     *
+     * @param \App\Http\Requests\Organisation\Logo\ShowRequest $request
+     * @param \App\Models\Organisation $organisation
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, Organisation $organisation)
     {
@@ -40,7 +39,7 @@ class LogoController extends Controller
         }
 
         // Return the file, or placeholder if the file is null.
-        return optional($file)->resizedVersion($request->max_dimension)
+        return $file?->resizedVersion($request->max_dimension)
             ?? Organisation::placeholderLogo($request->max_dimension);
     }
 }

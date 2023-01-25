@@ -24,19 +24,19 @@ class Time
     /**
      * Time constructor.
      *
-     * @param  string  $time
+     * @param string $time
      */
     public function __construct(string $time)
     {
         [$hours, $minutes, $seconds] = explode(':', $time);
 
-        $this->hours = (int) $hours;
-        $this->minutes = (int) $minutes;
-        $this->seconds = (int) $seconds;
+        $this->hours = (int)$hours;
+        $this->minutes = (int)$minutes;
+        $this->seconds = (int)$seconds;
     }
 
     /**
-     * @param  string  $time
+     * @param string $time
      * @return \App\Support\Time
      */
     public static function create(string $time)
@@ -45,8 +45,8 @@ class Time
     }
 
     /**
-     * @param  string  $format
-     * @param  string  $time
+     * @param string $format
+     * @param string $time
      * @return \App\Support\Time
      */
     public static function createFromFormat(string $format, string $time): Time
@@ -65,7 +65,7 @@ class Time
     }
 
     /**
-     * @param  string  $format
+     * @param string $format
      * @return string
      */
     public function format(string $format): string
@@ -92,8 +92,8 @@ class Time
     }
 
     /**
-     * @param  \App\Support\Time  $time1
-     * @param  \App\Support\Time  $time2
+     * @param \App\Support\Time $time1
+     * @param \App\Support\Time $time2
      * @return bool
      */
     public function between(Time $time1, Time $time2): bool

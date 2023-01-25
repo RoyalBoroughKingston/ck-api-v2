@@ -15,6 +15,7 @@ use App\Models\Page;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PageController extends Controller
@@ -30,7 +31,7 @@ class PageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Http\Requests\Page\IndexRequest  $request
+     * @param \App\Http\Requests\Page\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -40,12 +41,16 @@ class PageController extends Controller
             ->with('parent')
             ->orderBy($orderByCol);
 
-        if (! $request->user('api') || ! $request->user('api')->isGlobalAdmin()) {
+        if (!$request->user('api') || !$request->user('api')->isGlobalAdmin()) {
             $baseQuery->where('enabled', true);
         }
 
         $pages = QueryBuilder::for($baseQuery)
-            ->allowedIncludes(['parent', 'children', 'landingPageAncestors'])
+            ->allowedIncludes([
+                'parent',
+                'children',
+                AllowedInclude::relationship('landing-page-ancestors', 'landingPageAncestors'),
+            ])
             ->allowedFilters([
                 AllowedFilter::scope('landing_page', 'pageDescendants'),
                 AllowedFilter::exact('id'),
@@ -65,7 +70,7 @@ class PageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Page\StoreRequest  $request
+     * @param \App\Http\Requests\Page\StoreRequest $request
      * @return \App\Http\Resources\OrganisationResource
      */
     public function store(StoreRequest $request)
@@ -104,8 +109,8 @@ class PageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\Page\ShowRequest  $request
-     * @param  \App\Models\Page  $page
+     * @param \App\Http\Requests\Page\ShowRequest $request
+     * @param \App\Models\Page $page
      * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, Page $page)
@@ -125,8 +130,8 @@ class PageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Page\UpdateRequest  $request
-     * @param  \App\Models\Page  $page
+     * @param \App\Http\Requests\Page\UpdateRequest $request
+     * @param \App\Models\Page $page
      * @return \App\Http\Resources\OrganisationResource
      */
     public function update(UpdateRequest $request, Page $page)
@@ -160,8 +165,8 @@ class PageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Http\Requests\Organisation\DestroyRequest  $request
-     * @param  \App\Models\Page  $page
+     * @param \App\Http\Requests\Organisation\DestroyRequest $request
+     * @param \App\Models\Page $page
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Page $page)
@@ -178,7 +183,7 @@ class PageController extends Controller
     /**
      * Return a unique version of the proposed slug.
      *
-     * @param  string  $slug
+     * @param string $slug
      * @return string
      */
     public function uniqueSlug($slug)
@@ -188,7 +193,7 @@ class PageController extends Controller
         do {
             $exists = DB::table((new Page())->getTable())->where('slug', $uniqueSlug)->exists();
             if ($exists) {
-                $uniqueSlug = $baseSlug.'-'.$suffix;
+                $uniqueSlug = $baseSlug . '-' . $suffix;
             }
             $suffix++;
         } while ($exists);

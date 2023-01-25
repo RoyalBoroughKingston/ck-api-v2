@@ -1,17 +1,12 @@
 <?php
 
-namespace App\Models\IndexConfigurators;
+namespace App\Search\ElasticSearch\Settings;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use ScoutElastic\IndexConfigurator;
-use ScoutElastic\Migratable;
 
-class BaseIndexConfigurator extends IndexConfigurator
+class BaseIndexSettings
 {
-    use Migratable;
-
     /**
      * @return array
      */
@@ -20,9 +15,15 @@ class BaseIndexConfigurator extends IndexConfigurator
         return [
             'analysis' => [
                 'analyzer' => [
-                    'default' => [
+                    'english_analyser' => [
+                        'type' => 'custom',
                         'tokenizer' => 'standard',
-                        'filter' => ['lowercase', 'synonym', 'stopwords'],
+                        'filter' => [
+                            'lowercase',
+                            'synonym',
+                            'stop',
+                            'stopwords',
+                        ],
                     ],
                 ],
                 'filter' => [
@@ -44,11 +45,10 @@ class BaseIndexConfigurator extends IndexConfigurator
      */
     protected function getStopWords(): array
     {
-        try {
-            $content = Storage::cloud()->get('elasticsearch/stop-words.csv');
-        } catch (FileNotFoundException $exception) {
+        if (!$content = Storage::cloud()->get('elasticsearch/stop-words.csv')) {
             return [];
         }
+
         $stopWords = csv_to_array($content);
 
         $stopWords = collect($stopWords)->map(function (array $stopWord) {
@@ -63,11 +63,10 @@ class BaseIndexConfigurator extends IndexConfigurator
      */
     protected function getThesaurus(): array
     {
-        try {
-            $content = Storage::cloud()->get('elasticsearch/thesaurus.csv');
-        } catch (FileNotFoundException $exception) {
+        if (!$content = Storage::cloud()->get('elasticsearch/thesaurus.csv')) {
             return [];
         }
+
         $thesaurus = csv_to_array($content);
 
         $thesaurus = collect($thesaurus)->map(function (array $synonyms) {

@@ -12,10 +12,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class CollectionPersonaController extends Controller
 {
     /**
-     * @param  \App\Http\Requests\Search\Collection\PersonaRequest  $request
-     * @param  \App\Search\SearchCriteriaQuery  $criteria
-     * @param  \App\Search\ElasticSearch\CollectionPersonaQueryBuilder  $builder
-     * @param  \App\Search\ElasticSearch\ServiceEloquentMapper  $mapper
+     * @param \App\Http\Requests\Search\Collection\PersonaRequest $request
+     * @param \App\Search\SearchCriteriaQuery $criteria
+     * @param \App\Search\ElasticSearch\CollectionPersonaQueryBuilder $builder
+     * @param \App\Search\ElasticSearch\ServiceEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(
@@ -26,12 +26,21 @@ class CollectionPersonaController extends Controller
     ): AnonymousResourceCollection {
         $criteria->setPersonas([$request->input('persona')]);
 
-        $query = $builder->build(
+        // Get the pagination values
+        $page = page($request->input('page'));
+        $perPage = per_page($request->input('per_page'));
+
+        // Create the query
+        $esQuery = $builder->build(
             $criteria,
-            $request->input('page'),
-            $request->input('per_page')
+            $page,
+            $perPage
         );
 
-        return $mapper->paginate($query);
+        return $mapper->paginate(
+            $esQuery,
+            $page,
+            $perPage
+        );
     }
 }

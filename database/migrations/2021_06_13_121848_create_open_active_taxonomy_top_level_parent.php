@@ -8,8 +8,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class CreateOpenActiveTaxonomyTopLeveLParent extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -83,9 +82,9 @@ class CreateOpenActiveTaxonomyTopLeveLParent extends Migration
     /**
      * Get all Open Active Taxonomy IDs.
      *
-     * @param  array  $rootId
-     * @param  array  $taxonomyIds
-     * @param  mixed  $rootIds
+     * @param array $rootId
+     * @param array $taxonomyIds
+     * @param mixed $rootIds
      * @return array
      */
     public function getDescendantTaxonomyIds($rootIds, $taxonomyIds = []): array
@@ -101,4 +100,4 @@ class CreateOpenActiveTaxonomyTopLeveLParent extends Migration
 
         return $taxonomyIds;
     }
-}
+};

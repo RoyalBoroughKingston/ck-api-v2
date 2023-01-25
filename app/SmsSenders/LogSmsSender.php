@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Date;
 class LogSmsSender implements SmsSender
 {
     /**
-     * @param  \App\Sms\Sms  $sms
+     * @param \App\Sms\Sms $sms
      */
     public function send(Sms $sms)
     {
-        logger()->debug('SMS sent at ['.Date::now()->toDateTimeString().']', [
+        logger()->debug('SMS sent at [' . Date::now()->toDateTimeString() . ']', [
             'to' => $sms->to,
             'templateId' => $sms->templateId,
             'values' => $sms->values,

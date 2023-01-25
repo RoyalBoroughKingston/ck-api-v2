@@ -58,13 +58,13 @@ class ReferralsTest extends TestCase
         $user->makeServiceWorker($service);
         $referral = Referral::factory()->create([
             'service_id' => $service->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         Passport::actingAs($user);
@@ -107,13 +107,13 @@ class ReferralsTest extends TestCase
         $user->makeServiceWorker($service);
         $referral = Referral::factory()->create([
             'service_id' => $service->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
         $anotherReferral = Referral::factory()->create();
 
@@ -162,13 +162,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralOne = Referral::factory()->create([
             'service_id' => $serviceOne->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /**
@@ -183,13 +183,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralTwo = Referral::factory()->create([
             'service_id' => $serviceTwo->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /** @var \App\Models\User $user */
@@ -212,13 +212,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralOne = Referral::factory()->create([
             'service_id' => $serviceOne->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /** @var \App\Models\Service $serviceTwo */
@@ -227,13 +227,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralTwo = Referral::factory()->create([
             'service_id' => $serviceTwo->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /** @var \App\Models\User $user */
@@ -262,13 +262,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralOne = Referral::factory()->create([
             'service_id' => $serviceOne->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /**
@@ -283,13 +283,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralTwo = Referral::factory()->create([
             'service_id' => $serviceTwo->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /** @var \App\Models\User $user */
@@ -313,13 +313,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralOne = Referral::factory()->create([
             'service_id' => $serviceOne->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /** @var \App\Models\Organisation $organisationTwo */
@@ -328,13 +328,13 @@ class ReferralsTest extends TestCase
         ]);
         $referralTwo = Referral::factory()->create([
             'service_id' => $serviceTwo->id,
-            'email' => $this->faker->safeEmail,
-            'comments' => $this->faker->paragraph,
+            'email' => $this->faker->safeEmail(),
+            'comments' => $this->faker->paragraph(),
             'referral_consented_at' => $this->now,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         /** @var \App\Models\User $user */
@@ -358,23 +358,23 @@ class ReferralsTest extends TestCase
     {
         $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => $this->faker->safeEmail(),
         ]);
 
         $payload = [
             'service_id' => $service->id,
-            'name' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
+            'name' => $this->faker->name(),
+            'email' => $this->faker->safeEmail(),
             'phone' => null,
             'other_contact' => null,
             'postcode_outward_code' => null,
             'comments' => null,
             'referral_consented' => true,
             'feedback_consented' => false,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ];
 
         $response = $this->json('POST', '/core/v1/referrals', $payload);
@@ -399,13 +399,13 @@ class ReferralsTest extends TestCase
     {
         $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => $this->faker->safeEmail(),
         ]);
 
         $payload = [
             'service_id' => $service->id,
-            'name' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
+            'name' => $this->faker->name(),
+            'email' => $this->faker->safeEmail(),
             'phone' => null,
             'other_contact' => null,
             'postcode_outward_code' => null,
@@ -438,18 +438,18 @@ class ReferralsTest extends TestCase
 
         $payload = [
             'service_id' => $service->id,
-            'name' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
+            'name' => $this->faker->name(),
+            'email' => $this->faker->safeEmail(),
             'phone' => null,
             'other_contact' => null,
             'postcode_outward_code' => null,
             'comments' => null,
             'referral_consented' => true,
             'feedback_consented' => false,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ];
 
         $response = $this->json('POST', '/core/v1/referrals', $payload);
@@ -476,23 +476,23 @@ class ReferralsTest extends TestCase
 
         $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => $this->faker->safeEmail(),
         ]);
 
         $response = $this->json('POST', '/core/v1/referrals', [
             'service_id' => $service->id,
-            'name' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
+            'name' => $this->faker->name(),
+            'email' => $this->faker->safeEmail(),
             'phone' => null,
             'other_contact' => null,
             'postcode_outward_code' => null,
             'comments' => null,
             'referral_consented' => true,
             'feedback_consented' => false,
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->safeEmail,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->safeEmail(),
             'referee_phone' => random_uk_phone(),
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) use ($response) {

@@ -17,9 +17,9 @@ class InformationPageCannotHaveCollection implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param  \App\Models\Page  $page
-     * @param  mixed  $pageId
-     * @param  mixed  $pageType
+     * @param \App\Models\Page $page
+     * @param mixed $pageId
+     * @param mixed $pageType
      */
     public function __construct($pageType)
     {
@@ -29,8 +29,8 @@ class InformationPageCannotHaveCollection implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
@@ -45,6 +45,6 @@ class InformationPageCannotHaveCollection implements Rule
      */
     public function message()
     {
-        return 'Pages of type other than '.Page::PAGE_TYPE_LANDING.' cannot have collections';
+        return 'Pages of type other than ' . Page::PAGE_TYPE_LANDING . ' cannot have collections';
     }
 }

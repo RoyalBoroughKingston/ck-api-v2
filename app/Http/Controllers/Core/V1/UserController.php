@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -40,7 +41,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Http\Requests\User\IndexRequest  $request
+     * @param \App\Http\Requests\User\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -69,8 +70,8 @@ class UserController extends Controller
                 AllowedFilter::custom('at_service', new AtServiceFilter()),
             ])
             ->allowedIncludes([
-                'user-roles.organisation',
-                'user-roles.service',
+                AllowedInclude::relationship('user-roles.organisation', 'userRoles.organisation'),
+                AllowedInclude::relationship('user-roles.service', 'userRoles.service'),
             ])
             ->allowedSorts([
                 'first_name',
@@ -91,7 +92,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\User\StoreRequest  $request
+     * @param \App\Http\Requests\User\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -142,8 +143,8 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\User\ShowRequest  $request
-     * @param  \App\Models\User  $user
+     * @param \App\Http\Requests\User\ShowRequest $request
+     * @param \App\Models\User $user
      * @return \App\Http\Resources\UserResource
      */
     public function show(ShowRequest $request, User $user)
@@ -160,8 +161,8 @@ class UserController extends Controller
 
         $user = QueryBuilder::for($baseQuery)
             ->allowedIncludes([
-                'user-roles.organisation',
-                'user-roles.service',
+                AllowedInclude::relationship('user-roles.organisation', 'userRoles.organisation'),
+                AllowedInclude::relationship('user-roles.service', 'userRoles.service'),
             ])
             ->firstOrFail();
 
@@ -173,7 +174,7 @@ class UserController extends Controller
     /**
      * Display the logged in user.
      *
-     * @param  \App\Http\Requests\User\ShowRequest  $request
+     * @param \App\Http\Requests\User\ShowRequest $request
      * @return \App\Http\Resources\UserResource
      */
     public function user(ShowRequest $request)
@@ -184,8 +185,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\User\UpdateRequest  $request
-     * @param  \App\Models\User  $user
+     * @param \App\Http\Requests\User\UpdateRequest $request
+     * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, User $user)
@@ -278,8 +279,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Http\Requests\User\DestroyRequest  $request
-     * @param  \App\Models\User  $user
+     * @param \App\Http\Requests\User\DestroyRequest $request
+     * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, User $user)

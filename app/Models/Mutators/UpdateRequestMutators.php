@@ -5,7 +5,7 @@ namespace App\Models\Mutators;
 trait UpdateRequestMutators
 {
     /**
-     * @param  string  $data
+     * @param string $data
      * @return array
      */
     public function getDataAttribute(string $data): array
@@ -14,7 +14,7 @@ trait UpdateRequestMutators
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
      */
     public function setDataAttribute(array $data)
     {

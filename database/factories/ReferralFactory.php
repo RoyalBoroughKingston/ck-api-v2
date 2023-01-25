@@ -19,7 +19,7 @@ class ReferralFactory extends Factory
                 return \App\Models\Service::factory()->create()->id;
             },
             'status' => Referral::STATUS_NEW,
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
         ];
     }
 }

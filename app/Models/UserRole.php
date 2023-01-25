@@ -13,7 +13,7 @@ class UserRole extends Model
     use UserRoleScopes;
 
     /**
-     * @param  \App\Models\Service|null  $service
+     * @param \App\Models\Service|null $service
      * @return bool
      */
     public function isServiceWorker(Service $service = null): bool
@@ -26,7 +26,7 @@ class UserRole extends Model
     }
 
     /**
-     * @param  \App\Models\Service|null  $service
+     * @param \App\Models\Service|null $service
      * @return bool
      */
     public function isServiceAdmin(Service $service = null): bool
@@ -39,7 +39,7 @@ class UserRole extends Model
     }
 
     /**
-     * @param  \App\Models\Organisation|null  $organisation
+     * @param \App\Models\Organisation|null $organisation
      * @return bool
      */
     public function isOrganisationAdmin(Organisation $organisation = null): bool

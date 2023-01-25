@@ -46,6 +46,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service1 = Service::factory()->create(['name' => 'Thisisatest']);
         $service2 = Service::factory()->create(['name' => 'Should not match']);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
         ]);
@@ -72,6 +74,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     {
         $service1 = Service::factory()->create(['description' => 'Thisisatest']);
         $service2 = Service::factory()->create(['description' => 'Should not match']);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -115,6 +119,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
         $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
         ]);
@@ -153,6 +159,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
         $service2->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'PHPUnit',
         ]);
@@ -177,6 +185,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $organisation2 = Organisation::factory()->create(['name' => 'Should not match']);
         $service1 = Service::factory()->create(['organisation_id' => $organisation1->id]);
         $service2 = Service::factory()->create(['organisation_id' => $organisation2->id]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -240,6 +250,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceWithRelevantTaxonomy->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
         $serviceWithRelevantTaxonomy->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
         ]);
@@ -256,6 +268,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     {
         $service1 = Service::factory()->create(['name' => 'Thisisatest']);
         $service2 = Service::factory()->create(['name' => 'Thsiisatst']);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -286,6 +300,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'intro' => 'This is a service that helps provide food.',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'housing',
         ]);
@@ -314,6 +330,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'description' => 'This is a service that helps to homeless find temporary housing.',
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'homeless',
         ]);
@@ -331,6 +349,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service2 = Service::factory()->create([
             'intro' => 'This is a service that helps provide food.',
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'temporary housing',
@@ -356,6 +376,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $twoWeeksWaitTimeService = Service::factory()->create(['wait_time' => Service::WAIT_TIME_TWO_WEEKS]);
         $oneWeekWaitTimeService = Service::factory()->create(['wait_time' => Service::WAIT_TIME_ONE_WEEK]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'wait_time' => Service::WAIT_TIME_TWO_WEEKS,
         ]);
@@ -370,6 +392,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
     {
         $paidService = Service::factory()->create(['is_free' => false]);
         $freeService = Service::factory()->create(['is_free' => true]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'is_free' => true,
@@ -396,6 +420,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 20.05, 'lon' => 20.05]);
         $service3->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'order' => 'distance',
@@ -452,6 +478,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Ayup Digital',
             'category' => 'self-help',
@@ -500,6 +528,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $differentService->serviceTaxonomies()->create(['taxonomy_id' => $differentTaxonomy->id]);
         $differentService->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'asfkjbadsflksbdafklhasdbflkbs',
             'category' => 'self-help',
@@ -519,6 +549,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'name' => 'Testing Service',
             'status' => Service::STATUS_INACTIVE,
         ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Testing Service',
@@ -545,6 +577,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 180]);
         $service3->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'order' => 'distance',
@@ -579,6 +613,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 51.47591520714541, 'lon' => -0.41139431461981674]);
         $service3->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'order' => 'distance',
@@ -617,6 +653,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation4 = ServiceLocation::factory()->create(['service_id' => $service4->id]);
         DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 90, 'lon' => 180]);
         $service4->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Test Name',
@@ -665,6 +703,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation4 = ServiceLocation::factory()->create(['service_id' => $service4->id]);
         DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 51.46741441979822, 'lon' => -0.40152378521657234]);
         $service4->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -755,6 +795,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service4->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy3->id]);
         $service4->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Foo',
             'category' => implode(',', [$collection2->slug, $collection3->slug]),
@@ -819,6 +861,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service3->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 90, 'lon' => 90]);
         $service3->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'order' => 'distance',
@@ -911,6 +955,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         DB::table('locations')->where('id', $serviceLocation4->location->id)->update(['lat' => 041.9374814, 'lon' => -8.8643883]);
         $service4->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Baz',
             'persona' => implode(',', [$collection3->slug]),
@@ -948,6 +994,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         // Trigger a reindex
         $service->save();
 
+        sleep(1);
+
         // When a search is performed with the age group taxonomies of 12 - 15 years and 16 - 18 years
         $response = $this->json('POST', '/core/v1/search', [
             'eligibilities' => [
@@ -982,6 +1030,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         // Trigger a reindex
         $service->save();
 
+        sleep(1);
+
         // When a search is performed with the age group taxonomies of 16 - 18 years and 19 - 20 years
         $response = $this->json('POST', '/core/v1/search', [
             'eligibilities' => [
@@ -1000,6 +1050,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             ->create();
 
         $service->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'eligibilities' => [
@@ -1043,6 +1095,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service2->save();
         $service3->save();
         $service4->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Thisisatest',
@@ -1095,6 +1149,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         // Trigger a reindex
         $serviceA->save();
         $serviceB->save();
+
+        sleep(1);
 
         // When a search is performed with the age group taxonomies of 12 - 15 years and 16 - 18 years
         $response = $this->json('POST', '/core/v1/search', [
@@ -1174,6 +1230,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceB->save();
         $serviceC->save();
         $serviceD->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'eligibilities' => [
@@ -1266,6 +1324,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceC->save();
         $serviceIA->save();
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'eligibilities' => ['Bipolar disorder', 'Multiple sclerosis', 'Schizophrenia'],
         ]);
@@ -1300,6 +1360,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $service5 = Service::factory()->create(array_merge($serviceParams, ['score' => 5]));
         $service0 = Service::factory()->create(array_merge($serviceParams, ['score' => 0]));
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Testing Service',
         ]);
@@ -1331,6 +1393,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $serviceLocation3 = ServiceLocation::factory()->create(['service_id' => $service0->id]);
         DB::table('locations')->where('id', $serviceLocation3->location->id)->update(['lat' => 45, 'lon' => 90]);
         $service0->save();
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search', [
             'query' => 'Testing Service',

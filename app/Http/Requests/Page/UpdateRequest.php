@@ -73,7 +73,7 @@ class UpdateRequest extends FormRequest
                 'sometimes',
                 'integer',
                 'min:0',
-                'max:'.$maxOrder,
+                'max:' . $maxOrder,
             ],
             'enabled' => [
                 'sometimes',

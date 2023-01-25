@@ -18,7 +18,7 @@ class UpdateRequestApproved
     /**
      * Handle the event.
      *
-     * @param  EndpointHit  $event
+     * @param EndpointHit $event
      *
      * @throws \Exception
      */
@@ -42,7 +42,7 @@ class UpdateRequestApproved
     }
 
     /**
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      *
      * @throws \Exception
      */
@@ -78,7 +78,7 @@ class UpdateRequestApproved
     }
 
     /**
-     * @param  \App\Models\UpdateRequest  $updateRequest
+     * @param \App\Models\UpdateRequest $updateRequest
      *
      * @throws \Exception
      */

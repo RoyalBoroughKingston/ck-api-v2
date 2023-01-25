@@ -14,11 +14,10 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\OrganisationEvent\Image\ShowRequest  $request
-     * @param  \App\Models\OrganisationEvent  $organisationEvent
-     * @return \Illuminate\Http\Response
-     *
+     * @param \App\Http\Requests\OrganisationEvent\Image\ShowRequest $request
+     * @param \App\Models\OrganisationEvent $organisationEvent
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function show(ShowRequest $request, OrganisationEvent $organisationEvent)
     {
@@ -40,17 +39,16 @@ class ImageController extends Controller
         }
 
         // Return the file, or placeholder if the file is null.
-        return optional($file)->resizedVersion($request->max_dimension) ?? OrganisationEvent::placeholderImage($request->max_dimension);
+        return $file?->resizedVersion($request->max_dimension) ?? OrganisationEvent::placeholderImage($request->max_dimension);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\OrganisationEvent\Image\ShowRequest  $request
-     * @param  string  $organisationEventId
-     * @return \Illuminate\Http\Response
-     *
+     * @param \App\Http\Requests\OrganisationEvent\Image\ShowRequest $request
+     * @param string $organisationEventId
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function showNew(ShowRequest $request)
     {
@@ -67,6 +65,6 @@ class ImageController extends Controller
         }
 
         // Return the file, or placeholder if the file is null.
-        return optional($file)->resizedVersion($request->max_dimension) ?? OrganisationEvent::placeholderImage($request->max_dimension);
+        return $file?->resizedVersion($request->max_dimension) ?? OrganisationEvent::placeholderImage($request->max_dimension);
     }
 }

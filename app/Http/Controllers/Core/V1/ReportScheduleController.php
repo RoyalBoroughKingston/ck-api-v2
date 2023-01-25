@@ -30,7 +30,7 @@ class ReportScheduleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Http\Requests\ReportSchedule\IndexRequest  $request
+     * @param \App\Http\Requests\ReportSchedule\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -52,7 +52,7 @@ class ReportScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\ReportSchedule\StoreRequest  $request
+     * @param \App\Http\Requests\ReportSchedule\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -72,8 +72,8 @@ class ReportScheduleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\ReportSchedule\ShowRequest  $request
-     * @param  \App\Models\ReportSchedule  $reportSchedule
+     * @param \App\Http\Requests\ReportSchedule\ShowRequest $request
+     * @param \App\Models\ReportSchedule $reportSchedule
      * @return \App\Http\Resources\ReportScheduleResource
      */
     public function show(ShowRequest $request, ReportSchedule $reportSchedule)
@@ -92,8 +92,8 @@ class ReportScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\ReportSchedule\UpdateRequest  $request
-     * @param  \App\Models\ReportSchedule  $reportSchedule
+     * @param \App\Http\Requests\ReportSchedule\UpdateRequest $request
+     * @param \App\Models\ReportSchedule $reportSchedule
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, ReportSchedule $reportSchedule)
@@ -113,8 +113,8 @@ class ReportScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Http\Requests\ReportSchedule\DestroyRequest  $request
-     * @param  \App\Models\ReportSchedule  $reportSchedule
+     * @param \App\Http\Requests\ReportSchedule\DestroyRequest $request
+     * @param \App\Models\ReportSchedule $reportSchedule
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, ReportSchedule $reportSchedule)

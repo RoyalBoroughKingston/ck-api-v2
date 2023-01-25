@@ -19,7 +19,7 @@ class UnactionedReferralsCommandTest extends TestCase
 
         $service = Service::factory()->create([
             'referral_method' => Service::REFERRAL_METHOD_INTERNAL,
-            'referral_email' => $this->faker->safeEmail,
+            'referral_email' => $this->faker->safeEmail(),
         ]);
 
         Referral::factory()->create([

@@ -76,6 +76,6 @@ trait OrganisationEventMutators
      */
     public function getAppleCalendarLinkAttribute()
     {
-        return secure_url('/core/v1/organisation-events/'.$this->id.'/event.ics');
+        return secure_url('/core/v1/organisation-events/' . $this->id . '/event.ics');
     }
 }

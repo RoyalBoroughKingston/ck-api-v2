@@ -2,26 +2,28 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Audit;
-use App\Models\Location;
-use App\Models\Organisation;
-use App\Models\PageFeedback;
-use App\Models\Referral;
-use App\Models\Report;
-use App\Models\ReportType;
+use Tests\TestCase;
 use App\Models\Role;
-use App\Models\SearchHistory;
-use App\Models\Service;
-use App\Models\ServiceLocation;
-use App\Models\UpdateRequest;
 use App\Models\User;
-use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
-use App\Search\ElasticSearch\ServiceQueryBuilder;
-use App\Search\SearchCriteriaQuery;
+use App\Models\Audit;
+use App\Models\Report;
+use App\Models\Service;
+use App\Models\Location;
+use App\Models\Referral;
+use App\Models\ReportType;
 use App\Support\Coordinate;
 use Carbon\CarbonImmutable;
+use App\Models\Organisation;
+use App\Models\PageFeedback;
+use App\Models\SearchHistory;
+use App\Models\UpdateRequest;
+use App\Models\ServiceLocation;
+use App\Search\SearchCriteriaQuery;
 use Illuminate\Support\Facades\Date;
-use Tests\TestCase;
+use App\Search\ElasticSearch\PageQueryBuilder;
+use App\Search\ElasticSearch\EventQueryBuilder;
+use App\Search\ElasticSearch\ServiceQueryBuilder;
+use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
 
 class ReportTest extends TestCase
 {
@@ -573,10 +575,10 @@ class ReportTest extends TestCase
         // Create a single referral.
         $referral = Referral::factory()->create([
             'referral_consented_at' => Date::now(),
-            'referee_name' => $this->faker->name,
-            'referee_email' => $this->faker->email,
+            'referee_name' => $this->faker->name(),
+            'referee_email' => $this->faker->email(),
             'referee_phone' => '07700000000',
-            'organisation' => $this->faker->company,
+            'organisation' => $this->faker->company(),
         ]);
 
         // Generate the report.
@@ -775,7 +777,7 @@ class ReportTest extends TestCase
 
         // Create a single search history.
         $searchHistory = SearchHistory::create([
-            'query' => $esQuery['query']['function_score'],
+            'query' => $esQuery->buildSearchRequest()->toArray(),
             'count' => 1,
         ]);
 
@@ -815,12 +817,9 @@ class ReportTest extends TestCase
         $queryBuilder = new ServiceQueryBuilder();
         $esQuery = $queryBuilder->build($criteria);
 
-        $query = $esQuery['query']['function_score'];
-        $query['sort'] = $esQuery['sort'];
-
         // Create a single search history.
         $searchHistory = SearchHistory::create([
-            'query' => $query,
+            'query' => $esQuery->buildSearchRequest()->toArray(),
             'count' => 1,
         ]);
 
@@ -860,11 +859,11 @@ class ReportTest extends TestCase
 
         // Create a single search history.
         $searchHistoryWithinRange = SearchHistory::create([
-            'query' => $esQuery['query']['function_score'],
+            'query' => $esQuery->buildSearchRequest()->toArray(),
             'count' => 1,
         ]);
         SearchHistory::create([
-            'query' => $esQuery['query']['function_score'],
+            'query' => $esQuery->buildSearchRequest()->toArray(),
             'count' => 1,
             'created_at' => Date::today()->subMonths(2),
         ]);
@@ -909,7 +908,7 @@ class ReportTest extends TestCase
 
         // Create a single search history.
         SearchHistory::create([
-            'query' => $esQuery['query']['function_score'],
+            'query' => $esQuery->buildSearchRequest()->toArray(),
             'count' => 1,
         ]);
 

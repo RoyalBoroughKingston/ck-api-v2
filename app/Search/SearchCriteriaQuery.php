@@ -105,7 +105,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string|null  $query
+     * @param string|null $query
      */
     public function setQuery(?string $query): void
     {
@@ -129,7 +129,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string|null  $type
+     * @param string|null $type
      */
     public function setType(?string $type): void
     {
@@ -153,7 +153,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string[]|null  $categories
+     * @param string[]|null $categories
      */
     public function setCategories(?array $categories): void
     {
@@ -177,7 +177,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string[]|null  $personas
+     * @param string[]|null $personas
      */
     public function setPersonas(?array $personas): void
     {
@@ -201,7 +201,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string|null  $waitTime
+     * @param string|null $waitTime
      */
     public function setWaitTime(?string $waitTime): void
     {
@@ -225,7 +225,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  bool|null  $isFree
+     * @param bool|null $isFree
      */
     public function setIsFree(?bool $isFree): void
     {
@@ -249,7 +249,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  bool|null  $isVirtual
+     * @param bool|null $isVirtual
      */
     public function setIsVirtual(?bool $isVirtual): void
     {
@@ -273,7 +273,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  bool|null  $hasWheelchairAccess
+     * @param bool|null $hasWheelchairAccess
      */
     public function setHasWheelchairAccess(?bool $hasWheelchairAccess): void
     {
@@ -297,7 +297,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  bool|null  $hasInductionLoop
+     * @param bool|null $hasInductionLoop
      */
     public function setHasInductionLoop(?bool $hasInductionLoop): void
     {
@@ -321,7 +321,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  bool|null  $hasAccessibleToilet
+     * @param bool|null $hasAccessibleToilet
      */
     public function setHasAccessibleToilet(?bool $hasAccessibleToilet): void
     {
@@ -345,7 +345,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string|null  $startsAfter
+     * @param string|null $startsAfter
      */
     public function setStartsAfter(?string $startsAfter): void
     {
@@ -369,7 +369,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string|null  $endsBefore
+     * @param string|null $endsBefore
      */
     public function setEndsBefore(?string $endsBefore): void
     {
@@ -393,7 +393,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  \App\Support\Coordinate|null  $location
+     * @param \App\Support\Coordinate|null $location
      */
     public function setLocation(?Coordinate $location): void
     {
@@ -417,7 +417,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  int  $distance
+     * @param int $distance
      */
     public function setDistance(int $distance): void
     {
@@ -441,7 +441,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string[]|null  $eligibilities
+     * @param string[]|null $eligibilities
      */
     public function setEligibilities(?array $eligibilities): void
     {
@@ -465,7 +465,7 @@ class SearchCriteriaQuery
     }
 
     /**
-     * @param  string  $order
+     * @param string $order
      */
     public function setOrder(string $order): void
     {

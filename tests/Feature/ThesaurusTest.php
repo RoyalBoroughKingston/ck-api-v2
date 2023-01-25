@@ -2,15 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Models\Organisation;
-use App\Models\Service;
-use App\Models\User;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Service;
+use App\Models\Organisation;
+use Tests\UsesElasticsearch;
+use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
-class ThesaurusTest extends TestCase
+class ThesaurusTest extends TestCase implements UsesElasticsearch
 {
     /**
      * Clean up the testing environment before the next test.
@@ -164,9 +166,13 @@ class ThesaurusTest extends TestCase
         $service = Service::factory()->create([
             'name' => 'Helping People',
         ]);
+
+        sleep(1);
+
         $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
+
         $updateResponse = $this->json('PUT', '/core/v1/thesaurus', [
             'synonyms' => [
                 ['persons', 'people'],
@@ -175,8 +181,10 @@ class ThesaurusTest extends TestCase
 
         $updateResponse->assertStatus(Response::HTTP_OK);
 
+        sleep(1);
+
         $searchResponse = $this->json('POST', '/core/v1/search', [
-            'query' => 'persons',
+            'query' => 'persons'
         ]);
         $searchResponse->assertJsonFragment([
             'id' => $service->id,
@@ -206,6 +214,9 @@ class ThesaurusTest extends TestCase
         $service = Service::factory()->create([
             'name' => 'People Not Drinking Enough',
         ]);
+
+        sleep(1);
+
         $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -216,6 +227,8 @@ class ThesaurusTest extends TestCase
         ]);
 
         $updateResponse->assertStatus(Response::HTTP_OK);
+
+        sleep(1);
 
         // Using single word.
         $searchResponse = $this->json('POST', '/core/v1/search', [
@@ -239,6 +252,9 @@ class ThesaurusTest extends TestCase
         $service = Service::factory()->create([
             'name' => 'People Not Drinking Enough',
         ]);
+
+        sleep(1);
+
         $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
@@ -250,6 +266,8 @@ class ThesaurusTest extends TestCase
         ]);
 
         $updateResponse->assertStatus(Response::HTTP_OK);
+
+        sleep(1);
 
         $searchResponse = $this->json('POST', '/core/v1/search', [
             'query' => 'thirsty',

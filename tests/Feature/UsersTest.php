@@ -644,8 +644,8 @@ class UsersTest extends TestCase
         $deletedUser->delete();
 
         $response = $this->json('POST', '/core/v1/users', [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
             'email' => 'test@example.com',
             'phone' => random_uk_phone(),
             'password' => 'Pa$$w0rd',
@@ -2022,9 +2022,9 @@ class UsersTest extends TestCase
     protected function getCreateUserPayload(array $roles): array
     {
         return [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'email' => $this->faker->safeEmail,
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'email' => $this->faker->safeEmail(),
             'phone' => random_uk_phone(),
             'password' => 'Pa$$w0rd',
             'roles' => $roles,
@@ -2038,9 +2038,9 @@ class UsersTest extends TestCase
     protected function getUpdateUserPayload(array $roles): array
     {
         return [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'email' => $this->faker->safeEmail,
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'email' => $this->faker->safeEmail(),
             'phone' => random_uk_phone(),
             'roles' => $roles,
         ];

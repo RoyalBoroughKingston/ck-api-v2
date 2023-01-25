@@ -23,7 +23,7 @@ class OrganisationSignUpFormController extends Controller
     }
 
     /**
-     * @param  \App\Http\Requests\OrganisationSignUpForm\StoreRequest  $request
+     * @param \App\Http\Requests\OrganisationSignUpForm\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)

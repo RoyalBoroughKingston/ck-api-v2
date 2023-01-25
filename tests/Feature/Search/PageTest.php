@@ -5,6 +5,7 @@ namespace Tests\Feature\Search;
 use App\Models\Collection;
 use App\Models\Page;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 use Tests\UsesElasticsearch;
 
@@ -41,7 +42,11 @@ class PageTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_page_title()
     {
-        $page = Page::factory()->create();
+        $page = Page::factory()->create([
+            'title' => 'Thisisatest'
+        ]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => $page->title,
@@ -58,6 +63,7 @@ class PageTest extends TestCase implements UsesElasticsearch
     public function test_query_matches_page_content()
     {
         $page = Page::factory()->landingPage()->create();
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => $page->content['introduction']['content'][0]['value'],
@@ -80,7 +86,7 @@ class PageTest extends TestCase implements UsesElasticsearch
                         ],
                         [
                             'type' => 'cta',
-                            'title' => $this->faker->sentence,
+                            'title' => $this->faker->sentence(),
                             'description' => $this->faker->realText(),
                             'url' => $this->faker->url(),
                             'buttonText' => $this->faker->words(3, true),
@@ -89,6 +95,7 @@ class PageTest extends TestCase implements UsesElasticsearch
                 ],
             ],
         ]);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => $page->content['introduction']['content'][1]['title'],
@@ -127,6 +134,7 @@ class PageTest extends TestCase implements UsesElasticsearch
                 ],
             ],
         ]);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'homeless',
@@ -152,6 +160,7 @@ class PageTest extends TestCase implements UsesElasticsearch
                 ],
             ],
         ]);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'temporary housing',
@@ -178,6 +187,7 @@ class PageTest extends TestCase implements UsesElasticsearch
                 ],
             ],
         ]);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
@@ -211,6 +221,8 @@ class PageTest extends TestCase implements UsesElasticsearch
         $page2->updateCollections([Collection::factory()->create([
             'name' => 'Should not match',
         ])->id]);
+
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
@@ -252,6 +264,8 @@ class PageTest extends TestCase implements UsesElasticsearch
             ])->id,
         ]);
 
+        sleep(1);
+
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Anotherphrase',
             'page' => 1,
@@ -280,6 +294,7 @@ class PageTest extends TestCase implements UsesElasticsearch
     {
         $page1 = Page::factory()->create(['title' => 'Thisisatest']);
         $page2 = Page::factory()->create(['title' => 'Thsiisatst']);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Thisisatest',
@@ -312,6 +327,7 @@ class PageTest extends TestCase implements UsesElasticsearch
             'title' => 'Testing Page',
             'enabled' => Page::DISABLED,
         ]);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Testing Page',
@@ -329,6 +345,7 @@ class PageTest extends TestCase implements UsesElasticsearch
         $pages = Page::factory()->count(30)->create([
             'title' => 'Testing Page',
         ]);
+        sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/pages', [
             'query' => 'Testing',

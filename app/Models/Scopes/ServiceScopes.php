@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 trait ServiceScopes
 {
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \App\Models\Service  $service
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Models\Service $service
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCollectionTaxonomies(Builder $query, Service $service): Builder
@@ -22,8 +22,8 @@ trait ServiceScopes
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \App\Models\Service  $service
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Models\Service $service
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCollections(Builder $query, Service $service): Builder

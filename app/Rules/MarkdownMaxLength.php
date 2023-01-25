@@ -20,8 +20,8 @@ class MarkdownMaxLength implements Rule
     /**
      * MarkdownMaxLength constructor.
      *
-     * @param  int  $maxLength
-     * @param  string|null  $message
+     * @param int $maxLength
+     * @param string|null $message
      */
     public function __construct(int $maxLength, ?string $message = null)
     {
@@ -32,8 +32,8 @@ class MarkdownMaxLength implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)

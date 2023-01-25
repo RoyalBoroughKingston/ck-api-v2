@@ -5,7 +5,7 @@ namespace App\Models\Mutators;
 trait FileMutators
 {
     /**
-     * @param  string|null  $meta
+     * @param string|null $meta
      * @return array|null
      */
     public function getMetaAttribute(?string $meta): ?array
@@ -14,7 +14,7 @@ trait FileMutators
     }
 
     /**
-     * @param  array|null  $meta
+     * @param array|null $meta
      */
     public function setMetaAttribute(?array $meta)
     {

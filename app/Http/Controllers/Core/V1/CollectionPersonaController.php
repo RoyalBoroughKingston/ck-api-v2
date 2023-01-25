@@ -32,7 +32,7 @@ class CollectionPersonaController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Http\Requests\CollectionPersona\IndexRequest  $request
+     * @param \App\Http\Requests\CollectionPersona\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -59,7 +59,7 @@ class CollectionPersonaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\CollectionPersona\StoreRequest  $request
+     * @param \App\Http\Requests\CollectionPersona\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
@@ -109,8 +109,8 @@ class CollectionPersonaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\CollectionPersona\ShowRequest  $request
-     * @param  \App\Models\Collection  $collection
+     * @param \App\Http\Requests\CollectionPersona\ShowRequest $request
+     * @param \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionPersonaResource
      */
     public function show(ShowRequest $request, Collection $collection)
@@ -129,8 +129,8 @@ class CollectionPersonaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\CollectionPersona\UpdateRequest  $request
-     * @param  \App\Models\Collection  $collection
+     * @param \App\Http\Requests\CollectionPersona\UpdateRequest $request
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Collection $collection)
@@ -180,8 +180,8 @@ class CollectionPersonaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Http\Requests\CollectionPersona\DestroyRequest  $request
-     * @param  \App\Models\Collection  $collection
+     * @param \App\Http\Requests\CollectionPersona\DestroyRequest $request
+     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $collection)

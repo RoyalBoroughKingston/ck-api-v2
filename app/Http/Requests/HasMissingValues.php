@@ -7,7 +7,7 @@ use App\Support\MissingValue;
 trait HasMissingValues
 {
     /**
-     * @param  string  $key
+     * @param string $key
      * @return mixed|\App\Support\MissingValue
      */
     public function missingValue(string $key)

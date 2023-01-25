@@ -12,10 +12,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class CollectionCategoryController extends Controller
 {
     /**
-     * @param  \App\Http\Requests\Search\Collection\CategoryRequest  $request
-     * @param  \App\Search\SearchCriteriaQuery  $criteria
-     * @param  \App\Search\ElasticSearch\CollectionCategoryQueryBuilder  $builder
-     * @param  \App\Search\ElasticSearch\ServiceEloquentMapper  $mapper
+     * @param \App\Http\Requests\Search\Collection\CategoryRequest $request
+     * @param \App\Search\SearchCriteriaQuery $criteria
+     * @param \App\Search\ElasticSearch\CollectionCategoryQueryBuilder $builder
+     * @param \App\Search\ElasticSearch\ServiceEloquentMapper $mapper
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(
@@ -26,12 +26,21 @@ class CollectionCategoryController extends Controller
     ): AnonymousResourceCollection {
         $criteria->setCategories([$request->input('category')]);
 
-        $query = $builder->build(
+        // Get the pagination values
+        $page = page($request->input('page'));
+        $perPage = per_page($request->input('per_page'));
+
+        // Create the query
+        $esQuery = $builder->build(
             $criteria,
-            $request->input('page'),
-            $request->input('per_page')
+            $page,
+            $perPage
         );
 
-        return $mapper->paginate($query);
+        return $mapper->paginate(
+            $esQuery,
+            $page,
+            $perPage
+        );
     }
 }

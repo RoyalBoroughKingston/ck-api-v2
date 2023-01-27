@@ -183,7 +183,7 @@ abstract class TestCase extends BaseTestCase
             $this->artisan('scout:flush', ['model' => OrganisationEvent::class]);
         } catch (\Exception $exception) {
             // Do nothing.
-            dump('Scout:flush', $exception->getMessage());
+            // dump('Scout:flush', $exception->getMessage());
         }
     }
 

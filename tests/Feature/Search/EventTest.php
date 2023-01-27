@@ -1268,6 +1268,8 @@ class EventTest extends TestCase implements UsesElasticsearch
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $response->assertJsonCount(3, 'data');
+
         $content = $this->getResponseContent($response)['data'];
         $this->assertEquals($event1->id, $content[0]['id']);
         $this->assertEquals($event2->id, $content[1]['id']);

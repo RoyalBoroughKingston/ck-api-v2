@@ -73,12 +73,12 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    // protected $middlewarePriority = [
-    //     \Illuminate\Session\Middleware\StartSession::class,
-    //     \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-    //     \App\Http\Middleware\Authenticate::class,
-    //     \Illuminate\Session\Middleware\AuthenticateSession::class,
-    //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
-    //     \Illuminate\Auth\Middleware\Authorize::class,
-    // ];
+    protected $middlewarePriority = [
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\Authenticate::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class,
+    ];
 }

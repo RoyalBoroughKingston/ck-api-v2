@@ -100,7 +100,8 @@ class File extends Model implements Responsable
      */
     protected function visibility(): string
     {
-        return $this->is_private ? 'private' : 'public';
+        // S3 requires private visibility
+        return config('filesystems.cloud') === 's3' ? 'private' : ($this->is_private ? 'private' : 'public');
     }
 
     /**
@@ -109,7 +110,7 @@ class File extends Model implements Responsable
      */
     public function upload(string $content): File
     {
-        Storage::disk(config('filesystems.cloud'))->put($this->path(), $content, $this->visibility());
+        $response = Storage::disk(config('filesystems.cloud'))->put($this->path(), $content, $this->visibility());
 
         return $this;
     }

@@ -56,70 +56,71 @@ class ImportTaxonomiesCommand extends Command
     protected $csvHeaders;
 
     /**
-     * The taxonomy which will be used as the root
+     * The taxonomy which will be used as the root.
      *
      * @var \App\Models\Taxonomy
-     **/
+     */
     protected $rootTaxonomy;
 
     /**
-     * The URL to fetch the csv import file from
+     * The URL to fetch the csv import file from.
      *
      * @var string
-     **/
+     */
     protected $csvUrl;
 
     /**
-     * Flag to indicate if the first row of the import should be ignored
+     * Flag to indicate if the first row of the import should be ignored.
      *
      * @var bool
-     **/
+     */
     protected $firstRowLabels;
 
     /**
-     * The column index for the parent relationship
+     * The column index for the parent relationship.
      *
      * @var int
-     **/
+     */
     protected $parentIdColumn;
 
     /**
-     * The column index for the unique taxonomy identifier
+     * The column index for the unique taxonomy identifier.
      *
      * @var int
-     **/
+     */
     protected $taxonomyIdColumn;
 
     /**
-     * The column index for the taxonomy name
+     * The column index for the taxonomy name.
      *
      * @var int
-     **/
+     */
     protected $taxonomyNameColumn;
 
     /**
-     * Ignore duplicate imports, no duplicate warning
+     * Ignore duplicate imports, no duplicate warning.
      *
      * @var bool
-     **/
+     */
     protected $ignoreDuplicates = false;
 
     /**
      * Should the current taxonomies be deleted first?
      *
      * @var bool
-     **/
+     */
     protected $refresh = false;
 
     /**
-     * Dry run: no taxonomies will be created
+     * Dry run: no taxonomies will be created.
      *
      * @var bool
-     **/
+     */
     protected $dryRun = false;
 
     /**
      * Create a new command instance.
+     * @param mixed|null $params
      */
     public function __construct($params = null)
     {
@@ -175,10 +176,10 @@ class ImportTaxonomiesCommand extends Command
     }
 
     /**
-     * Prompt and retrieve all the required params
+     * Prompt and retrieve all the required params.
      *
-     * @return array | false
-     **/
+     * @return array|false
+     */
     public function manageParameters()
     {
         if (!preg_match("/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $this->argument('url'))) {
@@ -290,7 +291,7 @@ class ImportTaxonomiesCommand extends Command
 
     /**
      * Parse the csv into an array
-     * Unlike php built in csv parsing functions, this will work with fields containing quotes and new lines
+     * Unlike php built in csv parsing functions, this will work with fields containing quotes and new lines.
      *
      * @param mixed $csv_string
      * @param string $delimiter
@@ -330,7 +331,7 @@ class ImportTaxonomiesCommand extends Command
      * Import the Taxonomy records into the database.
      *
      * @param array $taxonomyRecords
-     * @return bool | int
+     * @return bool|int
      */
     public function importTaxonomyRecords(array $taxonomyRecords)
     {
@@ -422,12 +423,12 @@ class ImportTaxonomiesCommand extends Command
     }
 
     /**
-     * Does the taxonomy exist in the database
+     * Does the taxonomy exist in the database.
      *
      * @param array $record
      * @param \illuminate\Support\Collection $taxonomyNames
      * @return bool
-     **/
+     */
     public function taxonomyExists(array $record, Collection $taxonomyNames): bool
     {
         /**
@@ -450,14 +451,14 @@ class ImportTaxonomiesCommand extends Command
     }
 
     /**
-     * Get the ancestors of a taxonomy
+     * Get the ancestors of a taxonomy.
      *
      * @param string $taxonomyId
      * @return array
-     **/
+     */
     public function taxonomyAncestors(string $taxonomyId): array
     {
-        $taxonomyTable = (new Taxonomy)->getTable();
+        $taxonomyTable = (new Taxonomy())->getTable();
 
         return collect(DB::select(
             'SELECT T2.id
@@ -491,7 +492,7 @@ class ImportTaxonomiesCommand extends Command
         $taxonomies = collect($records)->mapWithKeys(function ($record) {
             return [
                 $record[$this->taxonomyIdColumn] => [
-                    'id' => (string) Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'name' => $record[$this->taxonomyNameColumn],
                     'slug' => Str::slug($record[$this->taxonomyNameColumn] . ' ' . $record[$this->taxonomyIdColumn]),
                     'parent_id' => ($this->parentIdColumn && !empty($record[$this->parentIdColumn])) ? $record[$this->parentIdColumn] : $this->rootTaxonomy->id,
@@ -529,7 +530,7 @@ class ImportTaxonomiesCommand extends Command
 
     /**
      * Walk through the levels of child records and record the depth.
-     * Caution: recursive
+     * Caution: recursive.
      *
      * @param array $parentIds
      * @param array $records
@@ -560,11 +561,10 @@ class ImportTaxonomiesCommand extends Command
     }
 
     /**
-     * Show the failed rows
+     * Show the failed rows.
      *
      * @param array $records
-     * @return null
-     **/
+     */
     public function showfailedRows(array $records)
     {
         $this->warn('Unable to import all records. Failed records:');

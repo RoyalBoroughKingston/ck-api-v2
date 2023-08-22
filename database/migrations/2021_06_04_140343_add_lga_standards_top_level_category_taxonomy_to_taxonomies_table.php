@@ -6,7 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class() extends Migration {
+return new class() extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -30,10 +31,22 @@ return new class() extends Migration {
         );
 
         // Move all direct children of Category to LGA Standards
-        DB::table((new Taxonomy())->getTable())
-            ->where('parent_id', $categoryId)
-            ->whereIn('name', ['Functions', 'Services'])
-            ->update(['parent_id' => $lgaStandardsId]);
+        Taxonomy::firstOrNew([
+            'parent_id' => $categoryId,
+            'name' => 'Functions',
+        ])->fill([
+            'parent_id' => $lgaStandardsId,
+            'order' => 0,
+            'depth' => 1,
+        ])->save();
+        Taxonomy::firstOrNew([
+            'parent_id' => $categoryId,
+            'name' => 'Services',
+        ])->fill([
+            'parent_id' => $lgaStandardsId,
+            'order' => 0,
+            'depth' => 1,
+        ])->save();
 
         Taxonomy::category()->updateDepth();
 
@@ -65,23 +78,28 @@ return new class() extends Migration {
     public function down()
     {
         $categoryId = Taxonomy::category()->id;
-        $lgaStandardsId = DB::table((new Taxonomy())->getTable())
+
+        if (DB::table((new Taxonomy())->getTable())
             ->where('parent_id', $categoryId)
-            ->where('name', 'LGA Standards')
-            ->value('id');
+            ->where('name', 'LGA Standards')->exists()) {
+            $lgaStandardsId = DB::table((new Taxonomy())->getTable())
+                ->where('parent_id', $categoryId)
+                ->where('name', 'LGA Standards')
+                ->value('id');
 
-        DB::table((new ServiceTaxonomy())->getTable())
-            ->where('taxonomy_id', $lgaStandardsId)
-            ->delete();
+            DB::table((new ServiceTaxonomy())->getTable())
+                ->where('taxonomy_id', $lgaStandardsId)
+                ->delete();
 
-        DB::table((new Taxonomy())->getTable())
-            ->where('parent_id', $lgaStandardsId)
-            ->update(['parent_id' => $categoryId]);
+            DB::table((new Taxonomy())->getTable())
+                ->where('parent_id', $lgaStandardsId)
+                ->update(['parent_id' => $categoryId]);
 
-        Taxonomy::category()->updateDepth();
+            Taxonomy::category()->updateDepth();
 
-        DB::table((new Taxonomy())->getTable())
-            ->where('id', $lgaStandardsId)
-            ->delete();
+            DB::table((new Taxonomy())->getTable())
+                ->where('id', $lgaStandardsId)
+                ->delete();
+        }
     }
 };

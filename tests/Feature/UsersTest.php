@@ -647,7 +647,7 @@ class UsersTest extends TestCase
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => 'test@example.com',
-            'phone' => random_uk_phone(),
+            'phone' => random_uk_mobile_phone(),
             'password' => 'Pa$$w0rd',
             'roles' => [
                 ['role' => Role::NAME_SUPER_ADMIN],
@@ -2025,7 +2025,7 @@ class UsersTest extends TestCase
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->safeEmail(),
-            'phone' => random_uk_phone(),
+            'phone' => random_uk_mobile_phone(),
             'password' => 'Pa$$w0rd',
             'roles' => $roles,
         ];
@@ -2041,7 +2041,7 @@ class UsersTest extends TestCase
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->safeEmail(),
-            'phone' => random_uk_phone(),
+            'phone' => random_uk_mobile_phone(),
             'roles' => $roles,
         ];
     }

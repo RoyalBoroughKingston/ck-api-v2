@@ -7,7 +7,7 @@ use App\Models\UserRole;
 use App\Rules\CanAssignRoleToUser;
 use App\Rules\CanRevokeRoleFromUser;
 use App\Rules\Password;
-use App\Rules\UkPhoneNumber;
+use App\Rules\UkMobilePhoneNumber;
 use App\Rules\UserEmailNotTaken;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -152,7 +152,7 @@ class UpdateRequest extends FormRequest
             'first_name' => ['required', 'string', 'min:1', 'max:255'],
             'last_name' => ['required', 'string', 'min:1', 'max:255'],
             'email' => ['required', 'email', 'max:255', new UserEmailNotTaken($this->user)],
-            'phone' => ['required', 'string', 'min:1', 'max:255', new UkPhoneNumber()],
+            'phone' => ['required', 'string', 'min:1', 'max:255', new UkMobilePhoneNumber()],
             'password' => ['string', 'min:8', 'max:255', new Password()],
 
             'roles' => ['required', 'array'],

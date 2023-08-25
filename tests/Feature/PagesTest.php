@@ -147,7 +147,7 @@ class PagesTest extends TestCase
             $disabledLandingPage->id,
         ];
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[id]='.implode(',', $ids));
+        $response = $this->json('GET', '/core/v1/pages/index?filter[id]=' . implode(',', $ids));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2, 'data');
@@ -196,7 +196,7 @@ class PagesTest extends TestCase
             $disabledLandingPage->id,
         ];
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[id]='.implode(',', $ids));
+        $response = $this->json('GET', '/core/v1/pages/index?filter[id]=' . implode(',', $ids));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(4, 'data');
@@ -228,7 +228,7 @@ class PagesTest extends TestCase
         $page1 = Page::factory()->withChildren()->create();
         $page2 = Page::factory()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]='.$page1->id);
+        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]=' . $page1->id);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(3, 'data');
@@ -265,7 +265,7 @@ class PagesTest extends TestCase
     {
         $landingPage = Page::factory()->landingPage()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]='.$landingPage->id);
+        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]=' . $landingPage->id);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(3, 'data');
@@ -615,7 +615,7 @@ class PagesTest extends TestCase
         $landingPage1->appendNode($parent);
         $landingPage2 = Page::factory()->landingPage()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[landing_page]='.$landingPage1->id.'&include=parent');
+        $response = $this->json('GET', '/core/v1/pages/index?filter[landing_page]=' . $landingPage1->id . '&include=parent');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
@@ -675,7 +675,7 @@ class PagesTest extends TestCase
     {
         $page = Page::factory()->withImage()->withParent()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -731,7 +731,7 @@ class PagesTest extends TestCase
     {
         $page = Page::factory()->withImage()->landingPage()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -776,7 +776,7 @@ class PagesTest extends TestCase
     {
         $page = Page::factory()->withImage()->withParent()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->slug);
+        $response = $this->json('GET', '/core/v1/pages/' . $page->slug);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $page->id,
@@ -794,7 +794,7 @@ class PagesTest extends TestCase
         $landingPage = Page::factory()->landingPage()->create();
         $landingPage->appendNode($parent);
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -867,7 +867,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $this->json('GET', '/core/v1/pages/'.$page->id);
+        $this->json('GET', '/core/v1/pages/' . $page->id);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return $event->getAction() === Audit::ACTION_READ;
@@ -882,7 +882,7 @@ class PagesTest extends TestCase
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -903,7 +903,7 @@ class PagesTest extends TestCase
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
@@ -969,11 +969,11 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.png',
+            'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
         ]);
 
-        $base64Image = 'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'));
+        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -981,9 +981,9 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ]);
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id.'/image.png');
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.png');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/png;base64,'.base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/png;base64,' . base64_encode($response->content()));
     }
 
     /**
@@ -1002,11 +1002,11 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.jpg',
+            'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jepg',
         ]);
 
-        $base64Image = 'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
+        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1014,9 +1014,9 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ]);
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id.'/image.jpg');
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.jpg');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/jpeg;base64,'.base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/jpeg;base64,' . base64_encode($response->content()));
     }
 
     /**
@@ -1035,11 +1035,11 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -1047,9 +1047,9 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ]);
 
-        $response = $this->json('GET', '/core/v1/pages/'.$page->id.'/image.svg');
+        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.svg');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/svg+xml;base64,'.base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/svg+xml;base64,' . base64_encode($response->content()));
     }
 
     /**
@@ -1408,7 +1408,7 @@ class PagesTest extends TestCase
 
         // Assigned Images not allowed
         $image = File::factory()->create([
-            'filename' => Str::random().'.png',
+            'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
         ]);
 
@@ -1801,12 +1801,12 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.png',
+            'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'))
+            'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'))
         );
 
         $data = [
@@ -1873,12 +1873,12 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.jpg',
+            'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $data = [
@@ -1945,12 +1945,12 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'))
+            'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'))
         );
 
         $data = [
@@ -2513,7 +2513,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -2538,7 +2538,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2586,7 +2586,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return $event->getAction() === Audit::ACTION_UPDATE;
@@ -2609,36 +2609,36 @@ class PagesTest extends TestCase
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'title' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'content' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'title' => '',
             'content' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'content' => $this->faker->realText(),
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'parent_id' => $this->faker->uuid(),
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'order' => $page->siblingsAndSelf()->count() + 1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'order' => -1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'page_type' => 'landing',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -2646,11 +2646,11 @@ class PagesTest extends TestCase
          * Assigned Images not allowed
          */
         $image = File::factory()->create([
-            'filename' => Str::random().'.png',
+            'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
         ]);
 
-        $this->json('PUT', '/core/v1/pages/'.$page->id, [
+        $this->json('PUT', '/core/v1/pages/' . $page->id, [
             'image_file_id' => $image->id,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -2669,12 +2669,12 @@ class PagesTest extends TestCase
         Passport::actingAs($user);
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.jpg',
+            'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
@@ -2684,7 +2684,7 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2730,12 +2730,12 @@ class PagesTest extends TestCase
         Passport::actingAs($user);
 
         $image = File::factory()->create([
-            'filename' => Str::random().'.jpg',
+            'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
@@ -2747,7 +2747,7 @@ class PagesTest extends TestCase
             'image_file_id' => null,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2788,21 +2788,21 @@ class PagesTest extends TestCase
         Passport::actingAs($user);
 
         $imageJpg = File::factory()->create([
-            'filename' => Str::random().'.jpg',
+            'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $imageJpg->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $imagePng = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.png',
+            'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
         ]);
 
         $imagePng->uploadBase64EncodedFile(
-            'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'))
+            'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'))
         );
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
@@ -2814,7 +2814,7 @@ class PagesTest extends TestCase
             'image_file_id' => $imagePng->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2875,7 +2875,7 @@ class PagesTest extends TestCase
             'parent_id' => $parentPage2->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2913,7 +2913,7 @@ class PagesTest extends TestCase
             'parent_id' => $parentPage2->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2948,7 +2948,7 @@ class PagesTest extends TestCase
             'page_type' => Page::PAGE_TYPE_LANDING,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -2957,7 +2957,7 @@ class PagesTest extends TestCase
             'parent_id' => null,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2991,7 +2991,7 @@ class PagesTest extends TestCase
             'order' => 2,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$children->get(1)->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $children->get(1)->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3011,7 +3011,7 @@ class PagesTest extends TestCase
             'order' => 0,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$children->get(1)->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $children->get(1)->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3051,7 +3051,7 @@ class PagesTest extends TestCase
             'enabled' => 0,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$parent->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $parent->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3071,7 +3071,7 @@ class PagesTest extends TestCase
             'enabled' => 1,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$parent->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $parent->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3104,7 +3104,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collections->pluck('id'),
         ];
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -3129,7 +3129,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collections->pluck('id'),
         ];
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3193,7 +3193,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collectionIds->all(),
         ];
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3258,7 +3258,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3274,7 +3274,7 @@ class PagesTest extends TestCase
             'slug' => 'new-title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3292,7 +3292,7 @@ class PagesTest extends TestCase
             'slug' => 'existing-page',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -3304,7 +3304,7 @@ class PagesTest extends TestCase
     {
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -3324,7 +3324,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3348,7 +3348,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $this->json('DELETE', '/core/v1/pages/'.$page->id);
+        $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return $event->getAction() === Audit::ACTION_DELETE;
@@ -3374,7 +3374,7 @@ class PagesTest extends TestCase
 
         $children = $page->children()->defaultOrder()->get();
 
-        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -3404,7 +3404,7 @@ class PagesTest extends TestCase
 
         $children = $page->children()->defaultOrder()->get();
 
-        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -3412,6 +3412,62 @@ class PagesTest extends TestCase
         $this->assertDatabaseHas('pages', ['id' => $children->get(0)->id]);
         $this->assertDatabaseHas('pages', ['id' => $children->get(1)->id]);
         $this->assertDatabaseHas('pages', ['id' => $children->get(2)->id]);
+    }
+
+    /**
+     * @test
+     */
+    public function deletePageWithCollections200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page = Page::factory()->withCollections()->create();
+
+        $pageCollectionIds = $page->collections()->pluck('id');
+
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseMissing('pages', ['id' => $page->id]);
+        foreach ($pageCollectionIds as $collectionId) {
+            $this->assertDatabaseMissing('collection_page', ['page_id' => $page->id, 'collection_id' => $collectionId]);
+            $this->assertDatabaseHas('collections', ['id' => $collectionId]);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function deleteLandingPageWithCollections200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+        $user->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $page = Page::factory()->landingPage()->withCollections()->create();
+
+        $pageCollectionIds = $page->collections()->pluck('id');
+
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseMissing('pages', ['id' => $page->id]);
+        foreach ($pageCollectionIds as $collectionId) {
+            $this->assertDatabaseMissing('collection_page', ['page_id' => $page->id, 'collection_id' => $collectionId]);
+            $this->assertDatabaseHas('collections', ['id' => $collectionId]);
+        }
     }
 
     /**
@@ -3431,7 +3487,7 @@ class PagesTest extends TestCase
 
         $imageId = $page->image_file_id;
 
-        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
         $response->assertStatus(Response::HTTP_OK);
 

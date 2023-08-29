@@ -313,18 +313,10 @@ class User extends Authenticatable implements Notifiable
         }
 
         /*
-         * If the invoker is a global admin,
-         * and the subject is a content admin.
-         */
-        if ($this->isGlobalAdmin() && $subject->isContentAdmin()) {
-            return true;
-        }
-
-        /*
          * If the invoker is an organisation admin for the organisation,
-         * and the subject is not a global admin.
+         * and the subject is not a content admin or a global admin.
          */
-        if ($this->isOrganisationAdmin() && !$subject->isGlobalAdmin()) {
+        if ($this->isOrganisationAdmin() && !($subject->isGlobalAdmin() || $subject->isContentAdmin())) {
             return true;
         }
 
@@ -332,7 +324,7 @@ class User extends Authenticatable implements Notifiable
          * If the invoker is a service admin for the service,
          * and the subject is not a organisation admin for the organisation.
          */
-        if ($this->isServiceAdmin() && !$subject->isOrganisationAdmin()) {
+        if ($this->isServiceAdmin() && !($subject->isOrganisationAdmin() || $subject->isContentAdmin())) {
             return true;
         }
 

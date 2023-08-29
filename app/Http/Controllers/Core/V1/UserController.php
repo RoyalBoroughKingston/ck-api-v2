@@ -125,6 +125,9 @@ class UserController extends Controller
                     case Role::NAME_ORGANISATION_ADMIN:
                         $user->makeOrganisationAdmin($organisation);
                         break;
+                    case Role::NAME_CONTENT_ADMIN:
+                        $user->makeContentAdmin();
+                        break;
                     case Role::NAME_GLOBAL_ADMIN:
                         $user->makeGlobalAdmin();
                         break;

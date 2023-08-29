@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         // Use CarbonImmutable instead of Carbon.
-        Date::use (CarbonImmutable::class);
+        Date::use(CarbonImmutable::class);
 
         // Geocode.
         switch (config('geocode.geocode_driver')) {

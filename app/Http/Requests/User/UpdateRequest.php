@@ -118,14 +118,17 @@ class UpdateRequest extends FormRequest
                     return 1;
                 case Role::NAME_GLOBAL_ADMIN:
                     return 2;
-                case Role::NAME_ORGANISATION_ADMIN:
+                case Role::NAME_CONTENT_ADMIN:
                     return 3;
-                case Role::NAME_SERVICE_ADMIN:
+                case Role::NAME_ORGANISATION_ADMIN:
                     return 4;
-                case Role::NAME_SERVICE_WORKER:
+                case Role::NAME_SERVICE_ADMIN:
                     return 5;
-                default:
+                case Role::NAME_SERVICE_WORKER:
                     return 6;
+
+                default:
+                    return 7;
             }
         });
     }

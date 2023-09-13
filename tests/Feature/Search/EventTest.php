@@ -260,17 +260,15 @@ class EventTest extends TestCase implements UsesElasticsearch
         $event1 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
         ]);
+        $event2 = OrganisationEvent::factory()->create([
+            'title' => 'Event title',
+        ]);
+
         $taxonomy1 = Taxonomy::category()->children()->create([
             'slug' => 'quick-brown-fox',
             'name' => 'Quick Brown Fox',
             'order' => 1,
             'depth' => 1,
-        ]);
-        $event1->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
-        $event1->save();
-
-        $event2 = OrganisationEvent::factory()->create([
-            'title' => 'Event title',
         ]);
         $taxonomy2 = Taxonomy::category()->children()->create([
             'slug' => 'lazy-dog',
@@ -278,6 +276,10 @@ class EventTest extends TestCase implements UsesElasticsearch
             'order' => 1,
             'depth' => 1,
         ]);
+
+        $event1->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy1->id]);
+        $event1->save();
+
         $event2->organisationEventTaxonomies()->create(['taxonomy_id' => $taxonomy2->id]);
         $event2->save();
 
@@ -758,7 +760,6 @@ class EventTest extends TestCase implements UsesElasticsearch
             'page' => 1,
             'per_page' => 20,
         ]);
-
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $futureEvent->id]);

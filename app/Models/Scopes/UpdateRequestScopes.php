@@ -115,7 +115,8 @@ trait UpdateRequestScopes
     public function getEntrySql(): string
     {
         $services = UpdateRequest::EXISTING_TYPE_SERVICE;
-        $newServices = UpdateRequest::NEW_TYPE_SERVICE;
+        $newServicesOrgAdmin = UpdateRequest::NEW_TYPE_SERVICE_ORG_ADMIN;
+        $newServicesGlobalAdmin = UpdateRequest::NEW_TYPE_SERVICE_GLOBAL_ADMIN;
         $locations = UpdateRequest::EXISTING_TYPE_LOCATION;
         $serviceLocations = UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION;
         $organisations = UpdateRequest::EXISTING_TYPE_ORGANISATION;
@@ -131,7 +132,10 @@ CASE `update_requests`.`updateable_type`
         WHERE `update_requests`.`updateable_id` = `services`.`id`
         LIMIT 1
     )
-    WHEN "{$newServices}" THEN (
+    WHEN "{$newServicesOrgAdmin}" THEN (
+        `update_requests`.`data`->>"$.name"
+    )
+    WHEN "{$newServicesGlobalAdmin}" THEN (
         `update_requests`.`data`->>"$.name"
     )
     WHEN "{$locations}" THEN (

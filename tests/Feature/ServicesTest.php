@@ -100,7 +100,10 @@ class ServicesTest extends TestCase
      * List all the services.
      */
 
-    public function test_guest_can_list_them()
+    /**
+     * @test
+     */
+    public function guest_can_list_them()
     {
         /** @var \App\Models\Service $service */
         $service = Service::factory()->create();
@@ -181,7 +184,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_guest_can_filter_by_organisation_id()
+    /**
+     * @test
+     */
+    public function guest_can_filter_by_organisation_id()
     {
         $anotherService = Service::factory()->create();
         $service = Service::factory()->create();
@@ -209,7 +215,10 @@ class ServicesTest extends TestCase
         $response->assertJsonMissing(['id' => $anotherService->id]);
     }
 
-    public function test_guest_can_filter_by_organisation_name()
+    /**
+     * @test
+     */
+    public function guest_can_filter_by_organisation_name()
     {
         $anotherService = Service::factory()->create([
             'organisation_id' => Organisation::factory()->create(['name' => 'Amazing Place']),
@@ -241,7 +250,10 @@ class ServicesTest extends TestCase
         $response->assertJsonMissing(['id' => $anotherService->id]);
     }
 
-    public function test_guest_can_filter_by_tag()
+    /**
+     * @test
+     */
+    public function guest_can_filter_by_tag()
     {
         $tag1 = Tag::factory()->create();
         $tag2 = Tag::factory()->create();
@@ -281,7 +293,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['id' => $service3->id]);
     }
 
-    public function test_audit_created_when_listed()
+    /**
+     * @test
+     */
+    public function audit_created_when_listed()
     {
         $this->fakeEvents();
 
@@ -292,7 +307,10 @@ class ServicesTest extends TestCase
         });
     }
 
-    public function test_guest_can_sort_by_service_name()
+    /**
+     * @test
+     */
+    public function guest_can_sort_by_service_name()
     {
         $serviceOne = Service::factory()->create(['name' => 'Service A']);
         $serviceTwo = Service::factory()->create(['name' => 'Service B']);
@@ -304,7 +322,10 @@ class ServicesTest extends TestCase
         $this->assertEquals($serviceTwo->id, $data['data'][0]['id']);
     }
 
-    public function test_guest_can_sort_by_organisation_name()
+    /**
+     * @test
+     */
+    public function guest_can_sort_by_organisation_name()
     {
         $serviceOne = Service::factory()->create([
             'organisation_id' => Organisation::factory()
@@ -324,7 +345,10 @@ class ServicesTest extends TestCase
         $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
     }
 
-    public function test_guest_can_sort_by_last_modified_at()
+    /**
+     * @test
+     */
+    public function guest_can_sort_by_last_modified_at()
     {
         $serviceOne = Service::factory()->create([
             'last_modified_at' => '2020-01-01 13:00:00',
@@ -340,7 +364,10 @@ class ServicesTest extends TestCase
         $this->assertEquals($serviceTwo->organisation_id, $data['data'][0]['organisation_id']);
     }
 
-    public function test_guest_can_sort_by_score()
+    /**
+     * @test
+     */
+    public function guest_can_sort_by_score()
     {
         $service1 = Service::factory()->create(['score' => 0]);
         $service2 = Service::factory()->create(['score' => 5]);
@@ -365,14 +392,20 @@ class ServicesTest extends TestCase
      * Create a service.
      */
 
-    public function test_guest_cannot_create_one()
+    /**
+     * @test
+     */
+    public function guest_cannot_create_one()
     {
         $response = $this->json('POST', '/core/v1/services');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_create_one()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_create_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -384,7 +417,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_create_one()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_create_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -396,7 +432,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_can_create_an_inactive_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_can_create_an_inactive_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -458,12 +497,12 @@ class ServicesTest extends TestCase
 
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_SERVICE,
+            'updateable_type' => UpdateRequest::NEW_TYPE_SERVICE_ORG_ADMIN,
             'updateable_id' => null,
         ]);
 
         $data = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE_ORG_ADMIN)
             ->where('updateable_id', null)
             ->where('user_id', $user->id)
             ->firstOrFail()->data;
@@ -483,75 +522,15 @@ class ServicesTest extends TestCase
         );
 
         $updateRequestCheckResponse->assertSuccessful();
-        $this->assertEquals($data, $payload);
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent(), true);
+
+        $this->assertEquals($updateRequestResponseData['data'], $payload);
     }
 
-    public function test_global_admin_does_not_create_update_request_when_creating_one()
-    {
-        $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
-
-        //Given that a global admin is logged in
-        Passport::actingAs($user);
-
-        $payload = [
-            'organisation_id' => $organisation->id,
-            'slug' => 'test-service',
-            'name' => 'Test Service',
-            'type' => Service::TYPE_SERVICE,
-            'status' => Service::STATUS_INACTIVE,
-            'intro' => 'This is a test intro',
-            'description' => 'Lorem ipsum',
-            'wait_time' => null,
-            'is_free' => true,
-            'fees_text' => null,
-            'fees_url' => null,
-            'testimonial' => null,
-            'video_embed' => null,
-            'url' => $this->faker->url(),
-            'contact_name' => $this->faker->name(),
-            'contact_phone' => random_uk_phone(),
-            'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => false,
-            'referral_method' => Service::REFERRAL_METHOD_NONE,
-            'referral_button_text' => null,
-            'referral_email' => null,
-            'referral_url' => null,
-            'cqc_location_id' => $this->faker->numerify('#-#########'),
-            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
-            'useful_infos' => [
-                [
-                    'title' => 'Did you know?',
-                    'description' => 'Lorem ipsum',
-                    'order' => 1,
-                ],
-            ],
-            'offerings' => [
-                [
-                    'offering' => 'Weekly club',
-                    'order' => 1,
-                ],
-            ],
-            'tags' => [],
-            'gallery_items' => [],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-        ];
-
-        //When they create a service
-        $response = $this->json('POST', '/core/v1/services', $payload);
-
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        $responseData = json_decode($response->getContent())->data;
-
-        // The service is created
-        $this->assertDatabaseHas((new Service())->getTable(), ['id' => $responseData->id]);
-
-        // And no update request was created
-        $this->assertEmpty(UpdateRequest::all());
-    }
-
-    public function test_organisation_admin_creates_update_request_when_creating_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_creates_update_request_when_creating_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -616,7 +595,108 @@ class ServicesTest extends TestCase
 
         //Then an update request should be created for the new service
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE_ORG_ADMIN)
+            ->where('updateable_id', null)
+            ->firstOrFail();
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = $responseData->id;
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $updateRequestCheckResponse = $this->get(
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent(), true);
+
+        $this->assertEquals($updateRequestResponseData['data'], $payload);
+        //And the service should not yet be created
+        $this->assertEmpty(Service::all());
+    }
+
+    /**
+     * @test
+     */
+    public function global_admin_creates_update_request_when_creating_one()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeGlobalAdmin();
+
+        //Given an organisation admin is logged in
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+            'eligibility_types' => [
+                'custom' => [],
+                'taxonomies' => [],
+            ],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::NEW_TYPE_SERVICE_GLOBAL_ADMIN,
+            'updateable_id' => null,
+        ]);
+
+        $response->assertJsonFragment($payload);
+
+        $responseData = json_decode($response->getContent());
+
+        //Then an update request should be created for the new service
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE_GLOBAL_ADMIN)
             ->where('updateable_id', null)
             ->firstOrFail();
 
@@ -638,11 +718,83 @@ class ServicesTest extends TestCase
         $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent(), true);
 
         $this->assertEquals($updateRequestResponseData['data'], $payload);
+
         //And the service should not yet be created
         $this->assertEmpty(Service::all());
     }
 
-    public function test_organisation_admin_can_create_one_with_single_form_of_contact()
+    /**
+     * @test
+     */
+    public function super_admin_does_not_create_update_request_when_creating_one()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        //Given that a global admin is logged in
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $responseData = json_decode($response->getContent())->data;
+
+        // The service is created
+        $this->assertDatabaseHas((new Service())->getTable(), ['id' => $responseData->id]);
+
+        // And no update request was created
+        $this->assertEmpty(UpdateRequest::all());
+    }
+
+    /**
+     * @test
+     */
+    public function organisation_admin_can_create_one_with_single_form_of_contact()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -697,7 +849,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_organisation_admin_can_create_one_without_cqc_field_if_cqc_flag_is_false()
+    /**
+     * @test
+     */
+    public function organisation_admin_can_create_one_without_cqc_field_if_cqc_flag_is_false()
     {
         config(['flags.cqc_location' => false]);
         $organisation = Organisation::factory()->create();
@@ -752,7 +907,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_organisation_admin_can_create_one_without_tags_field_if_tags_flag_is_false()
+    /**
+     * @test
+     */
+    public function organisation_admin_can_create_one_without_tags_field_if_tags_flag_is_false()
     {
         config(['flags.service_tags' => true]);
         $organisation = Organisation::factory()->create();
@@ -813,7 +971,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_organisation_admin_cannot_create_an_active_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_create_an_active_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -867,7 +1028,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_cannot_create_with_non_numeric_phone()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_create_with_non_numeric_phone()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -921,7 +1085,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_organisation_admin_cannot_create_one_with_tags()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_create_one_with_tags()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -990,12 +1157,15 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_taxonomy_hierarchy_works_when_creating()
+    /**
+     * @test
+     */
+    public function taxonomy_hierarchy_works_when_creating()
     {
         $taxonomy = Taxonomy::factory()->lgaStandards()->create();
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -1055,7 +1225,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_organisation_admin_for_another_organisation_cannot_create_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_for_another_organisation_cannot_create_one()
     {
         $anotherOrganisation = Organisation::factory()->create();
         $organisation = Organisation::factory()->create();
@@ -1099,12 +1272,15 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_audit_created_when_created()
+    /**
+     * @test
+     */
+    public function audit_created_when_created()
     {
         $this->fakeEvents();
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -1158,10 +1334,72 @@ class ServicesTest extends TestCase
         });
     }
 
-    public function test_global_admin_can_create_an_active_one_with_taxonomies()
+    /**
+     * @test
+     */
+    public function global_admin_can_create_an_active_one_with_taxonomies()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment($payload);
+    }
+
+    /**
+     * @test
+     */
+    public function super_admin_can_create_an_active_one_with_taxonomies()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -1224,7 +1462,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($responsePayload);
     }
 
-    public function test_global_admin_can_create_one_accepting_referrals()
+    /**
+     * @test
+     */
+    public function global_admin_can_create_one_accepting_referrals()
     {
         $organisation = Organisation::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
@@ -1276,21 +1517,15 @@ class ServicesTest extends TestCase
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
-        $responsePayload = $payload;
-        unset($responsePayload['category_taxonomies']);
-        $response->assertJsonFragment($responsePayload);
-        $response->assertJsonFragment([
-            'id' => $taxonomy->id,
-            'parent_id' => $taxonomy->parent_id,
-            'slug' => $taxonomy->slug,
-            'name' => $taxonomy->name,
-            'created_at' => $taxonomy->created_at->format(CarbonImmutable::ISO8601),
-            'updated_at' => $taxonomy->updated_at->format(CarbonImmutable::ISO8601),
-        ]);
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment($payload);
     }
 
-    public function test_global_admin_cannot_create_one_with_referral_disclaimer_showing()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_create_one_with_referral_disclaimer_showing()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -1344,7 +1579,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_can_create_one_with_tags()
+    /**
+     * @test
+     */
+    public function global_admin_can_create_one_with_tags()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -1405,7 +1643,7 @@ class ServicesTest extends TestCase
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonFragment([
             'slug' => $tag1->slug,
@@ -1413,7 +1651,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_global_admin_can_create_tags_when_creating_one()
+    /**
+     * @test
+     */
+    public function global_admin_can_create_tags_when_creating_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -1473,12 +1714,20 @@ class ServicesTest extends TestCase
         ];
         $response = $this->json('POST', '/core/v1/services', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonFragment([
             'slug' => 'tag-1',
             'label' => 'Tag One',
         ]);
+
+        $updateRequestId = $response->json()['id'];
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseHas('tags', [
             'slug' => 'tag-1',
@@ -1486,7 +1735,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_super_admin_can_create_one_with_referral_disclaimer_showing()
+    /**
+     * @test
+     */
+    public function super_admin_can_create_one_with_referral_disclaimer_showing()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeSuperAdmin();
@@ -1544,16 +1796,19 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
-    public function test_slug_is_incremented_when_creating_one_with_duplicate_slug()
+    /**
+     * @test
+     */
+    public function slug_is_incremented_when_creating_one_with_duplicate_slug()
     {
         $organisation1 = Organisation::factory()->create();
         $organisation2 = Organisation::factory()->create();
         $organisation3 = Organisation::factory()->create();
         $organisation4 = Organisation::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
 
-        //Given that a global admin is logged in
+        //Given that a super admin is logged in
         Passport::actingAs($user);
 
         $payload = [
@@ -1733,7 +1988,7 @@ class ServicesTest extends TestCase
         // Simulate frontend check by making call with UpdateRequest ID.
         $updateRequestId = $responseData->id;
 
-        Passport::actingAs($globalAdmin);
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
 
@@ -1819,34 +2074,43 @@ class ServicesTest extends TestCase
         //When they create a service
         $response = $this->json('POST', '/core/v1/services', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
-        $responseData = $response->json('data');
+        $responseData = $response->json();
 
-        $service = Service::find($responseData['id']);
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = $responseData['id'];
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $service = Service::where('slug', $payload['slug'])->firstOrFail();
 
         $this->assertDatabaseHas((new UserRole)->getTable(), [
             'user_id' => $globalAdmin1->id,
             'role_id' => Role::serviceAdmin()->id,
-            'service_id' => $responseData['id'],
+            'service_id' => $service->id,
         ]);
 
         $this->assertDatabaseHas((new UserRole)->getTable(), [
             'user_id' => $globalAdmin1->id,
             'role_id' => Role::serviceWorker()->id,
-            'service_id' => $responseData['id'],
+            'service_id' => $service->id,
         ]);
 
         $this->assertDatabaseHas((new UserRole)->getTable(), [
             'user_id' => $globalAdmin2->id,
             'role_id' => Role::serviceAdmin()->id,
-            'service_id' => $responseData['id'],
+            'service_id' => $service->id,
         ]);
 
         $this->assertDatabaseHas((new UserRole)->getTable(), [
             'user_id' => $globalAdmin2->id,
             'role_id' => Role::serviceWorker()->id,
-            'service_id' => $responseData['id'],
+            'service_id' => $service->id,
         ]);
 
         $this->assertTrue($globalAdmin1->isServiceWorker($service));
@@ -1862,7 +2126,10 @@ class ServicesTest extends TestCase
      * Get a specific service.
      */
 
-    public function test_guest_can_view_one()
+    /**
+     * @test
+     */
+    public function guest_can_view_one()
     {
         $service = Service::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
@@ -1957,7 +2224,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_guest_can_view_one_by_slug()
+    /**
+     * @test
+     */
+    public function guest_can_view_one_by_slug()
     {
         $service = Service::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
@@ -2037,7 +2307,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_offerings_are_returned_in_order()
+    /**
+     * @test
+     */
+    public function offerings_are_returned_in_order()
     {
         $service = Service::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
@@ -2077,7 +2350,10 @@ class ServicesTest extends TestCase
         $this->assertEquals(3, $offerings[2]['order']);
     }
 
-    public function test_audit_created_when_viewed()
+    /**
+     * @test
+     */
+    public function audit_created_when_viewed()
     {
         $this->fakeEvents();
 
@@ -2111,7 +2387,10 @@ class ServicesTest extends TestCase
      * Update a specific service.
      */
 
-    public function test_guest_cannot_update_one()
+    /**
+     * @test
+     */
+    public function guest_cannot_update_one()
     {
         $service = Service::factory()->create();
 
@@ -2120,7 +2399,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_update_one()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_update_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -2132,7 +2414,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_can_update_one()
+    /**
+     * @test
+     */
+    public function service_admin_can_update_one()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2197,7 +2482,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
-    public function test_service_admin_can_update_one_with_single_form_of_contact()
+    /**
+     * @test
+     */
+    public function service_admin_can_update_one_with_single_form_of_contact()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2262,7 +2550,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
-    public function test_service_admin_cannot_update_one_with_tags()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_update_one_with_tags()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2329,7 +2620,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_can_update_most_fields_for_one()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_most_fields_for_one()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2398,9 +2692,17 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['data' => $payload]);
+
+        $this->assertDatabaseMissing('services', [
+            'id' => $service->id,
+            'intro' => 'This is a test intro',
+        ]);
     }
 
-    public function test_global_admin_cannot_update_with_non_numeric_phone()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_update_with_non_numeric_phone()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2463,7 +2765,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_cannot_update_show_referral_disclaimer_for_one()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_update_show_referral_disclaimer_for_one()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2521,7 +2826,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_audit_created_when_updated()
+    /**
+     * @test
+     */
+    public function audit_created_when_updated()
     {
         $this->fakeEvents();
 
@@ -2585,7 +2893,10 @@ class ServicesTest extends TestCase
         });
     }
 
-    public function test_service_admin_cannot_update_taxonomies()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_update_taxonomies()
     {
         $service = Service::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
@@ -2646,7 +2957,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_can_update_taxonomies()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_taxonomies()
     {
         $service = Service::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
@@ -2707,7 +3021,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function test_service_admin_can_update_cqc_location_id()
+    /**
+     * @test
+     */
+    public function service_admin_can_update_cqc_location_id()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2764,7 +3081,10 @@ class ServicesTest extends TestCase
         $this->assertEquals($cqcLocationId, $updateRequest->data['cqc_location_id']);
     }
 
-    public function test_service_admin_cannot_update_status()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_update_status()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2812,7 +3132,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_service_admin_cannot_update_slug()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_update_slug()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2860,7 +3183,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_can_update_status()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_status()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2908,7 +3234,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function test_global_admin_cannot_update_slug()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_slug()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -2956,7 +3285,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function test_global_admin_can_create_tags_when_updating()
+    /**
+     * @test
+     */
+    public function global_admin_can_create_tags_when_updating()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3034,7 +3366,10 @@ class ServicesTest extends TestCase
         ]], $updateRequest->data['tags']);
     }
 
-    public function test_referral_email_must_be_provided_when_referral_type_is_internal()
+    /**
+     * @test
+     */
+    public function referral_email_must_be_provided_when_referral_type_is_internal()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3083,7 +3418,10 @@ class ServicesTest extends TestCase
         $this->assertArrayHasKey('referral_email', $this->getResponseContent($response)['errors']);
     }
 
-    public function test_service_admin_cannot_update_referral_details()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_update_referral_details()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3135,7 +3473,10 @@ class ServicesTest extends TestCase
         $this->assertArrayHasKey('referral_method', $this->getResponseContent($response)['errors']);
     }
 
-    public function test_global_admin_can_update_referral_details()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_referral_details()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3189,7 +3530,10 @@ class ServicesTest extends TestCase
      * Delete a specific service's logo.
      */
 
-    public function test_service_admin_can_delete_logo()
+    /**
+     * @test
+     */
+    public function service_admin_can_delete_logo()
     {
         /**
          * @var \App\Models\User $user
@@ -3237,7 +3581,10 @@ class ServicesTest extends TestCase
         $this->assertEquals(null, $updateRequest->data['logo_file_id']);
     }
 
-    public function test_service_admin_can_update_gallery_items()
+    /**
+     * @test
+     */
+    public function service_admin_can_update_gallery_items()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3269,7 +3616,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function test_only_partial_fields_can_be_updated()
+    /**
+     * @test
+     */
+    public function only_partial_fields_can_be_updated()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3290,7 +3640,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['data' => $payload]);
     }
 
-    public function test_fields_removed_for_existing_update_requests()
+    /**
+     * @test
+     */
+    public function fields_removed_for_existing_update_requests()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3343,7 +3696,10 @@ class ServicesTest extends TestCase
         $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 
-    public function test_referral_url_required_when_referral_method_not_updated_with_it()
+    /**
+     * @test
+     */
+    public function referral_url_required_when_referral_method_not_updated_with_it()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3364,7 +3720,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_organisation_admin_cannot_update_organisation_id()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_update_organisation_id()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3383,7 +3742,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_global_admin_can_update_organisation_id()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_organisation_id()
     {
         $originalOrganisation = Organisation::factory()->create([
             'name' => 'Original Organisation',
@@ -3416,13 +3778,37 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['data' => $payload]);
 
+        $updateRequestId = $response->json()['id'];
+
+        $updateRequestCheckResponse = $this->get(
+            route(
+                'core.v1.update-requests.show',
+                ['update_request' => $updateRequestId]
+            )
+        );
+
+        $updateRequestCheckResponse->assertSuccessful();
+        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
+
+        // Update request should not have been approved.
+        $this->assertNull($updateRequestResponseData->approved_at);
+
+        // Approve the update request
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+
         $service->refresh();
 
         $this->assertTrue($newOrganisationAdmin->isServiceAdmin($service));
         $this->assertFalse($originalOrganisationAdmin->isServiceAdmin($service));
     }
 
-    public function test_global_admin_can_update_organisation_id_with_preview_only()
+    /**
+     * @test
+     */
+    public function global_admin_can_update_organisation_id_with_preview_only()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3447,7 +3833,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['id' => null, 'data' => $payload]);
     }
 
-    public function test_global_admin_can_update_one_with_auto_approval()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_update_one_with_auto_approval()
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3488,14 +3877,17 @@ class ServicesTest extends TestCase
         $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
 
         // Update request should already have been approved.
-        $this->assertNotNull($updateRequestResponseData->approved_at);
+        $this->assertNull($updateRequestResponseData->approved_at);
     }
 
     /*
      * Delete a specific service.
      */
 
-    public function test_guest_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function guest_cannot_delete_one()
     {
         $service = Service::factory()->create();
 
@@ -3504,7 +3896,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -3516,7 +3911,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -3528,7 +3926,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($service->organisation);
@@ -3540,7 +3941,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_delete_one()
+    /**
+     * @test
+     */
+    public function global_admin_can_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -3553,7 +3957,10 @@ class ServicesTest extends TestCase
         $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
-    public function test_audit_created_when_deleted()
+    /**
+     * @test
+     */
+    public function audit_created_when_deleted()
     {
         $this->fakeEvents();
 
@@ -3571,7 +3978,10 @@ class ServicesTest extends TestCase
         });
     }
 
-    public function test_service_can_be_deleted_when_service_location_has_opening_hours()
+    /**
+     * @test
+     */
+    public function service_can_be_deleted_when_service_location_has_opening_hours()
     {
         $service = Service::factory()->create();
         $serviceLocation = ServiceLocation::factory()->create([
@@ -3593,7 +4003,10 @@ class ServicesTest extends TestCase
         $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
-    public function test_service_can_be_deleted_when_disabled()
+    /**
+     * @test
+     */
+    public function service_can_be_deleted_when_disabled()
     {
         $service = Service::factory()->create([
             'status' => Service::STATUS_INACTIVE,
@@ -3613,7 +4026,10 @@ class ServicesTest extends TestCase
      * Refresh service.
      */
 
-    public function test_guest_without_token_cannot_refresh()
+    /**
+     * @test
+     */
+    public function guest_without_token_cannot_refresh()
     {
         $service = Service::factory()->create();
 
@@ -3622,7 +4038,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_guest_with_invalid_token_cannot_refresh()
+    /**
+     * @test
+     */
+    public function guest_with_invalid_token_cannot_refresh()
     {
         $service = Service::factory()->create();
 
@@ -3633,7 +4052,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_guest_with_valid_token_can_refresh()
+    /**
+     * @test
+     */
+    public function guest_with_valid_token_can_refresh()
     {
         $now = Date::now();
         Date::setTestNow($now);
@@ -3654,7 +4076,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_service_worker_without_token_cannot_refresh()
+    /**
+     * @test
+     */
+    public function service_worker_without_token_cannot_refresh()
     {
         $service = Service::factory()->create();
 
@@ -3667,7 +4092,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function test_service_admin_without_token_can_refresh()
+    /**
+     * @test
+     */
+    public function service_admin_without_token_can_refresh()
     {
         $now = Date::now();
         Date::setTestNow($now);
@@ -3692,7 +4120,10 @@ class ServicesTest extends TestCase
      * List all the related services.
      */
 
-    public function test_guest_can_list_related()
+    /**
+     * @test
+     */
+    public function guest_can_list_related()
     {
         $taxonomyOne = Taxonomy::factory()->create();
         $taxonomyTwo = Taxonomy::factory()->create();
@@ -3825,7 +4256,10 @@ class ServicesTest extends TestCase
         $response->assertJsonMissing(['id' => $inactiveService->id]);
     }
 
-    public function test_related_services_order_by_taxonomy_depth()
+    /**
+     * @test
+     */
+    public function related_services_order_by_taxonomy_depth()
     {
         // Create taxonomies.
         $taxonomy = Taxonomy::factory()->create();
@@ -3891,7 +4325,10 @@ class ServicesTest extends TestCase
      * Disable stale.
      */
 
-    public function test_guest_cannot_disable_stale()
+    /**
+     * @test
+     */
+    public function guest_cannot_disable_stale()
     {
         $response = $this->putJson('/core/v1/services/disable-stale', [
             'last_modified_at' => Date::today()->toDateString(),
@@ -3900,7 +4337,10 @@ class ServicesTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function test_super_admin_can_disable_stale()
+    /**
+     * @test
+     */
+    public function super_admin_can_disable_stale()
     {
         $staleService = Service::factory()->create([
             'last_modified_at' => '2020-02-01',
@@ -3930,7 +4370,10 @@ class ServicesTest extends TestCase
      * Get a specific service's logo.
      */
 
-    public function test_guest_can_view_logo()
+    /**
+     * @test
+     */
+    public function guest_can_view_logo()
     {
         $service = Service::factory()->create();
 
@@ -3940,7 +4383,10 @@ class ServicesTest extends TestCase
         $response->assertHeader('Content-Type', 'image/png');
     }
 
-    public function test_audit_created_when_logo_viewed()
+    /**
+     * @test
+     */
+    public function audit_created_when_logo_viewed()
     {
         $this->fakeEvents();
 
@@ -3958,7 +4404,10 @@ class ServicesTest extends TestCase
      * Upload a specific service's logo.
      */
 
-    public function test_organisation_admin_can_upload_logo()
+    /**
+     * @test
+     */
+    public function organisation_admin_can_upload_logo()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create();
@@ -4062,7 +4511,10 @@ class ServicesTest extends TestCase
      * Get a specific service's gallery item.
      */
 
-    public function test_guest_can_view_gallery_item()
+    /**
+     * @test
+     */
+    public function guest_can_view_gallery_item()
     {
         /** @var \App\Models\File $file */
         $file = File::factory()->create([
@@ -4089,7 +4541,10 @@ class ServicesTest extends TestCase
     /**
      * Bulk import services
      */
-    public function test_guest_cannot_bulk_import()
+    /**
+     * @test
+     */
+    public function guest_cannot_bulk_import()
     {
         Storage::fake('local');
 
@@ -4108,7 +4563,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_bulk_import()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_bulk_import()
     {
         Storage::fake('local');
 
@@ -4130,7 +4588,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_bulk_import()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_bulk_import()
     {
         Storage::fake('local');
 
@@ -4154,7 +4615,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_from_other_organisation_cannot_bulk_import()
+    /**
+     * @test
+     */
+    public function organisation_admin_from_other_organisation_cannot_bulk_import()
     {
         Storage::fake('local');
 
@@ -4194,7 +4658,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_organisation_admin_can_bulk_import()
+    /**
+     * @test
+     */
+    public function organisation_admin_can_bulk_import()
     {
         Storage::fake('local');
 
@@ -4219,7 +4686,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
-    public function test_global_admin_can_bulk_import()
+    /**
+     * @test
+     */
+    public function global_admin_can_bulk_import()
     {
         Storage::fake('local');
 
@@ -4240,7 +4710,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
-    public function test_super_admin_can_bulk_import()
+    /**
+     * @test
+     */
+    public function super_admin_can_bulk_import()
     {
         Storage::fake('local');
 
@@ -4261,7 +4734,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
-    public function test_global_admin_can_view_bulk_imported_services()
+    /**
+     * @test
+     */
+    public function global_admin_can_view_bulk_imported_services()
     {
         Storage::fake('local');
 
@@ -4325,7 +4801,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_super_admin_can_view_bulk_imported_services()
+    /**
+     * @test
+     */
+    public function super_admin_can_view_bulk_imported_services()
     {
         Storage::fake('local');
 
@@ -4389,7 +4868,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_validate_file_import_type()
+    /**
+     * @test
+     */
+    public function validate_file_import_type()
     {
         Storage::fake('local');
 
@@ -4473,7 +4955,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_validate_file_import_service_fields()
+    /**
+     * @test
+     */
+    public function validate_file_import_service_fields()
     {
         Storage::fake('local');
         $faker = Faker::create('en_GB');
@@ -4760,7 +5245,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_validate_file_import_service_field_global_admin_permissions()
+    /**
+     * @test
+     */
+    public function validate_file_import_service_field_global_admin_permissions()
     {
         Storage::fake('local');
         $faker = Faker::create('en_GB');
@@ -4865,7 +5353,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
-    public function test_validate_file_import_service_field_super_admin_permissions()
+    /**
+     * @test
+     */
+    public function validate_file_import_service_field_super_admin_permissions()
     {
         Storage::fake('local');
         $faker = Faker::create('en_GB');
@@ -5104,7 +5595,10 @@ class ServicesTest extends TestCase
         }
     }
 
-    public function test_services_file_import_100rows()
+    /**
+     * @test
+     */
+    public function services_file_import_100rows()
     {
         Storage::fake('local');
 
@@ -5157,7 +5651,10 @@ class ServicesTest extends TestCase
     /**
      * @group slow
      */
-    public function test_services_file_import_5krows()
+    /**
+     * @test
+     */
+    public function services_file_import_5krows()
     {
         Storage::fake('local');
 
@@ -5207,7 +5704,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_service_eligiblity_custom_fields_schema_on_index()
+    /**
+     * @test
+     */
+    public function service_eligiblity_custom_fields_schema_on_index()
     {
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()
             ->create();
@@ -5236,7 +5736,10 @@ class ServicesTest extends TestCase
     /**
      * Service Eligibilities
      */
-    public function test_service_eligiblity_taxonomy_id_schema_on_index()
+    /**
+     * @test
+     */
+    public function service_eligiblity_taxonomy_id_schema_on_index()
     {
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withEligibilityTaxonomies()->withCategoryTaxonomies()
             ->create();
@@ -5262,7 +5765,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_service_eligibility_taxonomy_and_custom_fields_schema_on_index()
+    /**
+     * @test
+     */
+    public function service_eligibility_taxonomy_and_custom_fields_schema_on_index()
     {
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()->withEligibilityTaxonomies()
             ->create();
@@ -5289,7 +5795,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_service_eligiblity_custom_fields_schema_on_show()
+    /**
+     * @test
+     */
+    public function service_eligiblity_custom_fields_schema_on_show()
     {
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()
             ->create();
@@ -5313,7 +5822,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_service_eligiblity_taxonomy_id_schema_on_show()
+    /**
+     * @test
+     */
+    public function service_eligiblity_taxonomy_id_schema_on_show()
     {
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCategoryTaxonomies()->withEligibilityTaxonomies()
             ->create();
@@ -5339,7 +5851,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_service_eligibility_taxonomy_and_custom_fields_schema_on_show()
+    /**
+     * @test
+     */
+    public function service_eligibility_taxonomy_and_custom_fields_schema_on_show()
     {
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()->withEligibilityTaxonomies()
             ->create();
@@ -5365,7 +5880,10 @@ class ServicesTest extends TestCase
         ]);
     }
 
-    public function test_create_service_with_eligibility_taxonomies()
+    /**
+     * @test
+     */
+    public function create_service_with_eligibility_taxonomies()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -5446,11 +5964,14 @@ class ServicesTest extends TestCase
         $payload = array_merge($taxonomyPayload, $payload);
 
         $response = $this->json('POST', '/core/v1/services', $payload);
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment($taxonomyPayload);
     }
 
-    public function test_create_service_with_custom_eligibility_fields()
+    /**
+     * @test
+     */
+    public function create_service_with_custom_eligibility_fields()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -5519,11 +6040,14 @@ class ServicesTest extends TestCase
         $payload = array_merge($taxonomyPayload, $payload);
 
         $response = $this->json('POST', '/core/v1/services', $payload);
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment($taxonomyPayload);
     }
 
-    public function test_create_service_with_custom_fields_and_eligibility_taxonomy_ids()
+    /**
+     * @test
+     */
+    public function create_service_with_custom_fields_and_eligibility_taxonomy_ids()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -5605,11 +6129,14 @@ class ServicesTest extends TestCase
         $payload = array_merge($taxonomyPayload, $payload);
 
         $response = $this->json('POST', '/core/v1/services', $payload);
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment($taxonomyPayload);
     }
 
-    public function test_update_service_with_eligibility_taxonomies()
+    /**
+     * @test
+     */
+    public function update_service_with_eligibility_taxonomies()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
@@ -5645,9 +6172,12 @@ class ServicesTest extends TestCase
         }
     }
 
-    public function test_update_service_with_custom_eligibility_fields()
+    /**
+     * @test
+     */
+    public function update_service_with_custom_eligibility_fields()
     {
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
             ->create();
 
@@ -5680,9 +6210,12 @@ class ServicesTest extends TestCase
         }
     }
 
-    public function test_update_service_with_custom_fields_and_eligibility_taxonomies()
+    /**
+     * @test
+     */
+    public function update_service_with_custom_fields_and_eligibility_taxonomies()
     {
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
             ->create();
 
@@ -5731,7 +6264,10 @@ class ServicesTest extends TestCase
         }
     }
 
-    public function test_delete_custom_eligibility_fields_from_service()
+    /**
+     * @test
+     */
+    public function delete_custom_eligibility_fields_from_service()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
@@ -5759,7 +6295,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_delete_eligibility_taxonomy_ids_from_service()
+    /**
+     * @test
+     */
+    public function delete_eligibility_taxonomy_ids_from_service()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
@@ -5777,7 +6316,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_delete_eligibility_taxonomy_ids_and_custom_fields_from_service()
+    /**
+     * @test
+     */
+    public function delete_eligibility_taxonomy_ids_and_custom_fields_from_service()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
@@ -5807,7 +6349,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment($payload);
     }
 
-    public function test_eligibility_taxonomy_can_not_be_added_if_top_level_child_of_incorrect_parent_taxonomy()
+    /**
+     * @test
+     */
+    public function eligibility_taxonomy_can_not_be_added_if_top_level_child_of_incorrect_parent_taxonomy()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
@@ -5830,7 +6375,10 @@ class ServicesTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_service_update_rejected_if_social_medias_field_is_populated()
+    /**
+     * @test
+     */
+    public function service_update_rejected_if_social_medias_field_is_populated()
     {
         // Given a global admin is logged in
         $globalAdmin = User::factory()->create()->makeGlobalAdmin();
@@ -5861,7 +6409,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
     }
 
-    public function test_service_creation_rejected_if_social_medias_field_is_populated()
+    /**
+     * @test
+     */
+    public function service_creation_rejected_if_social_medias_field_is_populated()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -5920,7 +6471,10 @@ class ServicesTest extends TestCase
         $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
     }
 
-    public function test_service_update_request_approval_rejected_if_social_medias_field_is_populated()
+    /**
+     * @test
+     */
+    public function service_update_request_approval_rejected_if_social_medias_field_is_populated()
     {
         $now = Date::now();
         Date::setTestNow($now);

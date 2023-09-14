@@ -19,7 +19,7 @@ class ServicePersistenceService implements DataPersistenceService
 {
     public function store(FormRequest $request)
     {
-        return $request->user()->isGlobalAdmin()
+        return $request->user()->isSuperAdmin()
         ? $this->processAsNewEntity($request)
         : $this->processAsUpdateRequest($request);
     }
@@ -102,8 +102,13 @@ class ServicePersistenceService implements DataPersistenceService
                 ];
             }
 
+            $updateableType = UpdateRequestModel::EXISTING_TYPE_SERVICE;
+            if (!$service) {
+                $updateableType = $request->user()->isGlobalAdmin() ? UpdateRequestModel::NEW_TYPE_SERVICE_GLOBAL_ADMIN : UpdateRequestModel::NEW_TYPE_SERVICE_ORG_ADMIN;
+            }
+
             $updateRequest = new UpdateRequestModel([
-                'updateable_type' => $service ? UpdateRequestModel::EXISTING_TYPE_SERVICE : UpdateRequestModel::NEW_TYPE_SERVICE,
+                'updateable_type' => $updateableType,
                 'updateable_id' => $service ? $service->id : null,
                 'user_id' => $request->user()->id,
                 'data' => $data,
@@ -154,8 +159,8 @@ class ServicePersistenceService implements DataPersistenceService
                 'score' => $request->score,
                 'last_modified_at' => Date::now(),
                 'ends_at' => $request->filled('ends_at')
-                    ? Date::createFromFormat(CarbonImmutable::ISO8601, $request->ends_at)
-                    : null,
+                ? Date::createFromFormat(CarbonImmutable::ISO8601, $request->ends_at)
+                : null,
             ];
 
             foreach ($request->input('eligibility_types.custom', []) as $customEligibilityType => $value) {

@@ -34,7 +34,9 @@ class UpdateRequest extends Model
 
     const NEW_TYPE_ORGANISATION_SIGN_UP_FORM = 'organisation_sign_up_form';
 
-    const NEW_TYPE_SERVICE = 'new_service_created_by_org_admin';
+    const NEW_TYPE_SERVICE_ORG_ADMIN = 'new_service_created_by_org_admin';
+
+    const NEW_TYPE_SERVICE_GLOBAL_ADMIN = 'new_service_created_by_global_admin';
 
     const NEW_TYPE_ORGANISATION_EVENT = 'new_organisation_event_created_by_org_admin';
 

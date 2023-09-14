@@ -736,7 +736,7 @@ class UpdateRequestsTest extends TestCase
         $imagePayload = [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.self::BASE64_ENCODED_PNG,
+            'file' => 'data:image/png;base64,' . self::BASE64_ENCODED_PNG,
         ];
 
         $response = $this->json('POST', '/core/v1/files', $imagePayload);
@@ -807,7 +807,7 @@ class UpdateRequestsTest extends TestCase
 
         //Then an update request should be created for the new service
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE_ORG_ADMIN)
             ->where('updateable_id', null)
             ->firstOrFail();
 

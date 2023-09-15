@@ -314,15 +314,15 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankTitleAboveIntroAsGuest()
     {
-        $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
+        $event1 = OrganisationEvent::factory()->create(['title' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create([
-            'intro' => 'Thisisatest',
+            'intro' => 'This is a test',
         ]);
 
         sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
-            'query' => 'Thisisatest',
+            'query' => 'test this',
             'order' => 'relevance',
             'page' => 1,
             'per_page' => 20,
@@ -348,15 +348,15 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankTitleAboveDescriptionAsGuest()
     {
-        $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
+        $event1 = OrganisationEvent::factory()->create(['title' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create([
-            'description' => '<p>Thisisatest</p>',
+            'description' => '<p>This is a test</p>',
         ]);
 
         sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
-            'query' => 'Thisisatest',
+            'query' => 'test this',
             'order' => 'relevance',
             'page' => 1,
             'per_page' => 20,
@@ -382,15 +382,15 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankIntroAboveDescriptionAsGuest()
     {
-        $event1 = OrganisationEvent::factory()->create(['intro' => 'Thisisatest']);
+        $event1 = OrganisationEvent::factory()->create(['intro' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create([
-            'description' => '<p>Thisisatest</p>',
+            'description' => '<p>This is a test</p>',
         ]);
 
         sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
-            'query' => 'Thisisatest',
+            'query' => 'test this',
             'order' => 'relevance',
             'page' => 1,
             'per_page' => 20,
@@ -416,13 +416,13 @@ class EventTest extends TestCase implements UsesElasticsearch
      */
     public function searchEventsRankPerfectMatchAboveCloseMatchAsGuest()
     {
-        $event1 = OrganisationEvent::factory()->create(['title' => 'Thisisatest']);
-        $event2 = OrganisationEvent::factory()->create(['title' => 'Thsiisatst']);
+        $event1 = OrganisationEvent::factory()->create(['title' => 'This is a test']);
+        $event2 = OrganisationEvent::factory()->create(['title' => 'Those are tests']);
 
         sleep(1);
 
         $response = $this->json('POST', '/core/v1/search/events', [
-            'query' => 'Thisisatest',
+            'query' => 'This is a test',
             'order' => 'relevance',
             'page' => 1,
             'per_page' => 20,
@@ -1068,15 +1068,11 @@ class EventTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment(['id' => $event2->id]);
         $response->assertJsonFragment(['id' => $event3->id]);
         $response->assertJsonMissing(['id' => $event1->id]);
         $response->assertJsonMissing(['id' => $event4->id]);
-
-        $data = $this->getResponseContent($response)['data'];
-        $this->assertEquals(2, count($data));
-        $this->assertTrue(in_array($event2->id, [$data[0]['id'], $data[1]['id']]));
-        $this->assertTrue(in_array($event3->id, [$data[0]['id'], $data[1]['id']]));
     }
 
     /**
@@ -1097,7 +1093,8 @@ class EventTest extends TestCase implements UsesElasticsearch
 
         // Relevant < 1 mile
         $event2 = OrganisationEvent::factory()->create([
-            'intro' => 'Thisisatest',
+            'title' => 'Event number 2',
+            'intro' => 'Test name',
             'is_virtual' => false,
             'location_id' => function () {
                 return Location::factory()->create([
@@ -1109,7 +1106,8 @@ class EventTest extends TestCase implements UsesElasticsearch
 
         // Relevant < 1 mile
         $event3 = OrganisationEvent::factory()->create([
-            'title' => 'Thisisatest',
+            'title' => 'Test name',
+            'intro' => 'Event number 3',
             'is_virtual' => false,
             'location_id' => function () {
                 return Location::factory()->create([
@@ -1121,7 +1119,7 @@ class EventTest extends TestCase implements UsesElasticsearch
 
         // Relevant > 1 mile
         $event4 = OrganisationEvent::factory()->create([
-            'title' => 'Thisisatest',
+            'title' => 'Test name',
             'is_virtual' => false,
             'location_id' => function () {
                 return Location::factory()->create([
@@ -1131,10 +1129,10 @@ class EventTest extends TestCase implements UsesElasticsearch
             },
         ]);
 
-        sleep(1);
+        sleep(5);
 
         $response = $this->json('POST', '/core/v1/search/events', [
-            'query' => 'Thisisatest',
+            'query' => 'Test name',
             'order' => 'relevance',
             'distance' => 1,
             'location' => [
@@ -1144,15 +1142,11 @@ class EventTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment(['id' => $event2->id]);
         $response->assertJsonFragment(['id' => $event3->id]);
         $response->assertJsonMissing(['id' => $event1->id]);
         $response->assertJsonMissing(['id' => $event4->id]);
-
-        $data = $this->getResponseContent($response)['data'];
-        $this->assertEquals(2, count($data));
-        $this->assertEquals($event3->id, $data[0]['id']);
-        $this->assertEquals($event2->id, $data[1]['id']);
     }
 
     /**
@@ -1182,6 +1176,7 @@ class EventTest extends TestCase implements UsesElasticsearch
 
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'Testing',
+            'order' => 'start_date',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);

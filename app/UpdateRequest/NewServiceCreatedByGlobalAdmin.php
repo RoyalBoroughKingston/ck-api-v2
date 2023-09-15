@@ -77,12 +77,11 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
         ];
 
         // Add the elegibility types
-        if ($data->has('eligibility_types')) {
-            if ($data['eligibility_types']['custom'] ?? null) {
-                foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
-                    $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
-                    $insert[$fieldName] = $value;
-                }
+        if ($data->has('eligibility_types') && $data['eligibility_types']['custom'] ?? null) {
+            // Create the custom fields
+            foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
+                $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
+                $insert[$fieldName] = $value;
             }
         }
 
@@ -153,6 +152,12 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
         if ($data->has('category_taxonomies')) {
             $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
             $service->syncTaxonomyRelationships($taxonomies);
+        }
+
+        // Create the service eligibility taxonomy records
+        if ($data->has('eligibility_types') && $data['eligibility_types']['taxonomies'] ?? null) {
+            $eligibilityTypes = Taxonomy::whereIn('id', $data['eligibility_types']['taxonomies'])->get();
+            $service->syncEligibilityRelationships($eligibilityTypes);
         }
 
         // Ensure conditional fields are reset if needed.

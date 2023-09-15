@@ -2122,6 +2122,442 @@ class ServicesTest extends TestCase
         $this->assertTrue($globalAdmin2->isOrganisationAdmin($service->organisation));
     }
 
+    /**
+     * @test
+     */
+    public function create_service_with_eligibility_taxonomies_as_super_admin()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        $taxonomyIds = Taxonomy::serviceEligibility()
+            ->children
+            ->map(function ($taxonomy) {
+                return $taxonomy
+                    ->children()
+                    ->inRandomOrder()
+                    ->pluck('id')
+                    ->first();
+            })->toArray();
+
+        sort($taxonomyIds, SORT_STRING);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+
+        $taxonomyPayload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => null,
+                    'disability' => null,
+                    'ethnicity' => null,
+                    'gender' => null,
+                    'income' => null,
+                    'language' => null,
+                    'housing' => null,
+                    'other' => null,
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ];
+
+        $payload = array_merge($taxonomyPayload, $payload);
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($taxonomyPayload);
+    }
+
+    /**
+     * @test
+     */
+    public function create_service_with_custom_eligibility_fields_as_super_admin()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+
+        $taxonomyPayload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => 'custom age group',
+                    'disability' => 'custom disability',
+                    'ethnicity' => 'custom ethnicity',
+                    'gender' => 'custom gender',
+                    'income' => 'custom income',
+                    'language' => 'custom language',
+                    'housing' => 'custom housing',
+                    'other' => 'custom other',
+                ],
+                'taxonomies' => [],
+            ],
+        ];
+
+        $payload = array_merge($taxonomyPayload, $payload);
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($taxonomyPayload);
+    }
+
+    /**
+     * @test
+     */
+    public function create_service_with_custom_fields_and_eligibility_taxonomy_ids_as_global_admin()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeGlobalAdmin();
+
+        $taxonomyIds = Taxonomy::serviceEligibility()
+            ->children
+            ->map(function ($taxonomy) {
+                return $taxonomy
+                    ->children()
+                    ->inRandomOrder()
+                    ->pluck('id')
+                    ->first();
+            })
+            ->toArray();
+
+        sort($taxonomyIds, SORT_STRING);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+
+        $taxonomyPayload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => 'created with custom age group',
+                    'disability' => 'created with custom disability',
+                    'ethnicity' => 'created with custom ethnicity',
+                    'gender' => 'created with custom gender',
+                    'income' => 'created with custom income',
+                    'language' => 'created with custom language',
+                    'housing' => 'created with custom housing',
+                    'other' => 'created with custom other',
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ];
+
+        $payload = array_merge($taxonomyPayload, $payload);
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($taxonomyPayload);
+
+        $responseData = json_decode($response->getContent());
+
+        // Simulate frontend check by making call with UpdateRequest ID.
+        $updateRequestId = $responseData->id;
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $service = Service::where('slug', 'test-service')->first();
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service->id,
+            'eligibility_age_group_custom' => 'created with custom age group',
+            'eligibility_disability_custom' => 'created with custom disability',
+            'eligibility_ethnicity_custom' => 'created with custom ethnicity',
+            'eligibility_gender_custom' => 'created with custom gender',
+            'eligibility_income_custom' => 'created with custom income',
+            'eligibility_language_custom' => 'created with custom language',
+            'eligibility_housing_custom' => 'created with custom housing',
+            'eligibility_other_custom' => 'created with custom other',
+        ]);
+
+        foreach ($taxonomyIds as $taxonomyId) {
+            $this->assertDatabaseHas('service_eligibilities', [
+                'service_id' => $service->id,
+                'taxonomy_id' => $taxonomyId,
+            ]);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function create_service_with_custom_fields_and_eligibility_taxonomy_ids_as_super_admin()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        $taxonomyIds = Taxonomy::serviceEligibility()
+            ->children
+            ->map(function ($taxonomy) {
+                return $taxonomy
+                    ->children()
+                    ->inRandomOrder()
+                    ->pluck('id')
+                    ->first();
+            })
+            ->toArray();
+
+        sort($taxonomyIds, SORT_STRING);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+
+        $taxonomyPayload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => 'created with custom age group',
+                    'disability' => 'created with custom disability',
+                    'ethnicity' => 'created with custom ethnicity',
+                    'gender' => 'created with custom gender',
+                    'income' => 'created with custom income',
+                    'language' => 'created with custom language',
+                    'housing' => 'created with custom housing',
+                    'other' => 'created with custom other',
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ];
+
+        $payload = array_merge($taxonomyPayload, $payload);
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment($taxonomyPayload);
+    }
+
+    /**
+     * @test
+     */
+    public function service_creation_rejected_if_social_medias_field_is_populated()
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital',
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
+    }
+
     /*
      * Get a specific service.
      */
@@ -2348,6 +2784,179 @@ class ServicesTest extends TestCase
         $this->assertEquals(1, $offerings[0]['order']);
         $this->assertEquals(2, $offerings[1]['order']);
         $this->assertEquals(3, $offerings[2]['order']);
+    }
+
+    /**
+     * @test
+     */
+    public function service_eligiblity_custom_fields_schema_on_index()
+    {
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()
+            ->create();
+
+        $service->save();
+
+        $response = $this->get(route('core.v1.services.index'));
+
+        $response->assertJsonFragment([
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => $service->eligibility_age_group_custom,
+                    'disability' => $service->eligibility_disability_custom,
+                    'ethnicity' => $service->eligibility_ethnicity_custom,
+                    'gender' => $service->eligibility_gender_custom,
+                    'income' => $service->eligibility_income_custom,
+                    'language' => $service->eligibility_language_custom,
+                    'housing' => $service->eligibility_housing_custom,
+                    'other' => $service->eligibility_other_custom,
+                ],
+                'taxonomies' => [],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function service_eligiblity_taxonomy_id_schema_on_index()
+    {
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
+
+        $response = $this->get(route('core.v1.services.index'));
+
+        $response->assertJsonFragment([
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => null,
+                    'disability' => null,
+                    'ethnicity' => null,
+                    'gender' => null,
+                    'income' => null,
+                    'language' => null,
+                    'housing' => null,
+                    'other' => null,
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function service_eligibility_taxonomy_and_custom_fields_schema_on_index()
+    {
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()->withEligibilityTaxonomies()
+            ->create();
+
+        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
+        sort($taxonomyIds, SORT_STRING);
+
+        $response = $this->get(route('core.v1.services.index'));
+
+        $response->assertJsonFragment([
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => $service->eligibility_age_group_custom,
+                    'disability' => $service->eligibility_disability_custom,
+                    'ethnicity' => $service->eligibility_ethnicity_custom,
+                    'gender' => $service->eligibility_gender_custom,
+                    'income' => $service->eligibility_income_custom,
+                    'language' => $service->eligibility_language_custom,
+                    'housing' => $service->eligibility_housing_custom,
+                    'other' => $service->eligibility_other_custom,
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function service_eligiblity_custom_fields_schema_on_show()
+    {
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()
+            ->create();
+
+        $response = $this->get(route('core.v1.services.show', $service->id));
+
+        $response->assertJsonFragment([
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => $service->eligibility_age_group_custom,
+                    'disability' => $service->eligibility_disability_custom,
+                    'ethnicity' => $service->eligibility_ethnicity_custom,
+                    'gender' => $service->eligibility_gender_custom,
+                    'income' => $service->eligibility_income_custom,
+                    'language' => $service->eligibility_language_custom,
+                    'housing' => $service->eligibility_housing_custom,
+                    'other' => $service->eligibility_other_custom,
+                ],
+                'taxonomies' => [],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function service_eligiblity_taxonomy_id_schema_on_show()
+    {
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCategoryTaxonomies()->withEligibilityTaxonomies()
+            ->create();
+
+        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
+
+        $response = $this->get(route('core.v1.services.show', $service->id));
+
+        $response->assertJsonFragment([
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => null,
+                    'disability' => null,
+                    'ethnicity' => null,
+                    'gender' => null,
+                    'income' => null,
+                    'language' => null,
+                    'housing' => null,
+                    'other' => null,
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function service_eligibility_taxonomy_and_custom_fields_schema_on_show()
+    {
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()->withEligibilityTaxonomies()
+            ->create();
+
+        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
+
+        $response = $this->get(route('core.v1.services.show', $service->id));
+
+        $response->assertJsonFragment([
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => $service->eligibility_age_group_custom,
+                    'disability' => $service->eligibility_disability_custom,
+                    'ethnicity' => $service->eligibility_ethnicity_custom,
+                    'gender' => $service->eligibility_gender_custom,
+                    'income' => $service->eligibility_income_custom,
+                    'language' => $service->eligibility_language_custom,
+                    'housing' => $service->eligibility_housing_custom,
+                    'other' => $service->eligibility_other_custom,
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ]);
     }
 
     /**
@@ -3526,6 +4135,282 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    /**
+     * @test
+     */
+    public function update_service_with_eligibility_taxonomies()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        $taxonomyIds = Taxonomy::serviceEligibility()->children->map(function ($taxonomy) {
+            // ensure we assign a different taxonomy ID
+            return $taxonomy->children()
+                ->inRandomOrder()
+                ->first()
+                ->id;
+        })
+            ->toArray();
+
+        sort($taxonomyIds, SORT_STRING);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'eligibility_types' => [
+                'taxonomies' => $taxonomyIds,
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+
+        $service->load('serviceEligibilities');
+
+        foreach ($service->serviceEligibilities['taxonomies'] as $taxonomyId) {
+            $this->assertTrue(in_array($taxonomyId, $taxonomyIds));
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function update_service_with_custom_eligibility_fields()
+    {
+        $user = User::factory()->create()->makeSuperAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => 'I am updating custom age_group',
+                    'disability' => 'I am updating custom disability',
+                    'ethnicity' => 'I am updating custom ethnicity',
+                    'gender' => 'I am updating custom gender',
+                    'income' => 'I am updating custom income',
+                    'language' => 'I am updating custom language',
+                    'housing' => 'I am updating custom housing',
+                    'other' => 'I am updating custom other',
+                ],
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+
+        // request the service to check update request was auto-applied
+        $service = $service->fresh()->load('serviceEligibilities');
+
+        foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
+            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function update_service_with_custom_fields_and_eligibility_taxonomies()
+    {
+        $user = User::factory()->create()->makeSuperAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        $taxonomyIds = Taxonomy::serviceEligibility()->children->map(function ($taxonomy) {
+            // ensure we assign a different taxonomy ID
+            return $taxonomy->children()
+                ->inRandomOrder()
+                ->first()
+                ->id;
+        })
+            ->toArray();
+
+        sort($taxonomyIds, SORT_STRING);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => 'I am updating custom age_group',
+                    'disability' => 'I am updating custom disability',
+                    'ethnicity' => 'I am updating custom ethnicity',
+                    'gender' => 'I am updating custom gender',
+                    'income' => 'I am updating custom income',
+                    'language' => 'I am updating custom language',
+                    'housing' => 'I am updating custom housing',
+                    'other' => 'I am updating custom other',
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+
+        $service = $service->fresh();
+        $service->load('serviceEligibilities');
+
+        foreach ($service->serviceEligibilities['taxonomies'] as $taxonomyId) {
+            $this->assertTrue(in_array($taxonomyId, $taxonomyIds));
+        }
+
+        foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
+            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function delete_custom_eligibility_fields_from_service()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => null,
+                    'disability' => null,
+                    'ethnicity' => null,
+                    'gender' => null,
+                    'income' => null,
+                    'language' => null,
+                    'housing' => null,
+                    'other' => null,
+                ],
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    /**
+     * @test
+     */
+    public function delete_eligibility_taxonomy_ids_from_service()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'eligibility_types' => [
+                'taxonomies' => [],
+            ],
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    /**
+     * @test
+     */
+    public function delete_eligibility_taxonomy_ids_and_custom_fields_from_service()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'eligibility_types' => [
+                'taxonomies' => [],
+                'custom' => [
+                    'age_group' => null,
+                    'disability' => null,
+                    'employment' => null,
+                    'ethnicity' => null,
+                    'gender' => null,
+                    'housing' => null,
+                    'income' => null,
+                    'language' => null,
+                    'other' => null,
+                ],
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    /**
+     * @test
+     */
+    public function eligibility_taxonomy_can_not_be_added_if_top_level_child_of_incorrect_parent_taxonomy()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
+            ->create();
+
+        // When I try to associate a taxonomy that is NOT a child of Service Eligibility
+        $incorrectTaxonomyId = Taxonomy::category()->children->random()->id;
+
+        $payload = [
+            'eligibility_types' => [
+                'taxonomies' => [$incorrectTaxonomyId],
+            ],
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', route('core.v1.services.update', $service->id), $payload);
+
+        // A validation error is thrown
+        $response->assertStatus(422);
+    }
+
+    /**
+     * @test
+     */
+    public function service_update_rejected_if_social_medias_field_is_populated()
+    {
+        // Given a global admin is logged in
+        $globalAdmin = User::factory()->create()->makeGlobalAdmin();
+
+        // And a pending update request exists for a service with changes to the social medias
+        $service = Service::factory()->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+        ]);
+
+        $taxonomy = Taxonomy::category()->children()->firstOrFail();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $serviceAdmin = User::factory()->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($serviceAdmin);
+        $payload = [
+            'social_medias' => [
+                [
+                    'type' => SocialMedia::TYPE_FACEBOOK,
+                    'url' => 'https://www.facebook.com/randomPerson',
+                ],
+            ],
+        ];
+
+        // Create the update request as service admin
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
+    }
+
     /*
      * Delete a specific service's logo.
      */
@@ -3880,6 +4765,64 @@ class ServicesTest extends TestCase
         $this->assertNull($updateRequestResponseData->approved_at);
     }
 
+    /**
+     * @test
+     */
+    public function service_update_request_approval_rejected_if_social_medias_field_is_populated()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $user = User::factory()->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service = Service::factory()->create();
+        $service->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->firstOrFail()->id,
+        ]);
+        $updateRequest = $service->updateRequests()->create([
+            'user_id' => User::factory()->create()->id,
+            'data' => [
+                'slug' => $service->slug,
+                'name' => 'Test Name',
+                'type' => $service->type,
+                'status' => $service->status,
+                'intro' => $service->intro,
+                'description' => $service->description,
+                'wait_time' => $service->wait_time,
+                'is_free' => $service->is_free,
+                'fees_text' => $service->fees_text,
+                'fees_url' => $service->fees_url,
+                'testimonial' => $service->testimonial,
+                'video_embed' => $service->video_embed,
+                'url' => $service->url,
+                'contact_name' => $service->contact_name,
+                'contact_phone' => $service->contact_phone,
+                'contact_email' => $service->contact_email,
+                'show_referral_disclaimer' => $service->show_referral_disclaimer,
+                'referral_method' => $service->referral_method,
+                'referral_button_text' => $service->referral_button_text,
+                'referral_email' => $service->referral_email,
+                'referral_url' => $service->referral_url,
+                'cqc_location_id' => $service->cqc_location_id,
+                'ends_at' => null,
+                'useful_infos' => [],
+                'social_medias' => [
+                    [
+                        'type' => SocialMedia::TYPE_INSTAGRAM,
+                        'url' => 'https://www.instagram.com/ayupdigital/',
+                    ],
+                ],
+                'category_taxonomies' => $service->taxonomies()->pluck('taxonomies.id')->toArray(),
+            ],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
+    }
+
     /*
      * Delete a specific service.
      */
@@ -3944,7 +4887,7 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_can_delete_one()
+    public function global_admin_cannot_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -3953,8 +4896,25 @@ class ServicesTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/services/{$service->id}");
 
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+
+        // $this->assertDatabaseHas((new Service())->getTable(), ['id' => $service->id]);
+
+        // //Then an update request should be created for the new service
+        // $updateRequest = UpdateRequest::query()
+        //     ->where('updateable_type', UpdateRequest::DESTROY_TYPE_SERVICE_GLOBAL_ADMIN)
+        //     ->where('updateable_id', $service->id)
+        //     ->firstOrFail();
+
+        // // Simulate frontend check by making call with UpdateRequest ID.
+
+        // Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        // $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        // $response->assertStatus(Response::HTTP_OK);
+
+        // $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
     /**
@@ -4641,27 +5601,13 @@ class ServicesTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson([
-            'data' => [
-                'errors' => [
-                    'spreadsheet' => [
-                        [
-                            'row' => [],
-                            'errors' => [
-                                'organisation_id' => [],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
      * @test
      */
-    public function organisation_admin_can_bulk_import()
+    public function organisation_admin_cannot_bulk_import()
     {
         Storage::fake('local');
 
@@ -4683,13 +5629,13 @@ class ServicesTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
      * @test
      */
-    public function global_admin_can_bulk_import()
+    public function global_admin_cannot_bulk_import()
     {
         Storage::fake('local');
 
@@ -4707,7 +5653,7 @@ class ServicesTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -4743,7 +5689,7 @@ class ServicesTest extends TestCase
 
         $user = User::factory()->create()->makeGlobalAdmin();
 
-        Passport::actingAs($user);
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $services = Service::factory()->count(2)->make();
 
@@ -4756,6 +5702,8 @@ class ServicesTest extends TestCase
         $response = $this->json('POST', '/core/v1/services/import', $data);
 
         $response->assertStatus(Response::HTTP_CREATED);
+
+        Passport::actingAs($user);
 
         $response = $this->json('GET', '/core/v1/services?include=organisation&filter=[has_permission]=true&page=1&sort=name');
 
@@ -4964,15 +5912,16 @@ class ServicesTest extends TestCase
         $faker = Faker::create('en_GB');
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $user = User::factory()->create()->makeSuperAdmin($organisation);
 
         Passport::actingAs($user);
 
+        // Empty fields
         $services = Service::factory()->count(2)->make([
             'organisation_id' => uuid(),
             'name' => '',
             'type' => '',
-            'status' => Service::STATUS_ACTIVE,
+            'status' => '',
             'intro' => '',
             'description' => '',
             'url' => '',
@@ -5015,14 +5964,15 @@ class ServicesTest extends TestCase
             ],
         ]);
 
+        // Invalid data
         $services = Service::factory()->count(2)->make([
             'organisation_id' => uuid(),
             'name' => '',
             'type' => '',
-            'status' => Service::STATUS_ACTIVE,
+            'status' => 'foo',
             'intro' => '',
             'description' => '',
-            'url' => '',
+            'url' => 'not a url',
             'referral_method' => '',
             'referral_email' => $faker->word(),
             'referral_url' => $faker->word(),
@@ -5066,6 +6016,7 @@ class ServicesTest extends TestCase
             ],
         ]);
 
+        // Existing ID
         $service = Service::factory()->make([
             'id' => Service::factory()->create()->id,
             'status' => Service::STATUS_INACTIVE,
@@ -5248,114 +6199,6 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
-    public function validate_file_import_service_field_global_admin_permissions()
-    {
-        Storage::fake('local');
-        $faker = Faker::create('en_GB');
-
-        $organisation = Organisation::factory()->create();
-        $organisationAdminUser = User::factory()->create()->makeOrganisationAdmin($organisation);
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
-
-        Passport::actingAs($organisationAdminUser);
-
-        $services = Service::factory()->count(2)->make([
-            'status' => Service::STATUS_ACTIVE,
-            'organisation_id' => $organisation->id,
-            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
-            'referral_button_text' => $faker->word(),
-            'referral_email' => $faker->email(),
-            'referral_url' => $faker->url(),
-            'show_referral_disclaimer' => '1',
-        ]);
-
-        $this->createServiceSpreadsheets($services);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
-        ];
-
-        $response = $this->json('POST', '/core/v1/services/import', $data);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson([
-            'data' => [
-                'errors' => [
-                    'spreadsheet' => [
-                        [
-                            'row' => [],
-                            'errors' => [
-                                'status' => [],
-                                'referral_method' => [],
-                                'referral_button_text' => [],
-                                'referral_email' => [],
-                                'referral_url' => [],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
-        ];
-
-        $response = $this->json('POST', '/core/v1/services/import', $data);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson([
-            'data' => [
-                'errors' => [
-                    'spreadsheet' => [
-                        [
-                            'row' => [],
-                            'errors' => [
-                                'status' => [],
-                                'referral_method' => [],
-                                'referral_button_text' => [],
-                                'referral_email' => [],
-                                'referral_url' => [],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        Passport::actingAs($globalAdminUser);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
-        ];
-
-        $response = $this->json('POST', '/core/v1/services/import', $data);
-
-        $response->assertStatus(Response::HTTP_CREATED);
-
-        $services = Service::factory()->count(2)->make([
-            'status' => Service::STATUS_ACTIVE,
-            'referral_method' => Service::REFERRAL_METHOD_EXTERNAL,
-            'referral_button_text' => $faker->word(),
-            'referral_email' => $faker->email(),
-            'referral_url' => $faker->url(),
-            'show_referral_disclaimer' => '1',
-        ]);
-
-        $this->createServiceSpreadsheets($services);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
-        ];
-
-        $response = $this->json('POST', '/core/v1/services/import', $data);
-
-        $response->assertStatus(Response::HTTP_CREATED);
-    }
-
-    /**
-     * @test
-     */
     public function validate_file_import_service_field_super_admin_permissions()
     {
         Storage::fake('local');
@@ -5363,8 +6206,6 @@ class ServicesTest extends TestCase
 
         $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
         $superAdminUser = User::factory()->create()->makeSuperAdmin();
-
-        Passport::actingAs($globalAdminUser);
 
         $services = Service::factory()->count(2)->make([
             'status' => Service::STATUS_ACTIVE,
@@ -5376,50 +6217,6 @@ class ServicesTest extends TestCase
         ]);
 
         $this->createServiceSpreadsheets($services);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
-        ];
-
-        $response = $this->json('POST', '/core/v1/services/import', $data);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson([
-            'data' => [
-                'errors' => [
-                    'spreadsheet' => [
-                        [
-                            'row' => [],
-                            'errors' => [
-                                'show_referral_disclaimer' => [],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
-        ];
-
-        $response = $this->json('POST', '/core/v1/services/import', $data);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson([
-            'data' => [
-                'errors' => [
-                    'spreadsheet' => [
-                        [
-                            'row' => [],
-                            'errors' => [
-                                'show_referral_disclaimer' => [],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
 
         Passport::actingAs($superAdminUser);
 
@@ -5459,7 +6256,7 @@ class ServicesTest extends TestCase
         Storage::fake('local');
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $user = User::factory()->create()->makeSuperAdmin();
         $serviceId = uuid();
 
         Passport::actingAs($user);
@@ -5506,7 +6303,7 @@ class ServicesTest extends TestCase
         Storage::fake('local');
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $user = User::factory()->create()->makeSuperAdmin();
         $serviceId = uuid();
 
         Passport::actingAs($user);
@@ -5603,7 +6400,7 @@ class ServicesTest extends TestCase
         Storage::fake('local');
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -5659,7 +6456,7 @@ class ServicesTest extends TestCase
         Storage::fake('local');
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -5705,827 +6502,7 @@ class ServicesTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function service_eligiblity_custom_fields_schema_on_index()
-    {
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()
-            ->create();
-
-        $service->save();
-
-        $response = $this->get(route('core.v1.services.index'));
-
-        $response->assertJsonFragment([
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => $service->eligibility_age_group_custom,
-                    'disability' => $service->eligibility_disability_custom,
-                    'ethnicity' => $service->eligibility_ethnicity_custom,
-                    'gender' => $service->eligibility_gender_custom,
-                    'income' => $service->eligibility_income_custom,
-                    'language' => $service->eligibility_language_custom,
-                    'housing' => $service->eligibility_housing_custom,
-                    'other' => $service->eligibility_other_custom,
-                ],
-                'taxonomies' => [],
-            ],
-        ]);
-    }
-
-    /**
      * Service Eligibilities
      */
-    /**
-     * @test
-     */
-    public function service_eligiblity_taxonomy_id_schema_on_index()
-    {
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
 
-        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
-
-        $response = $this->get(route('core.v1.services.index'));
-
-        $response->assertJsonFragment([
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => null,
-                    'disability' => null,
-                    'ethnicity' => null,
-                    'gender' => null,
-                    'income' => null,
-                    'language' => null,
-                    'housing' => null,
-                    'other' => null,
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function service_eligibility_taxonomy_and_custom_fields_schema_on_index()
-    {
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()->withEligibilityTaxonomies()
-            ->create();
-
-        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
-        sort($taxonomyIds, SORT_STRING);
-
-        $response = $this->get(route('core.v1.services.index'));
-
-        $response->assertJsonFragment([
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => $service->eligibility_age_group_custom,
-                    'disability' => $service->eligibility_disability_custom,
-                    'ethnicity' => $service->eligibility_ethnicity_custom,
-                    'gender' => $service->eligibility_gender_custom,
-                    'income' => $service->eligibility_income_custom,
-                    'language' => $service->eligibility_language_custom,
-                    'housing' => $service->eligibility_housing_custom,
-                    'other' => $service->eligibility_other_custom,
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function service_eligiblity_custom_fields_schema_on_show()
-    {
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()
-            ->create();
-
-        $response = $this->get(route('core.v1.services.show', $service->id));
-
-        $response->assertJsonFragment([
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => $service->eligibility_age_group_custom,
-                    'disability' => $service->eligibility_disability_custom,
-                    'ethnicity' => $service->eligibility_ethnicity_custom,
-                    'gender' => $service->eligibility_gender_custom,
-                    'income' => $service->eligibility_income_custom,
-                    'language' => $service->eligibility_language_custom,
-                    'housing' => $service->eligibility_housing_custom,
-                    'other' => $service->eligibility_other_custom,
-                ],
-                'taxonomies' => [],
-            ],
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function service_eligiblity_taxonomy_id_schema_on_show()
-    {
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCategoryTaxonomies()->withEligibilityTaxonomies()
-            ->create();
-
-        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
-
-        $response = $this->get(route('core.v1.services.show', $service->id));
-
-        $response->assertJsonFragment([
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => null,
-                    'disability' => null,
-                    'ethnicity' => null,
-                    'gender' => null,
-                    'income' => null,
-                    'language' => null,
-                    'housing' => null,
-                    'other' => null,
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function service_eligibility_taxonomy_and_custom_fields_schema_on_show()
-    {
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withCategoryTaxonomies()->withEligibilityTaxonomies()
-            ->create();
-
-        $taxonomyIds = $service->serviceEligibilities()->pluck('taxonomy_id')->all();
-
-        $response = $this->get(route('core.v1.services.show', $service->id));
-
-        $response->assertJsonFragment([
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => $service->eligibility_age_group_custom,
-                    'disability' => $service->eligibility_disability_custom,
-                    'ethnicity' => $service->eligibility_ethnicity_custom,
-                    'gender' => $service->eligibility_gender_custom,
-                    'income' => $service->eligibility_income_custom,
-                    'language' => $service->eligibility_language_custom,
-                    'housing' => $service->eligibility_housing_custom,
-                    'other' => $service->eligibility_other_custom,
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function create_service_with_eligibility_taxonomies()
-    {
-        $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
-
-        $taxonomyIds = Taxonomy::serviceEligibility()
-            ->children
-            ->map(function ($taxonomy) {
-                return $taxonomy
-                    ->children()
-                    ->inRandomOrder()
-                    ->pluck('id')
-                    ->first();
-            })->toArray();
-
-        sort($taxonomyIds, SORT_STRING);
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'organisation_id' => $organisation->id,
-            'slug' => 'test-service',
-            'name' => 'Test Service',
-            'type' => Service::TYPE_SERVICE,
-            'status' => Service::STATUS_ACTIVE,
-            'intro' => 'This is a test intro',
-            'description' => 'Lorem ipsum',
-            'wait_time' => null,
-            'is_free' => true,
-            'fees_text' => null,
-            'fees_url' => null,
-            'testimonial' => null,
-            'video_embed' => null,
-            'url' => $this->faker->url(),
-            'contact_name' => $this->faker->name(),
-            'contact_phone' => random_uk_phone(),
-            'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => false,
-            'referral_method' => Service::REFERRAL_METHOD_NONE,
-            'referral_button_text' => null,
-            'referral_email' => null,
-            'referral_url' => null,
-            'cqc_location_id' => null,
-            'ends_at' => null,
-            'useful_infos' => [
-                [
-                    'title' => 'Did you know?',
-                    'description' => 'Lorem ipsum',
-                    'order' => 1,
-                ],
-            ],
-            'offerings' => [
-                [
-                    'offering' => 'Weekly club',
-                    'order' => 1,
-                ],
-            ],
-            'tags' => [],
-            'gallery_items' => [],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-        ];
-
-        $taxonomyPayload = [
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => null,
-                    'disability' => null,
-                    'ethnicity' => null,
-                    'gender' => null,
-                    'income' => null,
-                    'language' => null,
-                    'housing' => null,
-                    'other' => null,
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ];
-
-        $payload = array_merge($taxonomyPayload, $payload);
-
-        $response = $this->json('POST', '/core/v1/services', $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($taxonomyPayload);
-    }
-
-    /**
-     * @test
-     */
-    public function create_service_with_custom_eligibility_fields()
-    {
-        $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'organisation_id' => $organisation->id,
-            'slug' => 'test-service',
-            'name' => 'Test Service',
-            'type' => Service::TYPE_SERVICE,
-            'status' => Service::STATUS_ACTIVE,
-            'intro' => 'This is a test intro',
-            'description' => 'Lorem ipsum',
-            'wait_time' => null,
-            'is_free' => true,
-            'fees_text' => null,
-            'fees_url' => null,
-            'testimonial' => null,
-            'video_embed' => null,
-            'url' => $this->faker->url(),
-            'contact_name' => $this->faker->name(),
-            'contact_phone' => random_uk_phone(),
-            'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => false,
-            'referral_method' => Service::REFERRAL_METHOD_NONE,
-            'referral_button_text' => null,
-            'referral_email' => null,
-            'referral_url' => null,
-            'cqc_location_id' => null,
-            'ends_at' => null,
-            'useful_infos' => [
-                [
-                    'title' => 'Did you know?',
-                    'description' => 'Lorem ipsum',
-                    'order' => 1,
-                ],
-            ],
-            'offerings' => [
-                [
-                    'offering' => 'Weekly club',
-                    'order' => 1,
-                ],
-            ],
-            'tags' => [],
-            'gallery_items' => [],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-        ];
-
-        $taxonomyPayload = [
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => 'custom age group',
-                    'disability' => 'custom disability',
-                    'ethnicity' => 'custom ethnicity',
-                    'gender' => 'custom gender',
-                    'income' => 'custom income',
-                    'language' => 'custom language',
-                    'housing' => 'custom housing',
-                    'other' => 'custom other',
-                ],
-                'taxonomies' => [],
-            ],
-        ];
-
-        $payload = array_merge($taxonomyPayload, $payload);
-
-        $response = $this->json('POST', '/core/v1/services', $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($taxonomyPayload);
-    }
-
-    /**
-     * @test
-     */
-    public function create_service_with_custom_fields_and_eligibility_taxonomy_ids()
-    {
-        $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
-
-        $taxonomyIds = Taxonomy::serviceEligibility()
-            ->children
-            ->map(function ($taxonomy) {
-                return $taxonomy
-                    ->children()
-                    ->inRandomOrder()
-                    ->pluck('id')
-                    ->first();
-            })
-            ->toArray();
-
-        sort($taxonomyIds, SORT_STRING);
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'organisation_id' => $organisation->id,
-            'slug' => 'test-service',
-            'name' => 'Test Service',
-            'type' => Service::TYPE_SERVICE,
-            'status' => Service::STATUS_ACTIVE,
-            'intro' => 'This is a test intro',
-            'description' => 'Lorem ipsum',
-            'wait_time' => null,
-            'is_free' => true,
-            'fees_text' => null,
-            'fees_url' => null,
-            'testimonial' => null,
-            'video_embed' => null,
-            'url' => $this->faker->url(),
-            'contact_name' => $this->faker->name(),
-            'contact_phone' => random_uk_phone(),
-            'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => false,
-            'referral_method' => Service::REFERRAL_METHOD_NONE,
-            'referral_button_text' => null,
-            'referral_email' => null,
-            'referral_url' => null,
-            'cqc_location_id' => null,
-            'ends_at' => null,
-            'useful_infos' => [
-                [
-                    'title' => 'Did you know?',
-                    'description' => 'Lorem ipsum',
-                    'order' => 1,
-                ],
-            ],
-            'offerings' => [
-                [
-                    'offering' => 'Weekly club',
-                    'order' => 1,
-                ],
-            ],
-            'tags' => [],
-            'gallery_items' => [],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-        ];
-
-        $taxonomyPayload = [
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => 'created with custom age group',
-                    'disability' => 'created with custom disability',
-                    'ethnicity' => 'created with custom ethnicity',
-                    'gender' => 'created with custom gender',
-                    'income' => 'created with custom income',
-                    'language' => 'created with custom language',
-                    'housing' => 'created with custom housing',
-                    'other' => 'created with custom other',
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ];
-
-        $payload = array_merge($taxonomyPayload, $payload);
-
-        $response = $this->json('POST', '/core/v1/services', $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($taxonomyPayload);
-    }
-
-    /**
-     * @test
-     */
-    public function update_service_with_eligibility_taxonomies()
-    {
-        $user = User::factory()->create()->makeGlobalAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        $taxonomyIds = Taxonomy::serviceEligibility()->children->map(function ($taxonomy) {
-            // ensure we assign a different taxonomy ID
-            return $taxonomy->children()
-                ->inRandomOrder()
-                ->first()
-                ->id;
-        })
-            ->toArray();
-
-        sort($taxonomyIds, SORT_STRING);
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'eligibility_types' => [
-                'taxonomies' => $taxonomyIds,
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($payload);
-
-        $service->load('serviceEligibilities');
-
-        foreach ($service->serviceEligibilities['taxonomies'] as $taxonomyId) {
-            $this->assertTrue(in_array($taxonomyId, $taxonomyIds));
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function update_service_with_custom_eligibility_fields()
-    {
-        $user = User::factory()->create()->makeSuperAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => 'I am updating custom age_group',
-                    'disability' => 'I am updating custom disability',
-                    'ethnicity' => 'I am updating custom ethnicity',
-                    'gender' => 'I am updating custom gender',
-                    'income' => 'I am updating custom income',
-                    'language' => 'I am updating custom language',
-                    'housing' => 'I am updating custom housing',
-                    'other' => 'I am updating custom other',
-                ],
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($payload);
-
-        // request the service to check update request was auto-applied
-        $service = $service->fresh()->load('serviceEligibilities');
-
-        foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
-            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function update_service_with_custom_fields_and_eligibility_taxonomies()
-    {
-        $user = User::factory()->create()->makeSuperAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        $taxonomyIds = Taxonomy::serviceEligibility()->children->map(function ($taxonomy) {
-            // ensure we assign a different taxonomy ID
-            return $taxonomy->children()
-                ->inRandomOrder()
-                ->first()
-                ->id;
-        })
-            ->toArray();
-
-        sort($taxonomyIds, SORT_STRING);
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => 'I am updating custom age_group',
-                    'disability' => 'I am updating custom disability',
-                    'ethnicity' => 'I am updating custom ethnicity',
-                    'gender' => 'I am updating custom gender',
-                    'income' => 'I am updating custom income',
-                    'language' => 'I am updating custom language',
-                    'housing' => 'I am updating custom housing',
-                    'other' => 'I am updating custom other',
-                ],
-                'taxonomies' => $taxonomyIds,
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($payload);
-
-        $service = $service->fresh();
-        $service->load('serviceEligibilities');
-
-        foreach ($service->serviceEligibilities['taxonomies'] as $taxonomyId) {
-            $this->assertTrue(in_array($taxonomyId, $taxonomyIds));
-        }
-
-        foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
-            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function delete_custom_eligibility_fields_from_service()
-    {
-        $user = User::factory()->create()->makeGlobalAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'eligibility_types' => [
-                'custom' => [
-                    'age_group' => null,
-                    'disability' => null,
-                    'ethnicity' => null,
-                    'gender' => null,
-                    'income' => null,
-                    'language' => null,
-                    'housing' => null,
-                    'other' => null,
-                ],
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($payload);
-    }
-
-    /**
-     * @test
-     */
-    public function delete_eligibility_taxonomy_ids_from_service()
-    {
-        $user = User::factory()->create()->makeGlobalAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'eligibility_types' => [
-                'taxonomies' => [],
-            ],
-        ];
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($payload);
-    }
-
-    /**
-     * @test
-     */
-    public function delete_eligibility_taxonomy_ids_and_custom_fields_from_service()
-    {
-        $user = User::factory()->create()->makeGlobalAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'eligibility_types' => [
-                'taxonomies' => [],
-                'custom' => [
-                    'age_group' => null,
-                    'disability' => null,
-                    'employment' => null,
-                    'ethnicity' => null,
-                    'gender' => null,
-                    'housing' => null,
-                    'income' => null,
-                    'language' => null,
-                    'other' => null,
-                ],
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment($payload);
-    }
-
-    /**
-     * @test
-     */
-    public function eligibility_taxonomy_can_not_be_added_if_top_level_child_of_incorrect_parent_taxonomy()
-    {
-        $user = User::factory()->create()->makeGlobalAdmin();
-        $service = Service::factory()->withOfferings()->withUsefulInfo()->withSocialMedia()->withCustomEligibilities()->withEligibilityTaxonomies()->withCategoryTaxonomies()
-            ->create();
-
-        // When I try to associate a taxonomy that is NOT a child of Service Eligibility
-        $incorrectTaxonomyId = Taxonomy::category()->children->random()->id;
-
-        $payload = [
-            'eligibility_types' => [
-                'taxonomies' => [$incorrectTaxonomyId],
-            ],
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', route('core.v1.services.update', $service->id), $payload);
-
-        // A validation error is thrown
-        $response->assertStatus(422);
-    }
-
-    /**
-     * @test
-     */
-    public function service_update_rejected_if_social_medias_field_is_populated()
-    {
-        // Given a global admin is logged in
-        $globalAdmin = User::factory()->create()->makeGlobalAdmin();
-
-        // And a pending update request exists for a service with changes to the social medias
-        $service = Service::factory()->create([
-            'slug' => 'test-service',
-            'status' => Service::STATUS_ACTIVE,
-        ]);
-
-        $taxonomy = Taxonomy::category()->children()->firstOrFail();
-        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $serviceAdmin = User::factory()->create()->makeServiceAdmin($service);
-
-        Passport::actingAs($serviceAdmin);
-        $payload = [
-            'social_medias' => [
-                [
-                    'type' => SocialMedia::TYPE_FACEBOOK,
-                    'url' => 'https://www.facebook.com/randomPerson',
-                ],
-            ],
-        ];
-
-        // Create the update request as service admin
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-        $response->assertStatus(422);
-        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
-    }
-
-    /**
-     * @test
-     */
-    public function service_creation_rejected_if_social_medias_field_is_populated()
-    {
-        $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
-        $payload = [
-            'organisation_id' => $organisation->id,
-            'slug' => 'test-service',
-            'name' => 'Test Service',
-            'type' => Service::TYPE_SERVICE,
-            'status' => Service::STATUS_ACTIVE,
-            'intro' => 'This is a test intro',
-            'description' => 'Lorem ipsum',
-            'wait_time' => null,
-            'is_free' => true,
-            'fees_text' => null,
-            'fees_url' => null,
-            'testimonial' => null,
-            'video_embed' => null,
-            'url' => $this->faker->url(),
-            'contact_name' => $this->faker->name(),
-            'contact_phone' => random_uk_phone(),
-            'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => false,
-            'referral_method' => Service::REFERRAL_METHOD_NONE,
-            'referral_button_text' => null,
-            'referral_email' => null,
-            'referral_url' => null,
-            'ends_at' => null,
-            'useful_infos' => [
-                [
-                    'title' => 'Did you know?',
-                    'description' => 'Lorem ipsum',
-                    'order' => 1,
-                ],
-            ],
-            'offerings' => [
-                [
-                    'offering' => 'Weekly club',
-                    'order' => 1,
-                ],
-            ],
-            'social_medias' => [
-                [
-                    'type' => SocialMedia::TYPE_INSTAGRAM,
-                    'url' => 'https://www.instagram.com/ayupdigital',
-                ],
-            ],
-            'gallery_items' => [],
-            'category_taxonomies' => [Taxonomy::category()->children()->firstOrFail()->id],
-        ];
-        $response = $this->json('POST', '/core/v1/services', $payload);
-
-        $response->assertStatus(422);
-        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
-    }
-
-    /**
-     * @test
-     */
-    public function service_update_request_approval_rejected_if_social_medias_field_is_populated()
-    {
-        $now = Date::now();
-        Date::setTestNow($now);
-
-        $user = User::factory()->create()->makeGlobalAdmin();
-        Passport::actingAs($user);
-
-        $service = Service::factory()->create();
-        $service->serviceTaxonomies()->create([
-            'taxonomy_id' => Taxonomy::category()->children()->firstOrFail()->id,
-        ]);
-        $updateRequest = $service->updateRequests()->create([
-            'user_id' => User::factory()->create()->id,
-            'data' => [
-                'slug' => $service->slug,
-                'name' => 'Test Name',
-                'type' => $service->type,
-                'status' => $service->status,
-                'intro' => $service->intro,
-                'description' => $service->description,
-                'wait_time' => $service->wait_time,
-                'is_free' => $service->is_free,
-                'fees_text' => $service->fees_text,
-                'fees_url' => $service->fees_url,
-                'testimonial' => $service->testimonial,
-                'video_embed' => $service->video_embed,
-                'url' => $service->url,
-                'contact_name' => $service->contact_name,
-                'contact_phone' => $service->contact_phone,
-                'contact_email' => $service->contact_email,
-                'show_referral_disclaimer' => $service->show_referral_disclaimer,
-                'referral_method' => $service->referral_method,
-                'referral_button_text' => $service->referral_button_text,
-                'referral_email' => $service->referral_email,
-                'referral_url' => $service->referral_url,
-                'cqc_location_id' => $service->cqc_location_id,
-                'ends_at' => null,
-                'useful_infos' => [],
-                'social_medias' => [
-                    [
-                        'type' => SocialMedia::TYPE_INSTAGRAM,
-                        'url' => 'https://www.instagram.com/ayupdigital/',
-                    ],
-                ],
-                'category_taxonomies' => $service->taxonomies()->pluck('taxonomies.id')->toArray(),
-            ],
-        ]);
-
-        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
-
-        $response->assertStatus(422);
-        $response->assertJsonFragment(['social_medias' => ['This field is no longer accepted for services and should be set in the Organisation.']]);
-    }
 }

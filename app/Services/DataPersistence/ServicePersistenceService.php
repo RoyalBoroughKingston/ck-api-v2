@@ -2,6 +2,7 @@
 
 namespace App\Services\DataPersistence;
 
+use App\Contracts\DataPersistenceService;
 use App\Models\File;
 use App\Models\Model;
 use App\Models\Service;
@@ -17,6 +18,8 @@ use Illuminate\Support\Str;
 
 class ServicePersistenceService implements DataPersistenceService
 {
+    use ResizesImages;
+
     public function store(FormRequest $request)
     {
         return $request->user()->isSuperAdmin()
@@ -185,13 +188,7 @@ class ServicePersistenceService implements DataPersistenceService
             }
 
             if ($request->filled('logo_file_id')) {
-                /** @var \App\Models\File $file */
-                $file = File::findOrFail($request->logo_file_id)->assigned();
-
-                // Create resized version for common dimensions.
-                foreach (config('local.cached_image_dimensions') as $maxDimension) {
-                    $file->resizedVersion($maxDimension);
-                }
+                $this->resizeImageFile($request->logo_file_id);
             }
 
             // Create the useful info records.

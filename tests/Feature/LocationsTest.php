@@ -592,7 +592,7 @@ class LocationsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.base64_encode($image),
+            'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
         $response = $this->json('POST', '/core/v1/locations', [
@@ -660,7 +660,7 @@ class LocationsTest extends TestCase
         $this->assertEquals(null, $updateRequest->data['image_file_id']);
     }
 
-    public function test_global_admin_can_update_one_with_auto_approval()
+    public function test_global_admin_can_update_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create();
@@ -690,29 +690,16 @@ class LocationsTest extends TestCase
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::EXISTING_TYPE_LOCATION,
             'updateable_id' => $location->id,
+            'approved_at' => null,
         ]);
-        $data = UpdateRequest::query()
+        $updateRequest = UpdateRequest::query()
             ->where('updateable_type', UpdateRequest::EXISTING_TYPE_LOCATION)
             ->where('updateable_id', $location->id)
-            ->firstOrFail()
-            ->data;
-        $this->assertEquals($data, $payload);
+            ->firstOrFail();
+        $this->assertEquals($updateRequest->data, $payload);
 
-        // Simulate frontend check by making call with UpdateRequest ID.
-        $updateRequestId = json_decode($response->getContent())->id;
-        Passport::actingAs($user);
+        $this->approveUpdateRequest($updateRequest->id);
 
-        $updateRequestCheckResponse = $this->get(
-            route(
-                'core.v1.update-requests.show',
-                ['update_request' => $updateRequestId]
-            )
-        );
-
-        $updateRequestCheckResponse->assertSuccessful();
-        $updateRequestResponseData = json_decode($updateRequestCheckResponse->getContent());
-
-        // Update request should already have been approved.
-        $this->assertNotNull($updateRequestResponseData->approved_at);
+        $this->assertDatabaseHas(table(Location::class), $payload);
     }
 }

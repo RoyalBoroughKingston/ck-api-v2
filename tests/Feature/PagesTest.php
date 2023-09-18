@@ -100,7 +100,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsContentAdmin200()
+    public function listMixedStatePagesAsGlobalAdmin403()
     {
         /**
          * @var \App\Models\User $user
@@ -118,7 +118,32 @@ class PagesTest extends TestCase
 
         $response = $this->json('GET', '/core/v1/pages/index');
 
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @test
+     */
+    public function listMixedStatePagesAsContentAdmin200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+        $user->makeContentAdmin();
+
+        Passport::actingAs($user);
+
+        $page = Page::factory()->withImage()->withParent()->disabled()
+            ->create();
+
+        $landingPage = Page::factory()->withImage()->landingPage()
+            ->create();
+
+        $response = $this->json('GET', '/core/v1/pages/index');
+
         $response->assertStatus(Response::HTTP_OK);
+
         $response->assertJsonCount(3, 'data');
         $response->assertJsonFragment([
             'id' => $page->parent->id,
@@ -175,13 +200,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsAdminFilterByID200()
+    public function listMixedStatePagesAsContentAdminFilterByID200()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeGlobalAdmin();
+        $user->makeContentAdmin();
 
         Passport::actingAs($user);
 
@@ -379,13 +404,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsAdminFilterByLandingPage200()
+    public function listMixedStatePagesAsContentAdminFilterByLandingPage200()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeGlobalAdmin();
+        $user->makeContentAdmin();
 
         Passport::actingAs($user);
 
@@ -421,7 +446,7 @@ class PagesTest extends TestCase
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeGlobalAdmin();
+        $user->makeContentAdmin();
 
         Passport::actingAs($user);
 
@@ -2593,14 +2618,6 @@ class PagesTest extends TestCase
      */
     public function getEnabledPageImagePNGAsGuest200()
     {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = User::factory()->create();
-        $user->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
@@ -2626,14 +2643,6 @@ class PagesTest extends TestCase
      */
     public function getEnabledPageImageJPGAsGuest200()
     {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = User::factory()->create();
-        $user->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
@@ -2659,14 +2668,6 @@ class PagesTest extends TestCase
      */
     public function getEnabledPageImageSVGAsGuest200()
     {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = User::factory()->create();
-        $user->makeGlobalAdmin();
-
-        Passport::actingAs($user);
-
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([

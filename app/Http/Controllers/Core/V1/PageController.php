@@ -41,7 +41,7 @@ class PageController extends Controller
             ->with('parent')
             ->orderBy($orderByCol);
 
-        if (!$request->user('api') || !$request->user('api')->isGlobalAdmin()) {
+        if (!$request->user('api')) {
             $baseQuery->where('enabled', true);
         }
 

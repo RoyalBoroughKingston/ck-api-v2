@@ -31,14 +31,20 @@ class UpdateRequestsTest extends TestCase
      * List all the update requests.
      */
 
-    public function test_guest_cannot_list_them()
+    /**
+     * @test
+     */
+    public function guest_cannot_list_them()
     {
         $response = $this->json('GET', '/core/v1/update-requests');
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_list_them()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_list_them()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -49,7 +55,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_list_them()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_list_them()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -60,7 +69,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_list_them()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_list_them()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -71,7 +83,23 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_list_them()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_list_them()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+        $response = $this->json('GET', '/core/v1/update-requests');
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @test
+     */
+    public function super_admin_can_list_them()
     {
         $organisation = Organisation::factory()->create();
         $orgAdminUser = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -90,7 +118,7 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
+        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($globalAdminUser);
         $response = $this->json('GET', '/core/v1/update-requests');
@@ -115,7 +143,10 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_can_list_them_for_location()
+    /**
+     * @test
+     */
+    public function can_list_them_for_location()
     {
         $organisation = Organisation::factory()->create();
         $orgAdminUser = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -146,7 +177,7 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
+        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($globalAdminUser);
 
         $response = $this->json('GET', "/core/v1/update-requests?filter[location_id]={$location->id}");
@@ -156,11 +187,14 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonMissing(['id' => $organisationUpdateRequest->id]);
     }
 
-    public function test_audit_created_when_listed()
+    /**
+     * @test
+     */
+    public function audit_created_when_listed()
     {
         $this->fakeEvents();
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
         $this->json('GET', '/core/v1/update-requests');
@@ -171,7 +205,10 @@ class UpdateRequestsTest extends TestCase
         });
     }
 
-    public function test_can_filter_by_entry()
+    /**
+     * @test
+     */
+    public function can_filter_by_entry()
     {
         $organisation = Organisation::factory()->create([
             'name' => 'Name with, comma',
@@ -203,7 +240,7 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
+        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($globalAdminUser);
         $response = $this->json('GET', "/core/v1/update-requests?filter[entry]={$organisation->name}");
 
@@ -212,7 +249,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertJsonFragment(['id' => $organisationUpdateRequest->id]);
     }
 
-    public function test_can_sort_by_entry()
+    /**
+     * @test
+     */
+    public function can_sort_by_entry()
     {
         $location = Location::factory()->create([
             'address_line_1' => 'Entry A',
@@ -246,7 +286,7 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        Passport::actingAs(User::factory()->create()->makeGlobalAdmin());
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
         $response = $this->json('GET', '/core/v1/update-requests?sort=-entry');
         $data = $this->getResponseContent($response);
 
@@ -259,7 +299,10 @@ class UpdateRequestsTest extends TestCase
      * Get a specific update request.
      */
 
-    public function test_guest_cannot_view_one()
+    /**
+     * @test
+     */
+    public function guest_cannot_view_one()
     {
         $serviceLocation = ServiceLocation::factory()->create();
         $updateRequest = $serviceLocation->updateRequests()->create([
@@ -272,7 +315,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_view_one()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_view_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -289,7 +335,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_view_one()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_view_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -306,7 +355,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_view_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_view_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -323,9 +375,31 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_view_one()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_view_one()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = ServiceLocation::factory()->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => User::factory()->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @test
+     */
+    public function super_admin_can_view_one()
+    {
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $serviceLocation = ServiceLocation::factory()->create();
@@ -347,11 +421,14 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_audit_created_when_viewed()
+    /**
+     * @test
+     */
+    public function audit_created_when_viewed()
     {
         $this->fakeEvents();
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $serviceLocation = ServiceLocation::factory()->create();
@@ -373,7 +450,10 @@ class UpdateRequestsTest extends TestCase
      * Delete a specific update request.
      */
 
-    public function test_guest_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function guest_cannot_delete_one()
     {
         $serviceLocation = ServiceLocation::factory()->create();
         $updateRequest = $serviceLocation->updateRequests()->create([
@@ -386,7 +466,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -403,7 +486,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_delete_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -420,7 +506,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_delete_one()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_delete_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -437,9 +526,31 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_delete_one()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_delete_one()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = ServiceLocation::factory()->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => User::factory()->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('DELETE', "/core/v1/update-requests/{$updateRequest->id}");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @test
+     */
+    public function super_admin_can_delete_one()
+    {
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $serviceLocation = ServiceLocation::factory()->create();
@@ -457,11 +568,14 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_audit_created_when_deleted()
+    /**
+     * @test
+     */
+    public function audit_created_when_deleted()
     {
         $this->fakeEvents();
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $serviceLocation = ServiceLocation::factory()->create();
@@ -483,7 +597,10 @@ class UpdateRequestsTest extends TestCase
      * Approve a specific update request.
      */
 
-    public function test_guest_cannot_approve_one_for_service_location()
+    /**
+     * @test
+     */
+    public function guest_cannot_approve_one_for_service_location()
     {
         $serviceLocation = ServiceLocation::factory()->create();
         $updateRequest = $serviceLocation->updateRequests()->create([
@@ -496,7 +613,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function test_service_worker_cannot_approve_one_for_service_location()
+    /**
+     * @test
+     */
+    public function service_worker_cannot_approve_one_for_service_location()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -513,7 +633,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_service_admin_cannot_approve_one_for_service_location()
+    /**
+     * @test
+     */
+    public function service_admin_cannot_approve_one_for_service_location()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -530,7 +653,10 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_organisation_admin_cannot_approve_one_for_service_location()
+    /**
+     * @test
+     */
+    public function organisation_admin_cannot_approve_one_for_service_location()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -547,12 +673,34 @@ class UpdateRequestsTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_global_admin_can_approve_one_for_service_location()
+    /**
+     * @test
+     */
+    public function global_admin_cannot_approve_one_for_service_location()
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $serviceLocation = ServiceLocation::factory()->create();
+        $updateRequest = $serviceLocation->updateRequests()->create([
+            'user_id' => User::factory()->create()->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_service_location()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $serviceLocation = ServiceLocation::factory()->create();
@@ -579,12 +727,15 @@ class UpdateRequestsTest extends TestCase
         );
     }
 
-    public function test_global_admin_can_approve_one_for_organisation()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_organisation()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $organisation = Organisation::factory()->create();
@@ -619,12 +770,15 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_global_admin_can_approve_one_for_location()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_location()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $location = Location::factory()->create();
@@ -667,12 +821,15 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_global_admin_can_approve_one_for_service()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_service()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $service = Service::factory()->create();
@@ -722,7 +879,10 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_global_admin_can_approve_one_for_new_service()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_new_service()
     {
         $now = Date::now();
         Date::setTestNow($now);
@@ -811,7 +971,7 @@ class UpdateRequestsTest extends TestCase
             ->where('updateable_id', null)
             ->firstOrFail();
 
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
+        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($globalAdminUser);
 
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
@@ -827,12 +987,15 @@ class UpdateRequestsTest extends TestCase
         $this->assertEquals(1, Service::all()->count());
     }
 
-    public function test_global_admin_can_approve_one_for_organisation_sign_up_form()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_organisation_sign_up_form()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         /** @var \App\Models\UpdateRequest $updateRequest */
@@ -947,12 +1110,15 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_global_admin_can_approve_one_for_organisation_sign_up_form_without_service()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_organisation_sign_up_form_without_service()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         /** @var \App\Models\UpdateRequest $updateRequest */
@@ -1010,12 +1176,15 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_global_admin_can_approve_one_for_organisation_sign_up_form_with_existing_organisation()
+    /**
+     * @test
+     */
+    public function super_admin_can_approve_one_for_organisation_sign_up_form_with_existing_organisation()
     {
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $organisation = Organisation::factory()->create();
@@ -1061,11 +1230,14 @@ class UpdateRequestsTest extends TestCase
         ]);
     }
 
-    public function test_audit_created_when_approved()
+    /**
+     * @test
+     */
+    public function audit_created_when_approved()
     {
         $this->fakeEvents();
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $serviceLocation = ServiceLocation::factory()->create();
@@ -1087,9 +1259,12 @@ class UpdateRequestsTest extends TestCase
         });
     }
 
-    public function test_user_roles_correctly_updated_when_service_assigned_to_different_organisation()
+    /**
+     * @test
+     */
+    public function user_roles_correctly_updated_when_service_assigned_to_different_organisation()
     {
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $service = Service::factory()->create();
@@ -1134,13 +1309,16 @@ class UpdateRequestsTest extends TestCase
      * Service specific.
      */
 
-    public function test_last_modified_at_is_set_to_now_when_service_updated()
+    /**
+     * @test
+     */
+    public function last_modified_at_is_set_to_now_when_service_updated()
     {
         $oldNow = Date::now()->subMonths(6);
         $newNow = Date::now();
         Date::setTestNow($newNow);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $service = Service::factory()->create([

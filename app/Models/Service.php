@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\AppliesUpdateRequests;
 use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as UpdateServiceRequest;
 use App\Models\Mutators\ServiceMutators;
@@ -14,7 +15,6 @@ use App\Sms\Sms;
 use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateServiceEligibilityTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
-use App\UpdateRequest\AppliesUpdateRequests;
 use App\UpdateRequest\UpdateRequests;
 use Carbon\CarbonImmutable;
 use ElasticScoutDriverPlus\Searchable;

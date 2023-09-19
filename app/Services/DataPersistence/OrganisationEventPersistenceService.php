@@ -22,7 +22,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
      */
     public function store(FormRequest $request)
     {
-        return $request->user()->isGlobalAdmin()
+        return $request->user()->isSuperAdmin()
         ? $this->processAsNewEntity($request)
         : $this->processAsUpdateRequest($request, null);
     }
@@ -133,9 +133,14 @@ class OrganisationEventPersistenceService implements DataPersistenceService
                 $this->resizeImageFile($request->image_file_id);
             }
 
+            $updateableType = UpdateRequestModel::EXISTING_TYPE_ORGANISATION_EVENT;
+
+            if (!$event) {
+                $updateableType = $request->user()->isGlobalAdmin() ? UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN : UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN;
+            }
             /** @var \App\Models\UpdateRequest $updateRequest */
             $updateRequest = new UpdateRequestModel([
-                'updateable_type' => $event ? UpdateRequestModel::EXISTING_TYPE_ORGANISATION_EVENT : UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT,
+                'updateable_type' => $updateableType,
                 'updateable_id' => $event->id ?? null,
                 'user_id' => $request->user()->id,
                 'data' => $data,

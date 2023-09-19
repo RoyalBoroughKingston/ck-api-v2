@@ -2,6 +2,7 @@
 
 namespace App\UpdateRequest;
 
+use App\Contracts\AppliesUpdateRequests;
 use App\Http\Requests\OrganisationEvent\StoreRequest;
 use App\Models\File;
 use App\Models\OrganisationEvent;

@@ -121,8 +121,10 @@ trait UpdateRequestScopes
         $serviceLocations = UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION;
         $organisations = UpdateRequest::EXISTING_TYPE_ORGANISATION;
         $organisationSignUpForm = UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM;
+        $newOrganisationGlobalAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_GLOBAL_ADMIN;
         $organisationEvents = UpdateRequest::EXISTING_TYPE_ORGANISATION_EVENT;
-        $newOrganisationEvent = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT;
+        $newOrganisationEventOrgAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN;
+        $newOrganisationEventGlobalAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN;
 
         return <<<EOT
 CASE `update_requests`.`updateable_type`
@@ -165,13 +167,24 @@ CASE `update_requests`.`updateable_type`
             LIMIT 1
         ), `update_requests`.`data`->>"$.organisation.name")
     )
+    WHEN "{$newOrganisationGlobalAdmin}" THEN (
+        IF(`update_requests`.`data`->>"$.organisation.id", (
+            SELECT `organisations`.`name`
+            FROM `organisations`
+            WHERE `update_requests`.`data`->>"$.organisation.id" = `organisations`.`id`
+            LIMIT 1
+        ), `update_requests`.`data`->>"$.organisation.name")
+    )
     WHEN "{$organisationEvents}" THEN (
         SELECT `organisation_events`.`title`
         FROM `organisation_events`
         WHERE `update_requests`.`updateable_id` = `organisation_events`.`id`
         LIMIT 1
     )
-    WHEN "{$newOrganisationEvent}" THEN (
+    WHEN "{$newOrganisationEventOrgAdmin}" THEN (
+        `update_requests`.`data`->>"$.title"
+    )
+    WHEN "{$newOrganisationEventGlobalAdmin}" THEN (
         `update_requests`.`data`->>"$.title"
     )
 END

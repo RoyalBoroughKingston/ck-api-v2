@@ -25,7 +25,7 @@ class UpdatePageOperation extends Operation
             ->action(static::ACTION_PUT)
             ->tags(PagesTag::create())
             ->summary('Update an information page')
-            ->description('**Permission:** `Global Admin`')
+            ->description('**Permission:** `Content Admin`')
             ->requestBody(
                 RequestBody::create()
                     ->required()

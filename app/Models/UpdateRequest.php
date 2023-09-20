@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Contracts\AppliesUpdateRequests;
 use App\Models\Mutators\UpdateRequestMutators;
 use App\Models\Relationships\UpdateRequestRelationships;
 use App\Models\Scopes\UpdateRequestScopes;
-use App\UpdateRequest\AppliesUpdateRequests;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\MessageBag;
@@ -34,9 +34,15 @@ class UpdateRequest extends Model
 
     const NEW_TYPE_ORGANISATION_SIGN_UP_FORM = 'organisation_sign_up_form';
 
-    const NEW_TYPE_SERVICE = 'new_service_created_by_org_admin';
+    const NEW_TYPE_ORGANISATION_GLOBAL_ADMIN = 'new_organisation_created_by_global_admin';
 
-    const NEW_TYPE_ORGANISATION_EVENT = 'new_organisation_event_created_by_org_admin';
+    const NEW_TYPE_SERVICE_ORG_ADMIN = 'new_service_created_by_org_admin';
+
+    const NEW_TYPE_SERVICE_GLOBAL_ADMIN = 'new_service_created_by_global_admin';
+
+    const NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN = 'new_organisation_event_created_by_org_admin';
+
+    const NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN = 'new_organisation_event_created_by_global_admin';
 
     /**
      * The attributes that should be cast to native types.

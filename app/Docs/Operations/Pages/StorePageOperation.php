@@ -25,7 +25,7 @@ class StorePageOperation extends Operation
             ->action(static::ACTION_POST)
             ->tags(PagesTag::create())
             ->summary('Create an information page')
-            ->description('**Permission:** `Global Admin`')
+            ->description('**Permission:** `Content Admin`')
             ->requestBody(
                 RequestBody::create()
                     ->required()

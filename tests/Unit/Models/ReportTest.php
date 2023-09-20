@@ -2,28 +2,26 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
-use App\Models\Role;
-use App\Models\User;
 use App\Models\Audit;
-use App\Models\Report;
-use App\Models\Service;
 use App\Models\Location;
-use App\Models\Referral;
-use App\Models\ReportType;
-use App\Support\Coordinate;
-use Carbon\CarbonImmutable;
 use App\Models\Organisation;
 use App\Models\PageFeedback;
+use App\Models\Referral;
+use App\Models\Report;
+use App\Models\ReportType;
+use App\Models\Role;
 use App\Models\SearchHistory;
-use App\Models\UpdateRequest;
+use App\Models\Service;
 use App\Models\ServiceLocation;
-use App\Search\SearchCriteriaQuery;
-use Illuminate\Support\Facades\Date;
-use App\Search\ElasticSearch\PageQueryBuilder;
-use App\Search\ElasticSearch\EventQueryBuilder;
-use App\Search\ElasticSearch\ServiceQueryBuilder;
+use App\Models\UpdateRequest;
+use App\Models\User;
 use App\Search\ElasticSearch\ElasticsearchQueryBuilder;
+use App\Search\ElasticSearch\ServiceQueryBuilder;
+use App\Search\SearchCriteriaQuery;
+use App\Support\Coordinate;
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Date;
+use Tests\TestCase;
 
 class ReportTest extends TestCase
 {

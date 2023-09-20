@@ -4,7 +4,9 @@ namespace App\UpdateRequest;
 
 use App\Contracts\AppliesUpdateRequests;
 use App\Http\Requests\Service\StoreRequest;
+use App\Models\File;
 use App\Models\Service;
+use App\Models\Tag;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
 use Carbon\Carbon;
@@ -12,8 +14,9 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Str;
 
-class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
+class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
 {
     /**
      * Check if the update request is valid.
@@ -74,8 +77,29 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
             'last_modified_at' => Carbon::now(),
         ];
 
+        // Add the elegibility types
+        if ($data->has('eligibility_types') && $data['eligibility_types']['custom'] ?? null) {
+            // Create the custom fields
+            foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
+                $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
+                $insert[$fieldName] = $value;
+            }
+        }
+
         $service = Service::create($insert);
 
+        // Update the logo file
+        if ($data->has('logo_file_id')) {
+            /** @var \App\Models\File $file */
+            $file = File::findOrFail($data['logo_file_id'])->assigned();
+
+            // Create resized version for common dimensions.
+            foreach (config('local.cached_image_dimensions') as $maxDimension) {
+                $file->resizedVersion($maxDimension);
+            }
+        }
+
+        // Update the useful infos records
         if ($data->has('useful_infos')) {
             $service->usefulInfos()->delete();
             foreach ($data->get('useful_infos') as $usefulInfo) {
@@ -108,10 +132,33 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
             }
         }
 
+        // Update the tag records.
+        if (config('flags.service_tags') && $data->has('tags')) {
+            $tagIds = [];
+            foreach ($data['tags'] as $tagField) {
+                $tag = Tag::where('slug', Str::slug($tagField['slug']))->first();
+                if (null === $tag) {
+                    $tag = new Tag([
+                        'slug' => Str::slug($tagField['slug']),
+                        'label' => $tagField['label'],
+                    ]);
+                    $tag->save();
+                }
+                $tagIds[] = $tag->id;
+            }
+            $service->tags()->sync($tagIds);
+        }
+
         // Update the category taxonomy records.
         if ($data->has('category_taxonomies')) {
             $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
             $service->syncTaxonomyRelationships($taxonomies);
+        }
+
+        // Create the service eligibility taxonomy records
+        if ($data->has('eligibility_types') && $data['eligibility_types']['taxonomies'] ?? null) {
+            $eligibilityTypes = Taxonomy::whereIn('id', $data['eligibility_types']['taxonomies'])->get();
+            $service->syncEligibilityRelationships($eligibilityTypes);
         }
 
         // Ensure conditional fields are reset if needed.

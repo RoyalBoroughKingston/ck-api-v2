@@ -241,7 +241,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /*
@@ -534,7 +534,7 @@ class UsersTest extends TestCase
             ],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -553,7 +553,7 @@ class UsersTest extends TestCase
             ],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -572,7 +572,7 @@ class UsersTest extends TestCase
             ],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -588,7 +588,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_CONTENT_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -604,7 +604,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_GLOBAL_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -619,7 +619,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /*
@@ -641,7 +641,7 @@ class UsersTest extends TestCase
             ],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -660,7 +660,7 @@ class UsersTest extends TestCase
             ],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -679,7 +679,7 @@ class UsersTest extends TestCase
             ],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -695,7 +695,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_CONTENT_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -711,7 +711,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_GLOBAL_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -726,7 +726,7 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_SUPER_ADMIN],
         ]));
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /*
@@ -845,12 +845,12 @@ class UsersTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $createdUserId = json_decode($response->getContent(), true)['data']['id'];
         $createdUser = User::findOrFail($createdUserId);
-        $this->assertFalse($createdUser->isServiceWorker($service));
-        $this->assertFalse($createdUser->isServiceAdmin($service));
-        $this->assertFalse($createdUser->isOrganisationAdmin($service->organisation));
+        $this->assertTrue($createdUser->isServiceWorker($service));
+        $this->assertTrue($createdUser->isServiceAdmin($service));
+        $this->assertTrue($createdUser->isOrganisationAdmin($service->organisation));
         $this->assertFalse($createdUser->isContentAdmin());
         $this->assertTrue($createdUser->isGlobalAdmin());
-        $this->assertEquals(1, $createdUser->roles()->count());
+        $this->assertEquals(4, $createdUser->roles()->count());
     }
 
     /**
@@ -2107,7 +2107,7 @@ class UsersTest extends TestCase
     /**
      * @test
      */
-    public function service_and_organisation_permissions_are_not_applied_when_updating_to_global_admin()
+    public function service_and_organisation_permissions_are_applied_when_updating_to_global_admin()
     {
         $invoker = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($invoker);
@@ -2133,13 +2133,13 @@ class UsersTest extends TestCase
             ['role' => Role::NAME_GLOBAL_ADMIN],
         ]);
 
-        $this->assertFalse($user->isServiceWorker($service1));
-        $this->assertFalse($user->isServiceAdmin($service1));
-        $this->assertFalse($user->isOrganisationAdmin($service1->organisation));
-        $this->assertFalse($user->isServiceWorker($service2));
-        $this->assertFalse($user->isServiceAdmin($service2));
-        $this->assertFalse($user->isOrganisationAdmin($service2->organisation));
-        $this->assertEquals(1, $user->roles()->count());
+        $this->assertTrue($user->isServiceWorker($service1));
+        $this->assertTrue($user->isServiceAdmin($service1));
+        $this->assertTrue($user->isOrganisationAdmin($service1->organisation));
+        $this->assertTrue($user->isServiceWorker($service2));
+        $this->assertTrue($user->isServiceAdmin($service2));
+        $this->assertTrue($user->isOrganisationAdmin($service2->organisation));
+        $this->assertEquals(7, $user->roles()->count());
     }
 
     /**
@@ -2408,19 +2408,19 @@ class UsersTest extends TestCase
             'email' => $user->email,
             'phone' => $user->phone,
         ]);
-        $response->assertJsonMissing([
+        $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_WORKER,
                 'service_id' => $service->id,
             ],
         ]);
-        $response->assertJsonMissing([
+        $response->assertJsonFragment([
             [
                 'role' => Role::NAME_SERVICE_ADMIN,
                 'service_id' => $service->id,
             ],
         ]);
-        $response->assertJsonMissing([
+        $response->assertJsonFragment([
             [
                 'role' => Role::NAME_ORGANISATION_ADMIN,
                 'organisation_id' => $service->organisation->id,

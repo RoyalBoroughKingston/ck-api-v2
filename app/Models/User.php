@@ -578,7 +578,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function canMakeServiceWorker(Service $service): bool
     {
-        return $this->isServiceWorker($service);
+        return $this->isServiceWorker($service) && !($this->isGlobalAdmin() && !$this->isSuperAdmin());
     }
 
     /**
@@ -587,7 +587,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function canMakeServiceAdmin(Service $service): bool
     {
-        return $this->isServiceAdmin($service);
+        return $this->isServiceAdmin($service) && !($this->isGlobalAdmin() && !$this->isSuperAdmin());
     }
 
     /**
@@ -596,7 +596,7 @@ class User extends Authenticatable implements Notifiable
      */
     public function canMakeOrganisationAdmin(Organisation $organisation): bool
     {
-        return $this->isOrganisationAdmin($organisation);
+        return $this->isOrganisationAdmin($organisation) && !($this->isGlobalAdmin() && !$this->isSuperAdmin());
     }
 
     /**
@@ -730,6 +730,9 @@ class User extends Authenticatable implements Notifiable
      */
     public function visibleUserIds()
     {
+        if ($this->isGlobalAdmin() && !$this->isSuperAdmin()) {
+            return collect([$this->id]);
+        }
         // Get the service IDs from all the organisations the user belongs to
         $serviceIds = Service::query()
             ->whereIn(table(Service::class, 'organisation_id'), $this->organisations()

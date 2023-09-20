@@ -176,6 +176,7 @@ class LocationsTest extends TestCase
          * @var \App\Models\Service $service
          * @var \App\Models\User $user
          */
+        $service = Service::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);

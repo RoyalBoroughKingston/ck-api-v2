@@ -30,7 +30,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->user()->isGlobalAdmin() || $this->user()->isOrganisationAdmin(Organisation::find($this->organisation_id))) {
+        if ($this->user()->isOrganisationAdmin(Organisation::find($this->organisation_id))) {
             return true;
         }
 

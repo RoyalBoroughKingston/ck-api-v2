@@ -462,6 +462,10 @@ class User extends Authenticatable implements Notifiable
      */
     public function makeGlobalAdmin(): self
     {
+        foreach (Organisation::all() as $organisation) {
+            $this->makeOrganisationAdmin($organisation);
+        }
+
         $this->assignRole(Role::globalAdmin());
 
         return $this;
@@ -729,7 +733,7 @@ class User extends Authenticatable implements Notifiable
         // Get the service IDs from all the organisations the user belongs to
         $serviceIds = Service::query()
             ->whereIn(table(Service::class, 'organisation_id'), $this->organisations()
-                ->pluck(table(Organisation::class, 'id')))
+                    ->pluck(table(Organisation::class, 'id')))
             ->pluck(table(Service::class, 'id'));
 
         // Get all the users that belong to these services, except those that are super or global admins

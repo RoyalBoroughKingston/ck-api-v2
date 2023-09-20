@@ -4,6 +4,7 @@ namespace App\Http\Requests\Service;
 
 use App\Http\Requests\HasMissingValues;
 use App\Models\File;
+use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -49,7 +50,15 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'organisation_id' => ['required', 'exists:organisations,id', new IsOrganisationAdmin($this->user('api'))],
+            'organisation_id' => [
+                'required',
+                'exists:organisations,id',
+                function ($attribute, $value, $fail) {
+                    if (!$this->user('api')->isGlobalAdmin() && !$this->user('api')->isOrganisationAdmin(Organisation::findOrFail($value))) {
+                        $fail('The organisation_id field must contain an ID for an organisation you are an organisation admin for.');
+                    }
+                },
+            ],
             'slug' => ['required', 'string', 'min:1', 'max:255', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'type' => [

@@ -493,7 +493,7 @@ class ServicesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment($payload);
 
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
+        $superAdminUser = User::factory()->create()->makeSuperAdmin();
 
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
@@ -512,7 +512,7 @@ class ServicesTest extends TestCase
         // Simulate frontend check by making call with UpdateRequest ID.
         $updateRequestId = json_decode($response->getContent())->id;
 
-        Passport::actingAs($globalAdminUser);
+        Passport::actingAs($superAdminUser);
 
         $updateRequestCheckResponse = $this->get(
             route(
@@ -705,7 +705,7 @@ class ServicesTest extends TestCase
         // Simulate frontend check by making call with UpdateRequest ID.
         $updateRequestId = $responseData->id;
 
-        Passport::actingAs(User::factory()->create()->makeGlobalAdmin());
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $updateRequestCheckResponse = $this->get(
             route(
@@ -1928,8 +1928,8 @@ class ServicesTest extends TestCase
      */
     public function global_admin_is_added_as_service_admin_when_organisation_admin_creates_one()
     {
-        $organisation = Organisation::factory()->create();
         $globalAdmin = User::factory()->create()->makeGlobalAdmin();
+        $organisation = Organisation::factory()->create();
         $orgAdmin = User::factory()->create()->makeOrganisationAdmin($organisation);
 
         //Given an organisation admin is logged in
@@ -2018,10 +2018,10 @@ class ServicesTest extends TestCase
      */
     public function global_admin_is_added_as_service_admin_when_other_global_admin_creates_one()
     {
-        $organisation = Organisation::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
         $globalAdmin1 = User::factory()->create()->makeGlobalAdmin();
         $globalAdmin2 = User::factory()->create()->makeGlobalAdmin();
+        $organisation = Organisation::factory()->create();
 
         //Given an global admin is logged in
         Passport::actingAs($globalAdmin1);
@@ -3234,6 +3234,7 @@ class ServicesTest extends TestCase
      */
     public function global_admin_can_update_most_fields_for_one()
     {
+        $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->create([
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
@@ -3241,7 +3242,6 @@ class ServicesTest extends TestCase
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
         $tag1 = Tag::factory()->create();
-        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -3313,13 +3313,13 @@ class ServicesTest extends TestCase
      */
     public function global_admin_cannot_update_with_non_numeric_phone()
     {
+        $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->create([
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -3379,13 +3379,13 @@ class ServicesTest extends TestCase
      */
     public function global_admin_cannot_update_show_referral_disclaimer_for_one()
     {
+        $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->create([
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -3571,10 +3571,10 @@ class ServicesTest extends TestCase
      */
     public function global_admin_can_update_taxonomies()
     {
+        $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->create();
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -3797,13 +3797,13 @@ class ServicesTest extends TestCase
      */
     public function global_admin_can_update_status()
     {
+        $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->create([
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -3848,13 +3848,13 @@ class ServicesTest extends TestCase
      */
     public function global_admin_can_update_slug()
     {
+        $user = User::factory()->create()->makeGlobalAdmin();
         $service = Service::factory()->create([
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
         ]);
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -4665,6 +4665,8 @@ class ServicesTest extends TestCase
 
         $updateRequestId = $response->json()['id'];
 
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
         $updateRequestCheckResponse = $this->get(
             route(
                 'core.v1.update-requests.show',
@@ -4679,7 +4681,6 @@ class ServicesTest extends TestCase
         $this->assertNull($updateRequestResponseData->approved_at);
 
         // Approve the update request
-        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -4749,7 +4750,7 @@ class ServicesTest extends TestCase
 
         // Simulate frontend check by making call with UpdateRequest ID.
         $updateRequestId = json_decode($response->getContent())->id;
-        Passport::actingAs($user);
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $updateRequestCheckResponse = $this->get(
             route(
@@ -4773,7 +4774,7 @@ class ServicesTest extends TestCase
         $now = Date::now();
         Date::setTestNow($now);
 
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeSuperAdmin();
         Passport::actingAs($user);
 
         $service = Service::factory()->create();
@@ -5438,8 +5439,7 @@ class ServicesTest extends TestCase
         $updateRequest = UpdateRequest::where('id', $updateRequestId)->firstOrFail();
         $this->assertEquals($this->getResponseContent($imageResponse, 'data.id'), $updateRequest->data['logo_file_id']);
 
-        $globalAdminUser = User::factory()->create()->makeGlobalAdmin();
-        Passport::actingAs($globalAdminUser);
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         //And the organisation event should not yet be created
         $this->assertEmpty(Service::all());

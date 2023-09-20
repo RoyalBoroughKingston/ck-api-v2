@@ -235,10 +235,7 @@ class ReferralsTest extends TestCase
             'organisation' => $this->faker->company(),
         ]);
 
-        /** @var \App\Models\User $user */
-        $user = User::factory()->create();
-        $user->makeSuperAdmin();
-        Passport::actingAs($user);
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $response = $this->json('GET', "/core/v1/referrals?filter[organisation_name]={$organisationOne->name}");
 

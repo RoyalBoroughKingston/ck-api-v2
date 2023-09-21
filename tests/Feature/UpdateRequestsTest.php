@@ -177,8 +177,8 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
-        Passport::actingAs($globalAdminUser);
+        $superAdminUser = User::factory()->create()->makeSuperAdmin();
+        Passport::actingAs($superAdminUser);
 
         $response = $this->json('GET', "/core/v1/update-requests?filter[location_id]={$location->id}");
 
@@ -240,8 +240,8 @@ class UpdateRequestsTest extends TestCase
             ],
         ]);
 
-        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
-        Passport::actingAs($globalAdminUser);
+        $superAdminUser = User::factory()->create()->makeSuperAdmin();
+        Passport::actingAs($superAdminUser);
         $response = $this->json('GET', "/core/v1/update-requests?filter[entry]={$organisation->name}");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -338,7 +338,7 @@ class UpdateRequestsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_view_one()
+    public function service_admin_can_view_one()
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -352,13 +352,21 @@ class UpdateRequestsTest extends TestCase
 
         $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $updateRequest->id,
+            'user_id' => $updateRequest->user_id,
+            'actioning_user_id' => null,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION,
+            'updateable_id' => $serviceLocation->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
     }
 
     /**
      * @test
      */
-    public function organisation_admin_cannot_view_one()
+    public function organisation_admin_can_view_one()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -372,13 +380,21 @@ class UpdateRequestsTest extends TestCase
 
         $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $updateRequest->id,
+            'user_id' => $updateRequest->user_id,
+            'actioning_user_id' => null,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION,
+            'updateable_id' => $serviceLocation->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
     }
 
     /**
      * @test
      */
-    public function global_admin_cannot_view_one()
+    public function global_admin_can_view_one()
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         Passport::actingAs($user);
@@ -391,7 +407,15 @@ class UpdateRequestsTest extends TestCase
 
         $response = $this->json('GET', "/core/v1/update-requests/{$updateRequest->id}");
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'id' => $updateRequest->id,
+            'user_id' => $updateRequest->user_id,
+            'actioning_user_id' => null,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_SERVICE_LOCATION,
+            'updateable_id' => $serviceLocation->id,
+            'data' => ['name' => 'Test Name'],
+        ]);
     }
 
     /**

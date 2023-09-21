@@ -511,7 +511,7 @@ class OrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function postCreateOrganisationEventAsOrganisationAdmin201()
+    public function postCreateOrganisationEventAsOrganisationAdmin200()
     {
         $organisation = Organisation::factory()->create();
         $location = Location::factory()->create();
@@ -2762,7 +2762,7 @@ class OrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function deleteRemoveOrganisationEventAsOrganisationAdmin200()
+    public function deleteRemoveOrganisationEventAsOrganisationAdmin403()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -2775,14 +2775,14 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/organisation-events/{$organisationEvent->id}");
 
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new OrganisationEvent())->getTable(), ['id' => $organisationEvent->id]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $organisationEvent->id]);
     }
 
     /**
      * @test
      */
-    public function deleteRemoveOrganisationEventAsGlobalAdmin200()
+    public function deleteRemoveOrganisationEventAsGlobalAdmin403()
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeGlobalAdmin($organisation);
@@ -2793,8 +2793,8 @@ class OrganisationEventsTest extends TestCase
 
         $response = $this->json('DELETE', "/core/v1/organisation-events/{$organisationEvent->id}");
 
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing((new OrganisationEvent())->getTable(), ['id' => $organisationEvent->id]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $organisationEvent->id]);
     }
 
     /**
@@ -2818,12 +2818,12 @@ class OrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function deleteRemoveOrganisationEventAsOrganisationAdminCreatesAudit200()
+    public function deleteRemoveOrganisationEventAsSuperAdminCreatesAudit200()
     {
         $this->fakeEvents();
 
         $organisation = Organisation::factory()->create();
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $user = User::factory()->create()->makeSuperAdmin();
 
         Passport::actingAs($user);
 

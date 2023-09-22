@@ -11,7 +11,6 @@ use App\Models\UpdateRequest;
 use App\Rules\FileIsMimeType;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
@@ -24,7 +23,6 @@ class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $user = Auth::user();
         $rules = (new StoreRequest())
             ->merge($updateRequest->data)
             ->setUserResolver(function () use ($updateRequest) {
@@ -78,8 +76,6 @@ class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
             'organisation_id' => $data->get('organisation_id'),
             'location_id' => $data->get('location_id'),
             'image_file_id' => $data->get('image_file_id'),
-            // This must always be updated regardless of the fields changed.
-            // 'last_modified_at' => Carbon::now(),
         ]);
 
         if ($data->has('image_file_id') && !empty($data->get('image_file_id'))) {

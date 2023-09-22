@@ -20,29 +20,31 @@ class UpdateRequest extends Model
 
     const EXISTING_TYPE_LOCATION = 'locations';
 
+    const EXISTING_TYPE_ORGANISATION = 'organisations';
+
+    const EXISTING_TYPE_ORGANISATION_EVENT = 'organisation_events';
+
+    const EXISTING_TYPE_PAGE = 'pages';
+
     const EXISTING_TYPE_REFERRAL = 'referrals';
 
     const EXISTING_TYPE_SERVICE = 'services';
 
     const EXISTING_TYPE_SERVICE_LOCATION = 'service_locations';
 
-    const EXISTING_TYPE_ORGANISATION = 'organisations';
-
-    const EXISTING_TYPE_ORGANISATION_EVENT = 'organisation_events';
-
     const EXISTING_TYPE_USER = 'users';
+
+    const NEW_TYPE_ORGANISATION_EVENT = 'new_organisation_event_created_by_org_admin';
 
     const NEW_TYPE_ORGANISATION_SIGN_UP_FORM = 'organisation_sign_up_form';
 
     const NEW_TYPE_ORGANISATION_GLOBAL_ADMIN = 'new_organisation_created_by_global_admin';
 
+    const NEW_TYPE_PAGE = 'new_page';
+
     const NEW_TYPE_SERVICE_ORG_ADMIN = 'new_service_created_by_org_admin';
 
     const NEW_TYPE_SERVICE_GLOBAL_ADMIN = 'new_service_created_by_global_admin';
-
-    const NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN = 'new_organisation_event_created_by_org_admin';
-
-    const NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN = 'new_organisation_event_created_by_global_admin';
 
     /**
      * The attributes that should be cast to native types.

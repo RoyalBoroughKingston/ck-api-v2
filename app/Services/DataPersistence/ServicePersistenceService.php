@@ -3,7 +3,6 @@
 namespace App\Services\DataPersistence;
 
 use App\Contracts\DataPersistenceService;
-use App\Models\File;
 use App\Models\Model;
 use App\Models\Service;
 use App\Models\Tag;
@@ -177,13 +176,7 @@ class ServicePersistenceService implements DataPersistenceService
 
             if ($request->filled('gallery_items')) {
                 foreach ($request->gallery_items as $galleryItem) {
-                    /** @var \App\Models\File $file */
-                    $file = File::findOrFail($galleryItem['file_id'])->assigned();
-
-                    // Create resized version for common dimensions.
-                    foreach (config('local.cached_image_dimensions') as $maxDimension) {
-                        $file->resizedVersion($maxDimension);
-                    }
+                    $this->resizeImageFile($galleryItem['file_id']);
                 }
             }
 

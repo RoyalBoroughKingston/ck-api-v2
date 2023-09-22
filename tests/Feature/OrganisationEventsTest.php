@@ -565,12 +565,12 @@ class OrganisationEventsTest extends TestCase
         //Then an update request should be created for the new event
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
             'updateable_id' => null,
         ]);
 
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
             ->where('updateable_id', null)
             ->firstOrFail();
 
@@ -655,12 +655,12 @@ class OrganisationEventsTest extends TestCase
         //Then an update request should be created for the new event
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
             'updateable_id' => null,
         ]);
 
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
             ->where('updateable_id', null)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -858,12 +858,12 @@ class OrganisationEventsTest extends TestCase
         //Then an update request should be created for the new event
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
             'updateable_id' => null,
         ]);
 
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
             ->where('updateable_id', null)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -1016,12 +1016,12 @@ class OrganisationEventsTest extends TestCase
         //Then an update request should be created for the new event
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
             'updateable_id' => null,
         ]);
 
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
             ->where('updateable_id', null)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -1249,12 +1249,12 @@ class OrganisationEventsTest extends TestCase
         //Then an update request should be created for the new event
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
             'updateable_id' => null,
         ]);
 
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
             ->where('updateable_id', null)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -1331,12 +1331,12 @@ class OrganisationEventsTest extends TestCase
         //Then an update request should be created for the new event
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
-            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN,
+            'updateable_type' => UpdateRequest::NEW_TYPE_ORGANISATION_EVENT,
             'updateable_id' => null,
         ]);
 
         $updateRequest = UpdateRequest::query()
-            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN)
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_EVENT)
             ->where('updateable_id', null)
             ->firstOrFail();
 

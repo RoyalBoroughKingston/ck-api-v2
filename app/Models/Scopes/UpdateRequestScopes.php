@@ -123,8 +123,7 @@ trait UpdateRequestScopes
         $organisationSignUpForm = UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM;
         $newOrganisationGlobalAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_GLOBAL_ADMIN;
         $organisationEvents = UpdateRequest::EXISTING_TYPE_ORGANISATION_EVENT;
-        $newOrganisationEventOrgAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN;
-        $newOrganisationEventGlobalAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN;
+        $newOrganisationEventOrgAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT;
 
         return <<<EOT
 CASE `update_requests`.`updateable_type`
@@ -182,9 +181,6 @@ CASE `update_requests`.`updateable_type`
         LIMIT 1
     )
     WHEN "{$newOrganisationEventOrgAdmin}" THEN (
-        `update_requests`.`data`->>"$.title"
-    )
-    WHEN "{$newOrganisationEventGlobalAdmin}" THEN (
         `update_requests`.`data`->>"$.title"
     )
 END

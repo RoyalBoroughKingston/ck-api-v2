@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Page;
 
+use App\Http\Requests\HasMissingValues;
 use App\Models\File;
 use App\Models\Page;
 use App\Models\Role;
@@ -18,6 +19,8 @@ use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
+    use HasMissingValues;
+
     /**
      * Determine if the user is authorized to make this request.
      *

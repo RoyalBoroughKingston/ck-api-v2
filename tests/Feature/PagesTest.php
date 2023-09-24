@@ -890,7 +890,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -905,7 +905,7 @@ class PagesTest extends TestCase
 
         // $data['slug'] = Str::slug($data['title']);
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -995,7 +995,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1009,7 +1009,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1058,7 +1058,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1071,7 +1071,7 @@ class PagesTest extends TestCase
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1085,7 +1085,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function auditCreatedOnCreate()
+    public function createPageAuditCreated()
     {
         $this->fakeEvents();
 
@@ -1345,7 +1345,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1359,7 +1359,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1405,7 +1405,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1419,7 +1419,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1463,7 +1463,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1477,7 +1477,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1554,7 +1554,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1568,7 +1568,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_LANDING;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1621,7 +1621,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1635,7 +1635,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1683,7 +1683,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1697,7 +1697,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1753,7 +1753,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1767,7 +1767,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1824,7 +1824,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1838,7 +1838,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -1895,7 +1895,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -1909,7 +1909,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -2026,7 +2026,7 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        //Then an update request should be created for the new event
+        //Then an update request should be created for the new page
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'user_id' => $user->id,
             'updateable_type' => UpdateRequest::NEW_TYPE_PAGE,
@@ -2039,7 +2039,7 @@ class PagesTest extends TestCase
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        $this->assertEquals($updateRequest->data, $data);
+        $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
 
@@ -2918,8 +2918,7 @@ class PagesTest extends TestCase
         /**
          * @var \App\Models\User $user
          */
-        $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user = User::factory()->create()->makeContentAdmin();
 
         Passport::actingAs($user);
 
@@ -2934,25 +2933,25 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonFragment([
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
             'title' => 'New Title',
         ]);
     }
@@ -2973,41 +2972,31 @@ class PagesTest extends TestCase
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $data = [
+        $payload = [
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $payload);
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
-        ]);
+        // The organisation event is updated
+        $this->assertDatabaseHas((new Page())->getTable(), array_merge(['id' => $page->id], $payload));
 
-        $response->assertJsonFragment([
-            'title' => 'New Title',
-        ]);
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->firstOrFail();
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->assertNotNull($updateRequest->approved_at);
     }
 
     /**
      * @test
      */
-    public function auditCreatedOnUpdate()
+    public function updatePageAuditCreated()
     {
         $this->fakeEvents();
 
@@ -3127,31 +3116,26 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image' => [
-                'id',
-                'mime_type',
-                'created_at',
-                'updated_at',
-            ],
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonFragment([
-            'id' => $image->id,
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'image_file_id' => $image->id,
         ]);
     }
 
@@ -3190,26 +3174,26 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonMissing([
-            'id' => $image->id,
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'image_file_id' => null,
         ]);
     }
 
@@ -3257,35 +3241,26 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image' => [
-                'id',
-                'mime_type',
-                'created_at',
-                'updated_at',
-            ],
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonMissing([
-            'id' => $imageJpg->id,
-        ]);
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
 
-        $response->assertJsonFragment([
-            'id' => $imagePng->id,
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'image_file_id' => $imagePng->id,
         ]);
     }
 
@@ -3318,12 +3293,26 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonMissing([
-            'id' => $parentPage1->id,
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonFragment([
-            'id' => $parentPage2->id,
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'parent_uuid' => $parentPage2->id,
         ]);
     }
 
@@ -3356,10 +3345,26 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJson([
-            'data' => [
-                'enabled' => false,
-            ],
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
+        ]);
+
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'enabled' => false,
         ]);
     }
 
@@ -3400,11 +3405,26 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonMissing([
-            'id' => $parentPage->id,
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonFragment([
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'parent_uuid' => null,
             'page_type' => Page::PAGE_TYPE_LANDING,
         ]);
     }
@@ -3434,15 +3454,19 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
         $children->get(2)->refreshNode();
 
         $this->assertEquals($children->get(1)->id, $children->get(2)->getNextSibling()->id);
 
-        $response->assertJsonMissing([
-            'order' => 1,
-        ]);
+        $reponse = $this->getJson('/core/v1/pages/' . $children->get(1)->id);
 
-        $response->assertJsonFragment([
+        $reponse->assertJsonFragment([
             'order' => 2,
         ]);
 
@@ -3454,15 +3478,19 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
         $children->get(1)->refreshNode();
 
         $this->assertEquals($children->get(0)->id, $children->get(1)->getNextSibling()->id);
 
-        $response->assertJsonMissing([
-            'order' => 2,
-        ]);
+        $reponse = $this->getJson('/core/v1/pages/' . $children->get(1)->id);
 
-        $response->assertJsonFragment([
+        $reponse->assertJsonFragment([
             'order' => 0,
         ]);
     }
@@ -3493,15 +3521,18 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
         $this->assertFalse($parent->fresh()->enabled);
         $this->assertFalse($page->fresh()->enabled);
         $this->assertFalse($children->get(0)->fresh()->enabled);
 
-        $response->assertJsonMissing([
-            'enabled' => true,
-        ]);
-
-        $response->assertJsonFragment([
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $parent->id,
             'enabled' => false,
         ]);
 
@@ -3513,11 +3544,18 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
         $this->assertTrue($parent->fresh()->enabled);
         $this->assertFalse($page->fresh()->enabled);
         $this->assertFalse($children->get(0)->fresh()->enabled);
 
-        $response->assertJsonFragment([
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $parent->id,
             'enabled' => true,
         ]);
     }
@@ -3565,44 +3603,41 @@ class PagesTest extends TestCase
         $collections = Collection::factory()->count(5)->create();
 
         $data = [
-            'collections' => $collections->pluck('id'),
+            'collections' => $collections->pluck('id')->all(),
         ];
         $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collections->get(0)->id,
         ]);
 
-        $response->assertJsonFragment([
-            'id' => $collections->get(0)->id,
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collections->get(1)->id,
         ]);
-        $response->assertJsonFragment([
-            'id' => $collections->get(1)->id,
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collections->get(2)->id,
         ]);
-        $response->assertJsonFragment([
-            'id' => $collections->get(2)->id,
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collections->get(3)->id,
         ]);
-        $response->assertJsonFragment([
-            'id' => $collections->get(3)->id,
-        ]);
-        $response->assertJsonFragment([
-            'id' => $collections->get(4)->id,
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collections->get(4)->id,
         ]);
     }
 
@@ -3635,41 +3670,51 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonResource([
-            'id',
-            'title',
-            'excerpt',
-            'content',
-            'order',
-            'enabled',
-            'page_type',
-            'image',
-            'landing_page',
-            'parent',
-            'children',
-            'collection_categories',
-            'collection_personas',
-            'created_at',
-            'updated_at',
+        //Then an update request should be created for the updated page
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'user_id' => $user->id,
+            'updateable_type' => UpdateRequest::EXISTING_TYPE_PAGE,
+            'updateable_id' => $page->id,
         ]);
 
-        $response->assertJsonFragment([
-            'id' => $collectionIds->get(0),
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->where('updateable_id', $page->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collectionIds->get(0),
         ]);
-        $response->assertJsonFragment([
-            'id' => $collectionIds->get(1),
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collectionIds->get(1),
         ]);
-        $response->assertJsonFragment([
-            'id' => $collectionIds->get(2),
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $collectionIds->get(2),
         ]);
-        $response->assertJsonFragment([
-            'id' => $pageCollectionIds->get(0),
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $pageCollectionIds->get(0),
         ]);
-        $response->assertJsonFragment([
-            'id' => $pageCollectionIds->get(1),
+
+        $this->assertDatabaseHas('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $pageCollectionIds->get(1),
         ]);
-        $response->assertJsonMissing([
-            'id' => $pageCollectionIds->get(2),
+
+        $this->assertDatabaseMissing('collection_page', [
+            'page_id' => $page->id,
+            'collection_id' => $pageCollectionIds->get(2),
         ]);
     }
 
@@ -3700,11 +3745,15 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonFragment([
-            'title' => 'New Title',
-        ]);
+        $updateRequest = UpdateRequest::find($response->json()['id']);
 
-        $response->assertJsonFragment([
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'title' => 'New Title',
             'slug' => 'test-page-title',
         ]);
 
@@ -3716,8 +3765,19 @@ class PagesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $response->assertJsonFragment([
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'title' => 'New Title',
             'slug' => 'new-title',
+        ]);
+
+        $response->assertJsonFragment([
         ]);
 
         Page::factory()->withImage()->withParent()->withChildren()->disabled()

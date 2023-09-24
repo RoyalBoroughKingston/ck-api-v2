@@ -119,34 +119,16 @@ class PageController extends Controller
      *
      * @param \App\Http\Requests\Page\UpdateRequest $request
      * @param \App\Models\Page $page
+     * @param \App\Services\DataPersistence\PagePersistenceService $persistenceService
      * @return \App\Http\Resources\OrganisationResource
      */
-    public function update(UpdateRequest $request, Page $page)
+    public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService)
     {
-        return DB::transaction(function () use ($request, $page) {
-            // Core fields
-            $page->title = $request->input('title', $page->title);
-            $page->slug = $request->has('slug') && $request->slug !== $page->slug ? $this->uniqueSlug($request->slug) : $page->slug;
-            $page->excerpt = $request->input('excerpt', $page->excerpt);
-            $page->page_type = $request->input('page_type', $page->page_type);
-            if ($request->filled('content')) {
-                $page->content = $request->input('content', $page->content);
-            }
+        $updateRequest = $persistenceService->update($request, $page);
 
-            // Update relationships
-            $page->updateParent($request->has('parent_id') ? $request->parent_id : false)
-                ->updateStatus($request->input('enabled'))
-                ->updateOrder($request->input('order'))
-                ->updateImage($request->has('image_file_id') ? $request->image_file_id : $page->image_file_id)
-                ->updateCollections($request->input('collections'));
+        event(EndpointHit::onUpdate($request, "Updated page [{$page->id}]", $page));
 
-            // Update model so far
-            $page->save();
-
-            event(EndpointHit::onUpdate($request, "Updated page [{$page->id}]", $page));
-
-            return new pageResource($page->fresh(['landingPageAncestors', 'parent', 'children', 'collectionCategories', 'collectionPersonas']));
-        });
+        return new UpdateRequestReceived($updateRequest);
     }
 
     /**
@@ -165,26 +147,5 @@ class PageController extends Controller
 
             return new ResourceDeleted('page');
         });
-    }
-
-    /**
-     * Return a unique version of the proposed slug.
-     *
-     * @param string $slug
-     * @return string
-     */
-    public function uniqueSlug($slug)
-    {
-        $uniqueSlug = $baseSlug = preg_replace('|\-\d$|', '', $slug);
-        $suffix = 1;
-        do {
-            $exists = DB::table((new Page())->getTable())->where('slug', $uniqueSlug)->exists();
-            if ($exists) {
-                $uniqueSlug = $baseSlug . '-' . $suffix;
-            }
-            $suffix++;
-        } while ($exists);
-
-        return $uniqueSlug;
     }
 }

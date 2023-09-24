@@ -3889,7 +3889,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsContentAdmin200()
+    public function deletePageAsContentAdmin403()
     {
         /**
          * @var \App\Models\User $user
@@ -3902,9 +3902,7 @@ class PagesTest extends TestCase
 
         $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 
-        $response->assertStatus(Response::HTTP_OK);
-
-        $this->assertDatabaseMissing('pages', ['id' => $page->id]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -3931,7 +3929,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function auditCreatedOnDelete()
+    public function deletePageAuditCreated()
     {
         $this->fakeEvents();
 
@@ -3939,7 +3937,7 @@ class PagesTest extends TestCase
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -3955,13 +3953,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageWithChildrenAsContentAdmin422()
+    public function deletePageWithChildrenAsSuperAdmin422()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -3985,13 +3983,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deleteLandingPageWithChildrenAsContentAdmin422()
+    public function deleteLandingPageWithChildrenAsSuperAdmin422()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -4014,13 +4012,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageWithCollectionsAsContentAdmin200()
+    public function deletePageWithCollectionsAsSuperAdmin200()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -4042,13 +4040,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deleteLandingPageWithCollectionsAsContentAdmin200()
+    public function deleteLandingPageWithCollectionsAsSuperAdmin200()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user->makeSuperAdmin();
 
         Passport::actingAs($user);
 
@@ -4070,13 +4068,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageWithImageAsContentAdmin200()
+    public function deletePageWithImageAsSuperAdmin200()
     {
         /**
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $user->makeContentAdmin();
+        $user->makeSuperAdmin();
 
         Passport::actingAs($user);
 

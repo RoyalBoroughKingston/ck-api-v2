@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -231,11 +232,15 @@ abstract class TestCase extends BaseTestCase
      **/
     public function approveUpdateRequest($updateRequestId)
     {
+        $user = Auth::user();
+
         Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequestId}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
+
+        Passport::actingAs($user);
 
         return $response->json();
     }

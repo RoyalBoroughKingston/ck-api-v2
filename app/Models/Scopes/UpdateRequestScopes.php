@@ -98,6 +98,20 @@ trait UpdateRequestScopes
 
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePageId(Builder $query, $id): Builder
+    {
+        $ids = explode(',', $id);
+
+        return $query
+            ->where('updateable_type', UpdateRequest::EXISTING_TYPE_PAGE)
+            ->whereIn('updateable_id', $ids);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string $alias
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -123,8 +137,9 @@ trait UpdateRequestScopes
         $organisationSignUpForm = UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM;
         $newOrganisationGlobalAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_GLOBAL_ADMIN;
         $organisationEvents = UpdateRequest::EXISTING_TYPE_ORGANISATION_EVENT;
-        $newOrganisationEventOrgAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN;
-        $newOrganisationEventGlobalAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN;
+        $newOrganisationEventOrgAdmin = UpdateRequest::NEW_TYPE_ORGANISATION_EVENT;
+        $pages = UpdateRequest::EXISTING_TYPE_PAGE;
+        $newPage = UpdateRequest::NEW_TYPE_PAGE;
 
         return <<<EOT
 CASE `update_requests`.`updateable_type`
@@ -184,7 +199,13 @@ CASE `update_requests`.`updateable_type`
     WHEN "{$newOrganisationEventOrgAdmin}" THEN (
         `update_requests`.`data`->>"$.title"
     )
-    WHEN "{$newOrganisationEventGlobalAdmin}" THEN (
+    WHEN "{$pages}" THEN (
+        SELECT `pages`.`title`
+        FROM `pages`
+        WHERE `update_requests`.`updateable_id` = `pages`.`id`
+        LIMIT 1
+    )
+    WHEN "{$newPage}" THEN (
         `update_requests`.`data`->>"$.title"
     )
 END

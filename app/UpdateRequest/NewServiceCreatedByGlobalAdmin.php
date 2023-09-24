@@ -12,7 +12,6 @@ use App\Models\UpdateRequest;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Str;
 
@@ -26,7 +25,6 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
-        $user = Auth::user();
         $rules = (new StoreRequest())
             ->merge($updateRequest->data)
             ->setUserResolver(function () use ($updateRequest) {

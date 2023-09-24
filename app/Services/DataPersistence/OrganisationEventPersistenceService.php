@@ -136,7 +136,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
             $updateableType = UpdateRequestModel::EXISTING_TYPE_ORGANISATION_EVENT;
 
             if (!$event) {
-                $updateableType = $request->user()->isGlobalAdmin() ? UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT_GLOBAL_ADMIN : UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT_ORG_ADMIN;
+                $updateableType = UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT;
             }
             /** @var \App\Models\UpdateRequest $updateRequest */
             $updateRequest = new UpdateRequestModel([

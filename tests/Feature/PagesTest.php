@@ -3498,6 +3498,44 @@ class PagesTest extends TestCase
     /**
      * @test
      */
+    public function updatePageEnablePageAsContentAdmin200()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create()->makeContentAdmin();
+
+        Passport::actingAs($user);
+
+        $page = Page::factory()->disabled()->create();
+
+        $data = [
+            'enabled' => true,
+        ];
+
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $this->assertFalse($page->fresh()->enabled);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertTrue($page->fresh()->enabled);
+
+        $this->assertDatabaseHas(table(Page::class), [
+            'id' => $page->id,
+            'enabled' => true,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function updatePageDisabledCascadestoChildPagesAsContentAdmin200()
     {
         /**

@@ -41,7 +41,7 @@ class UkMobilePhoneNumber implements Rule
             return true;
         }
 
-        $matches = preg_match('/^(\+44[0-9]{10})$/', $value);
+        $matches = preg_match('/^(\+447[0-9]{9})$/', $value);
 
         if ($matches === 1) {
             return true;

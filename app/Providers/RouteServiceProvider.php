@@ -28,7 +28,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->configureRateLimiting();
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(config('local.api_rate_limit'))->by($request->user()?->id ?: $request->ip());
+        });
 
         $this->routes(function () {
             $this->mapApiRoutes();
@@ -106,15 +108,5 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware(['web', 'auth'])
             ->group(base_path('routes/passport.php'));
-    }
-
-    /**
-     * Configure the rate limiters for the application.
-     */
-    protected function configureRateLimiting()
-    {
-        RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(config('local.api_rate_limit'))->by($request->user()?->id ?: $request->ip());
-        });
     }
 }

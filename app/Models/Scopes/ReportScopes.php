@@ -109,14 +109,20 @@ trait ReportScopes
             ->groupBy('organisation_id');
 
         $nonAdminUsersCountQuery = DB::table('user_roles')
-            ->selectRaw('user_roles.organisation_id as organisation_id, count(user_roles.user_id) as count')
-            ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-            ->whereIn('roles.name', [
-                Role::NAME_SERVICE_WORKER,
-                Role::NAME_ORGANISATION_ADMIN,
-                Role::NAME_SERVICE_ADMIN,
-            ])
-            ->groupBy('user_roles.organisation_id', 'user_roles.user_id');
+            ->selectRaw('user_roles.organisation_id as organisation_id, count(distinct user_roles.user_id) as count')
+            ->join('users', 'users.id', '=', 'user_roles.user_id')
+            ->whereNotIn('user_roles.user_id', function ($query) {
+                $query->select('user_id')
+                    ->from('user_roles')
+                    ->join('roles', 'roles.id', '=', 'user_roles.role_id')
+                    ->whereIn('roles.name', [
+                        Role::NAME_SUPER_ADMIN,
+                        Role::NAME_GLOBAL_ADMIN,
+                    ]);
+            })
+            ->whereNull('users.deleted_at')
+            ->distinct()
+            ->groupBy('user_roles.organisation_id');
 
         $query = DB::table('organisations')
             ->select([

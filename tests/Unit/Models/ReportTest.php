@@ -282,6 +282,7 @@ class ReportTest extends TestCase
 
         // Create an admin and non-admin user.
         User::factory()->create()->makeSuperAdmin();
+        User::factory()->create()->makeGlobalAdmin();
         User::factory()->create()->makeOrganisationAdmin($organisation);
 
         $headings = [
@@ -321,6 +322,13 @@ class ReportTest extends TestCase
         $service = Service::factory()->create([
             'organisation_id' => $organisation->id,
         ]);
+
+        User::factory()->create()->makeServiceAdmin($service);
+        User::factory()->create()->makeServiceWorker($service);
+        // Soft deleted organisation admin
+        $deletedUser = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $deletedUser->delete();
+        $this->assertTrue($deletedUser->trashed());
 
         // Generate the report.
         $report = Report::generate(ReportType::organisationsExport());

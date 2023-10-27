@@ -11,7 +11,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class ServicesLogoPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

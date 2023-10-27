@@ -28,7 +28,6 @@ class ThesaurusController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \App\Http\Responses\Thesaurus
      *
      * @throws \Exception
      */
@@ -68,7 +67,6 @@ class ThesaurusController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \App\Http\Responses\Thesaurus
      *
      * @throws \Exception
      */

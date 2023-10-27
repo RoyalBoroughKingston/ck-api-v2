@@ -20,7 +20,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class StoreSearchCollectionPersonaOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

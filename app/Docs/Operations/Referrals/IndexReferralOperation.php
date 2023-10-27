@@ -21,7 +21,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexReferralOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

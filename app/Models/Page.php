@@ -65,8 +65,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Get the indexable data array for the model.
-     *
-     * @return array
      */
     public function toSearchableArray(): array
     {
@@ -104,8 +102,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Enable the Page.
-     *
-     * @return \App\Models\Page
      */
     public function enable(): Page
     {
@@ -116,8 +112,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Disable the Page.
-     *
-     * @return \App\Models\Page
      */
     public function disable(): Page
     {
@@ -128,8 +122,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Get the parent id key name.
-     *
-     * @return string
      */
     public function getParentIdName(): string
     {
@@ -138,8 +130,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Set the page_type to 'landing'.
-     *
-     * @return \App\Models\Page
      */
     public function asLandingPage(): self
     {
@@ -150,8 +140,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Set the page_type to 'information'.
-     *
-     * @return \App\Models\Page
      */
     public function asInformationPage(): self
     {
@@ -166,7 +154,6 @@ class Page extends Model implements AppliesUpdateRequests
      * Children do not inherit enabled status, but must be enabled individually.
      *
      * @param  mixed  $status
-     * @return \App\Models\Page
      */
     public function updateStatus($status): self
     {
@@ -188,9 +175,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Update the parent relationship.
-     *
-     * @param  string  $parentId
-     * @return \App\Models\Page
      */
     public function updateParent(string $parentId = false): self
     {
@@ -206,9 +190,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Update the sibling order for the page.
-     *
-     * @param  int  $order
-     * @return \App\Models\Page
      */
     public function updateOrder(int $order): self
     {
@@ -223,9 +204,6 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the image relationship.
      * Can be passed either null, the current image id or a new image id.
-     *
-     * @param  string  $imageId
-     * @return \App\Models\Page
      */
     public function updateImage(string $imageId): Page
     {
@@ -259,9 +237,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the collections relationship.
      *
-     * @param  array  $collectionIds
      * @param  mixed  $collections
-     * @return \App\Models\Page
      */
     public function updateCollections(array $collectionIds): Page
     {
@@ -275,8 +251,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Check if the update request is valid.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -301,9 +275,6 @@ class Page extends Model implements AppliesUpdateRequests
 
     /**
      * Apply the update request.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {

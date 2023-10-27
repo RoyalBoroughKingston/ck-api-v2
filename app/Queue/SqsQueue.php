@@ -8,9 +8,6 @@ class SqsQueue extends BaseSqsQueue
 {
     /**
      * Get the queue or return the default.
-     *
-     * @param  string|null  $queue
-     * @return string
      */
     public function getQueue(?string $queue): string
     {

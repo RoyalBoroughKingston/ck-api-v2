@@ -12,7 +12,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class IndexStopWordOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

@@ -22,8 +22,6 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
 
     /**
      * Create a new rule instance.
-     *
-     * @param  \App\TaxonomyRelationships\HasTaxonomyRelationships  $model
      */
     public function __construct(User $user, Service $model)
     {
@@ -34,9 +32,7 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
      * @param  mixed  $value
-     * @return bool
      */
     public function passes(string $attribute, $value): bool
     {
@@ -66,8 +62,6 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
     public function message(): string
     {

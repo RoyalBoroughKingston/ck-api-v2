@@ -104,8 +104,6 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * Send the password reset notification.
-     *
-     * @param  string  $token
      */
     public function sendPasswordResetNotification(string $token)
     {
@@ -114,11 +112,6 @@ class User extends Authenticatable implements Notifiable
         ]));
     }
 
-    /**
-     * @param  \App\Models\Role  $role
-     * @param  \App\Models\Service|null  $service
-     * @param  \App\Models\Organisation|null  $organisation
-     */
     protected function hasRole(Role $role, Service $service = null, Organisation $organisation = null): bool
     {
         if ($service !== null && $organisation !== null) {
@@ -141,10 +134,6 @@ class User extends Authenticatable implements Notifiable
      * userRoles relationship as a collection, so it's more efficient when this
      * relationship has been eager loaded. This can also cause caching issues
      * where the userRoles might be out of date if they have been modified.
-     *
-     * @param  \App\Models\Role  $role
-     * @param  \App\Models\Service|null  $service
-     * @param  \App\Models\Organisation|null  $organisation
      */
     public function hasRoleCached(Role $role, Service $service = null, Organisation $organisation = null): bool
     {
@@ -163,12 +152,6 @@ class User extends Authenticatable implements Notifiable
             ->isNotEmpty();
     }
 
-    /**
-     * @param  \App\Models\Role  $role
-     * @param  \App\Models\Service|null  $service
-     * @param  \App\Models\Organisation|null  $organisation
-     * @return \App\Models\User
-     */
     protected function assignRole(Role $role, Service $service = null, Organisation $organisation = null): self
     {
         if ($service !== null && $organisation !== null) {
@@ -191,12 +174,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @param  \App\Models\Role  $role
-     * @param  \App\Models\Service|null  $service
-     * @param  \App\Models\Organisation|null  $organisation
-     * @return \App\Models\User
-     */
     protected function removeRoll(Role $role, Service $service = null, Organisation $organisation = null): self
     {
         if ($service !== null && $organisation !== null) {
@@ -223,10 +200,6 @@ class User extends Authenticatable implements Notifiable
      * This is an extremely important algorithm for user management.
      * This algorithm does not care about the exact role the invoker is trying to revoke on the subject.
      * All that matters is that the subject is not higher up than the invoker in the ACL hierarchy.
-     *
-     * @param  \App\Models\User  $subject
-     * @param  \App\Models\Organisation|null  $organisation
-     * @param  \App\Models\Service|null  $service
      */
     protected function canRevokeRole(
         User $subject,
@@ -276,8 +249,6 @@ class User extends Authenticatable implements Notifiable
      * This is an extremely important algorithm for user management.
      * This algorithm does not care about the exact role the invoker is trying to revoke on the subject.
      * All that matters is that the subject is not higher up than the invoker in the ACL hierarchy.
-     *
-     * @param  \App\Models\User  $subject
      */
     public function canUpdate(User $subject): bool
     {
@@ -331,41 +302,28 @@ class User extends Authenticatable implements Notifiable
      * Check if this user can view the record of another user.
      *
      * @param \App\Models\User
-     * @return bool
      */
     public function canView(User $user): bool
     {
         return $this->visibleUserIds()->contains($user->id);
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     */
     public function canDelete(User $subject): bool
     {
         return $this->canUpdate($subject);
     }
 
-    /**
-     * @param  \App\Models\Service|null  $service
-     */
     public function isServiceWorker(Service $service = null): bool
     {
         return $this->hasRole(Role::serviceWorker(), $service) || $this->isServiceAdmin($service);
     }
 
-    /**
-     * @param  \App\Models\Service|null  $service
-     */
     public function isServiceAdmin(Service $service = null): bool
     {
         return $this->hasRole(Role::serviceAdmin(), $service)
         || $this->isOrganisationAdmin($service->organisation ?? null);
     }
 
-    /**
-     * @param  \App\Models\Organisation|null  $organisation
-     */
     public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
         return $this->hasRole(Role::organisationAdmin(), null, $organisation) || $this->isSuperAdmin();
@@ -386,10 +344,6 @@ class User extends Authenticatable implements Notifiable
         return $this->hasRole(Role::superAdmin());
     }
 
-    /**
-     * @param  \App\Models\Service  $service
-     * @return \App\Models\User
-     */
     public function makeServiceWorker(Service $service): self
     {
         $this->assignRole(Role::serviceWorker(), $service);
@@ -397,10 +351,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @param  \App\Models\Service  $service
-     * @return \App\Models\User
-     */
     public function makeServiceAdmin(Service $service): self
     {
         $this->makeServiceWorker($service);
@@ -409,10 +359,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @param  \App\Models\Organisation  $organisation
-     * @return \App\Models\User
-     */
     public function makeOrganisationAdmin(Organisation $organisation): self
     {
         foreach ($organisation->services as $service) {
@@ -425,9 +371,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function makeContentAdmin(): self
     {
         $this->assignRole(Role::contentAdmin());
@@ -435,9 +378,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function makeGlobalAdmin(): self
     {
         foreach (Organisation::all() as $organisation) {
@@ -449,9 +389,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function makeSuperAdmin(): self
     {
         foreach (Organisation::all() as $organisation) {
@@ -465,8 +402,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param  \App\Models\Service  $service
-     * @return \App\Models\User
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
@@ -480,8 +415,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param  \App\Models\Service  $service
-     * @return \App\Models\User
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
@@ -497,8 +430,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @param  \App\Models\Organisation  $organisation
-     * @return \App\Models\User
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
@@ -514,7 +445,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @return \App\Models\User
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
@@ -530,7 +460,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     * @return \App\Models\User
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
@@ -545,9 +474,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function revokeSuperAdmin(): User
     {
         $this->removeRoll(Role::superAdmin());
@@ -555,25 +481,16 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @param  \App\Models\Service  $service
-     */
     public function canMakeServiceWorker(Service $service): bool
     {
         return $this->isServiceWorker($service) && ! ($this->isGlobalAdmin() && ! $this->isSuperAdmin());
     }
 
-    /**
-     * @param  \App\Models\Service  $service
-     */
     public function canMakeServiceAdmin(Service $service): bool
     {
         return $this->isServiceAdmin($service) && ! ($this->isGlobalAdmin() && ! $this->isSuperAdmin());
     }
 
-    /**
-     * @param  \App\Models\Organisation  $organisation
-     */
     public function canMakeOrganisationAdmin(Organisation $organisation): bool
     {
         return $this->isOrganisationAdmin($organisation) && ! ($this->isGlobalAdmin() && ! $this->isSuperAdmin());
@@ -594,60 +511,36 @@ class User extends Authenticatable implements Notifiable
         return $this->isSuperAdmin();
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     * @param  \App\Models\Service  $service
-     */
     public function canRevokeServiceWorker(User $subject, Service $service): bool
     {
         return $this->canRevokeRole($subject, $service->organisation, $service);
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     * @param  \App\Models\Service  $service
-     */
     public function canRevokeServiceAdmin(User $subject, Service $service): bool
     {
         return $this->canRevokeRole($subject, $service->organisation, $service);
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     * @param  \App\Models\Organisation  $organisation
-     */
     public function canRevokeOrganisationAdmin(User $subject, Organisation $organisation): bool
     {
         return $this->canRevokeRole($subject, $organisation);
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     */
     public function canRevokeContentAdmin(User $subject): bool
     {
         return $this->canRevokeRole($subject);
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     */
     public function canRevokeGlobalAdmin(User $subject): bool
     {
         return $this->canRevokeRole($subject);
     }
 
-    /**
-     * @param  \App\Models\User  $subject
-     */
     public function canRevokeSuperAdmin(User $subject): bool
     {
         return $this->canRevokeRole($subject);
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function sendEmail(Email $email): self
     {
         Notification::sendEmail($email, $this);
@@ -655,9 +548,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function sendSms(Sms $sms): self
     {
         Notification::sendSms($sms, $this);
@@ -665,9 +555,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\User
-     */
     public function clearSessions(): self
     {
         DB::table('sessions')
@@ -677,9 +564,6 @@ class User extends Authenticatable implements Notifiable
         return $this;
     }
 
-    /**
-     * @return \App\Models\Role|null
-     */
     public function highestRole(): ?Role
     {
         return $this->orderedRoles()->first();
@@ -688,8 +572,6 @@ class User extends Authenticatable implements Notifiable
     /**
      * Get the IDs of all the users that are in organisations and services
      * that this user belongs to who are at the same or lower permission level.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function visibleUserIds(): SupportCollection
     {
@@ -740,7 +622,6 @@ class User extends Authenticatable implements Notifiable
     /**
      * Get the ID's for the users.
      *
-     * @param  array  $serviceIds
      * @param  array  $blacklistedRoleIds Exclude users who have these roles
      */
     protected function getUserIdsForServices(SupportCollection $serviceIds, array $blacklistedRoleIds): SupportCollection

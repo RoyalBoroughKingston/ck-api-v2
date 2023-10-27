@@ -20,9 +20,6 @@ class SitemapController extends Controller
      */
     protected $sitemap;
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function __invoke(): JsonResponse
     {
         $sitemap = Cache::remember('sitemap', (60 * 60), function () {
@@ -203,7 +200,6 @@ class SitemapController extends Controller
     /**
      * Create a frontend url for the given environment.
      *
-     * @param  string  $path
      * @return string
      */
     public function frontendUrl(string $path = '')

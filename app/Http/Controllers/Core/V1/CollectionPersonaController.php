@@ -32,8 +32,6 @@ class CollectionPersonaController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -107,8 +105,6 @@ class CollectionPersonaController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\CollectionPersonaResource
      */
     public function show(ShowRequest $request, Collection $collection): CollectionPersonaResource
     {

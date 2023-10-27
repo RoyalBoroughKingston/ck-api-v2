@@ -28,8 +28,6 @@ class OrganisationPersistenceService implements DataPersistenceService
 
     /**
      * Update the model.
-     *
-     * @return \App\Models\UpdateRequest
      */
     public function update(FormRequest $request, Model $model): UpdateRequest
     {
@@ -38,9 +36,6 @@ class OrganisationPersistenceService implements DataPersistenceService
 
     /**
      * Create a new model from the provided request.
-     *
-     * @param  Illuminate\Foundation\Http\FormRequest  $request
-     * @return \App\Models\Organisation
      */
     public function processAsNewEntity(FormRequest $request): Organisation
     {
@@ -80,10 +75,6 @@ class OrganisationPersistenceService implements DataPersistenceService
 
     /**
      * Process the requested changes and either update the model or store an update request.
-     *
-     * @param  Illuminate\Foundation\Http\FormRequest  $request
-     * @param  \App\Models\Organisation  $organisation
-     * @return \App\Models\UpdateRequest
      */
     public function processAsUpdateRequest(FormRequest $request, ?Organisation $organisation): UpdateRequest
     {

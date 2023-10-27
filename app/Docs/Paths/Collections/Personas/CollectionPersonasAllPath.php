@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class CollectionPersonasAllPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

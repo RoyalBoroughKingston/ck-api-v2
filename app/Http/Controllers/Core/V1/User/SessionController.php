@@ -16,9 +16,6 @@ class SessionController extends Controller
         $this->middleware('auth:api');
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy(): JsonResponse
     {
         Auth::user()->clearSessions();

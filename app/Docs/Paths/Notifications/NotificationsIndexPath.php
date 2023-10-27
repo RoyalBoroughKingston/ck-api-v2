@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class NotificationsIndexPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

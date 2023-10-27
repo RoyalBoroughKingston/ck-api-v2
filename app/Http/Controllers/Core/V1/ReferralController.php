@@ -37,8 +37,6 @@ class ReferralController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -131,8 +129,6 @@ class ReferralController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\ReferralResource
      */
     public function show(ShowRequest $request, Referral $referral): ReferralResource
     {

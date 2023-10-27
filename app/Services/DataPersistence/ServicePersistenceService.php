@@ -239,9 +239,6 @@ class ServicePersistenceService implements DataPersistenceService
 
     /**
      * Return a unique version of the proposed slug.
-     *
-     * @param  string  $slug
-     * @return string
      */
     public function uniqueSlug(string $slug): string
     {

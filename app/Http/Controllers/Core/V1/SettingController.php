@@ -21,9 +21,6 @@ class SettingController extends Controller
         $this->middleware('auth:api')->except('index');
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function index(IndexRequest $request): JsonResponse
     {
         event(EndpointHit::onRead($request, 'Viewed all settings'));
@@ -31,9 +28,6 @@ class SettingController extends Controller
         return new Setting();
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(UpdateRequest $request): JsonResponse
     {
         return DB::transaction(function () use ($request) {

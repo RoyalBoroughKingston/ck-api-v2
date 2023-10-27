@@ -10,7 +10,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class ThesaurusRootPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

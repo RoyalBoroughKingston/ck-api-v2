@@ -34,8 +34,6 @@ class OrganisationEventController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -101,8 +99,6 @@ class OrganisationEventController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\OrganisationEventResource
      */
     public function show(ShowRequest $request, OrganisationEvent $organisationEvent): OrganisationEventResource
     {
@@ -120,8 +116,6 @@ class OrganisationEventController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return UpdateRequestReceived
      */
     public function update(
         UpdateRequest $request,

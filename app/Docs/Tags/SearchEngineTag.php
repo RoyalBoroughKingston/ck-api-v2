@@ -7,9 +7,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 
 class SearchEngineTag extends Tag
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

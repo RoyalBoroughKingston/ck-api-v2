@@ -25,8 +25,6 @@ class SitemapTest extends TestCase
     /**
      * Create a frontend url for the given environment
      *
-     * @param  string  $path
-     * @return string
      **/
     public function frontendUrl(string $path = ''): string
     {

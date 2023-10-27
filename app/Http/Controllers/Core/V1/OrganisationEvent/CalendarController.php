@@ -13,7 +13,6 @@ class CalendarController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Requests\OrganisationEvent\Image\ShowRequest  $request
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException

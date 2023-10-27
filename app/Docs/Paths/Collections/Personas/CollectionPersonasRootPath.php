@@ -10,7 +10,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class CollectionPersonasRootPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

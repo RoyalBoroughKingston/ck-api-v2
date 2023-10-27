@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 class UpdateLocationOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

@@ -8,7 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class UpdatePageFeedbackSchema extends Schema
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

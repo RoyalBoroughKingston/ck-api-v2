@@ -38,9 +38,7 @@ class CanRevokeRoleFromUser implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
      * @param  mixed  $role
-     * @return bool
      */
     public function passes(string $attribute, $role): bool
     {
@@ -90,8 +88,6 @@ class CanRevokeRoleFromUser implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
     public function message(): string
     {

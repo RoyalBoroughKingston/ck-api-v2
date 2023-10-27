@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class ShowReportScheduleOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

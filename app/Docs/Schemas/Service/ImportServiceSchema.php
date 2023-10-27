@@ -8,7 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class ImportServiceSchema extends Schema
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

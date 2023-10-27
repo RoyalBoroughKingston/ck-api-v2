@@ -29,8 +29,6 @@ class TaxonomyOrganisationController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -69,8 +67,6 @@ class TaxonomyOrganisationController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\TaxonomyOrganisationResource
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy): TaxonomyOrganisationResource
     {

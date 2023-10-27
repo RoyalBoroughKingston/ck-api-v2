@@ -14,7 +14,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class DisableStaleServiceOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

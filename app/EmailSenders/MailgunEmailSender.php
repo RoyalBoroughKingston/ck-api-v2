@@ -25,8 +25,6 @@ class MailgunEmailSender implements EmailSender
 
     /**
      * Create the email subject from the language file and the email values.
-     *
-     * @return string
      */
     public function createSubject(Email $email): string
     {
@@ -38,8 +36,6 @@ class MailgunEmailSender implements EmailSender
 
     /**
      * Create the email content from the language file and the email values.
-     *
-     * @return string
      */
     public function createContent(Email $email): string
     {
@@ -51,8 +47,6 @@ class MailgunEmailSender implements EmailSender
 
     /**
      * Create the email content from the language file and the email values.
-     *
-     * @return string
      */
     public function createHtmlContent(Email $email): string
     {

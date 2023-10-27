@@ -138,7 +138,6 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      *
      * @throws \Exception
      */
@@ -249,7 +248,6 @@ class ImportTaxonomiesCommand extends Command
      * Get all the Category Taxonomy IDs.
      *
      * @param  array  $rootId
-     * @param  array  $taxonomyIds
      * @param  mixed  $rootIds
      */
     public function getDescendantTaxonomyIds($rootIds, array $taxonomyIds = []): array
@@ -294,9 +292,6 @@ class ImportTaxonomiesCommand extends Command
      * Unlike php built in csv parsing functions, this will work with fields containing quotes and new lines.
      *
      * @param  mixed  $csv_string
-     * @param  string  $delimiter
-     * @param  bool  $skip_empty_lines
-     * @param  bool  $trim_fields
      * @return string[]|false
      *
      * @author https://www.php.net/manual/en/function.str-getcsv.php#111665
@@ -515,10 +510,6 @@ class ImportTaxonomiesCommand extends Command
     /**
      * Walk through the levels of child records and record the depth.
      * Caution: recursive.
-     *
-     * @param  array  $parentIds
-     * @param  array  $records
-     * @param  int  $depth
      */
     public function calculateTaxonomyDepth(array $parentIds, array &$records, int $depth): array
     {

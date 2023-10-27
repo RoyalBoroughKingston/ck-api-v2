@@ -12,7 +12,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 class LogoOrganisationOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

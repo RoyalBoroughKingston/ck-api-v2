@@ -20,9 +20,6 @@ class TagController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @param  \App\Http\Requests\Page\IndexRequest  $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {

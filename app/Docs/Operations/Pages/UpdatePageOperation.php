@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 class UpdatePageOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

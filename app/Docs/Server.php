@@ -7,9 +7,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Server as BaseServer;
 
 class Server extends BaseServer
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

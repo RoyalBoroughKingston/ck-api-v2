@@ -14,9 +14,6 @@ trait ReferralMutators
         $this->attributes['name'] = encrypt($name);
     }
 
-    /**
-     * @param  string  $email
-     */
     public function getEmailAttribute(?string $email): ?string
     {
         return $email ? decrypt($email) : null;
@@ -92,9 +89,6 @@ trait ReferralMutators
         return $refereePhone ? decrypt($refereePhone) : null;
     }
 
-    /**
-     * @param  string  $refereePhone
-     */
     public function setRefereePhoneAttribute(?string $refereePhone)
     {
         $this->attributes['referee_phone'] = $refereePhone ? encrypt($refereePhone) : null;

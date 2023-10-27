@@ -117,10 +117,6 @@ class Referral extends Model implements Notifiable
         return $this->status === static::STATUS_COMPLETED;
     }
 
-    /**
-     * @param  \App\Models\User  $user
-     * @return \App\Models\StatusUpdate
-     */
     public function updateStatus(User $user, string $to, string $comments = null): StatusUpdate
     {
         /** @var \App\Models\StatusUpdate $statusUpdate */

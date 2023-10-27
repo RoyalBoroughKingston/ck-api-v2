@@ -15,7 +15,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class UpdateOrganisationOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

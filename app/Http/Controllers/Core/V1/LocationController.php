@@ -31,8 +31,6 @@ class LocationController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -119,8 +117,6 @@ class LocationController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\LocationResource
      */
     public function show(ShowRequest $request, Location $location): LocationResource
     {

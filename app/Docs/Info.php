@@ -8,9 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Info as BaseInfo;
 
 class Info extends BaseInfo
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

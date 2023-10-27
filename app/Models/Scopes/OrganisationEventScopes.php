@@ -11,41 +11,26 @@ use Illuminate\Support\Facades\DB;
 
 trait OrganisationEventScopes
 {
-    /**
-     * @param  string  $dateString
-     */
     public function scopeEndsAfter(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('end_date', '>=', $dateString);
     }
 
-    /**
-     * @param  string  $dateString
-     */
     public function scopeEndsBefore(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('end_date', '<=', $dateString);
     }
 
-    /**
-     * @param  string  $dateString
-     */
     public function scopeStartsAfter(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('start_date', '>=', $dateString);
     }
 
-    /**
-     * @param  string  $dateString
-     */
     public function scopeStartsBefore(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('start_date', '<=', $dateString);
     }
 
-    /**
-     * @param  bool  $required
-     */
     public function scopeHasWheelchairAccess(Builder $query, bool $required): Builder
     {
         return $query->whereExists(function ($query) use ($required) {
@@ -57,9 +42,6 @@ trait OrganisationEventScopes
         });
     }
 
-    /**
-     * @param  bool  $required
-     */
     public function scopeHasInductionLoop(Builder $query, bool $required): Builder
     {
         return $query->whereExists(function ($query) use ($required) {

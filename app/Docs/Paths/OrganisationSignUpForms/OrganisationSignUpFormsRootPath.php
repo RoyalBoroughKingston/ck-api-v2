@@ -8,9 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 
 class OrganisationSignUpFormsRootPath extends PathItem
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

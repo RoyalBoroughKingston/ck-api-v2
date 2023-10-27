@@ -47,8 +47,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Get the name of the index associated with the model.
-     *
-     * @return string
      */
     public function searchableAs(): string
     {
@@ -57,8 +55,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Get the indexable data array for the model.
-     *
-     * @return array
      */
     public function toSearchableArray(): array
     {
@@ -95,8 +91,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Check if the update request is valid.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -120,9 +114,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Apply the update request.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
@@ -191,8 +182,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Ensures conditional fields are reset to expected values.
-     *
-     * @return \App\Models\OrganisationEvent
      */
     public function resetConditionalFields(): self
     {
@@ -239,8 +228,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Add the OrganisationEvent to the homepage.
-     *
-     * @return \App\Models\OrganisationEvent
      */
     public function addToHomepage(): OrganisationEvent
     {
@@ -251,8 +238,6 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * Remove the OrganisationEvent from the homepage.
-     *
-     * @return \App\Models\OrganisationEvent
      */
     public function removeFromHomepage(): OrganisationEvent
     {

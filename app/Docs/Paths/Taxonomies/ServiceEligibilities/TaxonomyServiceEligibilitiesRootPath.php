@@ -10,7 +10,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class TaxonomyServiceEligibilitiesRootPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

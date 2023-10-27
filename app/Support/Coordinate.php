@@ -48,8 +48,6 @@ class Coordinate implements Arrayable
 
     /**
      * Get the instance as an array.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -59,9 +57,6 @@ class Coordinate implements Arrayable
         ];
     }
 
-    /**
-     * @param  \App\Support\Coordinate  $from
-     */
     public function distanceFrom(Coordinate $from): float
     {
         // convert from degrees to radians

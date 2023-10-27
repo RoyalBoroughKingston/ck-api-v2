@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class ReferralsIndexPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

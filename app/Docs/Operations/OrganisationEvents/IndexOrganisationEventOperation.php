@@ -23,7 +23,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexOrganisationEventOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

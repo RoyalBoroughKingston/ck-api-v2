@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class ServicesNestedPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

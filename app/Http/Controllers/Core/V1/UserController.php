@@ -41,8 +41,6 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -144,8 +142,6 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\UserResource
      */
     public function show(ShowRequest $request, User $user): UserResource
     {
@@ -173,8 +169,6 @@ class UserController extends Controller
 
     /**
      * Display the logged in user.
-     *
-     * @return \App\Http\Resources\UserResource
      */
     public function user(ShowRequest $request): UserResource
     {

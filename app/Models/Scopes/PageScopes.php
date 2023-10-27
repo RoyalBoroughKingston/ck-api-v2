@@ -8,8 +8,6 @@ trait PageScopes
 {
     /**
      * Get the InformationPage sibling at given index.
-     *
-     * @param  int  $index
      */
     public function scopeSiblingAtIndex(Builder $query, int $index): Builder
     {
@@ -18,8 +16,6 @@ trait PageScopes
 
     /**
      * Get the Landing Page descendants.
-     *
-     * @param  string  $uuid
      */
     public function scopePageDescendants(Builder $query, string $uuid): Builder
     {

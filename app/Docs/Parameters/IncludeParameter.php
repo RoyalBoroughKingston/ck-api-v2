@@ -10,7 +10,6 @@ class IncludeParameter extends Parameter
 {
     /**
      * @param  string[]  $includes
-     * @return static
      */
     public static function create(string $objectId = null, array $includes = ['N/A']): BaseObject
     {

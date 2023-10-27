@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class UpdateServiceSchema extends Schema
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

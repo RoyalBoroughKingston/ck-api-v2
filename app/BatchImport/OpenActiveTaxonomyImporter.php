@@ -34,7 +34,6 @@ class OpenActiveTaxonomyImporter
      * Fetch the Open Active taxonomy data and store it as a collection.
      *
      * @param  mixed  $openActiveDirectoryUrl
-     * @return array
      */
     public function fetchTaxonomies($openActiveDirectoryUrl): array
     {
@@ -55,8 +54,6 @@ class OpenActiveTaxonomyImporter
 
     /**
      * Get the root Open Active category.
-     *
-     * @return \App\Models\Taxonomy
      */
     public function getOpenActiveCategory(): Taxonomy
     {
@@ -107,7 +104,6 @@ class OpenActiveTaxonomyImporter
      *
      * @param array openActiveTaxonomyData
      * @param  mixed  $openActiveTaxonomyData
-     * @return array
      */
     public function mapOpenActiveTaxonomyImport(Taxonomy $rootTaxonomy, $openActiveTaxonomyData): array
     {
@@ -126,8 +122,6 @@ class OpenActiveTaxonomyImporter
 
     /**
      * Return the uuid component from an Open Active directory url.
-     *
-     * @return string
      */
     private function parseIdentifier(string $identifierUrl): string
     {
@@ -138,7 +132,6 @@ class OpenActiveTaxonomyImporter
      * Convert Open Active taxonomies into Taxonomy model data.
      *
      * @param array openActiveTaxonomyData
-     * @return array
      */
     private function mapOpenActiveTaxonomyToTaxonomyModelSchema(Taxonomy $rootTaxonomy, array $taxonomyData): array
     {

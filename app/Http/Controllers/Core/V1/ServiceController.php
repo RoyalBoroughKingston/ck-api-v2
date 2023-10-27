@@ -37,8 +37,6 @@ class ServiceController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -109,8 +107,6 @@ class ServiceController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\ServiceResource
      */
     public function show(ShowRequest $request, Service $service): ServiceResource
     {
@@ -134,8 +130,6 @@ class ServiceController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return UpdateRequestReceived
      */
     public function update(UpdateRequest $request, Service $service, ServicePersistenceService $persistenceService): UpdateRequestReceived
     {

@@ -11,7 +11,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class StoreOrganisationSignUpFormSchema extends Schema
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

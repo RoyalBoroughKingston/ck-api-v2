@@ -42,8 +42,6 @@ trait StoresSpreadsheets
 
     /**
      * Import a base64 encode spreadsheet.
-     *
-     * @return array
      */
     public function processSpreadsheet(string $spreadsheet): array
     {
@@ -74,7 +72,6 @@ trait StoresSpreadsheets
     /**
      * Store a Base 64 encoded data string.
      *
-     * @return string
      *
      * @throws Illuminate\Validation\ValidationException
      */
@@ -93,10 +90,6 @@ trait StoresSpreadsheets
 
     /**
      * Store a binary file blob and update the models properties.
-     *
-     * @param  string  $mime_type
-     * @param  string  $ext
-     * @return string
      */
     protected function storeBinaryUpload(string $blob, string $path, string $mime_type = null, string $ext = null): string
     {
@@ -113,8 +106,6 @@ trait StoresSpreadsheets
      * Get the mime type of a binary file string.
      *
      * @var string
-     *
-     * @return string
      */
     protected function getFileStringMimeType(string $file_str): string
     {
@@ -127,8 +118,6 @@ trait StoresSpreadsheets
 
     /**
      * Guess the extension for a file from it's mime-type.
-     *
-     * @return string
      */
     protected function guessFileExtension(string $mime_type): string
     {

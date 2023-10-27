@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 class SearchPagesPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

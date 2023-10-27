@@ -37,8 +37,6 @@ class Report extends Model
      * Created a report record and a file record.
      * Then delegates the physical file creation to a `generateReportName` method.
      *
-     * @param  \App\Models\ReportType  $type
-     * @return \App\Models\Report
      *
      * @throws \Exception
      */
@@ -81,9 +79,6 @@ class Report extends Model
         return $report->$methodName($startsAt, $endsAt);
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateUsersExport(): self
     {
         $headings = [
@@ -116,9 +111,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateServicesExport(): self
     {
         $headings = [
@@ -163,9 +155,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateOrganisationsExport(): self
     {
         $headings = [
@@ -198,9 +187,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateLocationsExport(): self
     {
         $headings = [
@@ -235,9 +221,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateReferralsExport(
         CarbonImmutable $startsAt = null,
         CarbonImmutable $endsAt = null
@@ -284,9 +267,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateFeedbackExport(
         CarbonImmutable $startsAt = null,
         CarbonImmutable $endsAt = null
@@ -321,9 +301,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateAuditLogsExport(
         CarbonImmutable $startsAt = null,
         CarbonImmutable $endsAt = null
@@ -364,9 +341,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateSearchHistoriesExport(
         CarbonImmutable $startsAt = null,
         CarbonImmutable $endsAt = null
@@ -411,9 +385,6 @@ class Report extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Report
-     */
     public function generateHistoricUpdateRequestsExport(
         CarbonImmutable $startsAt = null,
         CarbonImmutable $endsAt = null

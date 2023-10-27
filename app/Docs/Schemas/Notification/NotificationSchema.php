@@ -8,9 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class NotificationSchema extends Schema
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

@@ -16,7 +16,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class IndexReportOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

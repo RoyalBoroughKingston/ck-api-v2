@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class AllCollectionOrganisationEventOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

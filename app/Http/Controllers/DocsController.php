@@ -19,7 +19,6 @@ class DocsController extends Controller
     /**
      * Parse the specified YAML file through Blade.
      *
-     * @return \Illuminate\Contracts\Support\Responsable
      *
      * @throws \Throwable
      */

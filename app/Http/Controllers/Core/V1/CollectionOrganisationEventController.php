@@ -32,8 +32,6 @@ class CollectionOrganisationEventController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -106,8 +104,6 @@ class CollectionOrganisationEventController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\CollectionOrganisationEventResource
      */
     public function show(ShowRequest $request, Collection $collection): CollectionOrganisationEventResource
     {

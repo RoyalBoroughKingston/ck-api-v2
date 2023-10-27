@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement as BaseSecurit
 class SecurityRequirement extends BaseSecurityRequirement
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

@@ -23,9 +23,7 @@ class FileIsMimeType implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
      * @param  mixed  $fileId
-     * @return bool
      */
     public function passes(string $attribute, $fileId): bool
     {
@@ -37,8 +35,6 @@ class FileIsMimeType implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
     public function message(): string
     {

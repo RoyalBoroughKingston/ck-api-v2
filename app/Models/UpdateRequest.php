@@ -88,10 +88,6 @@ class UpdateRequest extends Model
         return $this->getUpdateable()->validateUpdateRequest($this)->fails() === false;
     }
 
-    /**
-     * @param  \App\Models\User|null  $user
-     * @return \App\Models\UpdateRequest
-     */
     public function apply(User $user = null): self
     {
         $this->getUpdateable()->applyUpdateRequest($this);
@@ -104,8 +100,6 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @param  \App\Models\User|null  $user
-     * @return bool|null
      *
      * @throws \Exception
      */
@@ -118,9 +112,6 @@ class UpdateRequest extends Model
         return parent::delete();
     }
 
-    /**
-     * @return \App\UpdateRequest\AppliesUpdateRequests
-     */
     public function getUpdateable(): AppliesUpdateRequests
     {
         return $this->isExisting()
@@ -128,9 +119,6 @@ class UpdateRequest extends Model
         : $this->createUpdateableInstance();
     }
 
-    /**
-     * @return \App\UpdateRequest\AppliesUpdateRequests
-     */
     protected function createUpdateableInstance(): AppliesUpdateRequests
     {
         $className = '\\App\\UpdateRequest\\'.Str::studly($this->updateable_type);

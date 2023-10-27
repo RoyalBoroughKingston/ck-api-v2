@@ -27,8 +27,6 @@ class TaxonomyServiceEligibilityController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -75,8 +73,6 @@ class TaxonomyServiceEligibilityController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\TaxonomyCategoryResource
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy): TaxonomyCategoryResource
     {

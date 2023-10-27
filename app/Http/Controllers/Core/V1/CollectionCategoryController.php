@@ -32,8 +32,6 @@ class CollectionCategoryController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -106,8 +104,6 @@ class CollectionCategoryController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\CollectionCategoryResource
      */
     public function show(ShowRequest $request, Collection $collection): CollectionCategoryResource
     {

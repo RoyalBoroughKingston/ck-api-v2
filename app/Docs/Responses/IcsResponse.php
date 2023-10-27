@@ -10,9 +10,6 @@ use Illuminate\Http\Response as LaravelResponse;
 
 class IcsResponse extends Response
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

@@ -15,7 +15,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class StoreTaxonomyServiceEligibilityOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

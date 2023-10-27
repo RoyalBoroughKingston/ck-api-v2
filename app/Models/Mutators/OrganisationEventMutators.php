@@ -9,8 +9,6 @@ trait OrganisationEventMutators
 {
     /**
      * Get the Start date time as a Carbon instance.
-     *
-     * @return Carbon/CarbonImmutable
      */
     public function getStartDateTimeAttribute(): Carbon
     {
@@ -23,8 +21,6 @@ trait OrganisationEventMutators
 
     /**
      * Get the End date time as a Carbon instance.
-     *
-     * @return Carbon/CarbonImmutable
      */
     public function getEndDateTimeAttribute(): Carbon
     {
@@ -37,8 +33,6 @@ trait OrganisationEventMutators
 
     /**
      * Return a link which will add the event to a Google calendar.
-     *
-     * @return string
      */
     public function getGoogleCalendarLinkAttribute(): string
     {
@@ -54,8 +48,6 @@ trait OrganisationEventMutators
 
     /**
      * Return a link which will add the event to a Microsoft calendar.
-     *
-     * @return string
      */
     public function getMicrosoftCalendarLinkAttribute(): string
     {
@@ -71,8 +63,6 @@ trait OrganisationEventMutators
 
     /**
      * Return a link which will return the .ics file which can be added to an Apple calendar.
-     *
-     * @return string
      */
     public function getAppleCalendarLinkAttribute(): string
     {

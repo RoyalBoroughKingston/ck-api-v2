@@ -11,7 +11,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class PageFeedbacksNestedPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

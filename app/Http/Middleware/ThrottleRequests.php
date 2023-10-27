@@ -12,11 +12,9 @@ class ThrottleRequests extends BaseThrottleRequests
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int|string  $maxAttempts
      * @param  float|int  $decayMinutes
      * @param  mixed  $prefix
-     * @return mixed
      *
      * @throws \Illuminate\Http\Exceptions\ThrottleRequestsException
      */

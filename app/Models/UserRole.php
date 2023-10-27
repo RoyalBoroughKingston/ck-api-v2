@@ -12,9 +12,6 @@ class UserRole extends Model
     use UserRoleRelationships;
     use UserRoleScopes;
 
-    /**
-     * @param  \App\Models\Service|null  $service
-     */
     public function isServiceWorker(Service $service = null): bool
     {
         $isServiceAdmin = $this->role->name === Role::NAME_SERVICE_WORKER;
@@ -24,9 +21,6 @@ class UserRole extends Model
         : $isServiceAdmin;
     }
 
-    /**
-     * @param  \App\Models\Service|null  $service
-     */
     public function isServiceAdmin(Service $service = null): bool
     {
         $isServiceAdmin = $this->role->name === Role::NAME_SERVICE_ADMIN;
@@ -36,9 +30,6 @@ class UserRole extends Model
         : $isServiceAdmin;
     }
 
-    /**
-     * @param  \App\Models\Organisation|null  $organisation
-     */
     public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
         $isOrganisationAdmin = $this->role->name === Role::NAME_ORGANISATION_ADMIN;

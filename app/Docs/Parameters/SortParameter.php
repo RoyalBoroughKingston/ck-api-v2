@@ -10,7 +10,6 @@ class SortParameter extends Parameter
 {
     /**
      * @param  string[]  $fields
-     * @return static
      */
     public static function create(
         string $objectId = null,

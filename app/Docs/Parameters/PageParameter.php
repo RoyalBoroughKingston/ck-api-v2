@@ -8,9 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
 class PageParameter extends Parameter
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null): BaseObject
     {
         return parent::create($objectId)

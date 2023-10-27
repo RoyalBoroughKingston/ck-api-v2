@@ -42,9 +42,6 @@ class Location extends Model implements AppliesUpdateRequests
         'updated_at' => 'datetime',
     ];
 
-    /**
-     * @return \App\Models\Location
-     */
     public function updateCoordinate(): self
     {
         /**
@@ -61,8 +58,6 @@ class Location extends Model implements AppliesUpdateRequests
 
     /**
      * Check if the update request is valid.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -80,9 +75,6 @@ class Location extends Model implements AppliesUpdateRequests
 
     /**
      * Apply the update request.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
@@ -117,9 +109,6 @@ class Location extends Model implements AppliesUpdateRequests
         return $data;
     }
 
-    /**
-     * @return \App\Models\Location
-     */
     public function touchServices(): Location
     {
         $this->services()->get()->each->save();

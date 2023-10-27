@@ -48,10 +48,6 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
     /**
      * Build the search query.
      *
-     * @param  App\Search\SearchCriteriaQuery  $query
-     * @param  int  $page
-     * @param  int  $perPage
-     * @return ElasticScoutDriverPlus\Builders\SearchRequestBuilder
      *
      * @throws BindingResolutionException
      * @throws NotFoundExceptionInterface
@@ -165,9 +161,6 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
         $this->addFilter('is_virtual', $isVirtual);
     }
 
-    /**
-     * @param  string  $startsAfter
-     */
     public function applyStartsAfter(?string $startsAfter): void
     {
         if ($startsAfter) {
@@ -181,9 +174,6 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
         }
     }
 
-    /**
-     * @param  string  $endsBefore
-     */
     public function applyEndsBefore(?string $endsBefore): void
     {
         $filters = Arr::get($this->esQuery, $this->filterPath);

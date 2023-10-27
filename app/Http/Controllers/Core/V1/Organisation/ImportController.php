@@ -44,8 +44,6 @@ class ImportController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function __invoke(ImportRequest $request): JsonResponse
     {
@@ -184,7 +182,6 @@ class ImportController extends Controller
     /**
      * Wrap a string in SQL replace functions for a character set.
      *
-     * @param  string  $replacement
      * @return string
      */
     public function buildSqlReplaceCharacterSet(string $string, array $replace, string $replacement = '')

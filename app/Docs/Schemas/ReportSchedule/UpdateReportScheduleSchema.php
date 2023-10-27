@@ -10,7 +10,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class UpdateReportScheduleSchema extends Schema
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

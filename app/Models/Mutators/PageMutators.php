@@ -20,7 +20,6 @@ trait PageMutators
      * Get the order attribute.
      *
      * @param type name
-     * @return int
      */
     public function getOrderAttribute(): int
     {
@@ -51,8 +50,6 @@ trait PageMutators
 
     /**
      * Get the last ancestor with type 'landing page'.
-     *
-     * @return \App\Models\Page|null
      */
     public function getLandingPageAttribute(): ?Page
     {

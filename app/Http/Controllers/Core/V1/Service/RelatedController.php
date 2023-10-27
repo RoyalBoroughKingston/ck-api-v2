@@ -14,9 +14,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class RelatedController extends Controller
 {
-    /**
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
     public function __invoke(Request $request, Service $service): AnonymousResourceCollection
     {
         /*

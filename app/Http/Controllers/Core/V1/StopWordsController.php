@@ -27,7 +27,6 @@ class StopWordsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \App\Http\Responses\StopWords
      *
      * @throws \Exception
      */
@@ -52,7 +51,6 @@ class StopWordsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \App\Http\Responses\StopWords
      *
      * @throws \Exception
      */

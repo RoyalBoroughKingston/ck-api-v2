@@ -40,8 +40,6 @@ class PagePersistenceService implements DataPersistenceService
 
     /**
      * Update the model.
-     *
-     * @return \App\Models\UpdateRequest
      */
     public function update(FormRequest $request, Model $model): UpdateRequestModel
     {
@@ -50,9 +48,6 @@ class PagePersistenceService implements DataPersistenceService
 
     /**
      * Create a new model from the provided request.
-     *
-     * @param  Illuminate\Foundation\Http\FormRequest  $request
-     * @return \App\Models\Page
      */
     public function processAsNewEntity(FormRequest $request): Page
     {
@@ -87,10 +82,6 @@ class PagePersistenceService implements DataPersistenceService
 
     /**
      * Process the requested changes and either update the model or store an update request.
-     *
-     * @param  Illuminate\Foundation\Http\FormRequest  $request
-     * @param  \App\Models\Page  $page
-     * @return \App\Models\UpdateRequest
      */
     public function processAsUpdateRequest(FormRequest $request, ?Page $page): UpdateRequestModel
     {

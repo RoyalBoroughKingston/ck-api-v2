@@ -8,17 +8,11 @@ use App\Models\Service;
 
 trait ServiceGalleryItemRelationships
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function file(): BelongsTo
     {
         return $this->belongsTo(File::class);

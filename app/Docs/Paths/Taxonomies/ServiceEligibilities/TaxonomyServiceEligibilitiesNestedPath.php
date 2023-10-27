@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class TaxonomyServiceEligibilitiesNestedPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

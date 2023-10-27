@@ -19,7 +19,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexOrganisationOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

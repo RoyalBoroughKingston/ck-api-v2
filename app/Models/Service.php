@@ -96,8 +96,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     /**
      * Get the indexable data array for the model.
-     *
-     * @return array
      */
     public function toSearchableArray(): array
     {
@@ -150,8 +148,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     /**
      * Check if the update request is valid.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -180,9 +176,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     /**
      * Apply the update request.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
@@ -336,8 +329,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     /**
      * Ensures conditional fields are reset to expected values.
-     *
-     * @return \App\Models\Service
      */
     public function resetConditionalFields(): Service
     {

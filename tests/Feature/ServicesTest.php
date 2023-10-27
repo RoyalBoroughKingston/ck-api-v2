@@ -37,8 +37,6 @@ class ServicesTest extends TestCase
     /**
      * Create spreadsheets of services
      *
-     * @param  Illuminate\Support\Collection  $services
-     * @param  array  $serviceEligibilities
      * @return null
      **/
     public function createServiceSpreadsheets(\Illuminate\Support\Collection $services, array $serviceEligibilities = null)

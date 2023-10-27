@@ -38,8 +38,6 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
 
     /**
      * Check if the update request is valid.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -62,9 +60,6 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
 
     /**
      * Apply the update request.
-     *
-     * @param  \App\Models\UpdateRequest  $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
@@ -102,8 +97,6 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
 
     /**
      * Delete polymorphic relationships when deleting.
-     *
-     * @return bool|null
      */
     public function delete(): ?bool
     {
@@ -121,9 +114,6 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
         return $data;
     }
 
-    /**
-     * @return \App\Models\Organisation
-     */
     public function touchServices(): Organisation
     {
         $this->services()->get()->each->save();

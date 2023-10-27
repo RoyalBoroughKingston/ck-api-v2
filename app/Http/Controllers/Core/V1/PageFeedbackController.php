@@ -27,8 +27,6 @@ class PageFeedbackController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -76,8 +74,6 @@ class PageFeedbackController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\PageFeedbackResource
      */
     public function show(ShowRequest $request, PageFeedback $pageFeedback): PageFeedbackResource
     {

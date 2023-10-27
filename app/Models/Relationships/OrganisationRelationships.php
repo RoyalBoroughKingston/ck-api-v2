@@ -18,49 +18,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait OrganisationRelationships
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function logoFile(): BelongsTo
     {
         return $this->belongsTo(File::class, 'logo_file_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function userRoles(): HasMany
     {
         return $this->hasMany(UserRole::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, (new UserRole())->getTable())->withTrashed();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function services(): HasMany
     {
         return $this->hasMany(Service::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
     public function socialMedias(): MorphMany
     {
         return $this->morphMany(SocialMedia::class, 'sociable');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function nonAdminUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, (new UserRole())->getTable())
@@ -70,9 +52,6 @@ trait OrganisationRelationships
             });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function organisationTaxonomies(): HasMany
     {
         return $this->hasMany(OrganisationTaxonomy::class);

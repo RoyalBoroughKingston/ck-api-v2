@@ -26,7 +26,6 @@ class ImportOpenActiveTaxonomiesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      *
      * @throws \Exception
      */

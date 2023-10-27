@@ -23,7 +23,6 @@ class ChunkReadFilter implements IReadFilter
     /**
      * Set the start and end rows.
      *
-     * @param  int  $startRow
      * @param  int  $endRow
      * @param  mixed  $chunkSize
      */
@@ -35,11 +34,6 @@ class ChunkReadFilter implements IReadFilter
 
     /**
      * Should the cell be read.
-     *
-     * @param  string  $column
-     * @param  int  $row
-     * @param  string  $worksheetName
-     * @return bool
      */
     public function readCell(string $column, int $row, string $worksheetName = ''): bool
     {

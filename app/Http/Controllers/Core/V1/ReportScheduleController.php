@@ -30,8 +30,6 @@ class ReportScheduleController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -70,8 +68,6 @@ class ReportScheduleController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\ReportScheduleResource
      */
     public function show(ShowRequest $request, ReportSchedule $reportSchedule): ReportScheduleResource
     {

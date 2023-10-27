@@ -10,9 +10,6 @@ use Illuminate\Http\Response as LaravelResponse;
 
 class UpdateRequestReceivedResponse extends Response
 {
-    /**
-     * @return static
-     */
     public static function create(string $objectId = null, Schema $data = null): BaseObject
     {
         return parent::create($objectId)

@@ -12,7 +12,6 @@ use Illuminate\Http\Response;
 class OpenApi extends BaseOpenApi implements Responsable
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
@@ -156,8 +155,6 @@ class OpenApi extends BaseOpenApi implements Responsable
 
     /**
      * Create an HTTP response that represents the object.
-     *
-     * @param  \Illuminate\Http\Request  $request
      */
     public function toResponse(Request $request): JsonResponse
     {

@@ -53,7 +53,6 @@ class ImportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
      *
      * @throws Illuminate\Validation\ValidationException
      */

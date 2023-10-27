@@ -33,8 +33,6 @@ class OrganisationController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -77,8 +75,6 @@ class OrganisationController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, Organisation $organisation): OrganisationResource
     {

@@ -26,7 +26,6 @@ class EndActiveServicesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      *
      * @throws \Throwable
      */

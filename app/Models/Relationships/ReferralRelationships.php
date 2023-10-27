@@ -11,33 +11,21 @@ use App\Models\Taxonomy;
 
 trait ReferralRelationships
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function statusUpdates(): HasMany
     {
         return $this->hasMany(StatusUpdate::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function organisationTaxonomy(): BelongsTo
     {
         return $this->belongsTo(Taxonomy::class, 'organisation_taxonomy_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function latestCompletedStatusUpdate(): HasOne
     {
         return $this->hasOne(StatusUpdate::class)

@@ -21,34 +21,21 @@ class Taxonomy extends Model
 
     const NAME_SERVICE_ELIGIBILITY = 'Service Eligibility';
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     public static function category(): self
     {
         return static::whereNull('parent_id')->where('name', static::NAME_CATEGORY)->firstOrFail();
     }
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     public static function organisation(): self
     {
         return static::whereNull('parent_id')->where('name', static::NAME_ORGANISATION)->firstOrFail();
     }
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     public static function serviceEligibility(): self
     {
         return static::whereNull('parent_id')->where('name', static::NAME_SERVICE_ELIGIBILITY)->firstOrFail();
     }
 
-    /**
-     * @param  \App\Models\Taxonomy|null  $taxonomy
-     * @return \App\Models\Taxonomy
-     */
     public function getRootTaxonomy(Taxonomy $taxonomy = null): Taxonomy
     {
         $taxonomy = $taxonomy ?? $this;
@@ -65,9 +52,6 @@ class Taxonomy extends Model
         return $this->getRootTaxonomy()->name === $name;
     }
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     public function touchServices(): Taxonomy
     {
         $this->services()->get()->each->save();
@@ -98,9 +82,7 @@ class Taxonomy extends Model
     /**
      * Return an array of all Taxonomies below the provided Taxonomy root.
      *
-     * @param  App\Models\Taxonomy  $taxonomy
      * @param  mixed  $allTaxonomies
-     * @return Illuminate\Support\Collection
      */
     public function getAllDescendantTaxonomies(self $taxonomy, &$allTaxonomies = []): Collection
     {

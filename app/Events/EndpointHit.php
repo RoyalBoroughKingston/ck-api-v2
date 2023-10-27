@@ -59,8 +59,6 @@ class EndpointHit
 
     /**
      * Create a new event instance.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      */
     protected function __construct(Request $request, string $action, string $description, Model $model = null)
     {
@@ -76,37 +74,21 @@ class EndpointHit
         $this->model = $model;
     }
 
-    /**
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \App\Events\EndpointHit
-     */
     public static function onCreate(Request $request, string $message, Model $model = null): self
     {
         return new static($request, Audit::ACTION_CREATE, $message, $model);
     }
 
-    /**
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \App\Events\EndpointHit
-     */
     public static function onRead(Request $request, string $message, Model $model = null): self
     {
         return new static($request, Audit::ACTION_READ, $message, $model);
     }
 
-    /**
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \App\Events\EndpointHit
-     */
     public static function onUpdate(Request $request, string $message, Model $model = null): self
     {
         return new static($request, Audit::ACTION_UPDATE, $message, $model);
     }
 
-    /**
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \App\Events\EndpointHit
-     */
     public static function onDelete(Request $request, string $message, Model $model = null): self
     {
         return new static($request, Audit::ACTION_DELETE, $message, $model);
@@ -147,9 +129,6 @@ class EndpointHit
         return $this->createdAt;
     }
 
-    /**
-     * @return \App\Models\Model|null
-     */
     public function getModel(): ?Model
     {
         return $this->model;

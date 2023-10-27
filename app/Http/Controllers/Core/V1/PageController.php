@@ -34,8 +34,6 @@ class PageController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -72,8 +70,6 @@ class PageController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return \App\Http\Resources\OrganisationResource
      */
     public function store(StoreRequest $request, PagePersistenceService $persistenceService): OrganisationResource
     {
@@ -94,8 +90,6 @@ class PageController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, Page $page): OrganisationResource
     {
@@ -113,8 +107,6 @@ class PageController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return \App\Http\Resources\OrganisationResource
      */
     public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService): OrganisationResource
     {
@@ -128,7 +120,6 @@ class PageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Http\Requests\Organisation\DestroyRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Page $page)

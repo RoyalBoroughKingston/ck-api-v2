@@ -30,8 +30,6 @@ class ReportController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -74,8 +72,6 @@ class ReportController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\ReportResource
      */
     public function show(ShowRequest $request, Report $report): ReportResource
     {

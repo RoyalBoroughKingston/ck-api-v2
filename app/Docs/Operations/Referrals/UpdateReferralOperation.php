@@ -15,7 +15,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class UpdateReferralOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

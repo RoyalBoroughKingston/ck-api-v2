@@ -17,7 +17,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class StorePagesSearchOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

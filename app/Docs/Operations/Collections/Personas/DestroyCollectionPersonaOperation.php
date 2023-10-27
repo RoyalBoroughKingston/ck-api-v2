@@ -10,7 +10,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 class DestroyCollectionPersonaOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

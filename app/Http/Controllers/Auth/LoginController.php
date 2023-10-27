@@ -73,8 +73,6 @@ class LoginController extends Controller
 
     /**
      * Show the one time password form.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function showOtpForm(): View
     {
@@ -158,7 +156,6 @@ EOT;
     /**
      * Get the failed login response instance.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -171,8 +168,6 @@ EOT;
 
     /**
      * Get the throttle key for the given request.
-     *
-     * @return string
      */
     protected function throttleKey(Request $request): string
     {

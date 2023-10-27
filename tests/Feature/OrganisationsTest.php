@@ -28,7 +28,6 @@ class OrganisationsTest extends TestCase
     /**
      * Create spreadsheets of organisations
      *
-     * @param  Illuminate\Support\Collection  $organisations
      * @return null
      **/
     public function createOrganisationSpreadsheets(Collection $organisations)

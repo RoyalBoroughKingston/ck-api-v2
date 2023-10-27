@@ -16,8 +16,6 @@ trait QueryBuilderUtilities
 
     /**
      * Remove the specified string from the input.
-     *
-     * @return \App\Http\Requests\QueryBuilderUtilities
      */
     public function strip(string $key, string $value): self
     {

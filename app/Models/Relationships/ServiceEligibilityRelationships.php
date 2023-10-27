@@ -8,17 +8,11 @@ use App\Models\Taxonomy;
 
 trait ServiceEligibilityRelationships
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function taxonomy(): BelongsTo
     {
         return $this->belongsTo(Taxonomy::class);

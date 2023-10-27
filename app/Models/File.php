@@ -66,9 +66,6 @@ class File extends Model implements Responsable
 
     /**
      * Create an HTTP response that represents the object.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function toResponse(Request $request): Response
     {
@@ -96,9 +93,6 @@ class File extends Model implements Responsable
         return config('filesystems.cloud') === 's3' ? 'private' : ($this->is_private ? 'private' : 'public');
     }
 
-    /**
-     * @return \App\Models\File
-     */
     public function upload(string $content): File
     {
         Storage::disk(config('filesystems.cloud'))->put($this->path(), $content, $this->visibility());
@@ -119,9 +113,6 @@ class File extends Model implements Responsable
         Storage::disk(config('filesystems.cloud'))->delete($this->path());
     }
 
-    /**
-     * @return \App\Models\File
-     */
     public function uploadBase64EncodedFile(string $content): File
     {
         $data = explode(',', $content);
@@ -132,8 +123,6 @@ class File extends Model implements Responsable
 
     /**
      * @deprecated you should now use the uploadBase64EncodedFile() method instead
-     *
-     * @return \App\Models\File
      */
     public function uploadBase64EncodedPng(string $content): File
     {
@@ -142,8 +131,6 @@ class File extends Model implements Responsable
 
     /**
      * Get a file record which is a resized version of the current instance.
-     *
-     * @return \App\Models\File
      */
     public function resizedVersion(int $maxDimension = null): self
     {
@@ -193,7 +180,6 @@ class File extends Model implements Responsable
     /**
      * Get a file record which is a resized version of the specified placeholder.
      *
-     * @return \App\Models\File
      *
      * @throws \InvalidArgumentException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
@@ -266,9 +252,6 @@ class File extends Model implements Responsable
         return $withPeriod ? $map[$mimeType] : trim($map[$mimeType], '.');
     }
 
-    /**
-     * @return \App\Models\File
-     */
     public function assigned(): self
     {
         $this->update(['meta' => null]);

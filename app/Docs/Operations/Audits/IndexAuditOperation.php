@@ -21,7 +21,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexAuditOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

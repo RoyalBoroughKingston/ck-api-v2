@@ -14,7 +14,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class UserUserOperation extends Operation
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

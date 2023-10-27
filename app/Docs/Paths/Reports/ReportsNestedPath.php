@@ -12,7 +12,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class ReportsNestedPath extends PathItem
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

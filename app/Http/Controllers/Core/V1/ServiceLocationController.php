@@ -33,8 +33,6 @@ class ServiceLocationController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
@@ -121,8 +119,6 @@ class ServiceLocationController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \App\Http\Resources\ServiceLocationResource
      */
     public function show(ShowRequest $request, ServiceLocation $serviceLocation): ServiceLocationResource
     {

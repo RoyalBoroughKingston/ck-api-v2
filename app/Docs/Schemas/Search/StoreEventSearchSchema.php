@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class StoreEventSearchSchema extends Schema
 {
     /**
-     * @return static
      *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */

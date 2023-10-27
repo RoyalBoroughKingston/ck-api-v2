@@ -53,9 +53,6 @@ class Address
         $this->country = $country;
     }
 
-    /**
-     * @return \App\Support\Address
-     */
     public static function create($address, string $city, string $county, string $postcode, string $country): Address
     {
         return new static($address, $city, $county, $postcode, $country);
@@ -63,8 +60,6 @@ class Address
 
     /**
      * Return the address data as a string.
-     *
-     * @return string
      */
     public function __toString(): string
     {

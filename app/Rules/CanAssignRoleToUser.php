@@ -32,9 +32,7 @@ class CanAssignRoleToUser implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
      * @param  mixed  $role
-     * @return bool
      */
     public function passes(string $attribute, $role): bool
     {
@@ -89,8 +87,6 @@ class CanAssignRoleToUser implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
     public function message(): string
     {

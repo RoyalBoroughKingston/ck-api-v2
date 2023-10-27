@@ -43,9 +43,6 @@ class Collection extends Model
         'homepage' => false,
     ];
 
-    /**
-     * @return \App\Models\Collection
-     */
     public function touchServices(): Collection
     {
         static::services($this)->get()->each->save();
@@ -53,9 +50,6 @@ class Collection extends Model
         return $this;
     }
 
-    /**
-     * @return \App\Models\Collection
-     */
     public function syncCollectionTaxonomies(EloquentCollection $taxonomies): Collection
     {
         // Delete all existing collection taxonomies.
@@ -125,8 +119,6 @@ class Collection extends Model
 
     /**
      * Enable the Collection.
-     *
-     * @return \App\Models\Collection
      */
     public function enable(): Collection
     {
@@ -137,8 +129,6 @@ class Collection extends Model
 
     /**
      * Disable the Collection.
-     *
-     * @return \App\Models\Collection
      */
     public function disable(): Collection
     {
@@ -149,8 +139,6 @@ class Collection extends Model
 
     /**
      * Add the Collection to the homepage.
-     *
-     * @return \App\Models\Collection
      */
     public function addToHomepage(): Collection
     {
@@ -161,8 +149,6 @@ class Collection extends Model
 
     /**
      * Remove the Collection from the homepage.
-     *
-     * @return \App\Models\Collection
      */
     public function removeFromHomepage(): Collection
     {

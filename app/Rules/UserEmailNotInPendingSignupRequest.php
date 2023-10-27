@@ -25,9 +25,7 @@ class UserEmailNotInPendingSignupRequest implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
      * @param  mixed  $email
-     * @return bool
      */
     public function passes(string $attribute, $email): bool
     {
@@ -43,8 +41,6 @@ class UserEmailNotInPendingSignupRequest implements Rule
 
     /**
      * Get the validation error message.
-     *
-     * @return string
      */
     public function message(): string
     {

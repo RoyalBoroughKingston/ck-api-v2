@@ -8,8 +8,6 @@ trait ResizesImages
 {
     /**
      * Resize the image.
-     *
-     * @param  string  $imageFileId
      */
     public function resizeImageFile(string $imageFileId)
     {

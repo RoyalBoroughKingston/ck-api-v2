@@ -2,6 +2,8 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Role;
@@ -16,7 +18,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userRoles()
+    public function userRoles(): HasMany
     {
         return $this->hasMany(UserRole::class);
     }
@@ -24,7 +26,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, (new UserRole())->getTable())->distinct();
     }
@@ -35,7 +37,7 @@ trait UserRelationships
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function orderedRoles()
+    public function orderedRoles(): BelongsToMany
     {
         $sql = (new User())->getHighestRoleOrderSql();
 
@@ -45,7 +47,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function updateRequests()
+    public function updateRequests(): HasMany
     {
         return $this->hasMany(UpdateRequest::class);
     }
@@ -53,7 +55,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function actionedUpdateRequests()
+    public function actionedUpdateRequests(): HasMany
     {
         return $this->hasMany(UpdateRequest::class, 'actioning_user_id');
     }
@@ -61,7 +63,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function audits()
+    public function audits(): HasMany
     {
         return $this->hasMany(Audit::class);
     }
@@ -69,7 +71,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function statusUpdated()
+    public function statusUpdated(): HasMany
     {
         return $this->hasMany(StatusUpdate::class);
     }
@@ -77,7 +79,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function organisations()
+    public function organisations(): BelongsToMany
     {
         return $this->belongsToMany(Organisation::class, table(UserRole::class))
             ->distinct();
@@ -86,7 +88,7 @@ trait UserRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function services()
+    public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, table(UserRole::class))
             ->distinct();

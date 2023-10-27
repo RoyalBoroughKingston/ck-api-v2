@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1\Service;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\Related\Request;
@@ -16,7 +17,7 @@ class RelatedController extends Controller
     /**
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function __invoke(Request $request, Service $service)
+    public function __invoke(Request $request, Service $service): AnonymousResourceCollection
     {
         /*
          * This query does the following:

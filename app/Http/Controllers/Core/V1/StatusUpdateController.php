@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatusUpdate\IndexRequest;
@@ -26,7 +27,7 @@ class StatusUpdateController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $referral = Referral::findOrFail($request->filter['referral_id']);
 

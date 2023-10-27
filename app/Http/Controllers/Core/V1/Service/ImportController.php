@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1\Service;
 
+use Illuminate\Http\JsonResponse;
 use App\BatchImport\SpreadsheetParser;
 use App\BatchImport\StoresSpreadsheets;
 use App\Http\Controllers\Controller;
@@ -56,7 +57,7 @@ class ImportController extends Controller
      *
      * @throws Illuminate\Validation\ValidationException
      */
-    public function __invoke(ImportRequest $request)
+    public function __invoke(ImportRequest $request): JsonResponse
     {
         $this->user = $request->user('api');
 

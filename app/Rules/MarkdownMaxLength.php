@@ -33,7 +33,7 @@ class MarkdownMaxLength implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         $html = (new Parsedown())->text(sanitize_markdown($value));
         $text = strip_tags($html);

@@ -28,7 +28,7 @@ class SitemapTest extends TestCase
      * @param  string  $path
      * @return string
      **/
-    public function frontendUrl($path = '')
+    public function frontendUrl(string $path = ''): string
     {
         return str_replace('://api.', '://', url($path));
     }

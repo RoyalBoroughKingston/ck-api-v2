@@ -36,7 +36,7 @@ class OpenActiveTaxonomyImporter
      * @param  mixed  $openActiveDirectoryUrl
      * @return array
      */
-    public function fetchTaxonomies($openActiveDirectoryUrl)
+    public function fetchTaxonomies($openActiveDirectoryUrl): array
     {
         $client = new Client();
         try {
@@ -58,7 +58,7 @@ class OpenActiveTaxonomyImporter
      *
      * @return \App\Models\Taxonomy
      */
-    public function getOpenActiveCategory()
+    public function getOpenActiveCategory(): Taxonomy
     {
         return Taxonomy::category()
             ->children()
@@ -109,7 +109,7 @@ class OpenActiveTaxonomyImporter
      * @param  mixed  $openActiveTaxonomyData
      * @return array
      */
-    public function mapOpenActiveTaxonomyImport(Taxonomy $rootTaxonomy, $openActiveTaxonomyData)
+    public function mapOpenActiveTaxonomyImport(Taxonomy $rootTaxonomy, $openActiveTaxonomyData): array
     {
         $nowDateTimeString = Carbon::now()->toDateTimeString();
 
@@ -129,7 +129,7 @@ class OpenActiveTaxonomyImporter
      *
      * @return string
      */
-    private function parseIdentifier(string $identifierUrl)
+    private function parseIdentifier(string $identifierUrl): string
     {
         return mb_substr($identifierUrl, mb_strpos($identifierUrl, '#') + 1);
     }
@@ -140,7 +140,7 @@ class OpenActiveTaxonomyImporter
      * @param array openActiveTaxonomyData
      * @return array
      */
-    private function mapOpenActiveTaxonomyToTaxonomyModelSchema(Taxonomy $rootTaxonomy, array $taxonomyData)
+    private function mapOpenActiveTaxonomyToTaxonomyModelSchema(Taxonomy $rootTaxonomy, array $taxonomyData): array
     {
         $modelData = [
             'id' => $taxonomyData['identifier'],

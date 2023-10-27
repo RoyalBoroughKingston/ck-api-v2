@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\Service\HasPermissionFilter;
@@ -39,7 +40,7 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Service::query()
             ->with(
@@ -111,7 +112,7 @@ class ServiceController extends Controller
      *
      * @return \App\Http\Resources\ServiceResource
      */
-    public function show(ShowRequest $request, Service $service)
+    public function show(ShowRequest $request, Service $service): ServiceResource
     {
         $baseQuery = Service::query()
             ->with(
@@ -136,7 +137,7 @@ class ServiceController extends Controller
      *
      * @return UpdateRequestReceived
      */
-    public function update(UpdateRequest $request, Service $service, ServicePersistenceService $persistenceService)
+    public function update(UpdateRequest $request, Service $service, ServicePersistenceService $persistenceService): UpdateRequestReceived
     {
         $updateRequest = $persistenceService->update($request, $service);
         event(EndpointHit::onUpdate($request, "Created update request for service [{$service->id}]", $service));

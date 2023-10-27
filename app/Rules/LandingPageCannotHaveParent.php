@@ -32,7 +32,7 @@ class LandingPageCannotHaveParent implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         return $value === Page::PAGE_TYPE_INFORMATION || ($value === Page::PAGE_TYPE_LANDING && is_null($this->parentId));
     }
@@ -42,7 +42,7 @@ class LandingPageCannotHaveParent implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Cannot set :attribute to '.Page::PAGE_TYPE_LANDING.' when the page has a parent';
     }

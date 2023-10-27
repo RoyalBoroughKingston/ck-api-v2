@@ -11,7 +11,7 @@ trait ResizesImages
      *
      * @param  string  $imageFileId
      */
-    public function resizeImageFile($imageFileId)
+    public function resizeImageFile(string $imageFileId)
     {
         /** @var \App\Models\File $file */
         $file = File::findOrFail($imageFileId)->assigned();

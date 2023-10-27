@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
@@ -34,7 +35,7 @@ class CollectionCategoryController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Collection::categories()
             ->orderBy('order');
@@ -108,7 +109,7 @@ class CollectionCategoryController extends Controller
      *
      * @return \App\Http\Resources\CollectionCategoryResource
      */
-    public function show(ShowRequest $request, Collection $collection)
+    public function show(ShowRequest $request, Collection $collection): CollectionCategoryResource
     {
         $baseQuery = Collection::query()
             ->where('id', $collection->id);

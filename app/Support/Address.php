@@ -66,7 +66,7 @@ class Address
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return implode(', ', array_map(function ($value) {
             return is_array($value) ? $value[0] : $value;

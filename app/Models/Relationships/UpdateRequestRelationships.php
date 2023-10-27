@@ -2,6 +2,8 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Models\User;
 
 trait UpdateRequestRelationships
@@ -9,7 +11,7 @@ trait UpdateRequestRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withTrashed();
     }
@@ -17,7 +19,7 @@ trait UpdateRequestRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function actioningUser()
+    public function actioningUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'actioning_user_id')->withTrashed();
     }
@@ -25,7 +27,7 @@ trait UpdateRequestRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function updateable()
+    public function updateable(): MorphTo
     {
         return $this->morphTo('updateable');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
 use App\Models\Mutators\TaxonomyMutators;
 use App\Models\Relationships\TaxonomyRelationships;
 use App\Models\Scopes\TaxonomyScopes;
@@ -101,7 +102,7 @@ class Taxonomy extends Model
      * @param  mixed  $allTaxonomies
      * @return Illuminate\Support\Collection
      */
-    public function getAllDescendantTaxonomies(self $taxonomy, &$allTaxonomies = [])
+    public function getAllDescendantTaxonomies(self $taxonomy, &$allTaxonomies = []): Collection
     {
         if (! $taxonomy) {
             $taxonomy = self::serviceEligibility();

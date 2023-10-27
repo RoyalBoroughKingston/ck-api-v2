@@ -34,7 +34,7 @@ class UserEmailNotTaken implements Rule
      * @param  mixed  $email
      * @return bool
      */
-    public function passes($attribute, $email)
+    public function passes(string $attribute, $email): bool
     {
         if (! is_string($email)) {
             return false;
@@ -53,7 +53,7 @@ class UserEmailNotTaken implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return $this->message ?? 'This email address has already been taken.';
     }

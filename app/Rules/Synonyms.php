@@ -14,7 +14,7 @@ class Synonyms implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         foreach ($value as $synonym) {
             if (! is_string($synonym)) {
@@ -34,7 +34,7 @@ class Synonyms implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The last synonym must be a single word.';
     }

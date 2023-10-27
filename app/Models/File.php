@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request;
 use App\ImageTools\Resizer;
 use App\Models\Mutators\FileMutators;
 use App\Models\Relationships\FileRelationships;
@@ -69,7 +70,7 @@ class File extends Model implements Responsable
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request)
+    public function toResponse(Request $request): Response
     {
         return response()->make($this->getContent(), Response::HTTP_OK, [
             'Content-Type' => $this->mime_type,

@@ -26,7 +26,7 @@ class Base64EncodedPng implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         if ($this->nullable && $value === null) {
             return true;
@@ -45,7 +45,7 @@ class Base64EncodedPng implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The :attribute field must be a Base64 encoded string of a PNG image.';
     }

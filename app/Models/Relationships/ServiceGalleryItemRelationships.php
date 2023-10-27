@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\File;
 use App\Models\Service;
 
@@ -10,7 +11,7 @@ trait ServiceGalleryItemRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function service()
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
@@ -18,7 +19,7 @@ trait ServiceGalleryItemRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function file()
+    public function file(): BelongsTo
     {
         return $this->belongsTo(File::class);
     }

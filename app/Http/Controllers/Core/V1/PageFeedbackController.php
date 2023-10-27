@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PageFeedback\IndexRequest;
@@ -29,7 +30,7 @@ class PageFeedbackController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = PageFeedback::query();
 
@@ -78,7 +79,7 @@ class PageFeedbackController extends Controller
      *
      * @return \App\Http\Resources\PageFeedbackResource
      */
-    public function show(ShowRequest $request, PageFeedback $pageFeedback)
+    public function show(ShowRequest $request, PageFeedback $pageFeedback): PageFeedbackResource
     {
         $baseQuery = PageFeedback::query()
             ->where('id', $pageFeedback->id);

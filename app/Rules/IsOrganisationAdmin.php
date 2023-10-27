@@ -28,7 +28,7 @@ class IsOrganisationAdmin implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not a string.
         if (! is_string($value)) {
@@ -45,7 +45,7 @@ class IsOrganisationAdmin implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The :attribute field must contain an ID for an organisation you are an organisation admin for.';
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Emails\Email;
 use App\Emails\PasswordReset\UserEmail;
 use App\Exceptions\CannotRevokeRoleException;
@@ -106,7 +107,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @param  string  $token
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification(string $token)
     {
         $this->sendEmail(new UserEmail($this->email, [
             'PASSWORD_RESET_LINK' => route('password.reset', ['token' => $token]),
@@ -332,7 +333,7 @@ class User extends Authenticatable implements Notifiable
      * @param \App\Models\User
      * @return bool
      */
-    public function canView(User $user)
+    public function canView(User $user): bool
     {
         return $this->visibleUserIds()->contains($user->id);
     }
@@ -469,7 +470,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
-    public function revokeServiceWorker(Service $service)
+    public function revokeServiceWorker(Service $service): User
     {
         if ($this->hasRole(Role::serviceAdmin(), $service)) {
             throw new CannotRevokeRoleException('Cannot revoke service worker role when user is a service admin');
@@ -484,7 +485,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
-    public function revokeServiceAdmin(Service $service)
+    public function revokeServiceAdmin(Service $service): User
     {
         if ($this->hasRole(Role::organisationAdmin(), null, $service->organisation)) {
             throw new CannotRevokeRoleException('Cannot revoke service admin role when user is an organisation admin');
@@ -501,7 +502,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
-    public function revokeOrganisationAdmin(Organisation $organisation)
+    public function revokeOrganisationAdmin(Organisation $organisation): User
     {
         if ($this->hasRole(Role::globalAdmin())) {
             throw new CannotRevokeRoleException('Cannot revoke organisation admin role when user is an global admin');
@@ -517,7 +518,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
-    public function revokeContentAdmin()
+    public function revokeContentAdmin(): User
     {
         if ($this->hasRole(Role::superAdmin())) {
             throw new CannotRevokeRoleException('Cannot revoke content admin role when user is an super admin');
@@ -533,7 +534,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
-    public function revokeGlobalAdmin()
+    public function revokeGlobalAdmin(): User
     {
         if ($this->hasRole(Role::superAdmin())) {
             throw new CannotRevokeRoleException('Cannot revoke global admin role when user is an super admin');
@@ -547,7 +548,7 @@ class User extends Authenticatable implements Notifiable
     /**
      * @return \App\Models\User
      */
-    public function revokeSuperAdmin()
+    public function revokeSuperAdmin(): User
     {
         $this->removeRoll(Role::superAdmin());
 
@@ -690,7 +691,7 @@ class User extends Authenticatable implements Notifiable
      *
      * @return \Illuminate\Support\Collection
      */
-    public function visibleUserIds()
+    public function visibleUserIds(): SupportCollection
     {
         // Super admin can see all users
         if ($this->isSuperAdmin()) {

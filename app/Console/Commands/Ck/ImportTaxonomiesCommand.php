@@ -252,7 +252,7 @@ class ImportTaxonomiesCommand extends Command
      * @param  array  $taxonomyIds
      * @param  mixed  $rootIds
      */
-    public function getDescendantTaxonomyIds($rootIds, $taxonomyIds = []): array
+    public function getDescendantTaxonomyIds($rootIds, array $taxonomyIds = []): array
     {
         $childIds = DB::table((new Taxonomy())->getTable())->whereIn('parent_id', $rootIds)->pluck('id');
 
@@ -271,7 +271,7 @@ class ImportTaxonomiesCommand extends Command
      *
      * @return array || Null
      */
-    public function fetchTaxonomyRecords(string $csvUrl)
+    public function fetchTaxonomyRecords(string $csvUrl): array
     {
         $this->line('Fetching '.$csvUrl);
         $client = new Client();
@@ -301,7 +301,7 @@ class ImportTaxonomiesCommand extends Command
      *
      * @author https://www.php.net/manual/en/function.str-getcsv.php#111665
      */
-    protected function parse_csv($csv_string, $delimiter = ',', $skip_empty_lines = true, $trim_fields = true)
+    protected function parse_csv($csv_string, string $delimiter = ',', bool $skip_empty_lines = true, bool $trim_fields = true)
     {
         $enc = preg_replace('/(?<!")""/', '!!Q!!', $csv_string);
         $enc = preg_replace_callback(
@@ -520,7 +520,7 @@ class ImportTaxonomiesCommand extends Command
      * @param  array  $records
      * @param  int  $depth
      */
-    public function calculateTaxonomyDepth($parentIds, &$records, $depth): array
+    public function calculateTaxonomyDepth(array $parentIds, array &$records, int $depth): array
     {
         $newParentIds = [];
         $depth++;

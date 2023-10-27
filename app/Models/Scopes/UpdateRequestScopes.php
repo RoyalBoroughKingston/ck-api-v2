@@ -21,7 +21,7 @@ trait UpdateRequestScopes
     /**
      * @param  int  $id
      */
-    public function scopeServiceId(Builder $query, $id): Builder
+    public function scopeServiceId(Builder $query, int $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -33,7 +33,7 @@ trait UpdateRequestScopes
     /**
      * @param  int  $id
      */
-    public function scopeServiceLocationId(Builder $query, $id): Builder
+    public function scopeServiceLocationId(Builder $query, int $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -45,7 +45,7 @@ trait UpdateRequestScopes
     /**
      * @param  int  $id
      */
-    public function scopeLocationId(Builder $query, $id): Builder
+    public function scopeLocationId(Builder $query, int $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -57,7 +57,7 @@ trait UpdateRequestScopes
     /**
      * @param  int  $id
      */
-    public function scopeOrganisationId(Builder $query, $id): Builder
+    public function scopeOrganisationId(Builder $query, int $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -69,7 +69,7 @@ trait UpdateRequestScopes
     /**
      * @param  int  $id
      */
-    public function scopeOrganisationEventId(Builder $query, $id): Builder
+    public function scopeOrganisationEventId(Builder $query, int $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -81,7 +81,7 @@ trait UpdateRequestScopes
     /**
      * @param  int  $id
      */
-    public function scopePageId(Builder $query, $id): Builder
+    public function scopePageId(Builder $query, int $id): Builder
     {
         $ids = explode(',', $id);
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Resources\OrganisationResource;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Page\DestroyRequest;
@@ -35,7 +37,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $orderByCol = (new Page())->getLftName();
         $baseQuery = Page::query()
@@ -73,7 +75,7 @@ class PageController extends Controller
      *
      * @return \App\Http\Resources\OrganisationResource
      */
-    public function store(StoreRequest $request, PagePersistenceService $persistenceService)
+    public function store(StoreRequest $request, PagePersistenceService $persistenceService): OrganisationResource
     {
         $entity = $persistenceService->store($request);
 
@@ -95,7 +97,7 @@ class PageController extends Controller
      *
      * @return \App\Http\Resources\OrganisationResource
      */
-    public function show(ShowRequest $request, Page $page)
+    public function show(ShowRequest $request, Page $page): OrganisationResource
     {
         $baseQuery = Page::query()
             ->with(['landingPageAncestors', 'parent', 'children', 'collectionCategories', 'collectionPersonas'])
@@ -114,7 +116,7 @@ class PageController extends Controller
      *
      * @return \App\Http\Resources\OrganisationResource
      */
-    public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService)
+    public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService): OrganisationResource
     {
         $updateRequest = $persistenceService->update($request, $page);
 

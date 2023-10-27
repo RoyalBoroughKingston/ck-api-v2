@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Queue\QueueManager;
 use App\Queue\Connectors\SqsConnector;
 use Illuminate\Queue\QueueServiceProvider as BaseQueueServiceProvider;
 
@@ -12,7 +13,7 @@ class QueueServiceProvider extends BaseQueueServiceProvider
      *
      * @param  \Illuminate\Queue\QueueManager  $manager
      */
-    protected function registerSqsConnector($manager)
+    protected function registerSqsConnector(QueueManager $manager)
     {
         $manager->addConnector('sqs', function () {
             return new SqsConnector();

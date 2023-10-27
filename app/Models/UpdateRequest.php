@@ -109,7 +109,7 @@ class UpdateRequest extends Model
      *
      * @throws \Exception
      */
-    public function delete(User $user = null)
+    public function delete(User $user = null): ?bool
     {
         if ($user) {
             $this->update(['actioning_user_id' => $user->id]);

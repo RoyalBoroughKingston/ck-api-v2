@@ -14,7 +14,7 @@ trait OrganisationEventScopes
     /**
      * @param  string  $dateString
      */
-    public function scopeEndsAfter(Builder $query, $dateString): Builder
+    public function scopeEndsAfter(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('end_date', '>=', $dateString);
     }
@@ -22,7 +22,7 @@ trait OrganisationEventScopes
     /**
      * @param  string  $dateString
      */
-    public function scopeEndsBefore(Builder $query, $dateString): Builder
+    public function scopeEndsBefore(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('end_date', '<=', $dateString);
     }
@@ -30,7 +30,7 @@ trait OrganisationEventScopes
     /**
      * @param  string  $dateString
      */
-    public function scopeStartsAfter(Builder $query, $dateString): Builder
+    public function scopeStartsAfter(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('start_date', '>=', $dateString);
     }
@@ -38,7 +38,7 @@ trait OrganisationEventScopes
     /**
      * @param  string  $dateString
      */
-    public function scopeStartsBefore(Builder $query, $dateString): Builder
+    public function scopeStartsBefore(Builder $query, string $dateString): Builder
     {
         return $query->whereDate('start_date', '<=', $dateString);
     }
@@ -46,7 +46,7 @@ trait OrganisationEventScopes
     /**
      * @param  bool  $required
      */
-    public function scopeHasWheelchairAccess(Builder $query, $required): Builder
+    public function scopeHasWheelchairAccess(Builder $query, bool $required): Builder
     {
         return $query->whereExists(function ($query) use ($required) {
             $locationsTable = (new Location())->getTable();
@@ -60,7 +60,7 @@ trait OrganisationEventScopes
     /**
      * @param  bool  $required
      */
-    public function scopeHasInductionLoop(Builder $query, $required): Builder
+    public function scopeHasInductionLoop(Builder $query, bool $required): Builder
     {
         return $query->whereExists(function ($query) use ($required) {
             $locationsTable = (new Location())->getTable();

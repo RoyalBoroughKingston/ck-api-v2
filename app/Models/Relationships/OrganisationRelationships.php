@@ -2,6 +2,9 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\File;
 use App\Models\OrganisationTaxonomy;
 use App\Models\Role;
@@ -18,7 +21,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function logoFile()
+    public function logoFile(): BelongsTo
     {
         return $this->belongsTo(File::class, 'logo_file_id');
     }
@@ -26,7 +29,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userRoles()
+    public function userRoles(): HasMany
     {
         return $this->hasMany(UserRole::class);
     }
@@ -34,7 +37,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, (new UserRole())->getTable())->withTrashed();
     }
@@ -42,7 +45,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function services()
+    public function services(): HasMany
     {
         return $this->hasMany(Service::class);
     }
@@ -50,7 +53,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function socialMedias()
+    public function socialMedias(): MorphMany
     {
         return $this->morphMany(SocialMedia::class, 'sociable');
     }
@@ -58,7 +61,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function nonAdminUsers()
+    public function nonAdminUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, (new UserRole())->getTable())
             ->withTrashed()
@@ -70,7 +73,7 @@ trait OrganisationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function organisationTaxonomies()
+    public function organisationTaxonomies(): HasMany
     {
         return $this->hasMany(OrganisationTaxonomy::class);
     }

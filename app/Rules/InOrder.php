@@ -26,7 +26,7 @@ class InOrder implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not a integer.
         if (! is_int($value)) {
@@ -59,7 +59,7 @@ class InOrder implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The :attribute is not in a valid order.';
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\Referral\OrganisationNameFilter;
@@ -39,7 +40,7 @@ class ReferralController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         // Check if the request has asked for the service to be included.
         $serviceIncluded = $request->contains('include', 'service');
@@ -133,7 +134,7 @@ class ReferralController extends Controller
      *
      * @return \App\Http\Resources\ReferralResource
      */
-    public function show(ShowRequest $request, Referral $referral)
+    public function show(ShowRequest $request, Referral $referral): ReferralResource
     {
         // Check if the request has asked for user roles to be included.
         $serviceIncluded = $request->contains('include', 'service');

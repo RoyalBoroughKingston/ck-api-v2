@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Events\UserRolesUpdated;
 use App\Exceptions\CannotRevokeRoleException;
@@ -43,7 +44,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         // Check if the request has asked for user roles to be included.
         $userRolesIncluded = Str::contains($request->include, 'user-roles');
@@ -146,7 +147,7 @@ class UserController extends Controller
      *
      * @return \App\Http\Resources\UserResource
      */
-    public function show(ShowRequest $request, User $user)
+    public function show(ShowRequest $request, User $user): UserResource
     {
         // Check if the request has asked for user roles to be included.
         $userRolesIncluded = Str::contains($request->include, 'user-roles');
@@ -175,7 +176,7 @@ class UserController extends Controller
      *
      * @return \App\Http\Resources\UserResource
      */
-    public function user(ShowRequest $request)
+    public function user(ShowRequest $request): UserResource
     {
         return $this->show($request, $request->user());
     }

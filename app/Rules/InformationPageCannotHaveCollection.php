@@ -33,7 +33,7 @@ class InformationPageCannotHaveCollection implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         return $this->pageType === Page::PAGE_TYPE_LANDING || empty($value);
     }
@@ -43,7 +43,7 @@ class InformationPageCannotHaveCollection implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Pages of type other than '.Page::PAGE_TYPE_LANDING.' cannot have collections';
     }

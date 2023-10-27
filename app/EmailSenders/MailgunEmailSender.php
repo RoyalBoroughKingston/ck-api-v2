@@ -28,7 +28,7 @@ class MailgunEmailSender implements EmailSender
      *
      * @return string
      */
-    public function createSubject(Email $email)
+    public function createSubject(Email $email): string
     {
         return trans(
             $email->getSubject(),
@@ -41,7 +41,7 @@ class MailgunEmailSender implements EmailSender
      *
      * @return string
      */
-    public function createContent(Email $email)
+    public function createContent(Email $email): string
     {
         return trans(
             $email->getContent(),
@@ -54,7 +54,7 @@ class MailgunEmailSender implements EmailSender
      *
      * @return string
      */
-    public function createHtmlContent(Email $email)
+    public function createHtmlContent(Email $email): string
     {
         return Markdown::parse(trans(
             $email->getContent(),

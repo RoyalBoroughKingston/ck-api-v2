@@ -11,7 +11,7 @@ trait PageScopes
      *
      * @param  int  $index
      */
-    public function scopeSiblingAtIndex(Builder $query, $index): Builder
+    public function scopeSiblingAtIndex(Builder $query, int $index): Builder
     {
         return $this->siblingsAndSelf()->defaultOrder()->offset($index)->limit(1);
     }
@@ -21,7 +21,7 @@ trait PageScopes
      *
      * @param  string  $uuid
      */
-    public function scopePageDescendants(Builder $query, $uuid): Builder
+    public function scopePageDescendants(Builder $query, string $uuid): Builder
     {
         $descendantIds = static::descendantsOf($uuid)->pluck('id');
 

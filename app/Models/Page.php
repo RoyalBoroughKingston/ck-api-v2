@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Page;
 use App\Contracts\AppliesUpdateRequests;
 use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\Page\UpdateRequest as UpdatePageRequest;
@@ -67,7 +68,7 @@ class Page extends Model implements AppliesUpdateRequests
      *
      * @return array
      */
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         $contentSections = [];
         foreach ($this->content as $sectionLabel => $sectionContent) {
@@ -106,7 +107,7 @@ class Page extends Model implements AppliesUpdateRequests
      *
      * @return \App\Models\Page
      */
-    public function enable()
+    public function enable(): Page
     {
         $this->enabled = static::ENABLED;
 
@@ -118,7 +119,7 @@ class Page extends Model implements AppliesUpdateRequests
      *
      * @return \App\Models\Page
      */
-    public function disable()
+    public function disable(): Page
     {
         $this->enabled = static::DISABLED;
 
@@ -130,7 +131,7 @@ class Page extends Model implements AppliesUpdateRequests
      *
      * @return string
      */
-    public function getParentIdName()
+    public function getParentIdName(): string
     {
         return static::PARENT_KEY;
     }
@@ -191,7 +192,7 @@ class Page extends Model implements AppliesUpdateRequests
      * @param  string  $parentId
      * @return \App\Models\Page
      */
-    public function updateParent($parentId = false): self
+    public function updateParent(string $parentId = false): self
     {
         // If parent_id is null save as root node
         if (is_null($parentId)) {
@@ -209,7 +210,7 @@ class Page extends Model implements AppliesUpdateRequests
      * @param  int  $order
      * @return \App\Models\Page
      */
-    public function updateOrder($order): self
+    public function updateOrder(int $order): self
     {
         if (! is_null($order)) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
@@ -226,7 +227,7 @@ class Page extends Model implements AppliesUpdateRequests
      * @param  string  $imageId
      * @return \App\Models\Page
      */
-    public function updateImage($imageId)
+    public function updateImage(string $imageId): Page
     {
         if ($imageId !== $this->image_file_id) {
             $currentImage = $this->image;
@@ -262,7 +263,7 @@ class Page extends Model implements AppliesUpdateRequests
      * @param  mixed  $collections
      * @return \App\Models\Page
      */
-    public function updateCollections($collectionIds)
+    public function updateCollections(array $collectionIds): Page
     {
         if (is_array($collectionIds)) {
             $this->collections()->sync($collectionIds);

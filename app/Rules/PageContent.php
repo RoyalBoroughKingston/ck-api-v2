@@ -35,7 +35,7 @@ class PageContent implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not an array.
         if (! is_array($value)) {
@@ -85,7 +85,7 @@ class PageContent implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return $this->message;
     }

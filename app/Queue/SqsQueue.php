@@ -12,7 +12,7 @@ class SqsQueue extends BaseSqsQueue
      * @param  string|null  $queue
      * @return string
      */
-    public function getQueue($queue)
+    public function getQueue(?string $queue): string
     {
         $queue = $queue ?: $this->default;
 

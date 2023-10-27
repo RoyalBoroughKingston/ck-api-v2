@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Report\DestroyRequest;
@@ -32,7 +33,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Report::query()
             ->orderByDesc('created_at');
@@ -76,7 +77,7 @@ class ReportController extends Controller
      *
      * @return \App\Http\Resources\ReportResource
      */
-    public function show(ShowRequest $request, Report $report)
+    public function show(ShowRequest $request, Report $report): ReportResource
     {
         $baseQuery = Report::query()
             ->where('id', $report->id);

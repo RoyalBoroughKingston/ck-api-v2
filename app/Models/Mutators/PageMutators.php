@@ -2,6 +2,8 @@
 
 namespace App\Models\Mutators;
 
+use App\Models\Page;
+
 trait PageMutators
 {
     /**
@@ -20,7 +22,7 @@ trait PageMutators
      * @param type name
      * @return int
      */
-    public function getOrderAttribute()
+    public function getOrderAttribute(): int
     {
         return $this->prevSiblings()->count();
     }
@@ -52,7 +54,7 @@ trait PageMutators
      *
      * @return \App\Models\Page|null
      */
-    public function getLandingPageAttribute()
+    public function getLandingPageAttribute(): ?Page
     {
         return $this->landingPageAncestors->last();
     }

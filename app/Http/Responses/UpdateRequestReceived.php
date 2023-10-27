@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use Illuminate\Http\Request;
 use App\Models\UpdateRequest;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Response;
@@ -33,7 +34,7 @@ class UpdateRequestReceived implements Responsable
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request)
+    public function toResponse(Request $request): Response
     {
         return response()->json([
             'message' => $this->updateRequest->isApproved() ? __('updates.pre-approved') : __('updates.pending', ['appname' => config('app.name', 'Laravel')]),

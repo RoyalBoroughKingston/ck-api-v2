@@ -45,7 +45,7 @@ trait StoresSpreadsheets
      *
      * @return array
      */
-    public function processSpreadsheet(string $spreadsheet)
+    public function processSpreadsheet(string $spreadsheet): array
     {
         $filePath = $this->storeBase64FileString($spreadsheet, 'batch-upload');
 
@@ -78,7 +78,7 @@ trait StoresSpreadsheets
      *
      * @throws Illuminate\Validation\ValidationException
      */
-    protected function storeBase64FileString(string $file_data, string $path)
+    protected function storeBase64FileString(string $file_data, string $path): string
     {
         preg_match('/^data:(application\/[a-z\-\.]+);base64,(.*)/', $file_data, $matches);
         if (count($matches) < 3) {
@@ -98,7 +98,7 @@ trait StoresSpreadsheets
      * @param  string  $ext
      * @return string
      */
-    protected function storeBinaryUpload(string $blob, string $path, $mime_type = null, $ext = null)
+    protected function storeBinaryUpload(string $blob, string $path, string $mime_type = null, string $ext = null): string
     {
         $path = empty($path) ? '' : trim($path, '/').'/';
         $mime_type = $mime_type ?? $this->getFileStringMimeType($blob);
@@ -116,7 +116,7 @@ trait StoresSpreadsheets
      *
      * @return string
      */
-    protected function getFileStringMimeType(string $file_str)
+    protected function getFileStringMimeType(string $file_str): string
     {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_buffer($finfo, $file_str);
@@ -130,7 +130,7 @@ trait StoresSpreadsheets
      *
      * @return string
      */
-    protected function guessFileExtension(string $mime_type)
+    protected function guessFileExtension(string $mime_type): string
     {
         return (new MimeTypes())->getExtensions($mime_type)[0] ?? null;
     }

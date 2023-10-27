@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\OrganisationEvent;
 use App\Contracts\AppliesUpdateRequests;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\Mutators\OrganisationEventMutators;
@@ -49,7 +50,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      *
      * @return string
      */
-    public function searchableAs()
+    public function searchableAs(): string
     {
         return config('scout.prefix').'events';
     }
@@ -59,7 +60,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      *
      * @return array
      */
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         $organisationEvent = [
             'id' => $this->id,
@@ -241,7 +242,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      *
      * @return \App\Models\OrganisationEvent
      */
-    public function addToHomepage()
+    public function addToHomepage(): OrganisationEvent
     {
         $this->homepage = true;
 
@@ -253,7 +254,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      *
      * @return \App\Models\OrganisationEvent
      */
-    public function removeFromHomepage()
+    public function removeFromHomepage(): OrganisationEvent
     {
         $this->homepage = false;
 

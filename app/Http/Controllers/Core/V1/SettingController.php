@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\JsonResponse;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\IndexRequest;
@@ -23,7 +24,7 @@ class SettingController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): JsonResponse
     {
         event(EndpointHit::onRead($request, 'Viewed all settings'));
 
@@ -33,7 +34,7 @@ class SettingController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request): JsonResponse
     {
         return DB::transaction(function () use ($request) {
             Setting::cms()

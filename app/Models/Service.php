@@ -99,7 +99,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
      *
      * @return array
      */
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         $serviceEligibilities = $this->eligibilities;
         $serviceEligibilityIds = $serviceEligibilities->pluck('id')->toArray();

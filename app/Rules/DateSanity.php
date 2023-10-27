@@ -42,7 +42,7 @@ class DateSanity implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         return $this->end->greaterThanOrEqualTo($this->start);
     }
@@ -52,7 +52,7 @@ class DateSanity implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The end date and time should be later than the start date and time';
     }

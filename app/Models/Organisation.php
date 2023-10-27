@@ -105,7 +105,7 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
      *
      * @return bool|null
      */
-    public function delete()
+    public function delete(): ?bool
     {
         $this->socialMedias()->delete();
 

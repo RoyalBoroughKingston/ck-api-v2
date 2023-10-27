@@ -43,7 +43,7 @@ class UserHasRole implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         if ($this->originalValue === $value) {
             return true;
@@ -72,7 +72,7 @@ class UserHasRole implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'You are not authorised to update the :attribute field.';
     }

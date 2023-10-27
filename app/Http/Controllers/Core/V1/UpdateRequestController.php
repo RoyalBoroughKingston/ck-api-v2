@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\UpdateRequest\EntryFilter;
@@ -30,7 +31,7 @@ class UpdateRequestController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = UpdateRequest::query()
             ->select('*')
@@ -64,7 +65,7 @@ class UpdateRequestController extends Controller
      *
      * @return \App\Http\Resources\UpdateRequestResource
      */
-    public function show(ShowRequest $request, UpdateRequest $updateRequest)
+    public function show(ShowRequest $request, UpdateRequest $updateRequest): UpdateRequestResource
     {
         $baseQuery = UpdateRequest::query()
             ->select('*')

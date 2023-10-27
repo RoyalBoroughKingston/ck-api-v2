@@ -52,7 +52,7 @@ class TwilioSmsSender implements SmsSender
      *
      * @return string
      */
-    public function ukToInternationalNumber(string $ukMobileNumber)
+    public function ukToInternationalNumber(string $ukMobileNumber): string
     {
         $matches = preg_match('/^(\+447[0-9]{9})$/', $ukMobileNumber);
         if ($matches === 1) {

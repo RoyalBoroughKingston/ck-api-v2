@@ -30,7 +30,7 @@ class FileIsPendingAssignment implements Rule
      * @param  mixed  $fileId
      * @return bool
      */
-    public function passes($attribute, $fileId)
+    public function passes(string $attribute, $fileId): bool
     {
         $file = File::findOrFail($fileId);
 
@@ -52,7 +52,7 @@ class FileIsPendingAssignment implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The :attribute must be an unassigned file.';
     }

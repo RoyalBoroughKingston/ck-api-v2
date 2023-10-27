@@ -27,7 +27,7 @@ class FileIsMimeType implements Rule
      * @param  mixed  $fileId
      * @return bool
      */
-    public function passes($attribute, $fileId)
+    public function passes(string $attribute, $fileId): bool
     {
         return in_array(
             File::findOrFail($fileId)->mime_type,
@@ -40,7 +40,7 @@ class FileIsMimeType implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         $mimeTypes = implode(', ', $this->mimeTypes);
 

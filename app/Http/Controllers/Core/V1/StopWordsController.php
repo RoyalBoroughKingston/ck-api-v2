@@ -31,7 +31,7 @@ class StopWordsController extends Controller
      *
      * @throws \Exception
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): StopWords
     {
         $stopWords = cache()->rememberForever(static::CACHE_KEY, function (): array {
             $content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/stop-words.csv');
@@ -56,7 +56,7 @@ class StopWordsController extends Controller
      *
      * @throws \Exception
      */
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request): StopWords
     {
         $stopWords = array_map(function (string $stopWord) {
             return mb_strtolower($stopWord);

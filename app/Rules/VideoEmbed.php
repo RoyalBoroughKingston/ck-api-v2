@@ -14,7 +14,7 @@ class VideoEmbed implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not a string.
         if (! is_string($value)) {
@@ -35,7 +35,7 @@ class VideoEmbed implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The :attribute must be provided by either YouTube or Vimeo.';
     }

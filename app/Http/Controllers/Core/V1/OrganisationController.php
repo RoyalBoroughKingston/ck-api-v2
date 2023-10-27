@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\Organisation\HasPermissionFilter;
@@ -35,7 +36,7 @@ class OrganisationController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Organisation::query();
 
@@ -79,7 +80,7 @@ class OrganisationController extends Controller
      *
      * @return \App\Http\Resources\OrganisationResource
      */
-    public function show(ShowRequest $request, Organisation $organisation)
+    public function show(ShowRequest $request, Organisation $organisation): OrganisationResource
     {
         $baseQuery = Organisation::query()
             ->where('id', $organisation->id);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Notification\IndexRequest;
@@ -26,7 +27,7 @@ class NotificationController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Notification::query()
             ->orderByDesc('created_at');
@@ -50,7 +51,7 @@ class NotificationController extends Controller
      *
      * @return \App\Http\Resources\NotificationResource
      */
-    public function show(ShowRequest $request, Notification $notification)
+    public function show(ShowRequest $request, Notification $notification): NotificationResource
     {
         $baseQuery = Notification::query()
             ->where('id', $notification->id);

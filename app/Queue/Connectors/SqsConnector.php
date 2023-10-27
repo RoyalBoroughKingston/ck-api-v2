@@ -2,6 +2,7 @@
 
 namespace App\Queue\Connectors;
 
+use Illuminate\Contracts\Queue\Queue;
 use App\Queue\SqsQueue;
 use Aws\Sqs\SqsClient;
 use Illuminate\Queue\Connectors\SqsConnector as BaseSqsConnector;
@@ -14,7 +15,7 @@ class SqsConnector extends BaseSqsConnector
      *
      * @return \Illuminate\Contracts\Queue\Queue
      */
-    public function connect(array $config)
+    public function connect(array $config): Queue
     {
         $config = $this->getDefaultConfiguration($config);
 

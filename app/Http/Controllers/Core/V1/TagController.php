@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tag\IndexRequest;
 use App\Http\Resources\TagResource;
@@ -23,7 +24,7 @@ class TagController extends Controller
      * @param  \App\Http\Requests\Page\IndexRequest  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         return TagResource::collection(Tag::all());
     }

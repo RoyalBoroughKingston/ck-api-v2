@@ -2,6 +2,8 @@
 
 namespace App\Http\Responses;
 
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Support\Responsable;
 
 class StopWords implements Responsable
@@ -25,7 +27,7 @@ class StopWords implements Responsable
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request)
+    public function toResponse(Request $request): Response
     {
         return response()->json(['data' => $this->stopWords]);
     }

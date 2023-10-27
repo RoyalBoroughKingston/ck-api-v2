@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Audit\IndexRequest;
@@ -28,7 +29,7 @@ class AuditController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Audit::query()
             ->with('oauthClient');
@@ -61,7 +62,7 @@ class AuditController extends Controller
      *
      * @return \App\Http\Resources\AuditResource
      */
-    public function show(ShowRequest $request, Audit $audit)
+    public function show(ShowRequest $request, Audit $audit): AuditResource
     {
         $baseQuery = Audit::query()
             ->with('oauthClient')

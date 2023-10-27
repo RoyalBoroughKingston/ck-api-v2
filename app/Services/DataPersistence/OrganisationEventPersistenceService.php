@@ -31,7 +31,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
      *
      * @return \App\Models\UpdateRequest
      */
-    public function update(FormRequest $request, Model $model)
+    public function update(FormRequest $request, Model $model): UpdateRequestModel
     {
         return $this->processAsUpdateRequest($request, $model);
     }
@@ -42,7 +42,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
      * @param  Illuminate\Foundation\Http\FormRequest  $request
      * @return \App\Models\OrganisationEvent
      */
-    public function processAsNewEntity(FormRequest $request)
+    public function processAsNewEntity(FormRequest $request): OrganisationEvent
     {
         return DB::transaction(function () use ($request) {
             // Create the OrganisationEvent.
@@ -95,7 +95,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
      * @param  \App\Models\OrganisationEvent  $event
      * @return \App\Models\UpdateRequest
      */
-    public function processAsUpdateRequest(FormRequest $request, ?OrganisationEvent $event)
+    public function processAsUpdateRequest(FormRequest $request, ?OrganisationEvent $event): UpdateRequestModel
     {
         return DB::transaction(function () use ($request, $event) {
             $data = array_filter_missing([

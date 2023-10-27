@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Support\Time;
 use Illuminate\Support\Facades\Date;
 
 class Time
@@ -36,7 +37,7 @@ class Time
     /**
      * @return \App\Support\Time
      */
-    public static function create(string $time)
+    public static function create(string $time): Time
     {
         return new static($time);
     }

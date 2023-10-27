@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceLocation\DestroyRequest;
@@ -35,7 +36,7 @@ class ServiceLocationController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = ServiceLocation::query()
             ->with('regularOpeningHours', 'holidayOpeningHours')
@@ -123,7 +124,7 @@ class ServiceLocationController extends Controller
      *
      * @return \App\Http\Resources\ServiceLocationResource
      */
-    public function show(ShowRequest $request, ServiceLocation $serviceLocation)
+    public function show(ShowRequest $request, ServiceLocation $serviceLocation): ServiceLocationResource
     {
         $baseQuery = ServiceLocation::query()
             ->where('id', $serviceLocation->id);

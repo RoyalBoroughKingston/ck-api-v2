@@ -2,6 +2,8 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\File;
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
@@ -13,7 +15,7 @@ trait ServiceLocationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function service()
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
@@ -21,7 +23,7 @@ trait ServiceLocationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function location()
+    public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);
     }
@@ -29,7 +31,7 @@ trait ServiceLocationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function regularOpeningHours()
+    public function regularOpeningHours(): HasMany
     {
         return $this->hasMany(RegularOpeningHour::class);
     }
@@ -37,7 +39,7 @@ trait ServiceLocationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function holidayOpeningHours()
+    public function holidayOpeningHours(): HasMany
     {
         return $this->hasMany(HolidayOpeningHour::class);
     }
@@ -45,7 +47,7 @@ trait ServiceLocationRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function imageFile()
+    public function imageFile(): BelongsTo
     {
         return $this->belongsTo(File::class, 'image_file_id');
     }

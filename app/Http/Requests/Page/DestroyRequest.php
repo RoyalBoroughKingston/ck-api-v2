@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Page;
 
+use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DestroyRequest extends FormRequest
@@ -37,7 +38,7 @@ class DestroyRequest extends FormRequest
      *
      * @param  \Illuminate\Validation\Validator  $validator
      */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
             if ($this->page->children()->count() !== 0) {

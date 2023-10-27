@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Service;
 
 trait TagRelationships
@@ -11,7 +12,7 @@ trait TagRelationships
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function services()
+    public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class);
     }

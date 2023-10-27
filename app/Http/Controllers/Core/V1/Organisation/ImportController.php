@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1\Organisation;
 
+use Illuminate\Http\JsonResponse;
 use App\BatchImport\SpreadsheetParser;
 use App\BatchImport\StoresSpreadsheets;
 use App\Exceptions\DuplicateContentException;
@@ -46,7 +47,7 @@ class ImportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(ImportRequest $request)
+    public function __invoke(ImportRequest $request): JsonResponse
     {
         $this->ignoreDuplicateIds = $request->input('ignore_duplicates', []);
         $this->processSpreadsheet($request->input('spreadsheet'));
@@ -186,7 +187,7 @@ class ImportController extends Controller
      * @param  string  $replacement
      * @return string
      */
-    public function buildSqlReplaceCharacterSet(string $string, array $replace, $replacement = '')
+    public function buildSqlReplaceCharacterSet(string $string, array $replace, string $replacement = '')
     {
         $sql = $string;
         foreach ($replace as $chr) {

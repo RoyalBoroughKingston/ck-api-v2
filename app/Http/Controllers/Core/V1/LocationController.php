@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Location\DestroyRequest;
@@ -33,7 +34,7 @@ class LocationController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Location::query();
 
@@ -121,7 +122,7 @@ class LocationController extends Controller
      *
      * @return \App\Http\Resources\LocationResource
      */
-    public function show(ShowRequest $request, Location $location)
+    public function show(ShowRequest $request, Location $location): LocationResource
     {
         $baseQuery = Location::query()
             ->where('id', $location->id);

@@ -38,7 +38,7 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not an array of strings.
         if (! is_array($value)) {
@@ -69,7 +69,7 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'You are not authorised to update this '.class_basename($this->model).'\'s category taxonomies.';
     }

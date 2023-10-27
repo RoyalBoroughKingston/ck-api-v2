@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Collection;
 use App\Models\Mutators\CollectionMutators;
 use App\Models\Relationships\CollectionRelationships;
 use App\Models\Scopes\CollectionScopes;
@@ -127,7 +128,7 @@ class Collection extends Model
      *
      * @return \App\Models\Collection
      */
-    public function enable()
+    public function enable(): Collection
     {
         $this->enabled = true;
 
@@ -139,7 +140,7 @@ class Collection extends Model
      *
      * @return \App\Models\Collection
      */
-    public function disable()
+    public function disable(): Collection
     {
         $this->enabled = false;
 
@@ -151,7 +152,7 @@ class Collection extends Model
      *
      * @return \App\Models\Collection
      */
-    public function addToHomepage()
+    public function addToHomepage(): Collection
     {
         $this->homepage = true;
 
@@ -163,7 +164,7 @@ class Collection extends Model
      *
      * @return \App\Models\Collection
      */
-    public function removeFromHomepage()
+    public function removeFromHomepage(): Collection
     {
         $this->homepage = false;
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
@@ -31,7 +32,7 @@ class TaxonomyOrganisationController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = Taxonomy::query()
             ->organisations()
@@ -71,7 +72,7 @@ class TaxonomyOrganisationController extends Controller
      *
      * @return \App\Http\Resources\TaxonomyOrganisationResource
      */
-    public function show(ShowRequest $request, Taxonomy $taxonomy)
+    public function show(ShowRequest $request, Taxonomy $taxonomy): TaxonomyOrganisationResource
     {
         $baseQuery = Taxonomy::query()
             ->where('id', $taxonomy->id);

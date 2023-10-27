@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request;
 use App\Models\Mutators\SettingMutators;
 use App\Models\Relationships\SettingRelationships;
 use App\Models\Scopes\SettingScopes;
@@ -39,7 +40,7 @@ class Setting extends Model implements Responsable
     /**
      * @param  \Illuminate\Http\Request  $request
      */
-    public function toResponse($request): JsonResponse
+    public function toResponse(Request $request): JsonResponse
     {
         $data = static::all()
             ->mapWithKeys(function (self $setting) {

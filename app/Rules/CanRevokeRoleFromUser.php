@@ -42,7 +42,7 @@ class CanRevokeRoleFromUser implements Rule
      * @param  mixed  $role
      * @return bool
      */
-    public function passes($attribute, $role)
+    public function passes(string $attribute, $role): bool
     {
         // Immediately fail if the value is not an array.
         if (! $this->validate($role)) {
@@ -93,7 +93,7 @@ class CanRevokeRoleFromUser implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'You are unauthorised to revoke these roles for this user.';
     }

@@ -32,7 +32,7 @@ class ThesaurusController extends Controller
      *
      * @throws \Exception
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): Thesaurus
     {
         $thesaurus = cache()->rememberForever(static::CACHE_KEY, function (): array {
             $content = Storage::disk(config('filesystems.cloud'))->get('elasticsearch/thesaurus.csv');
@@ -72,7 +72,7 @@ class ThesaurusController extends Controller
      *
      * @throws \Exception
      */
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request): Thesaurus
     {
         $synonyms = $request->synonyms;
 

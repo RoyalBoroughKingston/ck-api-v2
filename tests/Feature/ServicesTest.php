@@ -41,7 +41,7 @@ class ServicesTest extends TestCase
      * @param  array  $serviceEligibilities
      * @return null
      **/
-    public function createServiceSpreadsheets(\Illuminate\Support\Collection $services, $serviceEligibilities = null)
+    public function createServiceSpreadsheets(\Illuminate\Support\Collection $services, array $serviceEligibilities = null)
     {
         $faker = Faker::create('en_GB');
 

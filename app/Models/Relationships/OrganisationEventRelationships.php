@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationships;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Location;
 use App\Models\Organisation;
 use App\Models\OrganisationEventTaxonomy;
@@ -14,7 +15,7 @@ trait OrganisationEventRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function organisation()
+    public function organisation(): BelongsTo
     {
         return $this->belongsTo(Organisation::class);
     }
@@ -22,7 +23,7 @@ trait OrganisationEventRelationships
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function location()
+    public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);
     }

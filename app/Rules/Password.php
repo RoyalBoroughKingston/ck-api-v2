@@ -28,7 +28,7 @@ class Password implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not a string.
         if (! is_string($value)) {
@@ -45,7 +45,7 @@ class Password implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return $this->message ?? 'The :attribute must be at least eight characters long, contain one uppercase letter, one lowercase letter, one number and one special character ('.static::ALLOWED_SPECIAL_CHARACTERS.').';
     }

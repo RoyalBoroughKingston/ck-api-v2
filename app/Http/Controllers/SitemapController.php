@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use App\Models\Collection;
 use App\Models\Organisation;
 use App\Models\Page;
@@ -22,7 +23,7 @@ class SitemapController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke()
+    public function __invoke(): JsonResponse
     {
         $sitemap = Cache::remember('sitemap', (60 * 60), function () {
             $this->sitemap = new DOMDocument('1.0', 'UTF-8');
@@ -205,7 +206,7 @@ class SitemapController extends Controller
      * @param  string  $path
      * @return string
      */
-    public function frontendUrl($path = '')
+    public function frontendUrl(string $path = '')
     {
         return str_replace('://api.', '://', url($path));
     }

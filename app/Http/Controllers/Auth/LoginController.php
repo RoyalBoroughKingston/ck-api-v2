@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Sms\OtpLoginCode\UserSms;
@@ -74,7 +76,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showOtpForm()
+    public function showOtpForm(): View
     {
         $userId = session()->get('otp.user_id');
         $user = User::findOrFail($userId);
@@ -160,7 +162,7 @@ EOT;
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function sendFailedOtpResponse(Request $request)
+    protected function sendFailedOtpResponse(Request $request): Response
     {
         throw ValidationException::withMessages([
             'token' => ['The token provided is incorrect.'],
@@ -172,7 +174,7 @@ EOT;
      *
      * @return string
      */
-    protected function throttleKey(Request $request)
+    protected function throttleKey(Request $request): string
     {
         $key = session()->get(
             'otp.user_id',

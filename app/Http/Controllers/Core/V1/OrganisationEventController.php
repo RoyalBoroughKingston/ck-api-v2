@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core\V1;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\OrganisationEvent\HasPermissionFilter;
@@ -36,7 +37,7 @@ class OrganisationEventController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $baseQuery = OrganisationEvent::query();
 
@@ -103,7 +104,7 @@ class OrganisationEventController extends Controller
      *
      * @return \App\Http\Resources\OrganisationEventResource
      */
-    public function show(ShowRequest $request, OrganisationEvent $organisationEvent)
+    public function show(ShowRequest $request, OrganisationEvent $organisationEvent): OrganisationEventResource
     {
         $baseQuery = OrganisationEvent::query()
             ->where('id', $organisationEvent->id);
@@ -126,7 +127,7 @@ class OrganisationEventController extends Controller
         UpdateRequest $request,
         OrganisationEvent $organisationEvent,
         OrganisationEventPersistenceService $persistenceService
-    ) {
+    ): UpdateRequestReceived {
         $updateRequest = $persistenceService->update($request, $organisationEvent);
 
         event(EndpointHit::onUpdate($request, "Updated organisation event [{$organisationEvent->id}]", $organisationEvent));

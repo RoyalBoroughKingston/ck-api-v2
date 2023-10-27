@@ -730,7 +730,16 @@ class User extends Authenticatable implements Notifiable
      */
     public function visibleUserIds()
     {
-        if ($this->isGlobalAdmin() && !$this->isSuperAdmin()) {
+        // Super admin can see all users
+        if ($this->isSuperAdmin()) {
+            return User::query()
+                ->pluck('id')
+                ->concat([$this->id])
+                ->unique();
+        }
+
+        // Global Admin can only see self
+        if ($this->isGlobalAdmin()) {
             return collect([$this->id]);
         }
         // Get the service IDs from all the organisations the user belongs to
@@ -759,15 +768,6 @@ class User extends Authenticatable implements Notifiable
             ])
         );
 
-        // Super admin can see global and content admins
-        if ($this->isSuperAdmin()) {
-            $userIds = $userIds->concat(
-                User::globalAdmins()->pluck('id')
-            );
-            $userIds = $userIds->concat(
-                User::contentAdmins()->pluck('id')
-            );
-        }
         // Include this user
         return $userIds
             ->concat([$this->id])

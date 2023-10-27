@@ -12,7 +12,7 @@ class ImportTaxonomiesCommandTest extends TestCase
 {
     public $taxonomyRecords = [];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

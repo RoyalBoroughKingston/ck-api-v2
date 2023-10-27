@@ -36,7 +36,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function guest_cannot_view_thesaurus()
+    public function guest_cannot_view_thesaurus(): void
     {
         $response = $this->json('GET', '/core/v1/thesaurus');
 
@@ -46,7 +46,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function service_worker_cannot_view_thesaurus()
+    public function service_worker_cannot_view_thesaurus(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -61,7 +61,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function service_admin_cannot_view_thesaurus()
+    public function service_admin_cannot_view_thesaurus(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -76,7 +76,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function organisation_admin_cannot_view_thesaurus()
+    public function organisation_admin_cannot_view_thesaurus(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -91,7 +91,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function global_admin_cannot_view_thesaurus()
+    public function global_admin_cannot_view_thesaurus(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
 
@@ -105,7 +105,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function super_admin_can_view_thesaurus()
+    public function super_admin_can_view_thesaurus(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
 
@@ -129,7 +129,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function guest_cannot_update_thesaurus()
+    public function guest_cannot_update_thesaurus(): void
     {
         $response = $this->json('PUT', '/core/v1/thesaurus');
 
@@ -139,7 +139,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function service_worker_cannot_update_thesaurus()
+    public function service_worker_cannot_update_thesaurus(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -154,7 +154,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function service_admin_cannot_update_thesaurus()
+    public function service_admin_cannot_update_thesaurus(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -169,7 +169,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function organisation_admin_cannot_update_thesaurus()
+    public function organisation_admin_cannot_update_thesaurus(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -184,7 +184,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function global_admin_cannot_update_thesaurus()
+    public function global_admin_cannot_update_thesaurus(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
 
@@ -198,7 +198,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function super_admin_can_update_thesaurus()
+    public function super_admin_can_update_thesaurus(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
 
@@ -220,7 +220,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function thesaurus_works_with_search()
+    public function thesaurus_works_with_search(): void
     {
         $service = Service::factory()->create([
             'name' => 'Helping People',
@@ -257,7 +257,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function invalid_multi_word_upload_fails()
+    public function invalid_multi_word_upload_fails(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
 
@@ -274,7 +274,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function simple_contraction_works_with_search()
+    public function simple_contraction_works_with_search(): void
     {
         $service = Service::factory()->create([
             'name' => 'People Not Drinking Enough',
@@ -315,7 +315,7 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function simple_contraction_works_with_further_synonyms_with_search()
+    public function simple_contraction_works_with_further_synonyms_with_search(): void
     {
         $service = Service::factory()->create([
             'name' => 'People Not Drinking Enough',

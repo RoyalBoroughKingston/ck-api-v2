@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Closure;
 
 class OtpCodeSent
@@ -12,7 +14,7 @@ class OtpCodeSent
      * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if (session()->has('otp.user_id') && session()->has('otp.code')) {
             return $next($request);

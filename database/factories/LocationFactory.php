@@ -11,7 +11,7 @@ class LocationFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'address_line_1' => $this->faker->streetAddress(),

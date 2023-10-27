@@ -10,7 +10,7 @@ class VideoEmbedTest extends TestCase
     /**
      * @test
      */
-    public function it_passes_video_hosting_urls()
+    public function it_passes_video_hosting_urls(): void
     {
         $badUrls = [
             'https://youtube.com',

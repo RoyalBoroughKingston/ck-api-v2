@@ -11,7 +11,7 @@ class ReportFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'report_type_id' => \App\Models\ReportType::usersExport()->id,

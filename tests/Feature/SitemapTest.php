@@ -36,7 +36,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapAsGuest200()
+    public function getSitemapAsGuest200(): void
     {
         $response = $this->json('GET', '/sitemap');
 
@@ -46,7 +46,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapReturnsXml200()
+    public function getSitemapReturnsXml200(): void
     {
         $response = $this->get('/sitemap');
 
@@ -60,7 +60,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapReturnsAValidSitemap200()
+    public function getSitemapReturnsAValidSitemap200(): void
     {
         $response = $this->get('/sitemap');
 
@@ -76,7 +76,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapIncludesStaticPages200()
+    public function getSitemapIncludesStaticPages200(): void
     {
         $pages = [
             'home' => false,
@@ -111,7 +111,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapIncludesServices200()
+    public function getSitemapIncludesServices200(): void
     {
         /** @var \App\Models\Service $service */
         $service = Service::factory()->create();
@@ -139,7 +139,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapIncludesOrganisations200()
+    public function getSitemapIncludesOrganisations200(): void
     {
         /** @var \App\Models\Organisation $organisation */
         $organisation = Organisation::factory()->create();
@@ -167,7 +167,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapIncludesCategories200()
+    public function getSitemapIncludesCategories200(): void
     {
         /** @var \App\Models\Collection $collection */
         $collection = Collection::where('type', 'category')->latest()->first();
@@ -195,7 +195,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapIncludesPersonas200()
+    public function getSitemapIncludesPersonas200(): void
     {
         /** @var \App\Models\Collection $collection */
         $collection = Collection::where('type', 'persona')->latest()->first();
@@ -223,7 +223,7 @@ class SitemapTest extends TestCase
     /**
      * @test
      */
-    public function getSitemapIncludesPages200()
+    public function getSitemapIncludesPages200(): void
     {
         /** @var \App\Models\Page $page */
         $page = Page::factory()->create();

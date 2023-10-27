@@ -29,7 +29,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isOrganisationAdmin($this->organisation_event->organisation)) {
             return true;
@@ -43,7 +43,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => ['string', 'min:1', 'max:255'],
@@ -177,7 +177,7 @@ class UpdateRequest extends FormRequest
     /**
      * {@inheritDoc}
      */
-    public function messages()
+    public function messages(): array
     {
         $urlMessage = 'Please enter a valid web address in the correct format (starting with https:// or http://).';
 

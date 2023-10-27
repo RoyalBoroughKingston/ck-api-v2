@@ -18,7 +18,7 @@ class FilesTest extends TestCase
     /**
      * @test
      */
-    public function createFileAsGuest403()
+    public function createFileAsGuest403(): void
     {
         $image = Storage::disk('local')->get('/test-data/image.png');
 
@@ -34,7 +34,7 @@ class FilesTest extends TestCase
     /**
      * @test
      */
-    public function createFileAsServiceAdmin201()
+    public function createFileAsServiceAdmin201(): void
     {
         $image = Storage::disk('local')->get('/test-data/image.png');
 

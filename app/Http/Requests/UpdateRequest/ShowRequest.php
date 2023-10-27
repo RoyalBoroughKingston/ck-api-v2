@@ -11,7 +11,7 @@ class ShowRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isServiceAdmin() || $this->user()->isContentAdmin()) {
             return true;
@@ -25,7 +25,7 @@ class ShowRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //

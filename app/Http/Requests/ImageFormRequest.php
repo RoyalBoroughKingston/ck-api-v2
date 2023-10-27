@@ -14,7 +14,7 @@ abstract class ImageFormRequest extends FormRequest
      *
      * @return array
      */
-    final public function rules()
+    final public function rules(): array
     {
         $rules = [
             'max_dimension' => ['integer', 'min:1', 'max:1000'],

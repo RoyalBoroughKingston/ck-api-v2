@@ -15,7 +15,7 @@ class ReferralIncompleted
     /**
      * Handle the event.
      */
-    public function handle(EndpointHit $event)
+    public function handle(EndpointHit $event): void
     {
         // Only handle specific endpoint events.
         if ($event->isntFor(Referral::class, Audit::ACTION_UPDATE)) {

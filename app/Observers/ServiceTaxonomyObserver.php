@@ -9,7 +9,7 @@ class ServiceTaxonomyObserver
     /**
      * Handle to the service taxonomy "created" event.
      */
-    public function created(ServiceTaxonomy $serviceTaxonomy)
+    public function created(ServiceTaxonomy $serviceTaxonomy): void
     {
         $serviceTaxonomy->touchService();
     }
@@ -17,7 +17,7 @@ class ServiceTaxonomyObserver
     /**
      * Handle the service taxonomy "deleted" event.
      */
-    public function deleted(ServiceTaxonomy $serviceTaxonomy)
+    public function deleted(ServiceTaxonomy $serviceTaxonomy): void
     {
         $serviceTaxonomy->touchService();
     }

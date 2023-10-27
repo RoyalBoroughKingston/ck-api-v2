@@ -11,7 +11,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user('api')->isSuperAdmin();
     }
@@ -21,7 +21,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'stop_words' => ['present', 'array'],

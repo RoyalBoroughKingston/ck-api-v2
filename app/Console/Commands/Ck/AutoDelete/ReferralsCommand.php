@@ -26,7 +26,7 @@ class ReferralsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $months = Referral::AUTO_DELETE_MONTHS;
 

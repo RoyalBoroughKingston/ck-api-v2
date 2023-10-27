@@ -26,7 +26,7 @@ class PendingAssignmentFilesCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $days = File::PEDNING_ASSIGNMENT_AUTO_DELETE_DAYS;
 

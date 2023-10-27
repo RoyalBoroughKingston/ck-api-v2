@@ -9,7 +9,7 @@ class LocationObserver
     /**
      * Handle the location "updated" event.
      */
-    public function updated(Location $location)
+    public function updated(Location $location): void
     {
         $location->touchServices();
     }
@@ -26,7 +26,7 @@ class LocationObserver
     /**
      * Handle the organisation "deleted" event.
      */
-    public function deleted(Location $location)
+    public function deleted(Location $location): void
     {
         $location->touchServices();
     }

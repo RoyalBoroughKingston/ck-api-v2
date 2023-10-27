@@ -11,7 +11,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "created" event.
      */
-    public function created(Organisation $organisation)
+    public function created(Organisation $organisation): void
     {
         Role::globalAdmin()
             ->users()
@@ -26,7 +26,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "updated" event.
      */
-    public function updated(Organisation $organisation)
+    public function updated(Organisation $organisation): void
     {
         $organisation->touchServices();
     }

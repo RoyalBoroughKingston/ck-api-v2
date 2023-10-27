@@ -25,7 +25,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_list_them()
+    public function guest_cannot_list_them(): void
     {
         $response = $this->json('GET', '/core/v1/reports');
 
@@ -35,7 +35,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_list_them()
+    public function service_worker_cannot_list_them(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -50,7 +50,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_list_them()
+    public function service_admin_cannot_list_them(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -65,7 +65,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_list_them()
+    public function organisation_admin_cannot_list_them(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -80,7 +80,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_list_them()
+    public function global_admin_cannot_list_them(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $report = Report::factory()->create();
@@ -95,7 +95,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_list_them()
+    public function super_admin_can_list_them(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
         $report = Report::factory()->create();
@@ -114,7 +114,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_listed()
+    public function audit_created_when_listed(): void
     {
         $this->fakeEvents();
 
@@ -137,7 +137,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_create_one()
+    public function guest_cannot_create_one(): void
     {
         $response = $this->json('POST', '/core/v1/reports');
 
@@ -147,7 +147,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_create_one()
+    public function service_worker_cannot_create_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -162,7 +162,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_create_one()
+    public function service_admin_cannot_create_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -177,7 +177,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_create_one()
+    public function organisation_admin_cannot_create_one(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -192,7 +192,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_create_one()
+    public function global_admin_cannot_create_one(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
 
@@ -208,7 +208,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_create_one()
+    public function super_admin_can_create_one(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
 
@@ -240,7 +240,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_created()
+    public function audit_created_when_created(): void
     {
         $this->fakeEvents();
 
@@ -262,7 +262,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_create_one_with_date_range()
+    public function super_admin_can_create_one_with_date_range(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
 
@@ -294,7 +294,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_view_one()
+    public function guest_cannot_view_one(): void
     {
         $report = Report::factory()->create();
 
@@ -306,7 +306,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_view_one()
+    public function service_worker_cannot_view_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -322,7 +322,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_view_one()
+    public function service_admin_cannot_view_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -338,7 +338,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_view_one()
+    public function organisation_admin_cannot_view_one(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -354,7 +354,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_view_one()
+    public function global_admin_cannot_view_one(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $report = Report::factory()->create();
@@ -369,7 +369,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_view_one()
+    public function super_admin_can_view_one(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
         $report = Report::factory()->create();
@@ -388,7 +388,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_viewed()
+    public function audit_created_when_viewed(): void
     {
         $this->fakeEvents();
 
@@ -413,7 +413,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_delete_one()
+    public function guest_cannot_delete_one(): void
     {
         $report = Report::factory()->create();
 
@@ -425,7 +425,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_delete_one()
+    public function service_worker_cannot_delete_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -441,7 +441,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_delete_one()
+    public function service_admin_cannot_delete_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -457,7 +457,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_delete_one()
+    public function organisation_admin_cannot_delete_one(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -473,7 +473,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_delete_one()
+    public function global_admin_cannot_delete_one(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $report = Report::factory()->create();
@@ -488,7 +488,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_delete_one()
+    public function super_admin_can_delete_one(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
         $report = Report::factory()->create();
@@ -505,7 +505,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_deleted()
+    public function audit_created_when_deleted(): void
     {
         $this->fakeEvents();
 
@@ -530,7 +530,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_download_file()
+    public function guest_cannot_download_file(): void
     {
         $report = Report::factory()->create();
 
@@ -542,7 +542,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_download_file()
+    public function service_worker_cannot_download_file(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -558,7 +558,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_download_file()
+    public function service_admin_cannot_download_file(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -574,7 +574,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_download_file()
+    public function organisation_admin_cannot_download_file(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -590,7 +590,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_download_file()
+    public function global_admin_cannot_download_file(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $report = Report::generate(ReportType::usersExport());
@@ -605,7 +605,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_download_file()
+    public function super_admin_can_download_file(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
         $report = Report::generate(ReportType::usersExport());
@@ -621,7 +621,7 @@ class ReportsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_file_viewed()
+    public function audit_created_when_file_viewed(): void
     {
         $this->fakeEvents();
 

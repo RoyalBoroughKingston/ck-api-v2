@@ -25,7 +25,7 @@ class StoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -35,7 +35,7 @@ class StoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'user' => ['required', 'array'],
@@ -196,7 +196,7 @@ class StoreRequest extends FormRequest
     /**
      * {@inheritDoc}
      */
-    public function messages()
+    public function messages(): array
     {
         $type = $this->get('service.type', Service::TYPE_SERVICE);
 

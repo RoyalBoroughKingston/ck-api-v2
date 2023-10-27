@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isContentAdmin()) {
             return true;
@@ -40,7 +40,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $maxOrder = $this->parent_id ?
         Page::findOrFail($this->parent_id)->children->count() :

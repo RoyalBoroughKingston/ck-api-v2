@@ -10,7 +10,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('services', function (Blueprint $table) {
             $table->timestamp('last_modified_at')->useCurrent()->after('referral_url');
@@ -24,7 +24,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('services', function (Blueprint $table) {
             $table->dropColumn('last_modified_at');

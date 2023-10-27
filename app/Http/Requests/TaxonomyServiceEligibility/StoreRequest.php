@@ -13,7 +13,7 @@ class StoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user()->isSuperAdmin();
     }
@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $parentId = $this->parent_id ?? Taxonomy::serviceEligibility()->id;
         $siblingTaxonomiesCount = Taxonomy::where('parent_id', $parentId)->count() + 1;

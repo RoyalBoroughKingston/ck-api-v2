@@ -32,7 +32,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsAsGuest()
+    public function searchEventsAsGuest(): void
     {
         $response = $this->json('POST', '/core/v1/search/events', [
             'query' => 'test',
@@ -46,7 +46,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsEmptyQueryAsGuest()
+    public function searchEventsEmptyQueryAsGuest(): void
     {
         OrganisationEvent::factory()->count(5)->create();
 
@@ -64,7 +64,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchTitleAsGuest()
+    public function searchEventsMatchTitleAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create();
 
@@ -85,7 +85,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchSingleWordFromTitleAsGuest()
+    public function searchEventsMatchSingleWordFromTitleAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create([
             'title' => 'Quick Brown Fox',
@@ -106,7 +106,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchMultipleWordsFromTitleAsGuest()
+    public function searchEventsMatchMultipleWordsFromTitleAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create([
             'title' => 'Quick Brown Fox',
@@ -127,7 +127,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchIntroAsGuest()
+    public function searchEventsMatchIntroAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create();
 
@@ -148,7 +148,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchSingleWordFromIntroAsGuest()
+    public function searchEventsMatchSingleWordFromIntroAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create([
             'intro' => 'This is an event that helps to homeless find temporary housing.',
@@ -169,7 +169,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchMultipleWordsFromIntroAsGuest()
+    public function searchEventsMatchMultipleWordsFromIntroAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create([
             'intro' => 'This is an event that helps to homeless find temporary housing.',
@@ -190,7 +190,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchDescriptionAsGuest()
+    public function searchEventsMatchDescriptionAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create();
 
@@ -211,7 +211,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchSingleWordFromDescriptionAsGuest()
+    public function searchEventsMatchSingleWordFromDescriptionAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create([
             'description' => '<p>This is an event that helps to homeless find temporary housing.</p>',
@@ -232,7 +232,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchMultipleWordsFromDescriptionAsGuest()
+    public function searchEventsMatchMultipleWordsFromDescriptionAsGuest(): void
     {
         $event = OrganisationEvent::factory()->create([
             'description' => '<p>This is an event that helps to homeless find temporary housing.</p>',
@@ -253,7 +253,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMatchCategoryNameAsGuest()
+    public function searchEventsMatchCategoryNameAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
@@ -310,7 +310,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsRankTitleAboveIntroAsGuest()
+    public function searchEventsRankTitleAboveIntroAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create(['title' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create([
@@ -344,7 +344,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsRankTitleAboveDescriptionAsGuest()
+    public function searchEventsRankTitleAboveDescriptionAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create(['title' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create([
@@ -378,7 +378,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsRankIntroAboveDescriptionAsGuest()
+    public function searchEventsRankIntroAboveDescriptionAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create(['intro' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create([
@@ -412,7 +412,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsRankPerfectMatchAboveCloseMatchAsGuest()
+    public function searchEventsRankPerfectMatchAboveCloseMatchAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create(['title' => 'This is a test']);
         $event2 = OrganisationEvent::factory()->create(['title' => 'Those are tests']);
@@ -444,7 +444,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsRankDescriptionAboveCategoryNameAsGuest()
+    public function searchEventsRankDescriptionAboveCategoryNameAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create([
             'description' => '<p>Quick Brown Fox</p>',
@@ -509,7 +509,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByCollectionNameAsGuest()
+    public function searchEventsFilterByCollectionNameAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create([
             'title' => 'Event title',
@@ -578,7 +578,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByisFreeAsGuest()
+    public function searchEventsFilterByisFreeAsGuest(): void
     {
         $paidEvent = OrganisationEvent::factory()->nonFree()->create();
         $freeEvent = OrganisationEvent::factory()->create();
@@ -597,7 +597,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByNotisFreeAsGuest()
+    public function searchEventsFilterByNotisFreeAsGuest(): void
     {
         $paidEvent = OrganisationEvent::factory()->nonFree()->create();
         $freeEvent = OrganisationEvent::factory()->create();
@@ -616,7 +616,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByisVirtualAsGuest()
+    public function searchEventsFilterByisVirtualAsGuest(): void
     {
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
@@ -635,7 +635,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByNotisVirtualAsGuest()
+    public function searchEventsFilterByNotisVirtualAsGuest(): void
     {
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
@@ -654,7 +654,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByHasWheelchairAsGuest()
+    public function searchEventsFilterByHasWheelchairAsGuest(): void
     {
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
@@ -682,7 +682,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByHasInductionLoopAsGuest()
+    public function searchEventsFilterByHasInductionLoopAsGuest(): void
     {
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
@@ -710,7 +710,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByHasAccessibleToiletAsGuest()
+    public function searchEventsFilterByHasAccessibleToiletAsGuest(): void
     {
         $locatedEvent = OrganisationEvent::factory()->notVirtual()->create();
         $virtualEvent = OrganisationEvent::factory()->create();
@@ -738,7 +738,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsOnlyFutureDatesReturnedAsGuest()
+    public function searchEventsOnlyFutureDatesReturnedAsGuest(): void
     {
         $futureEvent = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
@@ -767,7 +767,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByStartsAfterAsGuest()
+    public function searchEventsFilterByStartsAfterAsGuest(): void
     {
         $date1 = $this->faker->dateTimeBetween('+3 days', '+1 weeks');
         $date2 = $this->faker->dateTimeBetween('+2 week', '+3 weeks');
@@ -812,7 +812,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByEndsBeforeAsGuest()
+    public function searchEventsFilterByEndsBeforeAsGuest(): void
     {
         $date1 = $this->faker->dateTimeBetween('+3 days', '+1 weeks');
         $date2 = $this->faker->dateTimeBetween('+2 week', '+3 weeks');
@@ -857,7 +857,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsFilterByDateRangeAsGuest()
+    public function searchEventsFilterByDateRangeAsGuest(): void
     {
         $date1 = $this->faker->dateTimeBetween('+4 days', '+1 weeks');
         $date2 = $this->faker->dateTimeBetween('+2 week', '+3 weeks');
@@ -905,7 +905,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsOrderByLocationReturnEventsLessThan5MilesAwayAsGuest()
+    public function searchEventsOrderByLocationReturnEventsLessThan5MilesAwayAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
@@ -956,7 +956,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsOrderByLocationReturnServicesLessThan1MileAwayAsGuest()
+    public function searchEventsOrderByLocationReturnServicesLessThan1MileAwayAsGuest(): void
     {
         // > 1 mile
         $event1 = OrganisationEvent::factory()->create([
@@ -1008,7 +1008,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsOrderByRelevanceWithLocationReturnEventsLessThan5MilesAwayAsGuest()
+    public function searchEventsOrderByRelevanceWithLocationReturnEventsLessThan5MilesAwayAsGuest(): void
     {
         $event1 = OrganisationEvent::factory()->create([
             'is_virtual' => false,
@@ -1076,7 +1076,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsOrderByRelevanceWithLocationReturnEventsLessThan1MileAwayAsGuest()
+    public function searchEventsOrderByRelevanceWithLocationReturnEventsLessThan1MileAwayAsGuest(): void
     {
         // Not relevant > 1 mile
         $event1 = OrganisationEvent::factory()->create([
@@ -1150,7 +1150,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsOrderByStartDate()
+    public function searchEventsOrderByStartDate(): void
     {
         $event1 = OrganisationEvent::factory()->create([
             'title' => 'Testing Dates',
@@ -1192,7 +1192,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsMoreTaxonomiesInACategoryCollectionAreMoreRelevantAsGuest()
+    public function searchEventsMoreTaxonomiesInACategoryCollectionAreMoreRelevantAsGuest(): void
     {
         // Create 3 taxonomies
         $taxonomy1 = Taxonomy::category()->children()->create([
@@ -1273,7 +1273,7 @@ class EventTest extends TestCase implements UsesElasticsearch
     /**
      * @test
      */
-    public function searchEventsReturnsPaginatedResultSetAsGuest()
+    public function searchEventsReturnsPaginatedResultSetAsGuest(): void
     {
         $events = OrganisationEvent::factory()->count(30)->create([
             'title' => 'Testing Page',

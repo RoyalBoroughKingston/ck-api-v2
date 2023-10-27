@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->canUpdate($this->user)) {
             return true;
@@ -130,7 +130,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'first_name' => ['required', 'string', 'min:1', 'max:255'],

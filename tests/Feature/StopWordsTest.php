@@ -35,7 +35,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_view_stop_words()
+    public function guest_cannot_view_stop_words(): void
     {
         $response = $this->json('GET', '/core/v1/stop-words');
 
@@ -45,7 +45,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_view_stop_words()
+    public function service_worker_cannot_view_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeServiceWorker(
@@ -61,7 +61,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_view_stop_words()
+    public function service_admin_cannot_view_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeServiceAdmin(
@@ -77,7 +77,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_view_stop_words()
+    public function organisation_admin_cannot_view_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeOrganisationAdmin(
@@ -93,7 +93,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_view_stop_words()
+    public function global_admin_cannot_view_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeGlobalAdmin()
@@ -107,7 +107,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_view_stop_words()
+    public function super_admin_can_view_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeSuperAdmin()
@@ -132,7 +132,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_update_stop_words()
+    public function guest_cannot_update_stop_words(): void
     {
         $response = $this->json('PUT', '/core/v1/stop-words');
 
@@ -142,7 +142,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_update_stop_words()
+    public function service_worker_cannot_update_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeServiceWorker(
@@ -158,7 +158,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_update_stop_words()
+    public function service_admin_cannot_update_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeServiceAdmin(
@@ -174,7 +174,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_update_stop_words()
+    public function organisation_admin_cannot_update_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeOrganisationAdmin(
@@ -190,7 +190,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_update_stop_words()
+    public function global_admin_cannot_update_stop_words(): void
     {
         Passport::actingAs(
             User::factory()->create()->makeGlobalAdmin()
@@ -204,7 +204,7 @@ class StopWordsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_update_stop_words()
+    public function super_admin_can_update_stop_words(): void
     {
         $user = User::factory()->create()->makeSuperAdmin();
 

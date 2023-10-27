@@ -14,7 +14,7 @@ class UniqueSlugGeneratorTest extends TestCase
      *
      * @dataProvider generateDataProvider
      */
-    public function generate_works(string $string, string $expected)
+    public function generate_works(string $string, string $expected): void
     {
         $builderMock = $this->createMock(Builder::class);
         $builderMock->expects($this->once())
@@ -41,7 +41,7 @@ class UniqueSlugGeneratorTest extends TestCase
      *
      * @dataProvider generateUsedDataProvider
      */
-    public function test_generate_works_with_used_slug(string $string, string $expected, int $usedCount)
+    public function test_generate_works_with_used_slug(string $string, string $expected, int $usedCount): void
     {
         $builderMock = $this->createMock(Builder::class);
         $builderMock->expects($this->exactly($usedCount + 1))
@@ -72,7 +72,7 @@ class UniqueSlugGeneratorTest extends TestCase
      *
      * @dataProvider compareEqualsDataProvider
      */
-    public function compareEquals_works(string $string, string $slug, bool $expected)
+    public function compareEquals_works(string $string, string $slug, bool $expected): void
     {
         $dbMock = $this->createMock(DatabaseManager::class);
 

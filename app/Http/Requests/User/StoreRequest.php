@@ -16,7 +16,7 @@ class StoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user()->isServiceAdmin() && ! ($this->user()->isGlobalAdmin() && ! $this->user()->isSuperAdmin());
     }
@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'first_name' => ['required', 'string', 'min:1', 'max:255'],

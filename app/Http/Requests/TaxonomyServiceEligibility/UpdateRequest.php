@@ -13,7 +13,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user()->isSuperAdmin();
     }
@@ -23,7 +23,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         // Get the new parent ID.
         $parentId = $this->parent_id ?? Taxonomy::serviceEligibility()->id;

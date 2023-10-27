@@ -9,7 +9,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('search_histories', function (Blueprint $table) {
             $table->index('count');
@@ -20,7 +20,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('search_histories', function (Blueprint $table) {
             $table->dropIndex(['count']);

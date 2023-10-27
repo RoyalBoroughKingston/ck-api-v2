@@ -12,7 +12,7 @@ class CollectionObserver
      *
      * @throws \Exception
      */
-    public function created(Collection $collection)
+    public function created(Collection $collection): void
     {
         // Updates the order for all other collections of the same type.
         Collection::query()
@@ -63,7 +63,7 @@ class CollectionObserver
      *
      * @throws \Exception
      */
-    public function updated(Collection $collection)
+    public function updated(Collection $collection): void
     {
         $collection->touchServices();
     }
@@ -82,7 +82,7 @@ class CollectionObserver
      *
      * @throws \Exception
      */
-    public function deleted(Collection $collection)
+    public function deleted(Collection $collection): void
     {
         // Updates the order for all other collections of the same type.
         Collection::query()

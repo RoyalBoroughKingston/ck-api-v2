@@ -50,7 +50,7 @@ class CreateUserCommand extends Command
      *
      * @throws \Throwable
      */
-    public function handle()
+    public function handle(): int
     {
         return $this->db->transaction(function () {
             // Cache the password to display.

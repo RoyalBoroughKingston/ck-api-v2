@@ -34,7 +34,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isServiceAdmin($this->service)) {
             return true;
@@ -48,7 +48,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'organisation_id' => [
@@ -394,7 +394,7 @@ class UpdateRequest extends FormRequest
     /**
      * {@inheritDoc}
      */
-    public function messages()
+    public function messages(): array
     {
         $type = $this->input('type', $this->service->type);
 

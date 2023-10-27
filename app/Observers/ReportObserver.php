@@ -9,7 +9,7 @@ class ReportObserver
     /**
      * Handle the organisation "deleted" event.
      */
-    public function deleted(Report $report)
+    public function deleted(Report $report): void
     {
         $report->file->delete();
     }

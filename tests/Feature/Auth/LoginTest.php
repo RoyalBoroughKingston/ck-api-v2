@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
-    public function test_otp_sms_sent_to_user()
+    public function test_otp_sms_sent_to_user(): void
     {
         Config::set('local.otp_enabled', true);
 

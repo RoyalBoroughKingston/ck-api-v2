@@ -11,7 +11,7 @@ class AuditLogger implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(EndpointHit $event)
+    public function handle(EndpointHit $event): void
     {
         Audit::create([
             'user_id' => $event->getUser()->id ?? null,

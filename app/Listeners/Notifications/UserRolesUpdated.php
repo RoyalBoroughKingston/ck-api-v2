@@ -13,7 +13,7 @@ class UserRolesUpdated
     /**
      * Handle the event.
      */
-    public function handle(UserRolesUpdatedEvent $event)
+    public function handle(UserRolesUpdatedEvent $event): void
     {
         $this->notifyUser($event);
     }

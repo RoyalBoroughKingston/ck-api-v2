@@ -20,7 +20,7 @@ class FileObserver
     /**
      * Handle the file "deleted" event.
      */
-    public function deleted(File $file)
+    public function deleted(File $file): void
     {
         $file->deleteFromDisk();
     }

@@ -10,7 +10,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->string('key');
@@ -68,7 +68,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('settings');
     }

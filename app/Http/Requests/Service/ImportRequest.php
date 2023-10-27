@@ -11,7 +11,7 @@ class ImportRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()) {
             return $this->user()->isSuperAdmin();
@@ -25,7 +25,7 @@ class ImportRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'spreadsheet' => [

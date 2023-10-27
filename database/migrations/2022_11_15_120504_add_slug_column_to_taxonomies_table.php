@@ -12,7 +12,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('taxonomies', function (Blueprint $table) {
             $table->string('slug')->after('parent_id')->nullable()->unique();
@@ -54,7 +54,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('taxonomies', function (Blueprint $table) {
             $table->dropUnique(['slug']);

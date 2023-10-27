@@ -14,7 +14,7 @@ class CollectionFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $imageId = File::factory()->imageSvg()->create()->id;
         $name = $this->faker->sentence(2);

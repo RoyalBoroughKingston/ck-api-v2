@@ -9,7 +9,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('organisations', function (Blueprint $table) {
             $table->string('email')->nullable()->change();
@@ -20,7 +20,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('organisations', function (Blueprint $table) {
             $table->string('email')->nullable(false)->change();

@@ -43,7 +43,7 @@ class BatchUploadCommand extends Command
      *
      * @throws \Exception
      */
-    public function handle()
+    public function handle(): void
     {
         $this->line('Uploading file...');
 

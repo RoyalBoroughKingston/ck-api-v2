@@ -13,7 +13,7 @@ class TaxonomyFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->unique()->words(3, true);
 

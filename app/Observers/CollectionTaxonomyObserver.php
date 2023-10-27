@@ -9,7 +9,7 @@ class CollectionTaxonomyObserver
     /**
      * Handle to the collection taxonomy "created" event.
      */
-    public function created(CollectionTaxonomy $collectionTaxonomy)
+    public function created(CollectionTaxonomy $collectionTaxonomy): void
     {
         $collectionTaxonomy->touchServices();
     }
@@ -17,7 +17,7 @@ class CollectionTaxonomyObserver
     /**
      * Handle the collection taxonomy "deleted" event.
      */
-    public function deleted(CollectionTaxonomy $collectionTaxonomy)
+    public function deleted(CollectionTaxonomy $collectionTaxonomy): void
     {
         $collectionTaxonomy->touchServices();
     }

@@ -10,7 +10,7 @@ class RevokeOldTokens
     /**
      * Handle the event.
      */
-    public function handle(AccessTokenCreated $event)
+    public function handle(AccessTokenCreated $event): void
     {
         Token::query()
             ->where('user_id', $event->userId)

@@ -12,7 +12,7 @@ class TagFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $label = $this->faker->unique()->words(2, true);
 

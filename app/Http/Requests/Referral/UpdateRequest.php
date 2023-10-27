@@ -13,7 +13,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if (! $this->user()->isGlobalAdmin() && $this->user()->isServiceWorker($this->referral->service)) {
             return true;
@@ -27,7 +27,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'status' => [

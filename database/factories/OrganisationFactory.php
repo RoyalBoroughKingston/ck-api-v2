@@ -13,7 +13,7 @@ class OrganisationFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $name = $this->faker->company().' '.$this->faker->word().' '.mt_rand(1, 100000);
 

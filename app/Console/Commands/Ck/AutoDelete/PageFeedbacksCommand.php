@@ -26,7 +26,7 @@ class PageFeedbacksCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $months = PageFeedback::AUTO_DELETE_MONTHS;
 

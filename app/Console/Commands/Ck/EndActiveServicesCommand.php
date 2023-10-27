@@ -30,7 +30,7 @@ class EndActiveServicesCommand extends Command
      *
      * @throws \Throwable
      */
-    public function handle()
+    public function handle(): void
     {
         // Get all the services and chunk them for performance.
         Service::query()

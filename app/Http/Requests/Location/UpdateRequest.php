@@ -18,7 +18,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isServiceAdmin()) {
             return true;
@@ -32,7 +32,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'address_line_1' => ['string', 'min:1', 'max:255'],

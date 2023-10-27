@@ -12,7 +12,7 @@ class TaxonomyObserver
      *
      * @throws \Exception
      */
-    public function created(Taxonomy $taxonomy)
+    public function created(Taxonomy $taxonomy): void
     {
         // Updates the order for all other taxonomies with the same parent.
         Taxonomy::query()
@@ -88,7 +88,7 @@ class TaxonomyObserver
     /**
      * Handle the taxonomy "updating" event.
      */
-    public function updated(Taxonomy $taxonomy)
+    public function updated(Taxonomy $taxonomy): void
     {
         $taxonomy->touchServices();
     }
@@ -113,7 +113,7 @@ class TaxonomyObserver
      *
      * @throws \Exception
      */
-    public function deleted(Taxonomy $taxonomy)
+    public function deleted(Taxonomy $taxonomy): void
     {
         // Updates the order for all other taxonomies with the same parent.
         Taxonomy::query()

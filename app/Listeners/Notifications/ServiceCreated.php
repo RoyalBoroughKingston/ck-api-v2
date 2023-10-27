@@ -14,7 +14,7 @@ class ServiceCreated
     /**
      * Handle the event.
      */
-    public function handle(EndpointHit $event)
+    public function handle(EndpointHit $event): void
     {
         // Only handle specific endpoint events.
         if ($event->isntFor(Service::class, Audit::ACTION_CREATE)) {

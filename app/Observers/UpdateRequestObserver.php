@@ -21,7 +21,7 @@ class UpdateRequestObserver
      *
      * @throws \Exception
      */
-    public function created(UpdateRequest $updateRequest)
+    public function created(UpdateRequest $updateRequest): void
     {
         if ($updateRequest->isExisting()) {
             $this->handleExistingUpdateRequest($updateRequest);

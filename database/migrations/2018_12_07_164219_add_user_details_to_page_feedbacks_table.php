@@ -9,7 +9,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('page_feedbacks', function (Blueprint $table) {
             $table->string('name')->nullable()->after('feedback');
@@ -22,7 +22,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('page_feedbacks', function (Blueprint $table) {
             $table->dropColumn('name', 'email', 'phone', 'consented_at');

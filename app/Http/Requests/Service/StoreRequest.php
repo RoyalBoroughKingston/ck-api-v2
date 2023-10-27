@@ -32,7 +32,7 @@ class StoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isOrganisationAdmin()) {
             return true;
@@ -46,7 +46,7 @@ class StoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'organisation_id' => [
@@ -287,7 +287,7 @@ class StoreRequest extends FormRequest
     /**
      * {@inheritDoc}
      */
-    public function messages()
+    public function messages(): array
     {
         $type = $this->input('type', Service::TYPE_SERVICE);
 

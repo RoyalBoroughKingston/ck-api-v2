@@ -17,7 +17,7 @@ return new class() extends Migration
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function up()
+    public function up(): void
     {
         $this->now = Date::now();
         $taxonomies = $this->loadOpenEligibilityTaxonomies();
@@ -29,7 +29,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         DB::table('taxonomies')->truncate();
     }

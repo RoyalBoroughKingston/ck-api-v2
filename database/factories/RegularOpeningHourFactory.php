@@ -11,7 +11,7 @@ class RegularOpeningHourFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'frequency' => \App\Models\RegularOpeningHour::FREQUENCY_WEEKLY,

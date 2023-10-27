@@ -14,7 +14,7 @@ class ReportScheduleFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'report_type_id' => ReportType::usersExport()->id,

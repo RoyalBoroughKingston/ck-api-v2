@@ -26,7 +26,7 @@ class ServiceRefreshTokensCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $months = ServiceRefreshToken::AUTO_DELETE_MONTHS;
 

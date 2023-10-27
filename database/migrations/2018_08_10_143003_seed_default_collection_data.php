@@ -14,7 +14,7 @@ return new class() extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         $this->now = Date::now();
         $this->categoryTaxonomy = DB::table('taxonomies')
@@ -29,7 +29,7 @@ return new class() extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         DB::table('collection_taxonomies')->truncate();
         DB::table('collections')->truncate();

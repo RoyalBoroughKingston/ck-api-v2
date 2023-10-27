@@ -33,7 +33,7 @@ class RunSchedulerCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         while (true) {
             $this->call('schedule:run');

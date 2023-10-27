@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any authentication / authorization services.
      */
-    public function boot()
+    public function boot(): void
     {
         Passport::routes();
         Passport::enableImplicitGrant();
@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register()
+    public function register(): void
     {
         Passport::ignoreMigrations();
     }

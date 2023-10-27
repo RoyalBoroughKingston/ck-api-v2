@@ -25,7 +25,7 @@ class MutatorsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $fileContents = $this->getTemplate();
         $this->saveToFile($fileContents);

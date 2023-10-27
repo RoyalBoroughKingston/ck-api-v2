@@ -142,7 +142,7 @@ class ImportTaxonomiesCommand extends Command
      *
      * @throws \Exception
      */
-    public function handle()
+    public function handle(): void
     {
         if (! $this->manageParameters()) {
             return;

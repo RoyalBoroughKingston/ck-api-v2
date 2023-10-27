@@ -33,7 +33,7 @@ class StillUnactionedReferralsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->getReferralQuery()->chunk(200, function (Collection $referrals) {
             $referrals->each(function (Referral $referral) {

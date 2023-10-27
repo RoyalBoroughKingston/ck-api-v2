@@ -9,7 +9,7 @@ class ServiceLocationObserver
     /**
      * Handle the service location "created" event.
      */
-    public function created(ServiceLocation $serviceLocation)
+    public function created(ServiceLocation $serviceLocation): void
     {
         $serviceLocation->touchService();
     }
@@ -27,7 +27,7 @@ class ServiceLocationObserver
     /**
      * Handle the service location "deleted" event.
      */
-    public function deleted(ServiceLocation $serviceLocation)
+    public function deleted(ServiceLocation $serviceLocation): void
     {
         $serviceLocation->touchService();
     }

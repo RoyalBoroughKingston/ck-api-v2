@@ -30,7 +30,7 @@ class ImportOpenActiveTaxonomiesCommand extends Command
      *
      * @throws \Exception
      */
-    public function handle()
+    public function handle(): int
     {
         $jsonUrl = null;
         if ($this->option('url')) {

@@ -11,7 +11,7 @@ class StoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isSuperAdmin()) {
             return true;
@@ -25,7 +25,7 @@ class StoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'report_type' => ['required', 'exists:report_types,name'],

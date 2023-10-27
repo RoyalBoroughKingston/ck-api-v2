@@ -46,7 +46,7 @@ class CreateOauthClientCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $client = Passport::client()->forceFill([
             'user_id' => null,

@@ -26,7 +26,7 @@ class AuditsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $months = Audit::AUTO_DELETE_MONTHS;
 

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use App\Http\Resources\OrganisationResource;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Page\DestroyRequest;
@@ -11,12 +9,14 @@ use App\Http\Requests\Page\IndexRequest;
 use App\Http\Requests\Page\ShowRequest;
 use App\Http\Requests\Page\StoreRequest;
 use App\Http\Requests\Page\UpdateRequest;
+use App\Http\Resources\OrganisationResource;
 use App\Http\Resources\PageResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Page;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Services\DataPersistence\PagePersistenceService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;

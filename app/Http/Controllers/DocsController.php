@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Illuminate\Contracts\Support\Responsable;
 use App\Docs\OpenApi;
+use Illuminate\Contracts\Support\Responsable;
+use Illuminate\View\View;
 
 class DocsController extends Controller
 {

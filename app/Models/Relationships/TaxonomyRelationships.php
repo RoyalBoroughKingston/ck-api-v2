@@ -2,9 +2,6 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\CollectionTaxonomy;
 use App\Models\OrganisationEvent;
 use App\Models\OrganisationEventTaxonomy;
@@ -12,6 +9,9 @@ use App\Models\Referral;
 use App\Models\Service;
 use App\Models\ServiceTaxonomy;
 use App\Models\Taxonomy;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait TaxonomyRelationships
 {

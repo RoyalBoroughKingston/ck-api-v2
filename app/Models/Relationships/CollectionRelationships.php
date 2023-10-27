@@ -2,12 +2,12 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\CollectionTaxonomy;
 use App\Models\Page;
 use App\Models\Taxonomy;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 trait CollectionRelationships
 {

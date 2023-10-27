@@ -2,9 +2,9 @@
 
 namespace App\Http\Responses;
 
-use Illuminate\Http\Request;
 use App\Models\UpdateRequest;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class UpdateRequestReceived implements Responsable

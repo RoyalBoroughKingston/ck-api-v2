@@ -9,7 +9,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\SecurityRequirement as BaseSecurit
 class SecurityRequirement extends BaseSecurityRequirement
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

@@ -2,8 +2,6 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Audit;
 use App\Models\Organisation;
 use App\Models\Role;
@@ -12,6 +10,8 @@ use App\Models\StatusUpdate;
 use App\Models\UpdateRequest;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait UserRelationships
 {

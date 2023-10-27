@@ -2,11 +2,11 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Organisation;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait UserRoleRelationships
 {

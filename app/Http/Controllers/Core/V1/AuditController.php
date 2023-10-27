@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Audit\IndexRequest;
@@ -10,6 +9,7 @@ use App\Http\Requests\Audit\ShowRequest;
 use App\Http\Resources\AuditResource;
 use App\Http\Sorts\Audit\UserFullNameSort;
 use App\Models\Audit;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;

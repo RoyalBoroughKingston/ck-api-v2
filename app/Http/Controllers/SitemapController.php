@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use App\Models\Collection;
 use App\Models\Organisation;
 use App\Models\Page;
 use App\Models\Service;
 use DateTime;
 use DOMDocument;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
 class SitemapController extends Controller

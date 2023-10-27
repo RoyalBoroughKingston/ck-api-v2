@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceLocation\DestroyRequest;
@@ -17,6 +16,7 @@ use App\Models\File;
 use App\Models\RegularOpeningHour;
 use App\Models\ServiceLocation;
 use App\Support\MissingValue;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Notification\IndexRequest;
 use App\Http\Requests\Notification\ShowRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 

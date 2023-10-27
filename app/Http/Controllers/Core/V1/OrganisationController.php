@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\Organisation\HasPermissionFilter;
@@ -17,6 +16,7 @@ use App\Http\Responses\UpdateRequestReceived;
 use App\Models\Organisation;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use App\Services\DataPersistence\OrganisationPersistenceService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;

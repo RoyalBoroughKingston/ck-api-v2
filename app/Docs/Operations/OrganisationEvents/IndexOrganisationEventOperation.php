@@ -23,7 +23,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexOrganisationEventOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

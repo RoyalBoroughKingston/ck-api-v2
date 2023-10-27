@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\JsonResponse;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\IndexRequest;
 use App\Http\Requests\Setting\UpdateRequest;
 use App\Models\File;
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PageFeedback\IndexRequest;
@@ -10,6 +9,7 @@ use App\Http\Requests\PageFeedback\ShowRequest;
 use App\Http\Requests\PageFeedback\StoreRequest;
 use App\Http\Resources\PageFeedbackResource;
 use App\Models\PageFeedback;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;

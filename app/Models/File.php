@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Http\Request;
 use App\ImageTools\Resizer;
 use App\Models\Mutators\FileMutators;
 use App\Models\Relationships\FileRelationships;
 use App\Models\Scopes\FileScopes;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 

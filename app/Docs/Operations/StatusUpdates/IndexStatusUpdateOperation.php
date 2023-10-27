@@ -19,7 +19,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexStatusUpdateOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

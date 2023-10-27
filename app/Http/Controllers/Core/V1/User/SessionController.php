@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Core\V1\User;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class SessionController extends Controller

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReportSchedule\DestroyRequest;
@@ -14,6 +13,7 @@ use App\Http\Resources\ReportScheduleResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\ReportSchedule;
 use App\Models\ReportType;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;

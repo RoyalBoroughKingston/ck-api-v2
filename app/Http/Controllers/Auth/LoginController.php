@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Sms\OtpLoginCode\UserSms;
@@ -12,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {

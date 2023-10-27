@@ -2,8 +2,8 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Service;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait UsefulInfoRelationships
 {

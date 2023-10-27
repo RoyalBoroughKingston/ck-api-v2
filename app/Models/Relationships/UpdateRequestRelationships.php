@@ -2,9 +2,9 @@
 
 namespace App\Models\Relationships;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use App\Models\User;
 
 trait UpdateRequestRelationships
 {

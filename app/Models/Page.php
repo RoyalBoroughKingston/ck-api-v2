@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Page;
 use App\Contracts\AppliesUpdateRequests;
 use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\Page\UpdateRequest as UpdatePageRequest;

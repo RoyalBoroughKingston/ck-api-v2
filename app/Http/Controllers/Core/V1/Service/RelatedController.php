@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1\Service;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\Related\Request;
@@ -10,6 +9,7 @@ use App\Http\Resources\ServiceResource;
 use App\Models\Service;
 use App\Support\Coordinate;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class RelatedController extends Controller

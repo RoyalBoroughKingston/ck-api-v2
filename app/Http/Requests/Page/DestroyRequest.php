@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Page;
 
-use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class DestroyRequest extends FormRequest
 {

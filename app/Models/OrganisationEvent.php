@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\OrganisationEvent;
 use App\Contracts\AppliesUpdateRequests;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\Mutators\OrganisationEventMutators;

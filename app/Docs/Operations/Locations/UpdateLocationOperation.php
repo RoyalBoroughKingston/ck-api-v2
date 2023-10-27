@@ -13,7 +13,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 class UpdateLocationOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Generators\UniqueSlugGenerator;
 use App\Http\Controllers\Controller;
@@ -16,6 +15,7 @@ use App\Http\Responses\ResourceDeleted;
 use App\Models\Collection;
 use App\Models\File;
 use App\Models\Taxonomy;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;

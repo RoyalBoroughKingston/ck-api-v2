@@ -2,13 +2,13 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\File;
 use App\Models\HolidayOpeningHour;
 use App\Models\Location;
 use App\Models\RegularOpeningHour;
 use App\Models\Service;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait ServiceLocationRelationships
 {

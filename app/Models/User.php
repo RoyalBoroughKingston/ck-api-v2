@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use App\Emails\Email;
 use App\Emails\PasswordReset\UserEmail;
 use App\Exceptions\CannotRevokeRoleException;
@@ -402,7 +401,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeServiceWorker(Service $service): User
@@ -415,7 +413,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeServiceAdmin(Service $service): User
@@ -430,7 +427,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeOrganisationAdmin(Organisation $organisation): User
@@ -445,7 +441,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeContentAdmin(): User
@@ -460,7 +455,6 @@ class User extends Authenticatable implements Notifiable
     }
 
     /**
-     *
      * @throws \App\Exceptions\CannotRevokeRoleException
      */
     public function revokeGlobalAdmin(): User

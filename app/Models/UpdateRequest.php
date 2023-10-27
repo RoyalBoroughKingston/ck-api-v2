@@ -100,7 +100,6 @@ class UpdateRequest extends Model
     }
 
     /**
-     *
      * @throws \Exception
      */
     public function delete(User $user = null): ?bool

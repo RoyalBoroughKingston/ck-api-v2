@@ -2,9 +2,9 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Organisation;
 use App\Models\Taxonomy;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait OrganisationTaxonomyRelationships
 {

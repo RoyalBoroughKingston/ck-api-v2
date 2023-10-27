@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Collection;
 use App\Models\Mutators\TaxonomyMutators;
 use App\Models\Relationships\TaxonomyRelationships;
 use App\Models\Scopes\TaxonomyScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
 class Taxonomy extends Model
 {

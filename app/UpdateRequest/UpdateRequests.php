@@ -2,8 +2,8 @@
 
 namespace App\UpdateRequest;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\UpdateRequest;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait UpdateRequests
 {

@@ -14,7 +14,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class DisableStaleServiceOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

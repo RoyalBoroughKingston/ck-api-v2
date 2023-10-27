@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Http\Request;
 use App\Models\Mutators\SettingMutators;
 use App\Models\Relationships\SettingRelationships;
 use App\Models\Scopes\SettingScopes;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class Setting extends Model implements Responsable

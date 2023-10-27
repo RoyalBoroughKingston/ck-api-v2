@@ -2,9 +2,9 @@
 
 namespace App\Http\Responses;
 
-use Illuminate\Http\Response;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class StopWords implements Responsable
 {

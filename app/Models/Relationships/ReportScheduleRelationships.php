@@ -2,8 +2,8 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\ReportType;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait ReportScheduleRelationships
 {

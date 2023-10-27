@@ -14,7 +14,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class ShowServiceLocationOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

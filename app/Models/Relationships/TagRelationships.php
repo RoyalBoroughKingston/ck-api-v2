@@ -2,8 +2,8 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Service;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait TagRelationships
 {

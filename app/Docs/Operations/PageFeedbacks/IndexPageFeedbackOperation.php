@@ -19,7 +19,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexPageFeedbackOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

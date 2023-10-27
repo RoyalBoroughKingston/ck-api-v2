@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Collection;
 use App\Models\Mutators\CollectionMutators;
 use App\Models\Relationships\CollectionRelationships;
 use App\Models\Scopes\CollectionScopes;

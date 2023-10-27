@@ -16,7 +16,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class IndexCollectionCategoryOperation extends Operation
 {
     /**
-     *
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject

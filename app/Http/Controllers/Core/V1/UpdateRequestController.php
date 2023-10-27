@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Core\V1;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
 use App\Http\Filters\UpdateRequest\EntryFilter;
@@ -12,6 +11,7 @@ use App\Http\Requests\UpdateRequest\ShowRequest;
 use App\Http\Resources\UpdateRequestResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Models\UpdateRequest;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;

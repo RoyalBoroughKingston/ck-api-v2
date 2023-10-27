@@ -2,8 +2,8 @@
 
 namespace App\Models\Relationships;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Passport\Client;
 
 trait AuditRelationships

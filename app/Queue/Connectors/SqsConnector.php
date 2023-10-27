@@ -2,9 +2,9 @@
 
 namespace App\Queue\Connectors;
 
-use Illuminate\Contracts\Queue\Queue;
 use App\Queue\SqsQueue;
 use Aws\Sqs\SqsClient;
+use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Queue\Connectors\SqsConnector as BaseSqsConnector;
 use Illuminate\Support\Arr;
 

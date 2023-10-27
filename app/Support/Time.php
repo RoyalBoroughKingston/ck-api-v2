@@ -2,7 +2,6 @@
 
 namespace App\Support;
 
-use App\Support\Time;
 use Illuminate\Support\Facades\Date;
 
 class Time

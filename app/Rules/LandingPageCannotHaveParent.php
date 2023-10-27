@@ -17,8 +17,8 @@ class LandingPageCannotHaveParent implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param \App\Models\Page $page
-     * @param mixed $parentId
+     * @param  \App\Models\Page  $page
+     * @param  mixed  $parentId
      */
     public function __construct($parentId)
     {
@@ -28,8 +28,8 @@ class LandingPageCannotHaveParent implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
@@ -44,6 +44,6 @@ class LandingPageCannotHaveParent implements Rule
      */
     public function message()
     {
-        return 'Cannot set :attribute to ' . Page::PAGE_TYPE_LANDING . ' when the page has a parent';
+        return 'Cannot set :attribute to '.Page::PAGE_TYPE_LANDING.' when the page has a parent';
     }
 }

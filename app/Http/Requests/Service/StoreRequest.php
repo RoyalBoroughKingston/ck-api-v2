@@ -53,7 +53,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'exists:organisations,id',
                 function ($attribute, $value, $fail) {
-                    if (!$this->user('api')->isGlobalAdmin() && !$this->user('api')->isOrganisationAdmin(Organisation::findOrFail($value))) {
+                    if (! $this->user('api')->isGlobalAdmin() && ! $this->user('api')->isOrganisationAdmin(Organisation::findOrFail($value))) {
                         $fail('The organisation_id field must contain an ID for an organisation you are an organisation admin for.');
                     }
                 },
@@ -159,7 +159,7 @@ class StoreRequest extends FormRequest
                 ),
             ],
             'referral_email' => [
-                'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                'required_if:referral_method,'.Service::REFERRAL_METHOD_INTERNAL,
                 'present',
                 'nullable',
                 'email',
@@ -174,7 +174,7 @@ class StoreRequest extends FormRequest
                 ),
             ],
             'referral_url' => [
-                'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                'required_if:referral_method,'.Service::REFERRAL_METHOD_EXTERNAL,
                 'present',
                 'nullable',
                 'url',
@@ -188,7 +188,7 @@ class StoreRequest extends FormRequest
                     null
                 ),
             ],
-            'ends_at' => ['present', 'nullable', 'date_format:' . CarbonImmutable::ISO8601],
+            'ends_at' => ['present', 'nullable', 'date_format:'.CarbonImmutable::ISO8601],
             'useful_infos' => ['present', 'array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
@@ -273,9 +273,6 @@ class StoreRequest extends FormRequest
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function categoryTaxonomiesRules(): array
     {
         // If global admin and above.

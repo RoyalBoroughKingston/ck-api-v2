@@ -20,9 +20,9 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IndexUpdateRequestOperation extends Operation
 {
     /**
-     * @param string|null $objectId
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
+     *
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject
     {
@@ -88,7 +88,7 @@ EOT
                     )
                     ->schema(Schema::string()),
                 IncludeParameter::create(null, ['user']),
-                SortParameter::create(null, ['entry','created_at'], '-created_at')
+                SortParameter::create(null, ['entry', 'created_at'], '-created_at')
             )
             ->responses(
                 Response::ok()->content(

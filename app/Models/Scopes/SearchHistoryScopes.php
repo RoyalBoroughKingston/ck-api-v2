@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 trait SearchHistoryScopes
 {
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeWithFilledQuery(Builder $query): Builder
     {
         return $query->whereNotNull(

@@ -37,7 +37,6 @@ class BatchUploader
     /**
      * Validates and then uploads the file.
      *
-     * @param string $filePath
      *
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @throws \Exception
@@ -85,10 +84,6 @@ class BatchUploader
         }
     }
 
-    /**
-     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet
-     * @return array
-     */
     protected function toArray(Worksheet $sheet): array
     {
         $array = $sheet->toArray();
@@ -107,10 +102,6 @@ class BatchUploader
         return $array;
     }
 
-    /**
-     * @param array $collections
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processCollections(array $collections): EloquentCollection
     {
         $order = Collection::categories()->orderByDesc('order')->first()->order;
@@ -140,11 +131,6 @@ class BatchUploader
         return $collections;
     }
 
-    /**
-     * @param array $collectionTaxonomies
-     * @param \Illuminate\Database\Eloquent\Collection $collections
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processCollectionTaxonomies(
         array $collectionTaxonomies,
         EloquentCollection $collections
@@ -168,10 +154,6 @@ class BatchUploader
         return $collectionTaxonomies;
     }
 
-    /**
-     * @param array $locations
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processLocations(array $locations): EloquentCollection
     {
         $locations = new EloquentCollection($locations);
@@ -201,10 +183,6 @@ class BatchUploader
         return $locations;
     }
 
-    /**
-     * @param array $organisations
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processOrganisations(array $organisations): EloquentCollection
     {
         $organisations = new EloquentCollection($organisations);
@@ -212,7 +190,7 @@ class BatchUploader
             $slug = Str::slug($organisationArray['Name*']);
             $iteration = 0;
             do {
-                $slug = $iteration > 0 ? $slug . '-' . $iteration : $slug;
+                $slug = $iteration > 0 ? $slug.'-'.$iteration : $slug;
                 $duplicate = Organisation::query()->where('slug', $slug)->exists();
                 $iteration++;
             } while ($duplicate);
@@ -234,11 +212,6 @@ class BatchUploader
         return $organisations;
     }
 
-    /**
-     * @param array $services
-     * @param \Illuminate\Database\Eloquent\Collection $organisations
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processServices(array $services, EloquentCollection $organisations): EloquentCollection
     {
         $services = new EloquentCollection($services);
@@ -254,7 +227,7 @@ class BatchUploader
             $slug = Str::slug($serviceArray['Name*']);
             $iteration = 0;
             do {
-                $slug = $iteration > 0 ? $slug . '-' . $iteration : $slug;
+                $slug = $iteration > 0 ? $slug.'-'.$iteration : $slug;
                 $duplicate = Service::query()->where('slug', $slug)->exists();
                 $iteration++;
             } while ($duplicate);
@@ -274,8 +247,8 @@ class BatchUploader
                 'description' => $serviceArray['Description*'],
                 'wait_time' => $this->parseWaitTime($serviceArray['Wait Time']),
                 'is_free' => $isFree,
-                'fees_text' => !$isFree ? Str::limit($serviceArray['Fees Text'], 250) : null,
-                'fees_url' => !$isFree ? $serviceArray['Fees URL'] : null,
+                'fees_text' => ! $isFree ? Str::limit($serviceArray['Fees Text'], 250) : null,
+                'fees_url' => ! $isFree ? $serviceArray['Fees URL'] : null,
                 'testimonial' => $serviceArray['Testimonial'],
                 'video_embed' => $serviceArray['Video Embed'],
                 'url' => $serviceArray['URL*'],
@@ -284,7 +257,7 @@ class BatchUploader
                 'contact_email' => $serviceArray['Contact Email'],
                 'show_referral_disclaimer' => $serviceArray['Show Referral Disclaimer*'] == 'yes',
                 'referral_method' => $serviceArray['Referral Method*'] ?: Service::REFERRAL_METHOD_NONE,
-                'referral_button_text' => !$isNone ? 'Make referral' : null,
+                'referral_button_text' => ! $isNone ? 'Make referral' : null,
                 'referral_email' => $isInternal ? $serviceArray['Referral Email'] : null,
                 'referral_url' => $isExternal ? $serviceArray['Referral URL'] : null,
                 'last_modified_at' => Date::now(),
@@ -300,10 +273,6 @@ class BatchUploader
         return $services;
     }
 
-    /**
-     * @param string|null $waitTime
-     * @return string|null
-     */
     protected function parseWaitTime(?string $waitTime): ?string
     {
         switch ($waitTime) {
@@ -321,11 +290,6 @@ class BatchUploader
         }
     }
 
-    /**
-     * @param array $serviceArray
-     * @param \App\Models\Service $service
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processSocialMedia(array $serviceArray, Service $service): EloquentCollection
     {
         $socialMedias = new EloquentCollection();
@@ -368,11 +332,6 @@ class BatchUploader
         return $socialMedias;
     }
 
-    /**
-     * @param array $serviceArray
-     * @param \App\Models\Service $service
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processUsefulInfo(array $serviceArray, Service $service): EloquentCollection
     {
         $usefulInfos = new EloquentCollection();
@@ -396,12 +355,6 @@ class BatchUploader
         return $usefulInfos;
     }
 
-    /**
-     * @param array $serviceLocations
-     * @param \Illuminate\Database\Eloquent\Collection $services
-     * @param \Illuminate\Database\Eloquent\Collection $locations
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processServiceLocations(
         array $serviceLocations,
         EloquentCollection $services,
@@ -429,11 +382,6 @@ class BatchUploader
         return $serviceLocations;
     }
 
-    /**
-     * @param array $serviceTaxonomies
-     * @param \Illuminate\Database\Eloquent\Collection $services
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
     protected function processServiceTaxonomies(
         array $serviceTaxonomies,
         EloquentCollection $services

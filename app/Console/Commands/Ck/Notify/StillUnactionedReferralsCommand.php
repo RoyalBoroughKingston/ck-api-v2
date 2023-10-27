@@ -42,9 +42,6 @@ class StillUnactionedReferralsCommand extends Command
         });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function getReferralQuery(): Builder
     {
         return Referral::query()
@@ -52,9 +49,6 @@ class StillUnactionedReferralsCommand extends Command
             ->unactioned($this->option('working-days'));
     }
 
-    /**
-     * @param \App\Models\Referral $referral
-     */
     protected function sendEmail(Referral $referral)
     {
         try {
@@ -70,7 +64,7 @@ class StillUnactionedReferralsCommand extends Command
                 ->unique('id')
                 ->filter(function (User $user) use ($referral) {
                     return $user->isServiceAdmin($referral->service)
-                        && !$user->isGlobalAdmin();
+                        && ! $user->isGlobalAdmin();
                 });
 
             /** @var \Illuminate\Database\Eloquent\Collection $serviceWorkers */
@@ -78,8 +72,8 @@ class StillUnactionedReferralsCommand extends Command
                 ->unique('id')
                 ->filter(function (User $user) use ($referral) {
                     return $user->isServiceWorker($referral->service)
-                        && !$user->isGlobalAdmin()
-                        && !$user->isServiceAdmin($referral->service);
+                        && ! $user->isGlobalAdmin()
+                        && ! $user->isServiceAdmin($referral->service);
                 });
 
             Notification::sendEmail(

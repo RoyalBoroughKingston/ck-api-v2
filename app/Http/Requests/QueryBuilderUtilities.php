@@ -8,10 +8,6 @@ trait QueryBuilderUtilities
 {
     /**
      * Check if the input contains the specified string.
-     *
-     * @param string $key
-     * @param string $value
-     * @return bool
      */
     public function contains(string $key, string $value): bool
     {
@@ -21,13 +17,11 @@ trait QueryBuilderUtilities
     /**
      * Remove the specified string from the input.
      *
-     * @param string $key
-     * @param string $value
      * @return \App\Http\Requests\QueryBuilderUtilities
      */
     public function strip(string $key, string $value): self
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             return $this;
         }
 

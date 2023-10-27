@@ -19,11 +19,8 @@ class MarkdownMinLength implements Rule
 
     /**
      * MarkdownMaxLength constructor.
-     *
-     * @param int $minLength
-     * @param string|null $message
      */
-    public function __construct(int $minLength, ?string $message = null)
+    public function __construct(int $minLength, string $message = null)
     {
         $this->minLength = $minLength;
         $this->message = $message;
@@ -32,8 +29,8 @@ class MarkdownMinLength implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)

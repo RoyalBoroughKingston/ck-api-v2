@@ -19,9 +19,6 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
 {
     /**
      * Check if the update request is valid.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -37,9 +34,6 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
 
     /**
      * Apply the update request.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
@@ -79,7 +73,7 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
         if ($data->has('eligibility_types') && $data['eligibility_types']['custom'] ?? null) {
             // Create the custom fields
             foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
-                $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
+                $fieldName = 'eligibility_'.$customEligibilityType.'_custom';
                 $insert[$fieldName] = $value;
             }
         }
@@ -168,9 +162,6 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
     /**
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
-     *
-     * @param array $data
-     * @return array
      */
     public function getData(array $data): array
     {

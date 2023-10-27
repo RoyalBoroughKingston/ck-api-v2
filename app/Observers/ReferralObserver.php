@@ -9,7 +9,6 @@ class ReferralObserver
     /**
      * Handle the organisation "creating" event.
      *
-     * @param \App\Models\Referral $referral
      *
      * @throws \Exception
      */
@@ -22,8 +21,6 @@ class ReferralObserver
 
     /**
      * Handle the organisation "deleting" event.
-     *
-     * @param \App\Models\Referral $referral
      */
     public function deleting(Referral $referral)
     {

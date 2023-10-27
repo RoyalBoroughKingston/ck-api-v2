@@ -37,11 +37,10 @@ class Report extends Model
      * Created a report record and a file record.
      * Then delegates the physical file creation to a `generateReportName` method.
      *
-     * @param \App\Models\ReportType $type
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
-     * @throws \Exception
+     * @param  \App\Models\ReportType  $type
      * @return \App\Models\Report
+     *
+     * @throws \Exception
      */
     public static function generate(
         ReportType $type,
@@ -72,10 +71,10 @@ class Report extends Model
         ]);
 
         // Get the name for the report generation method.
-        $methodName = 'generate' . ucfirst(Str::camel($type->name));
+        $methodName = 'generate'.ucfirst(Str::camel($type->name));
 
         // Throw exception if the report type does not have a generate method.
-        if (!method_exists($report, $methodName)) {
+        if (! method_exists($report, $methodName)) {
             throw new Exception("The report type [{$type->name}] does not have a corresponding generate method");
         }
 
@@ -237,8 +236,6 @@ class Report extends Model
     }
 
     /**
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
     public function generateReferralsExport(
@@ -288,8 +285,6 @@ class Report extends Model
     }
 
     /**
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
     public function generateFeedbackExport(
@@ -327,8 +322,6 @@ class Report extends Model
     }
 
     /**
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
     public function generateAuditLogsExport(
@@ -372,8 +365,6 @@ class Report extends Model
     }
 
     /**
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
     public function generateSearchHistoriesExport(
@@ -400,7 +391,7 @@ class Report extends Model
 
             if ($row->distance) {
                 $distance = json_decode($row->distance);
-                $location = $distance->{'service_locations.location'}?? $distance->{'event_location.location'};
+                $location = $distance->{'service_locations.location'} ?? $distance->{'event_location.location'};
                 $coordinate = empty($location) ? null : implode(',', [$location->lat, $location->lon]);
             }
 
@@ -421,8 +412,6 @@ class Report extends Model
     }
 
     /**
-     * @param \Carbon\CarbonImmutable|null $startsAt
-     * @param \Carbon\CarbonImmutable|null $endsAt
      * @return \App\Models\Report
      */
     public function generateHistoricUpdateRequestsExport(
@@ -471,10 +460,6 @@ class Report extends Model
 
     /**
      * Report Row Generator.
-     *
-     * @param Collection $data
-     * @param Closure $callback
-     * @return Generator
      */
     public function reportRowGenerator(Collection $data, Closure $callback): Generator
     {

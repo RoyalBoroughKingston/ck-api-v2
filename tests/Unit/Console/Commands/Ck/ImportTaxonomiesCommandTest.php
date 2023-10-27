@@ -73,7 +73,7 @@ class ImportTaxonomiesCommandTest extends TestCase
                 [
                     'id' => $record['id'],
                     'name' => $this->taxonomyRecords[$recordKey][1],
-                    'slug' => Str::slug($this->taxonomyRecords[$recordKey][1] . ' ' . $this->taxonomyRecords[$recordKey][0]),
+                    'slug' => Str::slug($this->taxonomyRecords[$recordKey][1].' '.$this->taxonomyRecords[$recordKey][0]),
                     'parent_id' => $parentUuid,
                     'order' => 0,
                     'depth' => 1,
@@ -174,6 +174,7 @@ class ImportTaxonomiesCommandTest extends TestCase
      * In Laravel 8.x the deleteAllTaxonomies command will end the active transaction
      * through Schema disableForeignKeyConstraints and enableForeignKeyConstraints
      * This throws a no active transaction error when refreshDatabase in tearDown
+     *
      * @test
      */
     public function it_can_delete_all_taxonomies()

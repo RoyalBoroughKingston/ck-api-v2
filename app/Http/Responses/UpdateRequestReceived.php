@@ -20,9 +20,6 @@ class UpdateRequestReceived implements Responsable
 
     /**
      * UpdateRequestReceived constructor.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @param int $code
      */
     public function __construct(UpdateRequest $updateRequest, int $code = Response::HTTP_OK)
     {
@@ -33,7 +30,7 @@ class UpdateRequestReceived implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function toResponse($request)

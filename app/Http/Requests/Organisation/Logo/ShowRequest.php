@@ -18,8 +18,6 @@ class ShowRequest extends ImageFormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     protected function extraRules(): array
     {

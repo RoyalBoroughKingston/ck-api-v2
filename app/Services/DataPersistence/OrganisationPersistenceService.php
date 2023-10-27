@@ -17,7 +17,6 @@ class OrganisationPersistenceService implements DataPersistenceService
     /**
      * Store the model.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
      * @return \App\Models\UpdateRequest|\App\Models\Organisation
      */
     public function store(FormRequest $request)
@@ -30,7 +29,6 @@ class OrganisationPersistenceService implements DataPersistenceService
     /**
      * Update the model.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
      * @return \App\Models\UpdateRequest
      */
     public function update(FormRequest $request, Model $model)
@@ -41,7 +39,7 @@ class OrganisationPersistenceService implements DataPersistenceService
     /**
      * Create a new model from the provided request.
      *
-     * @param Illuminate\Foundation\Http\FormRequest $request
+     * @param  Illuminate\Foundation\Http\FormRequest  $request
      * @return \App\Models\Organisation
      */
     public function processAsNewEntity(FormRequest $request)
@@ -83,8 +81,8 @@ class OrganisationPersistenceService implements DataPersistenceService
     /**
      * Process the requested changes and either update the model or store an update request.
      *
-     * @param Illuminate\Foundation\Http\FormRequest $request
-     * @param \App\Models\Organisation $organisation
+     * @param  Illuminate\Foundation\Http\FormRequest  $request
+     * @param  \App\Models\Organisation  $organisation
      * @return \App\Models\UpdateRequest
      */
     public function processAsUpdateRequest(FormRequest $request, ?Organisation $organisation)
@@ -105,7 +103,7 @@ class OrganisationPersistenceService implements DataPersistenceService
             ]);
 
             $updateableType = UpdateRequest::EXISTING_TYPE_ORGANISATION;
-            if (!$organisation) {
+            if (! $organisation) {
                 $updateableType = UpdateRequest::NEW_TYPE_ORGANISATION_GLOBAL_ADMIN;
             }
 
@@ -119,7 +117,7 @@ class OrganisationPersistenceService implements DataPersistenceService
             // Only persist to the database if the user did not request a preview.
             if ($updateRequest->updateable_type === UpdateRequest::EXISTING_TYPE_ORGANISATION) {
                 // Preview currently only available for update operations
-                if (!$request->isPreview()) {
+                if (! $request->isPreview()) {
                     $updateRequest->save();
                 }
             } else {

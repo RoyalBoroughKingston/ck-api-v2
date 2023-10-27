@@ -41,7 +41,6 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\User\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -92,7 +91,6 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\User\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -146,8 +144,6 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\User\ShowRequest $request
-     * @param \App\Models\User $user
      * @return \App\Http\Resources\UserResource
      */
     public function show(ShowRequest $request, User $user)
@@ -177,7 +173,6 @@ class UserController extends Controller
     /**
      * Display the logged in user.
      *
-     * @param \App\Http\Requests\User\ShowRequest $request
      * @return \App\Http\Resources\UserResource
      */
     public function user(ShowRequest $request)
@@ -188,8 +183,6 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\User\UpdateRequest $request
-     * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, User $user)
@@ -288,8 +281,6 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\User\DestroyRequest $request
-     * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, User $user)

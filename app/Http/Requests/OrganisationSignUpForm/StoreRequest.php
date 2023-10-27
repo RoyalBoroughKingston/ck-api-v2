@@ -104,7 +104,7 @@ class StoreRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                'unique:' . table(Service::class) . ',slug',
+                'unique:'.table(Service::class).',slug',
                 new Slug(),
             ],
             'service.name' => ['sometimes', 'required', 'string', 'min:1', 'max:255'],
@@ -210,7 +210,7 @@ class StoreRequest extends FormRequest
             'user.password.min' => '2. User account - Please create a password that is at least eight characters long.',
 
             'organisation.slug.required' => '3. Organisation - Please enter the organisation slug.',
-            'organisation.slug.unique' => '3. Organisation - The organisation is already listed. Please contact us for help logging in ' . config('local.global_admin.email') . '.',
+            'organisation.slug.unique' => '3. Organisation - The organisation is already listed. Please contact us for help logging in '.config('local.global_admin.email').'.',
             'organisation.name.required' => '3. Organisation - Please enter the organisation name.',
             'organisation.description.required' => '3. Organisation - Please enter a one-line summary of the organisation.',
             'organisation.url.required' => '3. Organisation - Please enter a valid web address in the correct format (starting with https:// or http://).',

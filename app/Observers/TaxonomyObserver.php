@@ -9,7 +9,6 @@ class TaxonomyObserver
     /**
      * Handle the taxonomy "created" event.
      *
-     * @param \App\Models\Taxonomy $taxonomy
      *
      * @throws \Exception
      */
@@ -26,7 +25,6 @@ class TaxonomyObserver
     /**
      * Handle the taxonomy "updating" event.
      *
-     * @param \App\Models\Taxonomy $taxonomy
      *
      * @throws \Exception
      */
@@ -42,9 +40,6 @@ class TaxonomyObserver
         }
     }
 
-    /**
-     * @param \App\Models\Taxonomy $taxonomy
-     */
     protected function updateOrderForSameParent(Taxonomy $taxonomy)
     {
         // Get the original order.
@@ -74,9 +69,6 @@ class TaxonomyObserver
         }
     }
 
-    /**
-     * @param \App\Models\Taxonomy $taxonomy
-     */
     protected function updateOrderForDifferentParent(Taxonomy $taxonomy)
     {
         // Get all siblings from old parent and decrement order for taxonomies with a higher order.
@@ -95,8 +87,6 @@ class TaxonomyObserver
 
     /**
      * Handle the taxonomy "updating" event.
-     *
-     * @param \App\Models\Taxonomy $taxonomy
      */
     public function updated(Taxonomy $taxonomy)
     {
@@ -105,8 +95,6 @@ class TaxonomyObserver
 
     /**
      * Handle the organisation "deleting" event.
-     *
-     * @param \App\Models\Taxonomy $taxonomy
      */
     public function deleting(Taxonomy $taxonomy)
     {
@@ -122,7 +110,6 @@ class TaxonomyObserver
     /**
      * Handle the taxonomy "deleted" event.
      *
-     * @param \App\Models\Taxonomy $taxonomy
      *
      * @throws \Exception
      */

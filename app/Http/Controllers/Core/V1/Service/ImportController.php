@@ -52,9 +52,9 @@ class ImportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Service\ImportRequest $request
-     * @throws Illuminate\Validation\ValidationException
      * @return \Illuminate\Http\Response
+     *
+     * @throws Illuminate\Validation\ValidationException
      */
     public function __invoke(ImportRequest $request)
     {
@@ -78,7 +78,6 @@ class ImportController extends Controller
     /**
      * Validate the spreadsheet rows.
      *
-     * @param string $filePath
      * @return array
      */
     public function validateSpreadsheet(string $filePath)
@@ -107,8 +106,8 @@ class ImportController extends Controller
             /**
              * Cast Boolean rows to boolean value.
              */
-            $row['is_free'] = null === ($row['is_free'] ?? null) ?: (bool)$row['is_free'];
-            $row['show_referral_disclaimer'] = null === ($row['show_referral_disclaimer'] ?? null) ?: (bool)$row['show_referral_disclaimer'];
+            $row['is_free'] = null === ($row['is_free'] ?? null) ?: (bool) $row['is_free'];
+            $row['show_referral_disclaimer'] = null === ($row['show_referral_disclaimer'] ?? null) ?: (bool) $row['show_referral_disclaimer'];
 
             $validator = Validator::make($row, [
                 'id' => ['required', 'string', 'uuid', 'unique:services,id'],
@@ -194,7 +193,7 @@ class ImportController extends Controller
                     ),
                 ],
                 'referral_email' => [
-                    'required_if:referral_method,' . Service::REFERRAL_METHOD_INTERNAL,
+                    'required_if:referral_method,'.Service::REFERRAL_METHOD_INTERNAL,
                     'present',
                     'nullable',
                     'email',
@@ -206,7 +205,7 @@ class ImportController extends Controller
                     ),
                 ],
                 'referral_url' => [
-                    'required_if:referral_method,' . Service::REFERRAL_METHOD_EXTERNAL,
+                    'required_if:referral_method,'.Service::REFERRAL_METHOD_EXTERNAL,
                     'present',
                     'nullable',
                     'url',
@@ -231,7 +230,7 @@ class ImportController extends Controller
                     $eligibilityTaxonomyIds = explode(',', $value);
                     $invalidEligibilityTaxonomyIds = [];
                     foreach ($eligibilityTaxonomyIds as $eligibilityTaxonomyId) {
-                        if (!$isServiceEligibility->passes($att, $eligibilityTaxonomyId)) {
+                        if (! $isServiceEligibility->passes($att, $eligibilityTaxonomyId)) {
                             $invalidEligibilityTaxonomyIds[] = $eligibilityTaxonomyId;
                         }
                     }
@@ -275,8 +274,6 @@ class ImportController extends Controller
 
     /**
      * Import the uploaded file contents.
-     *
-     * @param string $filePath
      */
     public function importSpreadsheet(string $filePath)
     {
@@ -300,8 +297,8 @@ class ImportController extends Controller
                 /**
                  * Cast Boolean rows to boolean value.
                  */
-                $serviceRow['is_free'] = (bool)$serviceRow['is_free'];
-                $serviceRow['show_referral_disclaimer'] = (bool)$serviceRow['show_referral_disclaimer'];
+                $serviceRow['is_free'] = (bool) $serviceRow['is_free'];
+                $serviceRow['show_referral_disclaimer'] = (bool) $serviceRow['show_referral_disclaimer'];
 
                 /**
                  * Create the Service Admin roles for each of the service organisation admins.
@@ -313,7 +310,7 @@ class ImportController extends Controller
                 /**
                  * Create the Service Eligibility relationships.
                  */
-                if (!empty($serviceRow['eligibility_taxonomies'])) {
+                if (! empty($serviceRow['eligibility_taxonomies'])) {
                     $serviceEligibilityTaxonomyIds = explode(',', $serviceRow['eligibility_taxonomies']);
 
                     foreach ($serviceEligibilityTaxonomyIds as $serviceEligibilityTaxonomyId) {
@@ -353,7 +350,7 @@ class ImportController extends Controller
                 /**
                  * Add the meta fields to the Service row.
                  */
-                $serviceRow['slug'] = Str::slug(uniqid($serviceRow['name'] . '-'));
+                $serviceRow['slug'] = Str::slug(uniqid($serviceRow['name'].'-'));
                 $serviceRow['created_at'] = $now;
                 $serviceRow['updated_at'] = $now;
                 $serviceRowBatch[] = $serviceRow;

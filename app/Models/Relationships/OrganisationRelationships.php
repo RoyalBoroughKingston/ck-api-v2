@@ -75,9 +75,6 @@ trait OrganisationRelationships
         return $this->hasMany(OrganisationTaxonomy::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function taxonomies(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new OrganisationTaxonomy())->getTable());

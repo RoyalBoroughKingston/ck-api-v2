@@ -22,7 +22,6 @@ class FileController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\File\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -30,7 +29,7 @@ class FileController extends Controller
         return DB::transaction(function () use ($request) {
             /** @var \App\Models\File $file */
             $file = File::create([
-                'filename' => uuid() . File::extensionFromMime($request->mime_type),
+                'filename' => uuid().File::extensionFromMime($request->mime_type),
                 'mime_type' => $request->mime_type,
                 'meta' => [
                     'type' => File::META_TYPE_PENDING_ASSIGNMENT,

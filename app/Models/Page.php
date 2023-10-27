@@ -78,7 +78,7 @@ class Page extends Model implements AppliesUpdateRequests
                         $content[] = $this->onlyAlphaNumeric($contentBlock['value']);
                         break;
                     case 'cta':
-                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'] . ' ' . $contentBlock['description']);
+                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'].' '.$contentBlock['description']);
                         break;
                     default:
                         break;
@@ -164,14 +164,14 @@ class Page extends Model implements AppliesUpdateRequests
      * and pass on to descendants (if disabled).
      * Children do not inherit enabled status, but must be enabled individually.
      *
-     * @param mixed $status
+     * @param  mixed  $status
      * @return \App\Models\Page
      */
     public function updateStatus($status): self
     {
         if ($this->parent && $this->parent->enabled === self::DISABLED) {
             $this->enabled = self::DISABLED;
-        } elseif (!is_null($status)) {
+        } elseif (! is_null($status)) {
             $this->enabled = $status;
         }
 
@@ -188,7 +188,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the parent relationship.
      *
-     * @param string $parentId
+     * @param  string  $parentId
      * @return \App\Models\Page
      */
     public function updateParent($parentId = false): self
@@ -206,12 +206,12 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the sibling order for the page.
      *
-     * @param int $order
+     * @param  int  $order
      * @return \App\Models\Page
      */
     public function updateOrder($order): self
     {
-        if (!is_null($order)) {
+        if (! is_null($order)) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
             $this->beforeOrAfterNode($siblingAtIndex, $siblingAtIndex->getLft() > $this->getLft());
         }
@@ -223,7 +223,7 @@ class Page extends Model implements AppliesUpdateRequests
      * Update the image relationship.
      * Can be passed either null, the current image id or a new image id.
      *
-     * @param string $imageId
+     * @param  string  $imageId
      * @return \App\Models\Page
      */
     public function updateImage($imageId)
@@ -258,8 +258,8 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the collections relationship.
      *
-     * @param array $collectionIds
-     * @param mixed $collections
+     * @param  array  $collectionIds
+     * @param  mixed  $collections
      * @return \App\Models\Page
      */
     public function updateCollections($collectionIds)
@@ -275,8 +275,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Check if the update request is valid.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -302,7 +301,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Apply the update request.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -353,9 +352,6 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
-     *
-     * @param array $data
-     * @return array
      */
     public function getData(array $data): array
     {

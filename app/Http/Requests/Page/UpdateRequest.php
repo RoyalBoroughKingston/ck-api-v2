@@ -76,7 +76,7 @@ class UpdateRequest extends FormRequest
                 'sometimes',
                 'integer',
                 'min:0',
-                'max:' . $maxOrder,
+                'max:'.$maxOrder,
             ],
             'enabled' => [
                 'sometimes',
@@ -114,8 +114,6 @@ class UpdateRequest extends FormRequest
 
     /**
      * Check if the user requested only a preview of the update request.
-     *
-     * @return bool
      */
     public function isPreview(): bool
     {

@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Storage;
 
 class BaseIndexSettings
 {
-    /**
-     * @return array
-     */
     public function getSettings(): array
     {
         return [
@@ -40,12 +37,9 @@ class BaseIndexSettings
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getStopWords(): array
     {
-        if (!$content = Storage::cloud()->get('elasticsearch/stop-words.csv')) {
+        if (! $content = Storage::cloud()->get('elasticsearch/stop-words.csv')) {
             return [];
         }
 
@@ -58,12 +52,9 @@ class BaseIndexSettings
         return $stopWords->toArray();
     }
 
-    /**
-     * @return array
-     */
     protected function getThesaurus(): array
     {
-        if (!$content = Storage::cloud()->get('elasticsearch/thesaurus.csv')) {
+        if (! $content = Storage::cloud()->get('elasticsearch/thesaurus.csv')) {
             return [];
         }
 

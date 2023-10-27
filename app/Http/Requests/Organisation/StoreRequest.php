@@ -46,7 +46,7 @@ class StoreRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                'unique:' . table(Organisation::class) . ',slug',
+                'unique:'.table(Organisation::class).',slug',
                 new Slug(),
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],

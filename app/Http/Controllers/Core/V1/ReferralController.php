@@ -37,7 +37,6 @@ class ReferralController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Referral\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -92,7 +91,6 @@ class ReferralController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Referral\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -133,8 +131,6 @@ class ReferralController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Referral\ShowRequest $request
-     * @param \App\Models\Referral $referral
      * @return \App\Http\Resources\ReferralResource
      */
     public function show(ShowRequest $request, Referral $referral)
@@ -166,8 +162,6 @@ class ReferralController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Referral\UpdateRequest $request
-     * @param \App\Models\Referral $referral
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Referral $referral)
@@ -186,8 +180,6 @@ class ReferralController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\Referral\DestroyRequest $request
-     * @param \App\Models\Referral $referral
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Referral $referral)

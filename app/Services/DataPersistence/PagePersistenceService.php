@@ -29,7 +29,6 @@ class PagePersistenceService implements DataPersistenceService
     /**
      * Store the model.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
      * @return \App\Models\UpdateRequest|\App\Models\OrganisationEvent
      */
     public function store(FormRequest $request)
@@ -42,7 +41,6 @@ class PagePersistenceService implements DataPersistenceService
     /**
      * Update the model.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
      * @return \App\Models\UpdateRequest
      */
     public function update(FormRequest $request, Model $model)
@@ -53,7 +51,7 @@ class PagePersistenceService implements DataPersistenceService
     /**
      * Create a new model from the provided request.
      *
-     * @param Illuminate\Foundation\Http\FormRequest $request
+     * @param  Illuminate\Foundation\Http\FormRequest  $request
      * @return \App\Models\Page
      */
     public function processAsNewEntity(FormRequest $request)
@@ -90,8 +88,8 @@ class PagePersistenceService implements DataPersistenceService
     /**
      * Process the requested changes and either update the model or store an update request.
      *
-     * @param Illuminate\Foundation\Http\FormRequest $request
-     * @param \App\Models\Page $page
+     * @param  Illuminate\Foundation\Http\FormRequest  $request
+     * @param  \App\Models\Page  $page
      * @return \App\Models\UpdateRequest
      */
     public function processAsUpdateRequest(FormRequest $request, ?Page $page)
@@ -112,7 +110,7 @@ class PagePersistenceService implements DataPersistenceService
 
             $updateableType = UpdateRequestModel::EXISTING_TYPE_PAGE;
 
-            if (!$page) {
+            if (! $page) {
                 $updateableType = UpdateRequestModel::NEW_TYPE_PAGE;
 
                 $data['page_type'] = $data['page_type'] ?? Page::PAGE_TYPE_INFORMATION;
@@ -128,7 +126,7 @@ class PagePersistenceService implements DataPersistenceService
             // Only persist to the database if the user did not request a preview.
             if ($updateRequest->updateable_type === UpdateRequestModel::EXISTING_TYPE_PAGE) {
                 // Preview currently only available for update operations
-                if (!$request->isPreview()) {
+                if (! $request->isPreview()) {
                     $updateRequest->save();
                 }
             } else {

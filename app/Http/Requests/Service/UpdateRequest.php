@@ -218,7 +218,7 @@ class UpdateRequest extends FormRequest
                     $this->service->referral_url
                 ),
             ],
-            'ends_at' => ['nullable', 'date_format:' . CarbonImmutable::ISO8601],
+            'ends_at' => ['nullable', 'date_format:'.CarbonImmutable::ISO8601],
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
@@ -319,14 +319,14 @@ class UpdateRequest extends FormRequest
                 ),
                 function ($attribute, $value, $fail) {
                     if ($this->service->score !== $value &&
-                        !in_array($value, [
+                        ! in_array($value, [
                             Service::SCORE_POOR,
                             Service::SCORE_BELOW_AVERAGE,
                             Service::SCORE_AVERAGE,
                             Service::SCORE_ABOVE_AVERAGE,
                             Service::SCORE_EXCELLENT,
                         ])) {
-                        $fail($attribute . ' should be between 1 and 5');
+                        $fail($attribute.' should be between 1 and 5');
                     }
                 },
             ],
@@ -335,17 +335,12 @@ class UpdateRequest extends FormRequest
 
     /**
      * Check if the user requested only a preview of the update request.
-     *
-     * @return bool
      */
     public function isPreview(): bool
     {
         return $this->preview === true;
     }
 
-    /**
-     * @return array
-     */
     protected function categoryTaxonomiesRules(): array
     {
         // If global admin and above.
@@ -375,9 +370,6 @@ class UpdateRequest extends FormRequest
         ];
     }
 
-    /**
-     * @return bool
-     */
     protected function showReferralDisclaimerOriginalValue(): bool
     {
         // If the new referral method is none, then always require false.

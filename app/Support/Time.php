@@ -23,20 +23,17 @@ class Time
 
     /**
      * Time constructor.
-     *
-     * @param string $time
      */
     public function __construct(string $time)
     {
         [$hours, $minutes, $seconds] = explode(':', $time);
 
-        $this->hours = (int)$hours;
-        $this->minutes = (int)$minutes;
-        $this->seconds = (int)$seconds;
+        $this->hours = (int) $hours;
+        $this->minutes = (int) $minutes;
+        $this->seconds = (int) $seconds;
     }
 
     /**
-     * @param string $time
      * @return \App\Support\Time
      */
     public static function create(string $time)
@@ -45,8 +42,6 @@ class Time
     }
 
     /**
-     * @param string $format
-     * @param string $time
      * @return \App\Support\Time
      */
     public static function createFromFormat(string $format, string $time): Time
@@ -64,10 +59,6 @@ class Time
         return new static(Date::now()->format('H:i:s'));
     }
 
-    /**
-     * @param string $format
-     * @return string
-     */
     public function format(string $format): string
     {
         $carbon = Date::createFromFormat('H:i:s', $this->toString());
@@ -75,26 +66,19 @@ class Time
         return $carbon->format($format);
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->toString();
     }
 
-    /**
-     * @return string
-     */
     public function toString(): string
     {
         return sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds);
     }
 
     /**
-     * @param \App\Support\Time $time1
-     * @param \App\Support\Time $time2
-     * @return bool
+     * @param  \App\Support\Time  $time1
+     * @param  \App\Support\Time  $time2
      */
     public function between(Time $time1, Time $time2): bool
     {

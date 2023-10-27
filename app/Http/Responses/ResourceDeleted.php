@@ -13,8 +13,6 @@ class ResourceDeleted implements Responsable
 
     /**
      * ResourceDeleted constructor.
-     *
-     * @param string $resource
      */
     public function __construct(string $resource)
     {
@@ -24,7 +22,7 @@ class ResourceDeleted implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function toResponse($request)

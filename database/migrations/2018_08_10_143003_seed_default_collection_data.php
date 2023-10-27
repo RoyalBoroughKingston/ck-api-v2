@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
-return new class() extends Migration {
+return new class() extends Migration
+{
     /**
      * @var \Carbon\CarbonImmutable
      */
@@ -236,11 +237,6 @@ return new class() extends Migration {
         $this->linkToCategoryTaxonomy($uuid, ['Human Services', 'Care', 'Support Network', 'Peer Support']);
     }
 
-    /**
-     * @param string $collectionId
-     * @param array $taxonomyPath
-     * @param string|null $parentId
-     */
     protected function linkToCategoryTaxonomy(string $collectionId, array $taxonomyPath, string $parentId = null)
     {
         // If the array is empty, then finish the recursion.
@@ -269,7 +265,7 @@ return new class() extends Migration {
             ->exists();
 
         // Create the pivot record.
-        if (!$alreadyExists) {
+        if (! $alreadyExists) {
             DB::table('collection_taxonomies')->insert([
                 'id' => uuid(),
                 'collection_id' => $collectionId,

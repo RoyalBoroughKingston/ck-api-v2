@@ -134,12 +134,9 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
         $this->addFilter('collection_personas', $personaNames);
     }
 
-    /**
-     * @param string $waitTime
-     */
     protected function applyWaitTime(string $waitTime): void
     {
-        if (!Service::waitTimeIsValid($waitTime)) {
+        if (! Service::waitTimeIsValid($waitTime)) {
             throw new InvalidArgumentException("The wait time [$waitTime] is not valid");
         }
 
@@ -198,7 +195,7 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                 )->pluck('name')->all();
 
                 // Create the Service Eligibility type name
-                $serviceEligibilityTypeAllName = $serviceEligibilityType->name . ' All';
+                $serviceEligibilityTypeAllName = $serviceEligibilityType->name.' All';
 
                 // Filter by service eligibility names and type name
                 $this->addFilter('service_eligibilities.keyword', array_merge($serviceEligibilityTypeNames, [$serviceEligibilityTypeAllName]));
@@ -225,7 +222,7 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                 'path' => 'service_locations',
                 'query' => [
                     'geo_distance' => [
-                        'distance' => $distance ? $distance . 'mi' : config('local.search_distance') . 'mi',
+                        'distance' => $distance ? $distance.'mi' : config('local.search_distance').'mi',
                         'service_locations.location' => $coordinate->toArray(),
                     ],
                 ],

@@ -8,7 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 class TagsTag extends Tag
 {
     /**
-     * @param string|null $objectId
      * @return static
      */
     public static function create(string $objectId = null): BaseObject

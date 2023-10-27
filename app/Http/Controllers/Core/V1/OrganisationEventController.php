@@ -34,14 +34,13 @@ class OrganisationEventController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\OrganisationEvent\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
     {
         $baseQuery = OrganisationEvent::query();
 
-        if (!$request->user() && !$request->has('filter[ends_after]')) {
+        if (! $request->user() && ! $request->has('filter[ends_after]')) {
             $baseQuery->endsAfter((new DateTime('now'))->format('Y-m-d'));
         }
 
@@ -79,8 +78,6 @@ class OrganisationEventController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\OrganisationEvent\StoreRequest $request
-     * @param \App\Services\DataPersistence\OrganisationEventPersistenceService $persistenceService
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, OrganisationEventPersistenceService $persistenceService)
@@ -104,8 +101,6 @@ class OrganisationEventController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\OrganisationEvent\ShowRequest $request
-     * @param \App\Models\OrganisationEvent $organisationEvent
      * @return \App\Http\Resources\OrganisationEventResource
      */
     public function show(ShowRequest $request, OrganisationEvent $organisationEvent)
@@ -125,9 +120,6 @@ class OrganisationEventController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\OrganisationEvent\UpdateRequest $request
-     * @param \App\Models\OrganisationEvent $organisationEvent
-     * @param \App\Services\DataPersistence\OrganisationEventPersistenceService $persistenceService
      * @return UpdateRequestReceived
      */
     public function update(
@@ -145,8 +137,6 @@ class OrganisationEventController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\OrganisationEvent\DestroyRequest $request
-     * @param \App\Models\OrganisationEvent $organisationEvent
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, OrganisationEvent $organisationEvent)

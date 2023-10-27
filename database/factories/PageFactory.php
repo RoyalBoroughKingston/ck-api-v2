@@ -42,7 +42,7 @@ class PageFactory extends Factory
         return $this->state(function () {
             return [
                 'image_file_id' => File::factory()->create(
-                    ['filename' => Str::random() . '.png', 'mime_type' => 'image/png']
+                    ['filename' => Str::random().'.png', 'mime_type' => 'image/png']
                 ),
             ];
         });

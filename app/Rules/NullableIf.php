@@ -21,8 +21,8 @@ class NullableIf
     /**
      * Create a new nullable validation rule based on a condition.
      *
-     * @param callable|bool $condition
-     * @param mixed $nonNullableRule
+     * @param  callable|bool  $condition
+     * @param  mixed  $nonNullableRule
      */
     public function __construct($condition, $nonNullableRule = '')
     {

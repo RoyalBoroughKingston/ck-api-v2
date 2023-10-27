@@ -8,8 +8,6 @@ class CollectionTaxonomyObserver
 {
     /**
      * Handle to the collection taxonomy "created" event.
-     *
-     * @param \App\Models\CollectionTaxonomy $collectionTaxonomy
      */
     public function created(CollectionTaxonomy $collectionTaxonomy)
     {
@@ -18,8 +16,6 @@ class CollectionTaxonomyObserver
 
     /**
      * Handle the collection taxonomy "deleted" event.
-     *
-     * @param \App\Models\CollectionTaxonomy $collectionTaxonomy
      */
     public function deleted(CollectionTaxonomy $collectionTaxonomy)
     {

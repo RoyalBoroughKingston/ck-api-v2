@@ -5,7 +5,6 @@ namespace App\Models\Mutators;
 trait SettingMutators
 {
     /**
-     * @param string $value
      * @return mixed
      */
     public function getValueAttribute(string $value)
@@ -14,7 +13,7 @@ trait SettingMutators
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function setValueAttribute($value): void
     {

@@ -106,8 +106,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $serviceEligibilityNames = $serviceEligibilities->pluck('name')->toArray();
         $serviceEligibilityRoot = Taxonomy::serviceEligibility();
         foreach ($serviceEligibilityRoot->children as $serviceEligibilityType) {
-            if (!$serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
-                $serviceEligibilityNames[] = $serviceEligibilityType->name . ' All';
+            if (! $serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
+                $serviceEligibilityNames[] = $serviceEligibilityType->name.' All';
             }
         }
 
@@ -142,8 +142,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     /**
      * Return the ServiceTaxonomy relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function taxonomyRelationship(): HasMany
     {
@@ -153,8 +151,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Check if the update request is valid.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -184,7 +181,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Apply the update request.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -192,7 +189,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $data = $updateRequest->data;
 
         // Update the Logo File entity if new
-        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && !empty($data['logo_file_id'])) {
+        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && ! empty($data['logo_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
@@ -331,9 +328,6 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     /**
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
-     *
-     * @param array $data
-     * @return array
      */
     public function getData(array $data): array
     {
@@ -374,26 +368,16 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         return $this;
     }
 
-    /**
-     * @param \App\Emails\Email $email
-     */
     public function sendEmailToContact(Email $email)
     {
         Notification::sendEmail($email, $this);
     }
 
-    /**
-     * @param \App\Sms\Sms $sms
-     */
     public function sendSmsToContact(Sms $sms)
     {
         Notification::sendSms($sms, $this);
     }
 
-    /**
-     * @param string $waitTime
-     * @return bool
-     */
     public static function waitTimeIsValid(string $waitTime): bool
     {
         return in_array($waitTime, [
@@ -405,18 +389,15 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         ]);
     }
 
-    /**
-     * @return bool
-     */
     public function hasLogo(): bool
     {
         return $this->logo_file_id !== null;
     }
 
     /**
-     * @param int|null $maxDimension
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
      * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

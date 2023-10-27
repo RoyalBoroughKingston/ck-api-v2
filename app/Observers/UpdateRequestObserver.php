@@ -18,7 +18,6 @@ class UpdateRequestObserver
     /**
      * Handle to the update request "created" event.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
      *
      * @throws \Exception
      */
@@ -39,7 +38,7 @@ class UpdateRequestObserver
 
     private function handleExistingUpdateRequest(UpdateRequest $updateRequest)
     {
-        if (!$this->ownerIsSuperAdmin($updateRequest)) {
+        if (! $this->ownerIsSuperAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForExisting($updateRequest);
         }
 
@@ -49,7 +48,7 @@ class UpdateRequestObserver
 
     private function handleNewUpdateRequest(UpdateRequest $updateRequest)
     {
-        if (!$this->ownerIsSuperAdmin($updateRequest)) {
+        if (! $this->ownerIsSuperAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForNew($updateRequest);
         }
     }
@@ -62,8 +61,6 @@ class UpdateRequestObserver
     /**
      * Removes the field present in the new update request from any
      * pending ones, for the same resource.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
      */
     protected function removeSameFieldsForPendingAndExisting(UpdateRequest $updateRequest)
     {
@@ -97,8 +94,6 @@ class UpdateRequestObserver
      * Soft deletes / rejects pending update requests that have empty
      * data objects. This is called after removing the same fields
      * for new update requests.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
      */
     protected function deleteEmptyPendingForExisting(UpdateRequest $updateRequest)
     {
@@ -113,8 +108,6 @@ class UpdateRequestObserver
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     *
      * @throws \Exception
      */
     protected function sendCreatedNotificationsForExisting(UpdateRequest $updateRequest)
@@ -165,8 +158,6 @@ class UpdateRequestObserver
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     *
      * @throws \Exception
      */
     protected function sendCreatedNotificationsForNew(UpdateRequest $updateRequest)

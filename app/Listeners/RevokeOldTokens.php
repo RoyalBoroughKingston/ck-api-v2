@@ -9,8 +9,6 @@ class RevokeOldTokens
 {
     /**
      * Handle the event.
-     *
-     * @param \Laravel\Passport\Events\AccessTokenCreated $event
      */
     public function handle(AccessTokenCreated $event)
     {

@@ -23,14 +23,13 @@ class ApproveController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\UpdateRequest\Approve\UpdateRequest $request
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @throws \Exception
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Exception
      */
     public function update(Request $request, UpdateRequest $updateRequest)
     {
-        if (!$updateRequest->validate()) {
+        if (! $updateRequest->validate()) {
             return response()->json([
                 'message' => 'The given data was invalid.',
                 'errors' => $updateRequest->getValidationErrors()->toArray(),

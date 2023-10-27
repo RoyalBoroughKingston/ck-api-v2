@@ -3111,10 +3111,6 @@ class UsersTest extends TestCase
      * ==================================================
      */
 
-    /**
-     * @param  array  $roles
-     * @return array
-     */
     protected function getCreateUserPayload(array $roles): array
     {
         return [
@@ -3127,10 +3123,6 @@ class UsersTest extends TestCase
         ];
     }
 
-    /**
-     * @param  array  $roles
-     * @return array
-     */
     protected function getUpdateUserPayload(array $roles): array
     {
         return [

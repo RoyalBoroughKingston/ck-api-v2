@@ -26,7 +26,6 @@ class AuditController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Audit\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -60,8 +59,6 @@ class AuditController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Audit\ShowRequest $request
-     * @param \App\Models\Audit $audit
      * @return \App\Http\Resources\AuditResource
      */
     public function show(ShowRequest $request, Audit $audit)

@@ -33,9 +33,6 @@ class RelationshipsCommand extends Command
         $this->info('Model relationships trait created successfully.');
     }
 
-    /**
-     * @return string
-     */
     protected function getTemplate(): string
     {
         $model = $this->argument('model');
@@ -53,19 +50,15 @@ trait {$model}Relationships
 EOT;
     }
 
-    /**
-     * @param string $contents
-     * @return bool
-     */
     protected function saveToFile(string $contents): bool
     {
         $model = $this->argument('model');
 
-        if (!is_dir(app_path('Models/Relationships'))) {
+        if (! is_dir(app_path('Models/Relationships'))) {
             mkdir(app_path('Models/Relationships'));
         }
 
-        file_put_contents(app_path('Models/Relationships/' . $model . 'Relationships.php'), $contents);
+        file_put_contents(app_path('Models/Relationships/'.$model.'Relationships.php'), $contents);
 
         return true;
     }

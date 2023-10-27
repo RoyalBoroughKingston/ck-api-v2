@@ -33,7 +33,6 @@ class PageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Page\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -43,7 +42,7 @@ class PageController extends Controller
             ->with('parent')
             ->orderBy($orderByCol);
 
-        if (!$request->user('api')) {
+        if (! $request->user('api')) {
             $baseQuery->where('enabled', true);
         }
 
@@ -72,8 +71,6 @@ class PageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Page\StoreRequest $request
-     * @param \App\Services\DataPersistence\PagePersistenceService $persistenceService
      * @return \App\Http\Resources\OrganisationResource
      */
     public function store(StoreRequest $request, PagePersistenceService $persistenceService)
@@ -96,8 +93,6 @@ class PageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Page\ShowRequest $request
-     * @param \App\Models\Page $page
      * @return \App\Http\Resources\OrganisationResource
      */
     public function show(ShowRequest $request, Page $page)
@@ -117,9 +112,6 @@ class PageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Page\UpdateRequest $request
-     * @param \App\Models\Page $page
-     * @param \App\Services\DataPersistence\PagePersistenceService $persistenceService
      * @return \App\Http\Resources\OrganisationResource
      */
     public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService)
@@ -134,8 +126,7 @@ class PageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\Organisation\DestroyRequest $request
-     * @param \App\Models\Page $page
+     * @param  \App\Http\Requests\Organisation\DestroyRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Page $page)

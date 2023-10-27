@@ -27,17 +27,11 @@ trait OrganisationEventRelationships
         return $this->belongsTo(Location::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function taxonomies(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new OrganisationEventTaxonomy())->getTable());
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function organisationEventTaxonomies(): HasMany
     {
         return $this->hasMany(OrganisationEventTaxonomy::class);
@@ -45,8 +39,6 @@ trait OrganisationEventRelationships
 
     /**
      * Return the OrganisationEventTaxonomy relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function taxonomyRelationship(): HasMany
     {

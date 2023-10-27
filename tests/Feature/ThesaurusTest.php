@@ -16,7 +16,6 @@ class ThesaurusTest extends TestCase implements UsesElasticsearch
     /**
      * Clean up the testing environment before the next test.
      *
-     * @return void
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */

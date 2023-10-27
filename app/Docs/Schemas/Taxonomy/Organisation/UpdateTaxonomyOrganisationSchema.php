@@ -8,9 +8,9 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class UpdateTaxonomyOrganisationSchema extends Schema
 {
     /**
-     * @param string|null $objectId
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
+     *
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject
     {

@@ -35,9 +35,6 @@ class UpdateRequest extends FormRequest
         return false;
     }
 
-    /**
-     * @return array
-     */
     protected function getExistingRoles(): array
     {
         if ($this->existingRoles === null) {
@@ -62,10 +59,6 @@ class UpdateRequest extends FormRequest
         return $this->existingRoles;
     }
 
-    /**
-     * @param array $roles
-     * @return array
-     */
     protected function parseRoles(array $roles): array
     {
         foreach ($roles as &$role) {
@@ -88,17 +81,11 @@ class UpdateRequest extends FormRequest
         return $roles;
     }
 
-    /**
-     * @return array
-     */
     public function getNewRoles(): array
     {
         return array_diff_multi($this->parseRoles($this->roles), $this->getExistingRoles());
     }
 
-    /**
-     * @return array
-     */
     public function getDeletedRoles(): array
     {
         return array_diff_multi($this->getExistingRoles(), $this->parseRoles($this->roles));
@@ -106,9 +93,6 @@ class UpdateRequest extends FormRequest
 
     /**
      * Orders the roles array with the highest first.
-     *
-     * @param array $roles
-     * @return array
      */
     public function orderRoles(array $roles): array
     {
@@ -133,9 +117,6 @@ class UpdateRequest extends FormRequest
         });
     }
 
-    /**
-     * @return bool
-     */
     public function rolesHaveBeenUpdated(): bool
     {
         $hasNewRoles = count($this->getNewRoles()) > 0;
@@ -167,12 +148,12 @@ class UpdateRequest extends FormRequest
             ],
             'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
             'roles.*.organisation_id' => [
-                'required_if:roles.*.role,' . Role::NAME_ORGANISATION_ADMIN,
+                'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,
                 'exists:organisations,id',
             ],
             'roles.*.service_id' => [
-                'required_if:roles.*.role,' . Role::NAME_SERVICE_WORKER,
-                'required_if:roles.*.role,' . Role::NAME_SERVICE_ADMIN,
+                'required_if:roles.*.role,'.Role::NAME_SERVICE_WORKER,
+                'required_if:roles.*.role,'.Role::NAME_SERVICE_ADMIN,
                 'exists:services,id',
             ],
         ];

@@ -14,8 +14,6 @@ class ReferralIncompleted
 {
     /**
      * Handle the event.
-     *
-     * @param EndpointHit $event
      */
     public function handle(EndpointHit $event)
     {
@@ -29,7 +27,7 @@ class ReferralIncompleted
         $isIncomplete = $latestStatusUpdate->to === Referral::STATUS_INCOMPLETED;
 
         // Only handle referrals that have been marked as completed.
-        if (!$latestStatusUpdate->statusHasChanged() || !$isIncomplete) {
+        if (! $latestStatusUpdate->statusHasChanged() || ! $isIncomplete) {
             return;
         }
 
@@ -37,9 +35,6 @@ class ReferralIncompleted
         $this->notifyReferee($event->getModel());
     }
 
-    /**
-     * @param \App\Models\Referral $referral
-     */
     protected function notifyClient(Referral $referral)
     {
         // Only send an email if email address was provided.
@@ -60,9 +55,6 @@ class ReferralIncompleted
         }
     }
 
-    /**
-     * @param \App\Models\Referral $referral
-     */
     protected function notifyReferee(Referral $referral)
     {
         if ($referral->referee_email) {

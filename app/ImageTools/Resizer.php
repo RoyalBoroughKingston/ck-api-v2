@@ -8,10 +8,6 @@ class Resizer
      * Based upon the following Stack Overflow answer:.
      *
      * @link https://stackoverflow.com/a/16774644/5745438
-     *
-     * @param string $srcImageContent
-     * @param int $maxDimension
-     * @return string
      */
     public function resize(string $srcImageContent, int $maxDimension): string
     {
@@ -34,11 +30,6 @@ class Resizer
         return $result;
     }
 
-    /**
-     * @param $imageResource
-     * @param int $maxDimension
-     * @return array
-     */
     protected function getDimensions($imageResource, int $maxDimension): array
     {
         // Get the original width and height of the source image.
@@ -66,8 +57,6 @@ class Resizer
     }
 
     /**
-     * @param $srcImageResource
-     * @param array $dimensions
      * @return resource
      */
     protected function createDestinationImageResource($srcImageResource, array $dimensions)
@@ -100,9 +89,6 @@ class Resizer
 
     /**
      * Convert an image resource to a string.
-     *
-     * @param $imageResource
-     * @return string
      */
     protected function imageResourceToString($imageResource): string
     {

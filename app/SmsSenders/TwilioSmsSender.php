@@ -50,7 +50,6 @@ class TwilioSmsSender implements SmsSender
     /**
      * Convert UK internal mobile '07' numbers to international '+44' numbers.
      *
-     * @param string $ukMobileNumber
      * @return string
      */
     public function ukToInternationalNumber(string $ukMobileNumber)

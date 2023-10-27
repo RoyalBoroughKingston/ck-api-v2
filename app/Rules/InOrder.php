@@ -13,8 +13,6 @@ class InOrder implements Rule
 
     /**
      * Create a new rule instance.
-     *
-     * @param array $orders
      */
     public function __construct(array $orders)
     {
@@ -24,14 +22,14 @@ class InOrder implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         // Immediately fail if the value is not a integer.
-        if (!is_int($value)) {
+        if (! is_int($value)) {
             return false;
         }
 
@@ -47,7 +45,7 @@ class InOrder implements Rule
 
         // Loop through each order and check if in order.
         foreach (range(1, count($this->orders)) as $index) {
-            if (!in_array($index, $this->orders)) {
+            if (! in_array($index, $this->orders)) {
                 return false;
             }
         }

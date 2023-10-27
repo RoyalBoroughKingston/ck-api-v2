@@ -49,7 +49,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'exists:organisations,id',
                 function ($attribute, $value, $fail) {
-                    if (!$this->user('api')->isGlobalAdmin() && !$this->user('api')->isOrganisationAdmin(Organisation::findOrFail($value))) {
+                    if (! $this->user('api')->isGlobalAdmin() && ! $this->user('api')->isOrganisationAdmin(Organisation::findOrFail($value))) {
                         $fail('The organisation_id field must contain an ID for an organisation you are an organisation admin for.');
                     }
                 },
@@ -86,7 +86,7 @@ class StoreRequest extends FormRequest
                 'min:1',
                 'max:255',
                 Rule::requiredIf(function () {
-                    return !empty($this->organiser_phone) || !empty($this->organiser_email) || !empty($this->organiser_url);
+                    return ! empty($this->organiser_phone) || ! empty($this->organiser_email) || ! empty($this->organiser_url);
                 }),
             ],
             'organiser_phone' => [
@@ -96,7 +96,7 @@ class StoreRequest extends FormRequest
                 'max:255',
                 new UkPhoneNumber(),
                 Rule::requiredIf(function () {
-                    return !empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_url);
+                    return ! empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_url);
                 }),
             ],
             'organiser_email' => [
@@ -104,7 +104,7 @@ class StoreRequest extends FormRequest
                 'email',
                 'max:255',
                 Rule::requiredIf(function () {
-                    return !empty($this->organiser_name) && empty($this->organiser_phone) && empty($this->organiser_url);
+                    return ! empty($this->organiser_name) && empty($this->organiser_phone) && empty($this->organiser_url);
                 }),
             ],
             'organiser_url' => [
@@ -112,7 +112,7 @@ class StoreRequest extends FormRequest
                 'url',
                 'max:255',
                 Rule::requiredIf(function () {
-                    return !empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_phone);
+                    return ! empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_phone);
                 }),
             ],
             'booking_title' => [
@@ -158,7 +158,7 @@ class StoreRequest extends FormRequest
             'is_virtual' => ['required', 'boolean'],
             'location_id' => [
                 'nullable',
-                Rule::requiredIf(!$this->is_virtual),
+                Rule::requiredIf(! $this->is_virtual),
                 'exists:locations,id',
             ],
             'image_file_id' => [
@@ -185,8 +185,6 @@ class StoreRequest extends FormRequest
 
     /**
      * Check if the user requested only a preview of the update request.
-     *
-     * @return bool
      */
     public function isPreview(): bool
     {

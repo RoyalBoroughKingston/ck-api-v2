@@ -32,7 +32,6 @@ class CollectionCategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\CollectionCategory\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -59,7 +58,6 @@ class CollectionCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\CollectionCategory\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
@@ -108,8 +106,6 @@ class CollectionCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\CollectionCategory\ShowRequest $request
-     * @param \App\Models\Collection $collection
      * @return \App\Http\Resources\CollectionCategoryResource
      */
     public function show(ShowRequest $request, Collection $collection)
@@ -128,8 +124,6 @@ class CollectionCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\CollectionCategory\UpdateRequest $request
-     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Collection $collection)
@@ -178,8 +172,6 @@ class CollectionCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\CollectionCategory\DestroyRequest $request
-     * @param \App\Models\Collection $collection
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Collection $collection)

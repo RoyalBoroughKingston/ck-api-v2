@@ -58,56 +58,38 @@ class UpdateRequest extends Model
         'deleted_at' => 'datetime',
     ];
 
-    /**
-     * @return bool
-     */
     public function isNew(): bool
     {
         return $this->updateable_id === null;
     }
 
-    /**
-     * @return bool
-     */
     public function isExisting(): bool
     {
-        return !$this->isNew();
+        return ! $this->isNew();
     }
 
-    /**
-     * @return bool
-     */
     public function isApproved(): bool
     {
         return $this->approved_at !== null;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeclined(): bool
     {
         return $this->deleted_at !== null;
     }
 
-    /**
-     * @return \Illuminate\Support\MessageBag
-     */
     public function getValidationErrors(): MessageBag
     {
         return $this->getUpdateable()->validateUpdateRequest($this)->errors();
     }
 
-    /**
-     * @return bool
-     */
     public function validate(): bool
     {
         return $this->getUpdateable()->validateUpdateRequest($this)->fails() === false;
     }
 
     /**
-     * @param \App\Models\User|null $user
+     * @param  \App\Models\User|null  $user
      * @return \App\Models\UpdateRequest
      */
     public function apply(User $user = null): self
@@ -122,9 +104,10 @@ class UpdateRequest extends Model
     }
 
     /**
-     * @param \App\Models\User|null $user
-     * @throws \Exception
+     * @param  \App\Models\User|null  $user
      * @return bool|null
+     *
+     * @throws \Exception
      */
     public function delete(User $user = null)
     {
@@ -150,7 +133,7 @@ class UpdateRequest extends Model
      */
     protected function createUpdateableInstance(): AppliesUpdateRequests
     {
-        $className = '\\App\\UpdateRequest\\' . Str::studly($this->updateable_type);
+        $className = '\\App\\UpdateRequest\\'.Str::studly($this->updateable_type);
 
         return resolve($className);
     }

@@ -6,7 +6,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration {
+return new class() extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -42,8 +43,7 @@ return new class() extends Migration {
     }
 
     /**
-     * @param \stdClass $taxonomy
-     * @return int
+     * @param  \stdClass  $taxonomy
      */
     protected function getDepth(stdClass $taxonomy): int
     {

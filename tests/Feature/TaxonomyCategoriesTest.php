@@ -42,7 +42,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_can_list_them()
     {
@@ -76,7 +75,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_listed()
     {
@@ -95,7 +93,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_create_one()
     {
@@ -106,7 +103,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_create_one()
     {
@@ -122,7 +118,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_create_one()
     {
@@ -138,7 +133,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_create_one()
     {
@@ -154,7 +148,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_create_one()
     {
@@ -169,7 +162,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_create_one()
     {
@@ -190,7 +182,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_created_at_beginning()
     {
@@ -225,7 +216,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_created_at_middle()
     {
@@ -267,7 +257,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_created_at_end()
     {
@@ -302,7 +291,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_cannot_be_less_than_1_when_created()
     {
@@ -321,7 +309,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_cannot_be_greater_than_count_plus_1_when_created()
     {
@@ -341,7 +328,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_created()
     {
@@ -370,7 +356,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_can_view_one()
     {
@@ -404,7 +389,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_can_view_one_by_slug()
     {
@@ -438,7 +422,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_viewed()
     {
@@ -469,7 +452,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_update_one()
     {
@@ -482,7 +464,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_update_one()
     {
@@ -498,7 +479,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_update_one()
     {
@@ -514,7 +494,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_update_one()
     {
@@ -530,7 +509,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_update_one()
     {
@@ -545,7 +523,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_update_one()
     {
@@ -569,7 +546,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_updated_to_beginning()
     {
@@ -610,7 +586,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_updated_to_middle()
     {
@@ -651,7 +626,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_updated_to_end()
     {
@@ -692,7 +666,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_updated_to_beginning_of_another_parent()
     {
@@ -788,7 +761,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_updated_to_middle_of_another_parent()
     {
@@ -884,7 +856,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_is_updated_when_updated_to_end_of_another_parent()
     {
@@ -980,7 +951,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_cannot_be_less_than_1_when_updated()
     {
@@ -1000,7 +970,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function order_cannot_be_greater_than_count_plus_1_when_updated()
     {
@@ -1021,7 +990,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_updated()
     {
@@ -1053,7 +1021,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_delete_one()
     {
@@ -1066,7 +1033,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_delete_one()
     {
@@ -1082,7 +1048,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_delete_one()
     {
@@ -1098,7 +1063,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_delete_one()
     {
@@ -1114,7 +1078,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_delete_one()
     {
@@ -1129,7 +1092,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_delete_one()
     {
@@ -1145,7 +1107,6 @@ class TaxonomyCategoriesTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_deleted()
     {
@@ -1168,9 +1129,6 @@ class TaxonomyCategoriesTest extends TestCase
      * Helpers.
      */
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     protected function getRandomCategoryWithoutChildren(): Taxonomy
     {
         $randomTaxonomy = null;
@@ -1188,17 +1146,11 @@ class TaxonomyCategoriesTest extends TestCase
         return $randomTaxonomy;
     }
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     protected function getRandomCategoryWithChildren(): Taxonomy
     {
         return Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
     }
 
-    /**
-     * @return \App\Models\Taxonomy
-     */
     protected function createTopLevelCategory(int $index = null): Taxonomy
     {
         $topLevelCount = Taxonomy::category()->children()->count();

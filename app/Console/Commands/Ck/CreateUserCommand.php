@@ -35,8 +35,6 @@ class CreateUserCommand extends Command
 
     /**
      * CreateUserCommand constructor.
-     *
-     * @param \Illuminate\Database\DatabaseManager $db
      */
     public function __construct(DatabaseManager $db)
     {
@@ -48,8 +46,9 @@ class CreateUserCommand extends Command
     /**
      * Execute the console command.
      *
-     * @throws \Throwable
      * @return mixed
+     *
+     * @throws \Throwable
      */
     public function handle()
     {
@@ -71,10 +70,6 @@ class CreateUserCommand extends Command
         });
     }
 
-    /**
-     * @param string $password
-     * @return \App\Models\User
-     */
     protected function createUser(string $password): User
     {
         return User::create([

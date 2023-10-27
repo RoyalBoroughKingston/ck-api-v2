@@ -12,7 +12,6 @@ class SqsConnector extends BaseSqsConnector
     /**
      * Establish a queue connection.
      *
-     * @param array $config
      * @return \Illuminate\Contracts\Queue\Queue
      */
     public function connect(array $config)

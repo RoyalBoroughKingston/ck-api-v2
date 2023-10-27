@@ -13,10 +13,8 @@ class UkMobilePhoneNumber implements Rule
 
     /**
      * UkPhoneNumber constructor.
-     *
-     * @param string|null $message
      */
-    public function __construct(?string $message = null)
+    public function __construct(string $message = null)
     {
         $this->message = $message;
     }
@@ -24,14 +22,14 @@ class UkMobilePhoneNumber implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         // Immediately fail if the value is not a string.
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return false;
         }
 

@@ -17,9 +17,9 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
 class StorePagesSearchOperation extends Operation
 {
     /**
-     * @param string|null $objectId
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
+     *
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject
     {

@@ -29,7 +29,6 @@ class TaxonomyCategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\TaxonomyCategory\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -50,7 +49,6 @@ class TaxonomyCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\TaxonomyCategory\StoreRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, UniqueSlugGenerator $slugGenerator)
@@ -79,8 +77,6 @@ class TaxonomyCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\TaxonomyCategory\ShowRequest $request
-     * @param \App\Models\Taxonomy $taxonomy
      * @return \App\Http\Resources\TaxonomyCategoryResource
      */
     public function show(ShowRequest $request, Taxonomy $taxonomy)
@@ -99,8 +95,6 @@ class TaxonomyCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\TaxonomyCategory\UpdateRequest $request
-     * @param \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, UniqueSlugGenerator $slugGenerator, Taxonomy $taxonomy)
@@ -131,8 +125,6 @@ class TaxonomyCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\TaxonomyCategory\DestroyRequest $request
-     * @param \App\Models\Taxonomy $taxonomy
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Taxonomy $taxonomy)

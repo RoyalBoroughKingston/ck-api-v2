@@ -13,8 +13,7 @@ class UserRole extends Model
     use UserRoleScopes;
 
     /**
-     * @param \App\Models\Service|null $service
-     * @return bool
+     * @param  \App\Models\Service|null  $service
      */
     public function isServiceWorker(Service $service = null): bool
     {
@@ -26,8 +25,7 @@ class UserRole extends Model
     }
 
     /**
-     * @param \App\Models\Service|null $service
-     * @return bool
+     * @param  \App\Models\Service|null  $service
      */
     public function isServiceAdmin(Service $service = null): bool
     {
@@ -39,8 +37,7 @@ class UserRole extends Model
     }
 
     /**
-     * @param \App\Models\Organisation|null $organisation
-     * @return bool
+     * @param  \App\Models\Organisation|null  $organisation
      */
     public function isOrganisationAdmin(Organisation $organisation = null): bool
     {
@@ -51,25 +48,16 @@ class UserRole extends Model
         : $isOrganisationAdmin;
     }
 
-    /**
-     * @return bool
-     */
     public function isContentAdmin(): bool
     {
         return $this->role->name === Role::NAME_CONTENT_ADMIN;
     }
 
-    /**
-     * @return bool
-     */
     public function isGlobalAdmin(): bool
     {
         return $this->role->name === Role::NAME_GLOBAL_ADMIN;
     }
 
-    /**
-     * @return bool
-     */
     public function isSuperAdmin(): bool
     {
         return $this->role->name === Role::NAME_SUPER_ADMIN;

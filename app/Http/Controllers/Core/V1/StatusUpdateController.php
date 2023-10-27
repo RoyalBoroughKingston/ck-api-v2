@@ -24,7 +24,6 @@ class StatusUpdateController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\StatusUpdate\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)

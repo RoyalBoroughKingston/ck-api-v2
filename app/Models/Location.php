@@ -62,8 +62,7 @@ class Location extends Model implements AppliesUpdateRequests
     /**
      * Check if the update request is valid.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @param  \App\Models\UpdateRequest  $updateRequest
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -82,7 +81,7 @@ class Location extends Model implements AppliesUpdateRequests
     /**
      * Apply the update request.
      *
-     * @param \App\Models\UpdateRequest $updateRequest
+     * @param  \App\Models\UpdateRequest  $updateRequest
      * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
@@ -112,9 +111,6 @@ class Location extends Model implements AppliesUpdateRequests
     /**
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
-     *
-     * @param array $data
-     * @return array
      */
     public function getData(array $data): array
     {
@@ -131,9 +127,6 @@ class Location extends Model implements AppliesUpdateRequests
         return $this;
     }
 
-    /**
-     * @return \App\Support\Address
-     */
     public function toAddress(): Address
     {
         return Address::create(
@@ -145,18 +138,15 @@ class Location extends Model implements AppliesUpdateRequests
         );
     }
 
-    /**
-     * @return \App\Support\Coordinate
-     */
     public function toCoordinate(): Coordinate
     {
         return new Coordinate($this->lat, $this->lon);
     }
 
     /**
-     * @param int|null $maxDimension
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
      * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
      */
     public static function placeholderImage(int $maxDimension = null)
     {
@@ -171,9 +161,6 @@ class Location extends Model implements AppliesUpdateRequests
         );
     }
 
-    /**
-     * @return bool
-     */
     public function hasImage(): bool
     {
         return $this->image_file_id !== null;

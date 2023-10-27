@@ -15,10 +15,10 @@ class OrganisationFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->company() . ' ' . $this->faker->word() . ' ' . mt_rand(1, 100000);
+        $name = $this->faker->company().' '.$this->faker->word().' '.mt_rand(1, 100000);
 
         return [
-            'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
+            'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
             'name' => $name,
             'description' => 'This organisation provides x service.',
             'url' => $this->faker->url(),

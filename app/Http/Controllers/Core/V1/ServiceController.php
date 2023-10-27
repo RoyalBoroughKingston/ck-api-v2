@@ -37,7 +37,6 @@ class ServiceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \App\Http\Requests\Service\IndexRequest $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(IndexRequest $request)
@@ -85,8 +84,6 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\Service\StoreRequest $request
-     * @param \App\Services\DataPersistence\ServicePersistenceService $persistenceService
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request, ServicePersistenceService $persistenceService)
@@ -112,8 +109,6 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Service\ShowRequest $request
-     * @param \App\Models\Service $service
      * @return \App\Http\Resources\ServiceResource
      */
     public function show(ShowRequest $request, Service $service)
@@ -139,9 +134,6 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\Service\UpdateRequest $request
-     * @param \App\Models\Service $service
-     * @param \App\Services\DataPersistence\ServicePersistenceService $persistenceService
      * @return UpdateRequestReceived
      */
     public function update(UpdateRequest $request, Service $service, ServicePersistenceService $persistenceService)
@@ -155,8 +147,6 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Http\Requests\Service\DestroyRequest $request
-     * @param \App\Models\Service $service
      * @return \Illuminate\Http\Response
      */
     public function destroy(DestroyRequest $request, Service $service)

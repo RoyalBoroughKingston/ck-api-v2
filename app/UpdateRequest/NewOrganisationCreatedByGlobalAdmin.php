@@ -21,9 +21,6 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
 
     /**
      * Check if the update request is valid.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validateUpdateRequest(UpdateRequest $updateRequest): Validator
     {
@@ -47,9 +44,6 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
 
     /**
      * Apply the update request.
-     *
-     * @param \App\Models\UpdateRequest $updateRequest
-     * @return \App\Models\UpdateRequest
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
@@ -67,7 +61,7 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
             'logo_file_id' => $data->get('logo_file_id'),
         ]);
 
-        if ($data->has('logo_file_id') && !empty($data->get('logo_file_id'))) {
+        if ($data->has('logo_file_id') && ! empty($data->get('logo_file_id'))) {
             $this->resizeImageFile($data->get('logo_file_id'));
         }
 
@@ -81,7 +75,7 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
             }
         }
 
-        if ($data->has('category_taxonomies') && !empty($data->get('category_taxonomies'))) {
+        if ($data->has('category_taxonomies') && ! empty($data->get('category_taxonomies'))) {
             // Create the category taxonomy records.
             $taxonomies = Taxonomy::whereIn('id', $data->get('category_taxonomies'))->get();
             $organisation->syncTaxonomyRelationships($taxonomies);
@@ -93,9 +87,6 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
     /**
      * Custom logic for returning the data. Useful when wanting to transform
      * or modify the data before returning it, e.g. removing passwords.
-     *
-     * @param array $data
-     * @return array
      */
     public function getData(array $data): array
     {

@@ -8,7 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class HolidayOpeningHourSchema extends Schema
 {
     /**
-     * @param string|null $objectId
      * @return static
      */
     public static function create(string $objectId = null): BaseObject

@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\Passport;
-use Mockery\Exception;
 use Tests\TestCase;
 
 class StopWordsTest extends TestCase
@@ -16,7 +15,6 @@ class StopWordsTest extends TestCase
     /**
      * Clean up the testing environment before the next test.
      *
-     * @return void
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */

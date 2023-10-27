@@ -15,10 +15,9 @@ class UserEmailNotInPendingSignupRequest implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param \App\Models\User|null $excludedUser
-     * @param string|null $message
+     * @param  \App\Models\User|null  $excludedUser
      */
-    public function __construct(?string $message = null)
+    public function __construct(string $message = null)
     {
         $this->message = $message;
     }
@@ -26,13 +25,13 @@ class UserEmailNotInPendingSignupRequest implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $email
+     * @param  string  $attribute
+     * @param  mixed  $email
      * @return bool
      */
     public function passes($attribute, $email)
     {
-        if (!is_string($email)) {
+        if (! is_string($email)) {
             return false;
         }
 

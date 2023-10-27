@@ -13,8 +13,6 @@ class UserCreated
 {
     /**
      * Handle the event.
-     *
-     * @param EndpointHit $event
      */
     public function handle(EndpointHit $event)
     {
@@ -26,9 +24,6 @@ class UserCreated
         $this->notifyUser($event->getModel());
     }
 
-    /**
-     * @param \App\Models\User $user
-     */
     protected function notifyUser(User $user)
     {
         $permissions = $user

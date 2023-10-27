@@ -95,9 +95,6 @@ trait ServiceRelationships
         return $this->hasMany(ServiceTaxonomy::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function taxonomies(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new ServiceTaxonomy())->getTable());
@@ -108,9 +105,6 @@ trait ServiceRelationships
         return $this->hasMany(ServiceEligibility::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function eligibilities(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new ServiceEligibility())->getTable());
@@ -140,9 +134,6 @@ trait ServiceRelationships
         return $this->hasMany(ServiceGalleryItem::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function serviceRefreshTokens(): HasMany
     {
         return $this->hasMany(ServiceRefreshToken::class);

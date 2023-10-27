@@ -23,8 +23,7 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param \App\Models\User $user
-     * @param \App\TaxonomyRelationships\HasTaxonomyRelationships $model
+     * @param  \App\TaxonomyRelationships\HasTaxonomyRelationships  $model
      */
     public function __construct(User $user, Service $model)
     {
@@ -35,14 +34,14 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         // Immediately fail if the value is not an array of strings.
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
@@ -72,6 +71,6 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
      */
     public function message()
     {
-        return 'You are not authorised to update this ' . class_basename($this->model) . '\'s category taxonomies.';
+        return 'You are not authorised to update this '.class_basename($this->model).'\'s category taxonomies.';
     }
 }

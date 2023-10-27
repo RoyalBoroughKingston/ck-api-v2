@@ -11,9 +11,9 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class StoreOrganisationSignUpFormSchema extends Schema
 {
     /**
-     * @param string|null $objectId
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
+     *
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject
     {
@@ -30,7 +30,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
                         ...array_filter(
                             StoreUserSchema::create()->required,
                             function (string $required): bool {
-                                return !in_array($required, ['roles']);
+                                return ! in_array($required, ['roles']);
                             }
                         )
                     )
@@ -40,7 +40,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
                         ...array_filter(
                             StoreUserSchema::create()->properties,
                             function (Schema $property): bool {
-                                return !in_array($property->objectId, ['roles']);
+                                return ! in_array($property->objectId, ['roles']);
                             }
                         )
                     ),
@@ -53,7 +53,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
                         ...array_filter(
                             StoreOrganisationSchema::create()->properties,
                             function (Schema $property): bool {
-                                return !in_array($property->objectId, ['logo_file_id']);
+                                return ! in_array($property->objectId, ['logo_file_id']);
                             }
                         )
                     ),
@@ -62,7 +62,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
                         ...array_filter(
                             StoreServiceSchema::create()->required,
                             function (string $required): bool {
-                                return !in_array($required, [
+                                return ! in_array($required, [
                                     'organisation_id',
                                     'status',
                                     'show_referral_disclaimer',
@@ -80,7 +80,7 @@ class StoreOrganisationSignUpFormSchema extends Schema
                         ...array_filter(
                             StoreServiceSchema::create()->properties,
                             function (Schema $property): bool {
-                                return !in_array($property->objectId, [
+                                return ! in_array($property->objectId, [
                                     'organisation_id',
                                     'status',
                                     'show_referral_disclaimer',

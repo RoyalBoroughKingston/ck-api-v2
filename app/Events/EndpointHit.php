@@ -60,10 +60,7 @@ class EndpointHit
     /**
      * Create a new event instance.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string $action
-     * @param string $description
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      */
     protected function __construct(Request $request, string $action, string $description, Model $model = null)
     {
@@ -80,9 +77,7 @@ class EndpointHit
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param string $message
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return \App\Events\EndpointHit
      */
     public static function onCreate(Request $request, string $message, Model $model = null): self
@@ -91,9 +86,7 @@ class EndpointHit
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param string $message
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return \App\Events\EndpointHit
      */
     public static function onRead(Request $request, string $message, Model $model = null): self
@@ -102,9 +95,7 @@ class EndpointHit
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param string $message
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return \App\Events\EndpointHit
      */
     public static function onUpdate(Request $request, string $message, Model $model = null): self
@@ -113,9 +104,7 @@ class EndpointHit
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param string $message
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return \App\Events\EndpointHit
      */
     public static function onDelete(Request $request, string $message, Model $model = null): self
@@ -123,57 +112,36 @@ class EndpointHit
         return new static($request, Audit::ACTION_DELETE, $message, $model);
     }
 
-    /**
-     * @return \App\Models\User|null
-     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
-    /**
-     * @return \Laravel\Passport\Client|null
-     */
     public function getOauthClient(): ?Client
     {
         return $this->oauthClient;
     }
 
-    /**
-     * @return string
-     */
     public function getAction(): string
     {
         return $this->action;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @return string
-     */
     public function getIpAddress(): string
     {
         return $this->ipAddress;
     }
 
-    /**
-     * @return string
-     */
     public function getUserAgent(): string
     {
         return $this->userAgent;
     }
 
-    /**
-     * @return \Carbon\CarbonImmutable
-     */
     public function getCreatedAt(): CarbonImmutable
     {
         return $this->createdAt;
@@ -187,11 +155,6 @@ class EndpointHit
         return $this->model;
     }
 
-    /**
-     * @param string $model
-     * @param string|null $action
-     * @return bool
-     */
     public function isFor(string $model, string $action = null): bool
     {
         return $action
@@ -199,13 +162,8 @@ class EndpointHit
             : $this->getModel() instanceof $model;
     }
 
-    /**
-     * @param string $model
-     * @param string|null $action
-     * @return bool
-     */
     public function isntFor(string $model, string $action = null): bool
     {
-        return !$this->isFor($model, $action);
+        return ! $this->isFor($model, $action);
     }
 }

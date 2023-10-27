@@ -17,7 +17,6 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Store the model.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
      * @return \App\Models\UpdateRequest|\App\Models\OrganisationEvent
      */
     public function store(FormRequest $request)
@@ -30,7 +29,6 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Update the model.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
      * @return \App\Models\UpdateRequest
      */
     public function update(FormRequest $request, Model $model)
@@ -41,7 +39,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Create a new model from the provided request.
      *
-     * @param Illuminate\Foundation\Http\FormRequest $request
+     * @param  Illuminate\Foundation\Http\FormRequest  $request
      * @return \App\Models\OrganisationEvent
      */
     public function processAsNewEntity(FormRequest $request)
@@ -93,8 +91,8 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Process the requested changes and either update the model or store an update request.
      *
-     * @param Illuminate\Foundation\Http\FormRequest $request
-     * @param \App\Models\OrganisationEvent $event
+     * @param  Illuminate\Foundation\Http\FormRequest  $request
+     * @param  \App\Models\OrganisationEvent  $event
      * @return \App\Models\UpdateRequest
      */
     public function processAsUpdateRequest(FormRequest $request, ?OrganisationEvent $event)
@@ -135,7 +133,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
 
             $updateableType = UpdateRequestModel::EXISTING_TYPE_ORGANISATION_EVENT;
 
-            if (!$event) {
+            if (! $event) {
                 $updateableType = UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT;
             }
             /** @var \App\Models\UpdateRequest $updateRequest */
@@ -149,7 +147,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
             // Only persist to the database if the user did not request a preview.
             if ($updateRequest->updateable_type === UpdateRequestModel::EXISTING_TYPE_ORGANISATION_EVENT) {
                 // Preview currently only available for update operations
-                if (!$request->isPreview()) {
+                if (! $request->isPreview()) {
                     $updateRequest->save();
                 }
             } else {

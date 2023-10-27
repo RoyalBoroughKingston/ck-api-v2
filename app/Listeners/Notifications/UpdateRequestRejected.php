@@ -19,7 +19,6 @@ class UpdateRequestRejected
     /**
      * Handle the event.
      *
-     * @param EndpointHit $event
      *
      * @throws \Exception
      */
@@ -43,8 +42,6 @@ class UpdateRequestRejected
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     *
      * @throws \Exception
      */
     protected function notifySubmitterForExisting(UpdateRequest $updateRequest)
@@ -74,8 +71,6 @@ class UpdateRequestRejected
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     *
      * @throws \Exception
      */
     protected function notifySubmitterForNew(UpdateRequest $updateRequest)

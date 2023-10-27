@@ -24,7 +24,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_list_them()
     {
@@ -35,7 +34,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_list_them()
     {
@@ -51,7 +49,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_list_them()
     {
@@ -67,7 +64,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_list_them()
     {
@@ -83,7 +79,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_list_them()
     {
@@ -99,7 +94,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_list_them()
     {
@@ -119,7 +113,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_listed()
     {
@@ -143,7 +136,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_create_one()
     {
@@ -154,7 +146,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_create_one()
     {
@@ -170,7 +161,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_create_one()
     {
@@ -186,7 +176,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_create_one()
     {
@@ -202,7 +191,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_create_one()
     {
@@ -219,7 +207,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_create_one()
     {
@@ -252,7 +239,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_created()
     {
@@ -275,7 +261,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_create_one_with_date_range()
     {
@@ -308,7 +293,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_view_one()
     {
@@ -321,7 +305,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_view_one()
     {
@@ -338,7 +321,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_view_one()
     {
@@ -355,7 +337,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_view_one()
     {
@@ -372,7 +353,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_view_one()
     {
@@ -388,7 +368,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_view_one()
     {
@@ -408,7 +387,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_viewed()
     {
@@ -434,7 +412,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_delete_one()
     {
@@ -447,7 +424,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_delete_one()
     {
@@ -464,7 +440,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_delete_one()
     {
@@ -481,7 +456,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_delete_one()
     {
@@ -498,7 +472,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_delete_one()
     {
@@ -514,7 +487,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_delete_one()
     {
@@ -532,7 +504,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_deleted()
     {
@@ -558,7 +529,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function guest_cannot_download_file()
     {
@@ -571,7 +541,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_worker_cannot_download_file()
     {
@@ -588,7 +557,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function service_admin_cannot_download_file()
     {
@@ -605,7 +573,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function organisation_admin_cannot_download_file()
     {
@@ -622,7 +589,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function global_admin_cannot_download_file()
     {
@@ -638,7 +604,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function super_admin_can_download_file()
     {
@@ -655,7 +620,6 @@ class ReportsTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function audit_created_when_file_viewed()
     {

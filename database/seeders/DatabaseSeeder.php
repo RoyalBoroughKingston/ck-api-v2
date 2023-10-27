@@ -17,9 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->createOrganisations();
     }
 
-    /**
-     * @param int $count
-     */
     protected function createOrganisations(int $count = 10)
     {
         $organisations = Organisation::factory()->count($count)->create();
@@ -38,8 +35,6 @@ class DatabaseSeeder extends Seeder
     }
 
     /**
-     * @param \App\Models\Organisation $organisation
-     * @param int $count
      * @return mixed
      */
     protected function createServices(Organisation $organisation, int $count = 5)
@@ -48,8 +43,6 @@ class DatabaseSeeder extends Seeder
     }
 
     /**
-     * @param \App\Models\Service $service
-     * @param int $count
      * @return mixed
      */
     protected function createServiceLocations(Service $service, int $count = 2)

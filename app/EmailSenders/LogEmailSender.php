@@ -22,12 +22,9 @@ class LogEmailSender implements EmailSender
         $globalValues['CONTACT_EMAIL'] = config('local.global_admin.email');
     }
 
-    /**
-     * @param \App\Emails\Email $email
-     */
     public function send(Email $email)
     {
-        logger()->debug('Email sent via Log at [' . Date::now()->toDateTimeString() . ']', [
+        logger()->debug('Email sent via Log at ['.Date::now()->toDateTimeString().']', [
             'to' => $email->to,
             'templateId' => $email->templateId,
             'values' => array_merge($this->globalValues, $email->values),

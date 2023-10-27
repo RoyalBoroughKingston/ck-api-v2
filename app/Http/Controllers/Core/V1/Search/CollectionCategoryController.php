@@ -11,13 +11,6 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CollectionCategoryController extends Controller
 {
-    /**
-     * @param \App\Http\Requests\Search\Collection\CategoryRequest $request
-     * @param \App\Search\SearchCriteriaQuery $criteria
-     * @param \App\Search\ElasticSearch\CollectionCategoryQueryBuilder $builder
-     * @param \App\Search\ElasticSearch\ServiceEloquentMapper $mapper
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
     public function __invoke(
         CategoryRequest $request,
         SearchCriteriaQuery $criteria,
@@ -27,8 +20,8 @@ class CollectionCategoryController extends Controller
         $criteria->setCategories([$request->input('category')]);
 
         // Get the pagination values
-        $page = page((int)$request->input('page'));
-        $perPage = per_page((int)$request->input('per_page'));
+        $page = page((int) $request->input('page'));
+        $perPage = per_page((int) $request->input('per_page'));
 
         // Create the query
         $esQuery = $builder->build(

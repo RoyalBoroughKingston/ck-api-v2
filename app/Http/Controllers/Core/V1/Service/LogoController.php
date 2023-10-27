@@ -14,10 +14,9 @@ class LogoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Service\Logo\ShowRequest $request
-     * @param \App\Models\Service $service
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function show(ShowRequest $request, Service $service)
     {
@@ -46,9 +45,9 @@ class LogoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Http\Requests\Service\Logo\ShowRequest $request
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function showNew(ShowRequest $request)
     {

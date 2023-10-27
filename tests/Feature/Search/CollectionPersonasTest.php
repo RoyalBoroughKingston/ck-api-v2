@@ -13,8 +13,6 @@ class CollectionPersonasTest extends TestCase implements UsesElasticsearch
 {
     /**
      * Setup the test environment.
-     *
-     * @return void
      */
     protected function setUp(): void
     {

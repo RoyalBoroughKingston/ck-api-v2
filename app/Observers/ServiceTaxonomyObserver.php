@@ -8,8 +8,6 @@ class ServiceTaxonomyObserver
 {
     /**
      * Handle to the service taxonomy "created" event.
-     *
-     * @param \App\Models\ServiceTaxonomy $serviceTaxonomy
      */
     public function created(ServiceTaxonomy $serviceTaxonomy)
     {
@@ -18,8 +16,6 @@ class ServiceTaxonomyObserver
 
     /**
      * Handle the service taxonomy "deleted" event.
-     *
-     * @param \App\Models\ServiceTaxonomy $serviceTaxonomy
      */
     public function deleted(ServiceTaxonomy $serviceTaxonomy)
     {

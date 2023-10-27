@@ -45,7 +45,7 @@ class Taxonomy extends Model
     }
 
     /**
-     * @param \App\Models\Taxonomy|null $taxonomy
+     * @param  \App\Models\Taxonomy|null  $taxonomy
      * @return \App\Models\Taxonomy
      */
     public function getRootTaxonomy(Taxonomy $taxonomy = null): Taxonomy
@@ -59,10 +59,6 @@ class Taxonomy extends Model
         return $this->getRootTaxonomy($taxonomy->parent);
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function rootIsCalled(string $name): bool
     {
         return $this->getRootTaxonomy()->name === $name;
@@ -78,9 +74,6 @@ class Taxonomy extends Model
         return $this;
     }
 
-    /**
-     * @return int
-     */
     protected function getDepth(): int
     {
         if ($this->parent_id === null) {
@@ -90,9 +83,6 @@ class Taxonomy extends Model
         return 1 + $this->parent->getDepth();
     }
 
-    /**
-     * @return self
-     */
     public function updateDepth(): self
     {
         $this->update(['depth' => $this->getDepth()]);
@@ -107,13 +97,13 @@ class Taxonomy extends Model
     /**
      * Return an array of all Taxonomies below the provided Taxonomy root.
      *
-     * @param App\Models\Taxonomy $taxonomy
-     * @param mixed $allTaxonomies
+     * @param  App\Models\Taxonomy  $taxonomy
+     * @param  mixed  $allTaxonomies
      * @return Illuminate\Support\Collection
      */
     public function getAllDescendantTaxonomies(self $taxonomy, &$allTaxonomies = [])
     {
-        if (!$taxonomy) {
+        if (! $taxonomy) {
             $taxonomy = self::serviceEligibility();
         }
 
@@ -133,7 +123,6 @@ class Taxonomy extends Model
     /**
      * Filter the passed taxonomy IDs for descendants of this taxonomy.
      *
-     * @param array $taxonomyIds
      * @return array|bool
      */
     public function filterDescendants(array $taxonomyIds)

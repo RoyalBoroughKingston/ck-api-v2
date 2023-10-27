@@ -11,9 +11,9 @@ use Illuminate\Http\Response;
 class OpenApi extends BaseOpenApi implements Responsable
 {
     /**
-     * @param string|null $objectId
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
+     *
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      */
     public static function create(string $objectId = null): BaseObject
     {
@@ -156,8 +156,7 @@ class OpenApi extends BaseOpenApi implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \Illuminate\Http\Request  $request
      */
     public function toResponse($request): JsonResponse
     {

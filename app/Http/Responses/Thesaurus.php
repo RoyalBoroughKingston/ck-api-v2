@@ -13,8 +13,6 @@ class Thesaurus implements Responsable
 
     /**
      * Thesaurus constructor.
-     *
-     * @param array $thesaurus
      */
     public function __construct(array $thesaurus)
     {
@@ -24,7 +22,7 @@ class Thesaurus implements Responsable
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function toResponse($request)

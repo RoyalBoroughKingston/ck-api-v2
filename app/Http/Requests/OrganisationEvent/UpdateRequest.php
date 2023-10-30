@@ -61,7 +61,7 @@ class UpdateRequest extends FormRequest
                 'min:1',
                 'max:255',
                 Rule::requiredIf(function () {
-                    return ! empty($this->organiser_phone) || ! empty($this->organiser_email) || ! empty($this->organiser_url);
+                    return !empty($this->organiser_phone) || !empty($this->organiser_email) || !empty($this->organiser_url);
                 }),
                 new NullableIf(function () {
                     return empty($this->organiser_phone) && empty($this->organiser_email) && empty($this->organiser_url);
@@ -73,7 +73,7 @@ class UpdateRequest extends FormRequest
                 'max:255',
                 new UkPhoneNumber(),
                 Rule::requiredIf(function () {
-                    return ! empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_url);
+                    return !empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_url);
                 }),
                 new NullableIf(function () {
                     return empty($this->organiser_name);
@@ -83,7 +83,7 @@ class UpdateRequest extends FormRequest
                 'email',
                 'max:255',
                 Rule::requiredIf(function () {
-                    return ! empty($this->organiser_name) && empty($this->organiser_phone) && empty($this->organiser_url);
+                    return !empty($this->organiser_name) && empty($this->organiser_phone) && empty($this->organiser_url);
                 }),
                 new NullableIf(function () {
                     return empty($this->organiser_name);
@@ -93,7 +93,7 @@ class UpdateRequest extends FormRequest
                 'url',
                 'max:255',
                 Rule::requiredIf(function () {
-                    return ! empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_phone);
+                    return !empty($this->organiser_name) && empty($this->organiser_email) && empty($this->organiser_phone);
                 }),
                 new NullableIf(function () {
                     return empty($this->organiser_name);
@@ -141,7 +141,7 @@ class UpdateRequest extends FormRequest
             'is_virtual' => ['boolean'],
             'location_id' => [
                 Rule::requiredIf(function () {
-                    return ! empty($this->is_virtual) && $this->is_virtual == false;
+                    return !empty($this->is_virtual) && $this->is_virtual == false;
                 }),
                 'exists:locations,id',
             ],

@@ -52,11 +52,11 @@ EOT;
     {
         $model = $this->argument('model');
 
-        if (! is_dir(app_path('Models/Relationships'))) {
+        if (!is_dir(app_path('Models/Relationships'))) {
             mkdir(app_path('Models/Relationships'));
         }
 
-        file_put_contents(app_path('Models/Relationships/'.$model.'Relationships.php'), $contents);
+        file_put_contents(app_path('Models/Relationships/' . $model . 'Relationships.php'), $contents);
 
         return true;
     }

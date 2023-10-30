@@ -16,7 +16,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->isServiceAdmin() && ! ($this->user()->isGlobalAdmin() && ! $this->user()->isSuperAdmin());
+        return $this->user()->isServiceAdmin() && !($this->user()->isGlobalAdmin() && !$this->user()->isSuperAdmin());
     }
 
     /**
@@ -35,12 +35,12 @@ class StoreRequest extends FormRequest
             'roles.*' => ['required', 'array', new CanAssignRoleToUser($this->user()->load('userRoles'))],
             'roles.*.role' => ['required_with:roles.*', 'string', 'exists:roles,name'],
             'roles.*.organisation_id' => [
-                'required_if:roles.*.role,'.Role::NAME_ORGANISATION_ADMIN,
+                'required_if:roles.*.role,' . Role::NAME_ORGANISATION_ADMIN,
                 'exists:organisations,id',
             ],
             'roles.*.service_id' => [
-                'required_if:roles.*.role,'.Role::NAME_SERVICE_WORKER,
-                'required_if:roles.*.role,'.Role::NAME_SERVICE_ADMIN,
+                'required_if:roles.*.role,' . Role::NAME_SERVICE_WORKER,
+                'required_if:roles.*.role,' . Role::NAME_SERVICE_ADMIN,
                 'exists:services,id',
             ],
         ];

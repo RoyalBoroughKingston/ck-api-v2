@@ -48,7 +48,6 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
     /**
      * Build the search query.
      *
-     *
      * @throws BindingResolutionException
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
@@ -209,7 +208,7 @@ class EventQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilde
                 'path' => 'event_location',
                 'query' => [
                     'geo_distance' => [
-                        'distance' => $distance ? $distance.'mi' : config('local.search_distance').'mi',
+                        'distance' => $distance ? $distance . 'mi' : config('local.search_distance') . 'mi',
                         'event_location.location' => $coordinate->toArray(),
                     ],
                 ],

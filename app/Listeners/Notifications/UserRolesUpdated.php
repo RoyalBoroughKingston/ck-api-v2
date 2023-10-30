@@ -124,36 +124,36 @@ class UserRolesUpdated
 
             // Only allow global admin if not also super admin.
             if ($userRole->isGlobalAdmin()) {
-                return ! $isSuperAdmin;
+                return !$isSuperAdmin;
             }
 
             // Only allow content admin if not also super admin or global admin.
             if ($userRole->isContentAdmin()) {
-                return ! $isSuperAdmin && ! $isGlobalAdmin;
+                return !$isSuperAdmin && !$isGlobalAdmin;
             }
 
             // Only allow organisation admin if not also super admin or global admin.
             if ($userRole->isOrganisationAdmin()) {
-                return ! $isSuperAdmin
-                && ! $isGlobalAdmin
-                && ! $isContentAdmin;
+                return !$isSuperAdmin
+                && !$isGlobalAdmin
+                && !$isContentAdmin;
             }
 
             // Only allow service admin if not also super admin, global admin or organisation admin.
             if ($userRole->isServiceAdmin()) {
-                return ! $isSuperAdmin
-                && ! $isGlobalAdmin
-                && ! $isContentAdmin
-                && ! $isOrganisationAdmin($userRole);
+                return !$isSuperAdmin
+                && !$isGlobalAdmin
+                && !$isContentAdmin
+                && !$isOrganisationAdmin($userRole);
             }
 
             // Only allow service worker if not also super admin, global admin, organisation admin or service admin.
             if ($userRole->isServiceWorker()) {
-                return ! $isSuperAdmin
-                && ! $isGlobalAdmin
-                && ! $isContentAdmin
-                && ! $isOrganisationAdmin($userRole)
-                && ! $isServiceAdmin($userRole);
+                return !$isSuperAdmin
+                && !$isGlobalAdmin
+                && !$isContentAdmin
+                && !$isOrganisationAdmin($userRole)
+                && !$isServiceAdmin($userRole);
             }
 
             throw new \Exception("User role invalid [{$userRole->role->name}]");

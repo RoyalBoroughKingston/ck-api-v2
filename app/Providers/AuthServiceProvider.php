@@ -23,7 +23,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::routes();
         Passport::enableImplicitGrant();
         Passport::tokensExpireIn(Date::now()->addMonths(18));
         Passport::useClientModel(Client::class);

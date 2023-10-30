@@ -9,7 +9,6 @@ class CollectionObserver
     /**
      * Handle the collection "created" event.
      *
-     *
      * @throws \Exception
      */
     public function created(Collection $collection): void
@@ -24,7 +23,6 @@ class CollectionObserver
 
     /**
      * Handle the collection "updating" event.
-     *
      *
      * @throws \Exception
      */
@@ -60,7 +58,6 @@ class CollectionObserver
     /**
      * Handle the collection "updated" event.
      *
-     *
      * @throws \Exception
      */
     public function updated(Collection $collection): void
@@ -78,7 +75,6 @@ class CollectionObserver
 
     /**
      * Handle the collection "deleted" event.
-     *
      *
      * @throws \Exception
      */

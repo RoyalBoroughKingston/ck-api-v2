@@ -65,7 +65,7 @@ class UpdateRequest extends Model
 
     public function isExisting(): bool
     {
-        return ! $this->isNew();
+        return !$this->isNew();
     }
 
     public function isApproved(): bool
@@ -120,7 +120,7 @@ class UpdateRequest extends Model
 
     protected function createUpdateableInstance(): AppliesUpdateRequests
     {
-        $className = '\\App\\UpdateRequest\\'.Str::studly($this->updateable_type);
+        $className = '\\App\\UpdateRequest\\' . Str::studly($this->updateable_type);
 
         return resolve($className);
     }

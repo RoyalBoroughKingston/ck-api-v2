@@ -156,7 +156,7 @@ class ImportController extends Controller
                 'select group_concat(distinct id order by id separator ";") as ids',
                 'group_concat(distinct name order by name separator ";") as results',
                 'count(name) as row_count',
-                $this->buildSqlReplaceCharacterSet('lower(trim(name))', $normaliseCharacters).' as normalised_col',
+                $this->buildSqlReplaceCharacterSet('lower(trim(name))', $normaliseCharacters) . ' as normalised_col',
             ]),
         ];
         $sql[] = 'FROM organisations';
@@ -165,7 +165,7 @@ class ImportController extends Controller
          * Ignore those organisations where the user has flagged the duplicate as allowed.
          */
         if (count($this->ignoreDuplicateIds)) {
-            $sql[] = 'where id NOT IN ("'.implode('","', $this->ignoreDuplicateIds).'")';
+            $sql[] = 'where id NOT IN ("' . implode('","', $this->ignoreDuplicateIds) . '")';
         }
 
         $sql[] = 'group by normalised_col';
@@ -173,7 +173,7 @@ class ImportController extends Controller
         /**
          * Filter to only take organisations that match with imported rows, or all existing duplicate named organisations are included.
          */
-        $sql[] = 'having normalised_col IN ("'.implode('","', $normalisedNames).'")';
+        $sql[] = 'having normalised_col IN ("' . implode('","', $normalisedNames) . '")';
         $sql[] = 'and row_count > 1';
 
         return DB::select(implode(' ', $sql));
@@ -189,9 +189,9 @@ class ImportController extends Controller
         $sql = $string;
         foreach ($replace as $chr) {
             if ($chr === "'" || $chr === '"') {
-                $chr = '\\'.$chr;
+                $chr = '\\' . $chr;
             }
-            $sql = 'replace('.$sql.',"'.$chr.'","'.$replacement.'")';
+            $sql = 'replace(' . $sql . ',"' . $chr . '","' . $replacement . '")';
         }
 
         return $sql;
@@ -199,7 +199,6 @@ class ImportController extends Controller
 
     /**
      * Format the duplicate Organisations and store details of them.
-     *
      *
      * @throws App\Exceptions\DuplicateContentException
      */
@@ -293,7 +292,7 @@ class ImportController extends Controller
                  * and add the meta fields to the Organisation row.
                  */
                 $organisationRow['name'] = preg_replace('/[^a-zA-Z0-9,\.\'\&\-" ]/', '', $organisationRow['name']);
-                $organisationRow['slug'] = Str::slug($organisationRow['name'].' '.uniqid(), '-');
+                $organisationRow['slug'] = Str::slug($organisationRow['name'] . ' ' . uniqid(), '-');
                 $organisationRow['created_at'] = Date::now();
                 $organisationRow['updated_at'] = Date::now();
 

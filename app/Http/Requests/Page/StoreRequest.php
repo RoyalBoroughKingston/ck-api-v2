@@ -61,7 +61,7 @@ class StoreRequest extends FormRequest
             'order' => [
                 'integer',
                 'min:0',
-                'max:'.$maxOrder,
+                'max:' . $maxOrder,
             ],
             'page_type' => [
                 'sometimes',

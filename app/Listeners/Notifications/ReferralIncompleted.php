@@ -27,7 +27,7 @@ class ReferralIncompleted
         $isIncomplete = $latestStatusUpdate->to === Referral::STATUS_INCOMPLETED;
 
         // Only handle referrals that have been marked as completed.
-        if (! $latestStatusUpdate->statusHasChanged() || ! $isIncomplete) {
+        if (!$latestStatusUpdate->statusHasChanged() || !$isIncomplete) {
             return;
         }
 

@@ -19,7 +19,6 @@ class DocsController extends Controller
     /**
      * Parse the specified YAML file through Blade.
      *
-     *
      * @throws \Throwable
      */
     public function show(): Responsable

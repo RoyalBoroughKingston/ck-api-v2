@@ -52,7 +52,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, User $user)
     {
         // If OTP is disabled then skip this method.
-        if (! config('local.otp_enabled')) {
+        if (!config('local.otp_enabled')) {
             return;
         }
 
@@ -99,9 +99,8 @@ EOT;
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
-     *
      * @throws \Illuminate\Validation\ValidationException
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function otp(Request $request)
     {
@@ -139,7 +138,6 @@ EOT;
     /**
      * Redirect the user after determining they are locked out.
      *
-     *
      * @throws \Illuminate\Validation\ValidationException
      */
     protected function sendOtpLockoutResponse(Request $request)
@@ -155,7 +153,6 @@ EOT;
 
     /**
      * Get the failed login response instance.
-     *
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -176,6 +173,6 @@ EOT;
             Str::lower($request->input($this->username()))
         );
 
-        return $key.'|'.$request->ip();
+        return $key . '|' . $request->ip();
     }
 }

@@ -21,7 +21,7 @@ class PageContent implements Rule
     protected $pageType;
 
     /**
-     * @param  mixed  $pageType
+     * @param mixed $pageType
      */
     public function __construct($pageType = 'information')
     {
@@ -31,17 +31,17 @@ class PageContent implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      */
     public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not an array.
-        if (! is_array($value)) {
+        if (!is_array($value)) {
             return false;
         }
 
         if ($value['type'] === 'copy') {
-            if (! array_key_exists('value', $value)) {
+            if (!array_key_exists('value', $value)) {
                 $this->message = 'Invalid format for content';
 
                 return false;
@@ -53,22 +53,22 @@ class PageContent implements Rule
             }
         }
         if ($value['type'] === 'cta') {
-            if (empty($value['title']) || ! is_string($value['title'])) {
+            if (empty($value['title']) || !is_string($value['title'])) {
                 $this->message = 'Call to action title is required';
 
                 return false;
             }
-            if (empty($value['description']) || ! is_string($value['description'])) {
+            if (empty($value['description']) || !is_string($value['description'])) {
                 $this->message = 'Call to action description is required';
 
                 return false;
             }
-            if ((! empty($value['url']) && empty($value['buttonText'])) || (empty($value['url']) && ! empty($value['buttonText']))) {
+            if ((!empty($value['url']) && empty($value['buttonText'])) || (empty($value['url']) && !empty($value['buttonText']))) {
                 $this->message = 'Call to action with a link requires both the URL and the button text';
 
                 return false;
             }
-            if (! empty($value['url']) && filter_var($value['url'], FILTER_VALIDATE_URL) === false) {
+            if (!empty($value['url']) && filter_var($value['url'], FILTER_VALIDATE_URL) === false) {
                 $this->message = 'Call to action link must be a valid URL';
 
                 return false;

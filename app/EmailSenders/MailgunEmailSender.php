@@ -83,7 +83,7 @@ class MailgunEmailSender implements EmailSender
         $email->notification->update(['message' => $content]);
 
         if (config('app.debug')) {
-            logger()->debug('Email sent via Mailgun', (array) $response);
+            logger()->debug('Email sent via Mailgun', (array)$response);
         }
     }
 }

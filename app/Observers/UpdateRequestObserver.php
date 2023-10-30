@@ -18,7 +18,6 @@ class UpdateRequestObserver
     /**
      * Handle to the update request "created" event.
      *
-     *
      * @throws \Exception
      */
     public function created(UpdateRequest $updateRequest): void
@@ -38,7 +37,7 @@ class UpdateRequestObserver
 
     private function handleExistingUpdateRequest(UpdateRequest $updateRequest)
     {
-        if (! $this->ownerIsSuperAdmin($updateRequest)) {
+        if (!$this->ownerIsSuperAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForExisting($updateRequest);
         }
 
@@ -48,7 +47,7 @@ class UpdateRequestObserver
 
     private function handleNewUpdateRequest(UpdateRequest $updateRequest)
     {
-        if (! $this->ownerIsSuperAdmin($updateRequest)) {
+        if (!$this->ownerIsSuperAdmin($updateRequest)) {
             $this->sendCreatedNotificationsForNew($updateRequest);
         }
     }

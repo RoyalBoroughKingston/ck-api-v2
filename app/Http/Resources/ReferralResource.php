@@ -12,7 +12,6 @@ class ReferralResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     *
      * @throws \Exception
      */
     public function toArray(Request $request): array

@@ -58,7 +58,7 @@ class SpreadsheetParser
     /**
      * Constructor.
      *
-     * @param  mixed  $chunkSize
+     * @param mixed $chunkSize
      */
     public function __construct($chunkSize = 2048)
     {

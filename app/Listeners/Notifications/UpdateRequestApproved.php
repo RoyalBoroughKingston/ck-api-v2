@@ -18,7 +18,6 @@ class UpdateRequestApproved
     /**
      * Handle the event.
      *
-     *
      * @throws \Exception
      */
     public function handle(EndpointHit $event): void

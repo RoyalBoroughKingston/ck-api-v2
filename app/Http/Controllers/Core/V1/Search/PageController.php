@@ -24,8 +24,8 @@ class PageController
         }
 
         // Get the pagination values
-        $page = page((int) $request->input('page'));
-        $perPage = per_page((int) $request->input('per_page'));
+        $page = page((int)$request->input('page'));
+        $perPage = per_page((int)$request->input('per_page'));
 
         // Create the query
         $esQuery = $builder->build(

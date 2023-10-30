@@ -13,7 +13,7 @@ trait SettingMutators
     }
 
     /**
-     * @param  mixed  $value
+     * @param mixed $value
      */
     public function setValueAttribute($value): void
     {

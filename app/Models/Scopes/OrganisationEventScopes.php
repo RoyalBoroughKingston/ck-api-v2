@@ -38,7 +38,7 @@ trait OrganisationEventScopes
             $query->select(DB::raw(1))
                 ->from($locationsTable)
                 ->whereRaw("$locationsTable.id = {$this->getTable()}.location_id")
-                ->where("$locationsTable.has_wheelchair_access", (bool) $required);
+                ->where("$locationsTable.has_wheelchair_access", (bool)$required);
         });
     }
 
@@ -49,12 +49,12 @@ trait OrganisationEventScopes
             $query->select(DB::raw(1))
                 ->from($locationsTable)
                 ->whereRaw("$locationsTable.id = {$this->getTable()}.location_id")
-                ->where("$locationsTable.has_induction_loop", (bool) $required);
+                ->where("$locationsTable.has_induction_loop", (bool)$required);
         });
     }
 
     /**
-     * @param  bool  $required
+     * @param bool $required
      */
     public function scopeInCollections(Builder $query, ...$collectionIds): Builder
     {
@@ -78,7 +78,7 @@ trait OrganisationEventScopes
     }
 
     /**
-     * @param  \App\Models\OrganisationEvent  $organisationEvent
+     * @param \App\Models\OrganisationEvent $organisationEvent
      */
     public function scopeCollections(Builder $query): Builder
     {

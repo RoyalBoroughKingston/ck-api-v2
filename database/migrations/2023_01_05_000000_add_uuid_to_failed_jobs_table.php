@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-return new class() extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,7 +19,7 @@ return new class() extends Migration
         DB::table('failed_jobs')->whereNull('uuid')->cursor()->each(function ($job) {
             DB::table('failed_jobs')
                 ->where('id', $job->id)
-                ->update(['uuid' => (string) Str::uuid()]);
+                ->update(['uuid' => (string)Str::uuid()]);
         });
     }
 

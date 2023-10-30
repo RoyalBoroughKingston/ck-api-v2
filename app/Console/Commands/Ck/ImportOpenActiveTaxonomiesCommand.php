@@ -26,14 +26,13 @@ class ImportOpenActiveTaxonomiesCommand extends Command
     /**
      * Execute the console command.
      *
-     *
      * @throws \Exception
      */
     public function handle(): int
     {
         $jsonUrl = null;
         if ($this->option('url')) {
-            if (! preg_match("/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $this->option('url'))) {
+            if (!preg_match("/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $this->option('url'))) {
                 $this->error('The .jsonld file URL is invalid. Exiting');
 
                 return false;
@@ -55,6 +54,6 @@ class ImportOpenActiveTaxonomiesCommand extends Command
             $this->error($e->getMessage());
         }
 
-        $this->info('All records imported. Total records imported: '.$importCount);
+        $this->info('All records imported. Total records imported: ' . $importCount);
     }
 }

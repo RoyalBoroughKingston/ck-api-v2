@@ -101,7 +101,7 @@ class PagePersistenceService implements DataPersistenceService
 
             $updateableType = UpdateRequestModel::EXISTING_TYPE_PAGE;
 
-            if (! $page) {
+            if (!$page) {
                 $updateableType = UpdateRequestModel::NEW_TYPE_PAGE;
 
                 $data['page_type'] = $data['page_type'] ?? Page::PAGE_TYPE_INFORMATION;
@@ -117,7 +117,7 @@ class PagePersistenceService implements DataPersistenceService
             // Only persist to the database if the user did not request a preview.
             if ($updateRequest->updateable_type === UpdateRequestModel::EXISTING_TYPE_PAGE) {
                 // Preview currently only available for update operations
-                if (! $request->isPreview()) {
+                if (!$request->isPreview()) {
                     $updateRequest->save();
                 }
             } else {

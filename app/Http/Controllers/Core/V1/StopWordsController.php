@@ -27,7 +27,6 @@ class StopWordsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     *
      * @throws \Exception
      */
     public function index(IndexRequest $request): StopWords
@@ -50,7 +49,6 @@ class StopWordsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
      *
      * @throws \Exception
      */

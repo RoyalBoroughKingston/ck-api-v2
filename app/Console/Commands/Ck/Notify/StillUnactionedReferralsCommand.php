@@ -62,7 +62,7 @@ class StillUnactionedReferralsCommand extends Command
                 ->unique('id')
                 ->filter(function (User $user) use ($referral) {
                     return $user->isServiceAdmin($referral->service)
-                        && ! $user->isGlobalAdmin();
+                        && !$user->isGlobalAdmin();
                 });
 
             /** @var \Illuminate\Database\Eloquent\Collection $serviceWorkers */
@@ -70,8 +70,8 @@ class StillUnactionedReferralsCommand extends Command
                 ->unique('id')
                 ->filter(function (User $user) use ($referral) {
                     return $user->isServiceWorker($referral->service)
-                        && ! $user->isGlobalAdmin()
-                        && ! $user->isServiceAdmin($referral->service);
+                        && !$user->isGlobalAdmin()
+                        && !$user->isServiceAdmin($referral->service);
                 });
 
             Notification::sendEmail(

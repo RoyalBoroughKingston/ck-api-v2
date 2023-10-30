@@ -35,17 +35,17 @@ class CanUpdateCategoryTaxonomyRelationships implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      */
     public function passes(string $attribute, $value): bool
     {
         // Immediately fail if the value is not an array of strings.
-        if (! is_array($value)) {
+        if (!is_array($value)) {
             return false;
         }
 
         foreach ($value as $item) {
-            if (! is_string($item)) {
+            if (!is_string($item)) {
                 return false;
             }
         }
@@ -76,6 +76,6 @@ class CanUpdateCategoryTaxonomyRelationships implements Rule
      */
     public function message(): string
     {
-        return 'You are not authorised to update this '.class_basename($this->model).'\'s category taxonomies.';
+        return 'You are not authorised to update this ' . class_basename($this->model) . '\'s category taxonomies.';
     }
 }

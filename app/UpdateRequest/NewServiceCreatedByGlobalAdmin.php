@@ -73,7 +73,7 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
         if ($data->has('eligibility_types') && $data['eligibility_types']['custom'] ?? null) {
             // Create the custom fields
             foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
-                $fieldName = 'eligibility_'.$customEligibilityType.'_custom';
+                $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
                 $insert[$fieldName] = $value;
             }
         }

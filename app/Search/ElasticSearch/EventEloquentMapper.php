@@ -64,7 +64,7 @@ class EventEloquentMapper implements EloquentMapper
 
         if (count($locations)) {
             return $events->filter(function (Event $event) {
-                return ! $event->is_virtual;
+                return !$event->is_virtual;
             })
                 ->sortBy(function (Event $event) use ($locations) {
                     $location = $locations[0]['_geo_distance']['event_location.location'];

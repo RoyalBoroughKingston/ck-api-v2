@@ -27,7 +27,7 @@ class ReferralCompleted
         $isComplete = $latestStatusUpdate->to === Referral::STATUS_COMPLETED;
 
         // Only handle referrals that have been marked as completed.
-        if (! $latestStatusUpdate->statusHasChanged() || ! $isComplete) {
+        if (!$latestStatusUpdate->statusHasChanged() || !$isComplete) {
             return;
         }
 

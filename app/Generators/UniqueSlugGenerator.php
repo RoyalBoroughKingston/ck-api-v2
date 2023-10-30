@@ -21,7 +21,7 @@ class UniqueSlugGenerator
     }
 
     /**
-     * @param  string  $string The string to slugify
+     * @param string $string The string to slugify
      */
     public function generate(string $string, string $table, string $column = 'slug', int $index = 0): string
     {
@@ -40,8 +40,8 @@ class UniqueSlugGenerator
     }
 
     /**
-     * @param  string  $string The string to slugify
-     * @param  string  $slug The existing slug to compare against
+     * @param string $string The string to slugify
+     * @param string $slug The existing slug to compare against
      * @return bool Check whether the input string would slugify into the provided slug
      */
     public function compareEquals(string $string, string $slug): bool

@@ -41,12 +41,13 @@ class Address
 
     /**
      * Address constructor.
+     * @param mixed $address
      */
     public function __construct($address, string $city, string $county, string $postcode, string $country)
     {
-        $this->addressLine1 = (array) $address[0];
-        $this->addressLine2 = (array) $address[1] ?? null;
-        $this->addressLine3 = (array) $address[2] ?? null;
+        $this->addressLine1 = (array)$address[0];
+        $this->addressLine2 = (array)$address[1] ?? null;
+        $this->addressLine3 = (array)$address[2] ?? null;
         $this->city = $city;
         $this->county = $county;
         $this->postcode = $postcode;
@@ -74,7 +75,7 @@ class Address
             $this->postcode,
             $this->country,
         ], function ($value) {
-            return (bool) $value;
+            return (bool)$value;
         })));
     }
 }

@@ -154,8 +154,6 @@ return [
      */
 
     'providers' => ServiceProvider::defaultProviders()->merge([
-        // Illuminate\Queue\QueueServiceProvider::class,
-
         /*
          * Package Service Providers...
          */
@@ -173,7 +171,6 @@ return [
         App\Providers\MailgunServiceProvider::class,
         App\Providers\MigrationServiceProvider::class,
         App\Providers\ModelServiceProvider::class,
-        App\Providers\QueueServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TestingServiceProvider::class,
         App\Providers\TwilioServiceProvider::class,

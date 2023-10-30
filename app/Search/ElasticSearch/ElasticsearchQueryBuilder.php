@@ -47,9 +47,9 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a match query.
      *
-     * @param  int  $boost
-     * @param  mixed  $fuzziness
-     * @param  string  $operator
+     * @param int $boost
+     * @param mixed $fuzziness
+     * @param string $operator
      */
     protected function addMatch(string $field, string $term, string $path = null, $boost = 1, $fuzziness = 'AUTO', $operator = 'OR'): void
     {
@@ -71,7 +71,7 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a match_phrase query.
      *
-     * @param  int  $boost
+     * @param int $boost
      */
     protected function addMatchPhrase(string $field, string $term, string $path = null, $boost = 1): void
     {
@@ -91,7 +91,7 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a term query.
      *
-     * @param  int  $boost
+     * @param int $boost
      */
     protected function addTerm(string $field, string $term, string $path = null, $boost = 1): void
     {
@@ -111,8 +111,8 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a terms query.
      *
-     * @param  string  $term
-     * @param  int  $boost
+     * @param string $term
+     * @param int $boost
      */
     protected function addTerms(string $field, array $terms, string $path = null, $boost = 1): void
     {
@@ -130,7 +130,7 @@ abstract class ElasticsearchQueryBuilder
     /**
      * Add a filter.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      */
     public function addFilter(string $field, $value): void
     {

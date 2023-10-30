@@ -9,7 +9,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class SortParameter extends Parameter
 {
     /**
-     * @param  string[]  $fields
+     * @param string[] $fields
      */
     public static function create(
         string $objectId = null,

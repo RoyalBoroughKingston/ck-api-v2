@@ -49,7 +49,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      */
     public function searchableAs(): string
     {
-        return config('scout.prefix').'events';
+        return config('scout.prefix') . 'events';
     }
 
     /**
@@ -72,7 +72,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
             'event_location' => null,
         ];
 
-        if (! $this->is_virtual) {
+        if (!$this->is_virtual) {
             $organisationEvent['event_location'] = [
                 'id' => $this->location->id,
                 'location' => [
@@ -119,7 +119,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $data = $updateRequest->data;
 
         // Update the Image File entity if new
-        if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && ! empty($data['image_file_id'])) {
+        if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['image_file_id'])->assigned();
 
@@ -208,9 +208,8 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     }
 
     /**
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

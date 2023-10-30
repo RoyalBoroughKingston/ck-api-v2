@@ -8,8 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,7 +16,7 @@ return new class() extends Migration
     {
         $host = parse_url(config('app.url'), PHP_URL_HOST);
         $escHost = str_replace('.', '\.', $host);
-        $uuidRegex = '|'.$escHost.'\/([0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12})|i';
+        $uuidRegex = '|' . $escHost . '\/([0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12})|i';
         Page::chunk(50, function ($pages) use ($host, $uuidRegex) {
             foreach ($pages as $page) {
                 if (preg_match_all($uuidRegex, print_r($page->content, true), $matches)) {

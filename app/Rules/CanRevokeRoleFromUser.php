@@ -38,12 +38,12 @@ class CanRevokeRoleFromUser implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  mixed  $role
+     * @param mixed $role
      */
     public function passes(string $attribute, $role): bool
     {
         // Immediately fail if the value is not an array.
-        if (! $this->validate($role)) {
+        if (!$this->validate($role)) {
             return false;
         }
 
@@ -55,29 +55,29 @@ class CanRevokeRoleFromUser implements Rule
         switch ($role['role']) {
             case Role::NAME_SERVICE_WORKER:
                 $service = Service::query()->findOrFail($role['service_id']);
-                if (! $this->user->canRevokeServiceWorker($this->subject, $service)) {
+                if (!$this->user->canRevokeServiceWorker($this->subject, $service)) {
                     return false;
                 }
                 break;
             case Role::NAME_SERVICE_ADMIN:
                 $service = Service::query()->findOrFail($role['service_id']);
-                if (! $this->user->canRevokeServiceAdmin($this->subject, $service)) {
+                if (!$this->user->canRevokeServiceAdmin($this->subject, $service)) {
                     return false;
                 }
                 break;
             case Role::NAME_ORGANISATION_ADMIN:
                 $organisation = Organisation::query()->findOrFail($role['organisation_id']);
-                if (! $this->user->canRevokeOrganisationAdmin($this->subject, $organisation)) {
+                if (!$this->user->canRevokeOrganisationAdmin($this->subject, $organisation)) {
                     return false;
                 }
                 break;
             case Role::NAME_GLOBAL_ADMIN:
-                if (! $this->user->canRevokeGlobalAdmin($this->subject)) {
+                if (!$this->user->canRevokeGlobalAdmin($this->subject)) {
                     return false;
                 }
                 break;
             case Role::NAME_SUPER_ADMIN:
-                if (! $this->user->canRevokeSuperAdmin($this->subject)) {
+                if (!$this->user->canRevokeSuperAdmin($this->subject)) {
                     return false;
                 }
                 break;
@@ -96,16 +96,17 @@ class CanRevokeRoleFromUser implements Rule
 
     /**
      * Validates the value.
+     * @param mixed $role
      */
     protected function validate($role): bool
     {
         // check if array.
-        if (! is_array($role)) {
+        if (!is_array($role)) {
             return false;
         }
 
         // check if role key provided.
-        if (! isset($role['role'])) {
+        if (!isset($role['role'])) {
             return false;
         }
 
@@ -113,12 +114,12 @@ class CanRevokeRoleFromUser implements Rule
         switch ($role['role']) {
             case Role::NAME_SERVICE_WORKER:
             case Role::NAME_SERVICE_ADMIN:
-                if (! isset($role['service_id']) || ! is_string($role['service_id'])) {
+                if (!isset($role['service_id']) || !is_string($role['service_id'])) {
                     return false;
                 }
                 break;
             case Role::NAME_ORGANISATION_ADMIN:
-                if (! isset($role['organisation_id']) || ! is_string($role['organisation_id'])) {
+                if (!isset($role['organisation_id']) || !is_string($role['organisation_id'])) {
                     return false;
                 }
                 break;

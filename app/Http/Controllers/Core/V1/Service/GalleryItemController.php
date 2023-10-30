@@ -30,7 +30,7 @@ class GalleryItemController extends Controller
 
             // Abort if the update request does not contain the file ID.
             abort_if(
-                ! in_array(
+                !in_array(
                     $file->id,
                     Arr::pluck($updateRequest->data['gallery_items'] ?? [], 'file_id')
                 ),

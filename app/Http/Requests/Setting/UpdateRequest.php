@@ -44,7 +44,7 @@ class UpdateRequest extends FormRequest
             'cms.frontend.home.banners' => ['nullable', 'array'],
             'cms.frontend.home.banners.*' => ['nullable', 'array'],
             'cms.frontend.home.banners.*.title' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.home.banners.*.content',
                     'cms.frontend.home.banners.*.button_text',
                     'cms.frontend.home.banners.*.button_url',
@@ -54,7 +54,7 @@ class UpdateRequest extends FormRequest
                 'max:70',
             ],
             'cms.frontend.home.banners.*.content' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.home.banners.*.title',
                     'cms.frontend.home.banners.*.button_text',
                     'cms.frontend.home.banners.*.button_url',
@@ -64,7 +64,7 @@ class UpdateRequest extends FormRequest
                 'max:200',
             ],
             'cms.frontend.home.banners.*.button_text' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.home.banners.*.title',
                     'cms.frontend.home.banners.*.content',
                     'cms.frontend.home.banners.*.button_url',
@@ -74,7 +74,7 @@ class UpdateRequest extends FormRequest
                 'max:30',
             ],
             'cms.frontend.home.banners.*.button_url' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.home.banners.*.title',
                     'cms.frontend.home.banners.*.content',
                     'cms.frontend.home.banners.*.button_text',
@@ -113,7 +113,7 @@ class UpdateRequest extends FormRequest
 
             'cms.frontend.banner' => ['required', 'array'],
             'cms.frontend.banner.title' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.banner.content',
                     'cms.frontend.banner.button_text',
                     'cms.frontend.banner.button_url',
@@ -125,7 +125,7 @@ class UpdateRequest extends FormRequest
                 'max:70',
             ],
             'cms.frontend.banner.content' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.banner.title',
                     'cms.frontend.banner.button_text',
                     'cms.frontend.banner.button_url',
@@ -137,7 +137,7 @@ class UpdateRequest extends FormRequest
                 'max:200',
             ],
             'cms.frontend.banner.button_text' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.banner.title',
                     'cms.frontend.banner.content',
                     'cms.frontend.banner.button_url',
@@ -149,7 +149,7 @@ class UpdateRequest extends FormRequest
                 'max:30',
             ],
             'cms.frontend.banner.button_url' => [
-                'required_with:'.implode(',', [
+                'required_with:' . implode(',', [
                     'cms.frontend.banner.title',
                     'cms.frontend.banner.content',
                     'cms.frontend.banner.button_text',

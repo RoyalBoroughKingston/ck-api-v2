@@ -104,8 +104,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $serviceEligibilityNames = $serviceEligibilities->pluck('name')->toArray();
         $serviceEligibilityRoot = Taxonomy::serviceEligibility();
         foreach ($serviceEligibilityRoot->children as $serviceEligibilityType) {
-            if (! $serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
-                $serviceEligibilityNames[] = $serviceEligibilityType->name.' All';
+            if (!$serviceEligibilityType->filterDescendants($serviceEligibilityIds)) {
+                $serviceEligibilityNames[] = $serviceEligibilityType->name . ' All';
             }
         }
 
@@ -182,7 +182,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         $data = $updateRequest->data;
 
         // Update the Logo File entity if new
-        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && ! empty($data['logo_file_id'])) {
+        if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && !empty($data['logo_file_id'])) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
@@ -386,9 +386,8 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
     }
 
     /**
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

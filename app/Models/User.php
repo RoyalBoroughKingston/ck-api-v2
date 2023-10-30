@@ -180,7 +180,7 @@ class User extends Authenticatable implements Notifiable
         }
 
         // Check if the user doesn't already have the role.
-        if (! $this->hasRole($role)) {
+        if (!$this->hasRole($role)) {
             return $this;
         }
 
@@ -228,7 +228,7 @@ class User extends Authenticatable implements Notifiable
          * If the invoker is an organisation admin for the organisation,
          * and the subject is not a global admin.
          */
-        if ($organisation && $this->isOrganisationAdmin($organisation) && ! ($subject->isSuperAdmin() || $subject->isGlobalAdmin() || $subject->isContentAdmin())) {
+        if ($organisation && $this->isOrganisationAdmin($organisation) && !($subject->isSuperAdmin() || $subject->isGlobalAdmin() || $subject->isContentAdmin())) {
             return true;
         }
 
@@ -236,7 +236,7 @@ class User extends Authenticatable implements Notifiable
          * If the invoker is a service admin for the service,
          * and the subject is not a organisation admin for the organisation.
          */
-        if ($service && $this->isServiceAdmin($service) && ! $subject->isOrganisationAdmin($organisation)) {
+        if ($service && $this->isServiceAdmin($service) && !$subject->isOrganisationAdmin($organisation)) {
             return true;
         }
 
@@ -282,7 +282,7 @@ class User extends Authenticatable implements Notifiable
          * If the invoker is an organisation admin for the organisation,
          * and the subject is not a content admin or a global admin.
          */
-        if ($this->isOrganisationAdmin() && ! ($subject->isSuperAdmin() || $subject->isGlobalAdmin() || $subject->isContentAdmin())) {
+        if ($this->isOrganisationAdmin() && !($subject->isSuperAdmin() || $subject->isGlobalAdmin() || $subject->isContentAdmin())) {
             return true;
         }
 
@@ -290,7 +290,7 @@ class User extends Authenticatable implements Notifiable
          * If the invoker is a service admin for the service,
          * and the subject is not a organisation admin for the organisation.
          */
-        if ($this->isServiceAdmin() && ! ($subject->isSuperAdmin() || $subject->isGlobalAdmin() || $subject->isContentAdmin() || $subject->isOrganisationAdmin())) {
+        if ($this->isServiceAdmin() && !($subject->isSuperAdmin() || $subject->isGlobalAdmin() || $subject->isContentAdmin() || $subject->isOrganisationAdmin())) {
             return true;
         }
 
@@ -477,17 +477,17 @@ class User extends Authenticatable implements Notifiable
 
     public function canMakeServiceWorker(Service $service): bool
     {
-        return $this->isServiceWorker($service) && ! ($this->isGlobalAdmin() && ! $this->isSuperAdmin());
+        return $this->isServiceWorker($service) && !($this->isGlobalAdmin() && !$this->isSuperAdmin());
     }
 
     public function canMakeServiceAdmin(Service $service): bool
     {
-        return $this->isServiceAdmin($service) && ! ($this->isGlobalAdmin() && ! $this->isSuperAdmin());
+        return $this->isServiceAdmin($service) && !($this->isGlobalAdmin() && !$this->isSuperAdmin());
     }
 
     public function canMakeOrganisationAdmin(Organisation $organisation): bool
     {
-        return $this->isOrganisationAdmin($organisation) && ! ($this->isGlobalAdmin() && ! $this->isSuperAdmin());
+        return $this->isOrganisationAdmin($organisation) && !($this->isGlobalAdmin() && !$this->isSuperAdmin());
     }
 
     public function canMakeContentAdmin(): bool
@@ -616,7 +616,7 @@ class User extends Authenticatable implements Notifiable
     /**
      * Get the ID's for the users.
      *
-     * @param  array  $blacklistedRoleIds Exclude users who have these roles
+     * @param array $blacklistedRoleIds Exclude users who have these roles
      */
     protected function getUserIdsForServices(SupportCollection $serviceIds, array $blacklistedRoleIds): SupportCollection
     {

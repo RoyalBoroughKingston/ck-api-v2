@@ -22,7 +22,7 @@ class ServiceCreated
         }
 
         // Only send the notification if the user who created the service is not a global admin.
-        if (! $event->getUser()->isGlobalAdmin()) {
+        if (!$event->getUser()->isGlobalAdmin()) {
             $this->notifyGlobalAdmins($event->getModel(), $event->getUser());
         }
     }

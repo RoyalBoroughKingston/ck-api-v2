@@ -89,7 +89,7 @@ class ReferralCreated
             'CONTACT_INFO' => $contactInfo,
             'REFERRAL_TYPE' => $referral->isSelfReferral() ? 'self referral' : 'champion referral',
             'REFERRAL_CONTACT_METHOD' => $contactMethod,
-            'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri').'/referrals',
+            'APP_ADMIN_REFERRAL_URL' => config('local.backend_uri') . '/referrals',
         ]));
     }
 }

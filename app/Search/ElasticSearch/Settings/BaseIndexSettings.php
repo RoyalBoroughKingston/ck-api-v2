@@ -39,7 +39,7 @@ class BaseIndexSettings
 
     protected function getStopWords(): array
     {
-        if (! $content = Storage::cloud()->get('elasticsearch/stop-words.csv')) {
+        if (!$content = Storage::cloud()->get('elasticsearch/stop-words.csv')) {
             return [];
         }
 
@@ -54,7 +54,7 @@ class BaseIndexSettings
 
     protected function getThesaurus(): array
     {
-        if (! $content = Storage::cloud()->get('elasticsearch/thesaurus.csv')) {
+        if (!$content = Storage::cloud()->get('elasticsearch/thesaurus.csv')) {
             return [];
         }
 

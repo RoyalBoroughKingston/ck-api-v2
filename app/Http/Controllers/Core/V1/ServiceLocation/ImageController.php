@@ -14,9 +14,8 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function __invoke(ShowRequest $request, ServiceLocation $serviceLocation)
     {

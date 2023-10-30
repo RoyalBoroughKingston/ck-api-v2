@@ -16,13 +16,13 @@ class ServiceFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->company().' '.$this->faker->word().' '.mt_rand(1, 100000);
+        $name = $this->faker->company() . ' ' . $this->faker->word() . ' ' . mt_rand(1, 100000);
 
         return [
             'organisation_id' => function () {
                 return \App\Models\Organisation::factory()->create()->id;
             },
-            'slug' => Str::slug($name).'-'.mt_rand(1, 1000),
+            'slug' => Str::slug($name) . '-' . mt_rand(1, 1000),
             'name' => $name,
             'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_ACTIVE,

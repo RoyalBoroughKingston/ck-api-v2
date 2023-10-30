@@ -18,7 +18,7 @@ class TrimQuotes extends TransformsRequest
     /**
      * Transform the given value.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      * @return mixed
      */
     protected function transform(string $key, $value)

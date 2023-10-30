@@ -33,7 +33,7 @@ class OpenActiveTaxonomyImporter
     /**
      * Fetch the Open Active taxonomy data and store it as a collection.
      *
-     * @param  mixed  $openActiveDirectoryUrl
+     * @param mixed $openActiveDirectoryUrl
      */
     public function fetchTaxonomies($openActiveDirectoryUrl): array
     {
@@ -41,7 +41,7 @@ class OpenActiveTaxonomyImporter
         try {
             $response = $client->get($openActiveDirectoryUrl);
             if (200 === $response->getStatusCode() && $response->getBody()->isReadable()) {
-                $data = json_decode((string) $response->getBody(), true);
+                $data = json_decode((string)$response->getBody(), true);
 
                 return $data['concept'];
             }
@@ -81,7 +81,7 @@ class OpenActiveTaxonomyImporter
     /**
      * Import the formatted taxonomies into the database.
      *
-     * @param  \App\Models\Taxonomy  $rootTaxonomy
+     * @param \App\Models\Taxonomy $rootTaxonomy
      */
     public function importTaxonomies(Taxonomy $openActiveCategory, array $taxonomyImports)
     {
@@ -103,7 +103,7 @@ class OpenActiveTaxonomyImporter
      * Map the imported data into an import friendly format.
      *
      * @param array openActiveTaxonomyData
-     * @param  mixed  $openActiveTaxonomyData
+     * @param mixed $openActiveTaxonomyData
      */
     public function mapOpenActiveTaxonomyImport(Taxonomy $rootTaxonomy, $openActiveTaxonomyData): array
     {

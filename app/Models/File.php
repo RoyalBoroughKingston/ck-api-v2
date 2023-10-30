@@ -8,7 +8,6 @@ use App\Models\Relationships\FileRelationships;
 use App\Models\Scopes\FileScopes;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
@@ -66,8 +65,9 @@ class File extends Model implements Responsable
 
     /**
      * Create an HTTP response that represents the object.
+     * @param mixed $request
      */
-    public function toResponse(Request $request): Response
+    public function toResponse($request): Response
     {
         return response()->make($this->getContent(), Response::HTTP_OK, [
             'Content-Type' => $this->mime_type,
@@ -180,7 +180,6 @@ class File extends Model implements Responsable
     /**
      * Get a file record which is a resized version of the specified placeholder.
      *
-     *
      * @throws \InvalidArgumentException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -197,7 +196,7 @@ class File extends Model implements Responsable
             static::META_PLACEHOLDER_FOR_SERVICE_LOCATION,
         ];
 
-        if (! in_array($placeholderFor, $validPlaceholdersFor)) {
+        if (!in_array($placeholderFor, $validPlaceholdersFor)) {
             throw new \InvalidArgumentException("Invalid placeholder name [$placeholderFor]");
         }
 
@@ -245,7 +244,7 @@ class File extends Model implements Responsable
             static::MIME_TYPE_TXT => '.txt',
         ];
 
-        if (! array_key_exists($mimeType, $map)) {
+        if (!array_key_exists($mimeType, $map)) {
             throw new \InvalidArgumentException("The mime type [$mimeType] is not supported.");
         }
 

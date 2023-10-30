@@ -9,7 +9,6 @@ class TaxonomyObserver
     /**
      * Handle the taxonomy "created" event.
      *
-     *
      * @throws \Exception
      */
     public function created(Taxonomy $taxonomy): void
@@ -24,7 +23,6 @@ class TaxonomyObserver
 
     /**
      * Handle the taxonomy "updating" event.
-     *
      *
      * @throws \Exception
      */
@@ -109,7 +107,6 @@ class TaxonomyObserver
 
     /**
      * Handle the taxonomy "deleted" event.
-     *
      *
      * @throws \Exception
      */

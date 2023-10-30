@@ -30,11 +30,11 @@ class UserEmailNotTaken implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  mixed  $email
+     * @param mixed $email
      */
     public function passes(string $attribute, $email): bool
     {
-        if (! is_string($email)) {
+        if (!is_string($email)) {
             return false;
         }
 

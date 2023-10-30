@@ -85,7 +85,7 @@ class HasPermissionFilter implements Filter
     /**
      * Get the ID's for the users.
      *
-     * @param  array  $blacklistedRoleIds Exclude users who have these roles
+     * @param array $blacklistedRoleIds Exclude users who have these roles
      */
     protected function getUserIdsForServices(array $serviceIds, array $blacklistedRoleIds): array
     {

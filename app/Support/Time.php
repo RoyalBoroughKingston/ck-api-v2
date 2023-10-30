@@ -28,9 +28,9 @@ class Time
     {
         [$hours, $minutes, $seconds] = explode(':', $time);
 
-        $this->hours = (int) $hours;
-        $this->minutes = (int) $minutes;
-        $this->seconds = (int) $seconds;
+        $this->hours = (int)$hours;
+        $this->minutes = (int)$minutes;
+        $this->seconds = (int)$seconds;
     }
 
     public static function create(string $time): Time

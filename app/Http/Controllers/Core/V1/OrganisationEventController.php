@@ -39,7 +39,7 @@ class OrganisationEventController extends Controller
     {
         $baseQuery = OrganisationEvent::query();
 
-        if (! $request->user() && ! $request->has('filter[ends_after]')) {
+        if (!$request->user() && !$request->has('filter[ends_after]')) {
             $baseQuery->endsAfter((new DateTime('now'))->format('Y-m-d'));
         }
 

@@ -9,7 +9,6 @@ class ReferralObserver
     /**
      * Handle the organisation "creating" event.
      *
-     *
      * @throws \Exception
      */
     public function creating(Referral $referral)

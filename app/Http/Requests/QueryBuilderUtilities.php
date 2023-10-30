@@ -19,7 +19,7 @@ trait QueryBuilderUtilities
      */
     public function strip(string $key, string $value): self
     {
-        if (! $this->has($key)) {
+        if (!$this->has($key)) {
             return $this;
         }
 

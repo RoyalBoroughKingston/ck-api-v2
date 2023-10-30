@@ -22,7 +22,7 @@ class Base64EncodedPng implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      */
     public function passes(string $attribute, $value): bool
     {
@@ -31,7 +31,7 @@ class Base64EncodedPng implements Rule
         }
 
         // Immediately fail if the value is not a string.
-        if (! is_string($value)) {
+        if (!is_string($value)) {
             return false;
         }
 

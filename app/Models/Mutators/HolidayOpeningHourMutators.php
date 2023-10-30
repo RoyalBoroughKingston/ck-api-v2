@@ -12,7 +12,7 @@ trait HolidayOpeningHourMutators
     }
 
     /**
-     * @param  \App\Support\Time|string  $opensAt
+     * @param \App\Support\Time|string $opensAt
      */
     public function setOpensAtAttribute($opensAt)
     {
@@ -27,7 +27,7 @@ trait HolidayOpeningHourMutators
     }
 
     /**
-     * @param  \App\Support\Time|string  $closesAt
+     * @param \App\Support\Time|string $closesAt
      */
     public function setClosesAtAttribute($closesAt)
     {

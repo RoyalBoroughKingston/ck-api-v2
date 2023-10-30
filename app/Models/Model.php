@@ -76,7 +76,7 @@ abstract class Model extends BaseModel
     /**
      * Strips all non alpha numeric characters from a string.
      *
-     * @param  string  $string
+     * @param string $string
      * @return string
      *
      * @author

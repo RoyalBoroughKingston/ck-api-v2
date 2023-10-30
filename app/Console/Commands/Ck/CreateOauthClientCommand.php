@@ -60,7 +60,7 @@ class CreateOauthClientCommand extends Command
         $client->save();
 
         $this->info('New client created successfully.');
-        $this->line('<comment>Client ID:</comment> '.$client->id);
-        $this->line('<comment>Client secret:</comment> '.$client->secret);
+        $this->line('<comment>Client ID:</comment> ' . $client->id);
+        $this->line('<comment>Client secret:</comment> ' . $client->secret);
     }
 }

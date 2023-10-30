@@ -42,7 +42,7 @@ class PageController extends Controller
             ->with('parent')
             ->orderBy($orderByCol);
 
-        if (! $request->user('api')) {
+        if (!$request->user('api')) {
             $baseQuery->where('enabled', true);
         }
 

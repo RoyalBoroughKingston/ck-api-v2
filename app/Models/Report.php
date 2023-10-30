@@ -37,7 +37,6 @@ class Report extends Model
      * Created a report record and a file record.
      * Then delegates the physical file creation to a `generateReportName` method.
      *
-     *
      * @throws \Exception
      */
     public static function generate(
@@ -69,10 +68,10 @@ class Report extends Model
         ]);
 
         // Get the name for the report generation method.
-        $methodName = 'generate'.ucfirst(Str::camel($type->name));
+        $methodName = 'generate' . ucfirst(Str::camel($type->name));
 
         // Throw exception if the report type does not have a generate method.
-        if (! method_exists($report, $methodName)) {
+        if (!method_exists($report, $methodName)) {
             throw new Exception("The report type [{$type->name}] does not have a corresponding generate method");
         }
 

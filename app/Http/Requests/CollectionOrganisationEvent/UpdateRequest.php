@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'intro' => ['required', 'string', 'min:1', 'max:500'],
-            'order' => ['required', 'integer', 'min:1', 'max:'.Collection::organisationEvents()->count()],
+            'order' => ['required', 'integer', 'min:1', 'max:' . Collection::organisationEvents()->count()],
             'enabled' => [
                 'required',
                 'boolean',
@@ -55,7 +55,7 @@ class UpdateRequest extends FormRequest
             'category_taxonomies' => ['present', 'array'],
             'category_taxonomies.*' => ['string', 'exists:taxonomies,id', new RootTaxonomyIs(Taxonomy::NAME_CATEGORY)],
             'image_file_id' => [
-                'required_if:order,'.$this->collection->order,
+                'required_if:order,' . $this->collection->order,
                 'exists:files,id',
                 new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_SVG),
                 new FileIsPendingAssignment(function ($file) {

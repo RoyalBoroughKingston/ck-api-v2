@@ -14,9 +14,8 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function show(ShowRequest $request, OrganisationEvent $organisationEvent)
     {
@@ -44,10 +43,9 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $organisationEventId
-     * @return \Illuminate\Http\Response
-     *
+     * @param string $organisationEventId
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function showNew(ShowRequest $request)
     {

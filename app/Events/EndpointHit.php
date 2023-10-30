@@ -143,6 +143,6 @@ class EndpointHit
 
     public function isntFor(string $model, string $action = null): bool
     {
-        return ! $this->isFor($model, $action);
+        return !$this->isFor($model, $action);
     }
 }

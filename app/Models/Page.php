@@ -76,7 +76,7 @@ class Page extends Model implements AppliesUpdateRequests
                         $content[] = $this->onlyAlphaNumeric($contentBlock['value']);
                         break;
                     case 'cta':
-                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'].' '.$contentBlock['description']);
+                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'] . ' ' . $contentBlock['description']);
                         break;
                     default:
                         break;
@@ -152,13 +152,13 @@ class Page extends Model implements AppliesUpdateRequests
      * and pass on to descendants (if disabled).
      * Children do not inherit enabled status, but must be enabled individually.
      *
-     * @param  mixed  $status
+     * @param mixed $status
      */
     public function updateStatus($status): self
     {
         if ($this->parent && $this->parent->enabled === self::DISABLED) {
             $this->enabled = self::DISABLED;
-        } elseif (! is_null($status)) {
+        } elseif (!is_null($status)) {
             $this->enabled = $status;
         }
 
@@ -175,7 +175,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the parent relationship.
      */
-    public function updateParent(string $parentId = false): self
+    public function updateParent(string $parentId = null): self
     {
         // If parent_id is null save as root node
         if (is_null($parentId)) {
@@ -192,7 +192,7 @@ class Page extends Model implements AppliesUpdateRequests
      */
     public function updateOrder(int $order): self
     {
-        if (! is_null($order)) {
+        if (!is_null($order)) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
             $this->beforeOrAfterNode($siblingAtIndex, $siblingAtIndex->getLft() > $this->getLft());
         }
@@ -236,7 +236,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the collections relationship.
      *
-     * @param  mixed  $collections
+     * @param mixed $collections
      */
     public function updateCollections(array $collectionIds): Page
     {

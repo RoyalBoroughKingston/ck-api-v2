@@ -46,7 +46,6 @@ class CreateUserCommand extends Command
     /**
      * Execute the console command.
      *
-     *
      * @throws \Throwable
      */
     public function handle(): int

@@ -14,9 +14,8 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function show(ShowRequest $request, Page $page)
     {
@@ -44,9 +43,8 @@ class ImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return \Illuminate\Http\Response
      */
     public function showNew(ShowRequest $request)
     {

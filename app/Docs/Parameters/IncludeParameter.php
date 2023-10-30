@@ -9,7 +9,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 class IncludeParameter extends Parameter
 {
     /**
-     * @param  string[]  $includes
+     * @param string[] $includes
      */
     public static function create(string $objectId = null, array $includes = ['N/A']): BaseObject
     {

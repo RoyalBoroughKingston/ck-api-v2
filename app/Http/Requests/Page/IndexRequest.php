@@ -11,7 +11,7 @@ class IndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return ! $this->user('api') || $this->user('api')->isContentAdmin();
+        return !$this->user('api') || $this->user('api')->isContentAdmin();
     }
 
     /**

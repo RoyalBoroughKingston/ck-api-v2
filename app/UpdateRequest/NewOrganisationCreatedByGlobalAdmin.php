@@ -61,7 +61,7 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
             'logo_file_id' => $data->get('logo_file_id'),
         ]);
 
-        if ($data->has('logo_file_id') && ! empty($data->get('logo_file_id'))) {
+        if ($data->has('logo_file_id') && !empty($data->get('logo_file_id'))) {
             $this->resizeImageFile($data->get('logo_file_id'));
         }
 
@@ -75,7 +75,7 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
             }
         }
 
-        if ($data->has('category_taxonomies') && ! empty($data->get('category_taxonomies'))) {
+        if ($data->has('category_taxonomies') && !empty($data->get('category_taxonomies'))) {
             // Create the category taxonomy records.
             $taxonomies = Taxonomy::whereIn('id', $data->get('category_taxonomies'))->get();
             $organisation->syncTaxonomyRelationships($taxonomies);

@@ -77,7 +77,7 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
             $isOpenNow = Time::now()->between($regularOpeningHour->opens_at, $regularOpeningHour->closes_at);
 
             // If not, then continue to the next opening hour.
-            if (! $isOpenNow) {
+            if (!$isOpenNow) {
                 continue;
             }
 
@@ -210,9 +210,8 @@ class ServiceLocation extends Model implements AppliesUpdateRequests
     }
 
     /**
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
+     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

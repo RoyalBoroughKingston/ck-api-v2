@@ -175,10 +175,10 @@ class SitemapController extends Controller
     /**
      * Create the static page routes.
      *
-     * @param  mixed  $routes
-     * @param  mixed|null  $lastMod
-     * @param  mixed  $changeFreq
-     * @param  mixed  $priority
+     * @param mixed $routes
+     * @param mixed|null $lastMod
+     * @param mixed $changeFreq
+     * @param mixed $priority
      * @return array [DomElement]
      */
     public function addUrlNodes($routes, $lastMod = null, $changeFreq = 'monthly', $priority = '0.5')

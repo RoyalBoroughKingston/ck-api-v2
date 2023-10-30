@@ -82,11 +82,11 @@ class Taxonomy extends Model
     /**
      * Return an array of all Taxonomies below the provided Taxonomy root.
      *
-     * @param  mixed  $allTaxonomies
+     * @param mixed $allTaxonomies
      */
     public function getAllDescendantTaxonomies(self $taxonomy, &$allTaxonomies = []): Collection
     {
-        if (! $taxonomy) {
+        if (!$taxonomy) {
             $taxonomy = self::serviceEligibility();
         }
 

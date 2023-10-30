@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
-return new class() extends Migration
-{
+return new class() extends Migration {
     /**
      * @var \Carbon\CarbonImmutable
      */
@@ -265,7 +264,7 @@ return new class() extends Migration
             ->exists();
 
         // Create the pivot record.
-        if (! $alreadyExists) {
+        if (!$alreadyExists) {
             DB::table('collection_taxonomies')->insert([
                 'id' => uuid(),
                 'collection_id' => $collectionId,

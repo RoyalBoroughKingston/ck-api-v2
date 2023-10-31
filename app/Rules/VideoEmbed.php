@@ -17,7 +17,7 @@ class VideoEmbed implements ValidationRule
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            $fail(':attribute must be a string');
+            $fail(__('validation.string'));
         }
 
         $validDomains = [

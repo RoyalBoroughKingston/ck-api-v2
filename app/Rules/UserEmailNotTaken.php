@@ -36,7 +36,7 @@ class UserEmailNotTaken implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value)) {
-            $fail(':attribute must be a string');
+            $fail(__('validation.string'));
         }
 
         if (User::query()

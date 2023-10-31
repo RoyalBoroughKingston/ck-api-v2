@@ -31,7 +31,7 @@ class IsOrganisationAdmin implements ValidationRule
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            $fail(':attribute must be a string');
+            $fail(__('validation.string'));
         }
 
         $organisation = Organisation::query()->find($value);

@@ -38,7 +38,7 @@ class PageContent implements ValidationRule
     {
         // Immediately fail if the value is not an array.
         if (!is_array($value)) {
-            $fail(':attribute must be an array');
+            $fail(__('validation.array'));
         }
 
         if ($value['type'] === 'copy') {

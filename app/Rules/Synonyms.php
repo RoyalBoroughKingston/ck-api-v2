@@ -17,7 +17,7 @@ class Synonyms implements ValidationRule
     {
         foreach ($value as $synonym) {
             if (!is_string($synonym)) {
-                $fail(':attribute must be a string');
+                $fail(__('validation.string'));
             }
         }
 

@@ -29,7 +29,7 @@ class InOrder implements ValidationRule
     {
         // Immediately fail if the value is not a integer.
         if (!is_int($value)) {
-            $fail(':attribute must be an integer');
+            $fail(__('validation.integer'));
         }
 
         // Initialise count to 0.

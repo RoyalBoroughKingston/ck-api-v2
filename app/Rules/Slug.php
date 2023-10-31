@@ -17,7 +17,7 @@ class Slug implements ValidationRule
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            $fail(':attribute must be a string');
+            $fail(__('validation.string'));
         }
 
         if (preg_match('/^([a-z0-9]+[a-z0-9\-]*)*[a-z0-9]+$/', $value) !== 1) {

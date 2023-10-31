@@ -28,12 +28,12 @@ class Base64EncodedPng implements ValidationRule
     public function validate(string $attribute, $value, $fail): void
     {
         if (!$this->nullable && $value === null) {
-            $fail(':attribute is required');
+            $fail(__('validation.required'));
         }
 
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            $fail(':attribute must be a string');
+            $fail(__('validation.string'));
         }
 
         if (!preg_match('/^(data:image\/png;base64,)/', $value)) {

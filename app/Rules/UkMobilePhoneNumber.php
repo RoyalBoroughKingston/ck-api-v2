@@ -29,7 +29,7 @@ class UkMobilePhoneNumber implements ValidationRule
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            $fail(':attribute must be a string');
+            $fail(__('validation.string'));
         }
 
         $matches = preg_match('/^(07[0-9]{9})$/', $value);

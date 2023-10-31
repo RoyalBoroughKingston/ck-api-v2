@@ -42,7 +42,7 @@ class CanUpdateCategoryTaxonomyRelationships implements ValidationRule
     {
         // Immediately fail if the value is not an array of strings.
         if (!is_array($value)) {
-            $fail(':attribute must be an array');
+            $fail(__('validation.array'));
         }
 
         foreach ($value as $item) {

@@ -39,7 +39,7 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements ValidationRule
     {
         // Immediately fail if the value is not an array of strings.
         if (!is_array($value)) {
-            $fail(':attribute must be an array');
+            $fail(__('validation.array'));
         }
 
         // Allow changing of taxonomies if service admin.

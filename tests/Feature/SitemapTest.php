@@ -17,7 +17,7 @@ class SitemapTest extends TestCase
     {
         parent::setUp();
 
-        if (! Storage::disk('local')->exists('test-data/sitemap.xsd')) {
+        if (!Storage::disk('local')->exists('test-data/sitemap.xsd')) {
             Storage::disk('local')->put('test-data/sitemap.xsd', file_get_contents('http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'));
         }
     }
@@ -126,12 +126,12 @@ class SitemapTest extends TestCase
         $locTags = $xml->getElementsByTagName('loc');
 
         foreach ($locTags as $tag) {
-            if ($this->frontendUrl('services/'.$service->slug) === $tag->textContent) {
+            if ($this->frontendUrl('services/' . $service->slug) === $tag->textContent) {
                 $included = true;
             }
         }
 
-        return $this->assertTrue($included);
+        $this->assertTrue($included);
     }
 
     /**
@@ -154,12 +154,12 @@ class SitemapTest extends TestCase
         $locTags = $xml->getElementsByTagName('loc');
 
         foreach ($locTags as $tag) {
-            if ($this->frontendUrl('organisations/'.$organisation->slug) === $tag->textContent) {
+            if ($this->frontendUrl('organisations/' . $organisation->slug) === $tag->textContent) {
                 $included = true;
             }
         }
 
-        return $this->assertTrue($included);
+        $this->assertTrue($included);
     }
 
     /**
@@ -182,12 +182,12 @@ class SitemapTest extends TestCase
         $locTags = $xml->getElementsByTagName('loc');
 
         foreach ($locTags as $tag) {
-            if ($this->frontendUrl('results?category='.$collection->id) === $tag->textContent) {
+            if ($this->frontendUrl('results?category=' . $collection->id) === $tag->textContent) {
                 $included = true;
             }
         }
 
-        return $this->assertTrue($included);
+        $this->assertTrue($included);
     }
 
     /**
@@ -210,12 +210,12 @@ class SitemapTest extends TestCase
         $locTags = $xml->getElementsByTagName('loc');
 
         foreach ($locTags as $tag) {
-            if ($this->frontendUrl('results?persona='.$collection->id) === $tag->textContent) {
+            if ($this->frontendUrl('results?persona=' . $collection->id) === $tag->textContent) {
                 $included = true;
             }
         }
 
-        return $this->assertTrue($included);
+        $this->assertTrue($included);
     }
 
     /**
@@ -238,11 +238,11 @@ class SitemapTest extends TestCase
         $locTags = $xml->getElementsByTagName('loc');
 
         foreach ($locTags as $tag) {
-            if ($this->frontendUrl('pages/'.$page->slug) === $tag->textContent) {
+            if ($this->frontendUrl('pages/' . $page->slug) === $tag->textContent) {
                 $included = true;
             }
         }
 
-        return $this->assertTrue($included);
+        $this->assertTrue($included);
     }
 }

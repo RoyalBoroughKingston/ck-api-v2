@@ -22,8 +22,8 @@ trait SearchHistoryScopes
     protected function ifNull(string $field, string ...$fallbacks): string
     {
         $fallback = count($fallbacks) > 1
-            ? $this->ifNull($field, ...array_slice($fallbacks, 1))
-            : $fallbacks[0];
+        ? $this->ifNull($field, ...array_slice($fallbacks, 1))
+        : $fallbacks[0];
 
         return sprintf('IFNULL(%s, %s)', $field, $fallback);
     }

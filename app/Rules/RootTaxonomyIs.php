@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use App\Models\Taxonomy;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class RootTaxonomyIs implements Rule
+class RootTaxonomyIs implements ValidationRule
 {
     /**
      * @var string
@@ -25,16 +26,18 @@ class RootTaxonomyIs implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
         $taxonomy = Taxonomy::query()->find($value);
 
-        return $taxonomy ? $taxonomy->rootIsCalled($this->rootTaxonomyName) : false;
+        if (!$taxonomy || $taxonomy->rootIsCalled($this->rootTaxonomyName)) {
+            $fail($this->message());
+        }
     }
 
     /**

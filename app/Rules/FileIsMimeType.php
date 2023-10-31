@@ -3,9 +3,9 @@
 namespace App\Rules;
 
 use App\Models\File;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class FileIsMimeType implements Rule
+class FileIsMimeType implements ValidationRule
 {
     /**
      * @var array
@@ -24,13 +24,17 @@ class FileIsMimeType implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $fileId
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $fileId): bool
+    public function validate(string $attribute, $fileId, $fail): void
     {
-        return in_array(
+        if (!in_array(
             File::findOrFail($fileId)->mime_type,
             $this->mimeTypes
-        );
+        )
+        ) {
+            $fail($this->message());
+        }
     }
 
     /**

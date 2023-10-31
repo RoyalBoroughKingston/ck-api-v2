@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Password implements Rule
+class Password implements ValidationRule
 {
     const ALLOWED_SPECIAL_CHARACTERS = '!#$%&()*+,-./:;<=>?@[]^_`{|}~';
 
@@ -26,16 +27,16 @@ class Password implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
-        $matches = preg_match($this->regex(), $value);
-
-        return $matches > 0;
+        if (preg_match($this->regex(), $value) === 0) {
+            $fail($this->message());
+        }
     }
 
     /**

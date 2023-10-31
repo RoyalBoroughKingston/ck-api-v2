@@ -3,9 +3,9 @@
 namespace App\Rules;
 
 use App\Models\Page;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class InformationPageCannotHaveCollection implements Rule
+class InformationPageCannotHaveCollection implements ValidationRule
 {
     /**
      * Page type.
@@ -30,10 +30,13 @@ class InformationPageCannotHaveCollection implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
-        return $this->pageType === Page::PAGE_TYPE_LANDING || empty($value);
+        if (!empty($value) && $this->pageType !== Page::PAGE_TYPE_LANDING) {
+            $fail($this->message());
+        }
     }
 
     /**

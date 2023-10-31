@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Postcode implements Rule
+class Postcode implements ValidationRule
 {
     /**
      * See https://stackoverflow.com/a/51885364/709923
@@ -17,16 +18,16 @@ class Postcode implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
-        $matches = preg_match(static::PATTERN, $value);
-
-        return $matches === 1;
+        if (preg_match(static::PATTERN, $value) !== 1) {
+            $fail($this->message());
+        }
     }
 
     /**

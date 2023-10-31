@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class PageContent implements Rule
+class PageContent implements ValidationRule
 {
     /**
      * The error message to return.
@@ -33,56 +34,40 @@ class PageContent implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not an array.
         if (!is_array($value)) {
-            return false;
+            $fail(':attribute must be an array');
         }
 
         if ($value['type'] === 'copy') {
             if (!array_key_exists('value', $value)) {
-                $this->message = 'Invalid format for content';
-
-                return false;
+                $fail('Invalid format for content');
             }
+
             if (($this->pageType === 'landing' && mb_strpos($attribute, 'introduction') && empty($value['value']))) {
-                $this->message = 'Page content is required for introduction';
-
-                return false;
+                $fail('Page content is required for introduction');
             }
+
         }
         if ($value['type'] === 'cta') {
             if (empty($value['title']) || !is_string($value['title'])) {
-                $this->message = 'Call to action title is required';
-
-                return false;
+                $fail('Call to action title is required');
             }
+
             if (empty($value['description']) || !is_string($value['description'])) {
-                $this->message = 'Call to action description is required';
-
-                return false;
+                $fail('Call to action description is required');
             }
+
             if ((!empty($value['url']) && empty($value['buttonText'])) || (empty($value['url']) && !empty($value['buttonText']))) {
-                $this->message = 'Call to action with a link requires both the URL and the button text';
-
-                return false;
+                $fail('Call to action with a link requires both the URL and the button text');
             }
+
             if (!empty($value['url']) && filter_var($value['url'], FILTER_VALIDATE_URL) === false) {
-                $this->message = 'Call to action link must be a valid URL';
-
-                return false;
+                $fail('Call to action link must be a valid URL');
             }
+
         }
-
-        return true;
-    }
-
-    /**
-     * Get the validation error message.
-     */
-    public function message(): string
-    {
-        return $this->message;
     }
 }

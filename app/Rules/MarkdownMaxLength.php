@@ -2,10 +2,11 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Parsedown;
 
-class MarkdownMaxLength implements Rule
+class MarkdownMaxLength implements ValidationRule
 {
     /**
      * @var int
@@ -31,12 +32,14 @@ class MarkdownMaxLength implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $html = (new Parsedown())->text(sanitize_markdown($value));
         $text = strip_tags($html);
 
-        return mb_strlen($text) <= $this->maxLength;
+        if (mb_strlen($text) > $this->maxLength) {
+            $fail($this->message());
+        }
     }
 
     /**

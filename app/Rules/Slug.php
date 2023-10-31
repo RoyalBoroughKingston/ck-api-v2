@@ -2,25 +2,27 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Slug implements Rule
+class Slug implements ValidationRule
 {
     /**
      * Determine if the validation rule passes.
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
-        $matches = preg_match('/^([a-z0-9]+[a-z0-9\-]*)*[a-z0-9]+$/', $value);
-
-        return $matches === 1;
+        if (preg_match('/^([a-z0-9]+[a-z0-9\-]*)*[a-z0-9]+$/', $value) !== 1) {
+            $fail($this->message());
+        }
     }
 
     /**
@@ -28,6 +30,6 @@ class Slug implements Rule
      */
     public function message(): string
     {
-        return 'The :attribute must be a valid slug.';
+        return 'The :attribute must only contain a-z, 0-9 and dashes(-) and start and end with a letter or number.';
     }
 }

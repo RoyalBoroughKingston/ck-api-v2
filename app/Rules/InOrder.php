@@ -2,9 +2,9 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class InOrder implements Rule
+class InOrder implements ValidationRule
 {
     /**
      * @var array
@@ -23,12 +23,13 @@ class InOrder implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
         // Immediately fail if the value is not a integer.
         if (!is_int($value)) {
-            return false;
+            $fail(':attribute must be an integer');
         }
 
         // Initialise count to 0.
@@ -44,12 +45,14 @@ class InOrder implements Rule
         // Loop through each order and check if in order.
         foreach (range(1, count($this->orders)) as $index) {
             if (!in_array($index, $this->orders)) {
-                return false;
+                $fail($this->message());
             }
         }
 
         // Pass if the count is not more than 1.
-        return $count <= 1;
+        if ($count > 1) {
+            $fail('The :value occurs more than once in the order');
+        }
     }
 
     /**

@@ -3,10 +3,10 @@
 namespace App\Rules;
 
 use App\Models\File;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Arr;
 
-class FileIsPendingAssignment implements Rule
+class FileIsPendingAssignment implements ValidationRule
 {
     /**
      * @var callable
@@ -27,22 +27,25 @@ class FileIsPendingAssignment implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $fileId
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $fileId): bool
+    public function validate(string $attribute, $fileId, $fail): void
     {
         $file = File::findOrFail($fileId);
 
         $passed = Arr::get($file->meta, 'type') === File::META_TYPE_PENDING_ASSIGNMENT;
 
-        if ($passed) {
-            return true;
-        }
+        if (!$passed) {
 
-        if ($this->callback !== null) {
-            return call_user_func($this->callback, $file);
-        }
+            if ($this->callback !== null) {
+                $passed = call_user_func($this->callback, $file);
+            }
 
-        return false;
+            if (!$passed) {
+                $fail($this->message());
+            }
+
+        }
     }
 
     /**

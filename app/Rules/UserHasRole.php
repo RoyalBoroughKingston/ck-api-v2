@@ -5,9 +5,10 @@ namespace App\Rules;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class UserHasRole implements Rule
+class UserHasRole implements ValidationRule
 {
     /**
      * @var \App\Models\User
@@ -41,27 +42,36 @@ class UserHasRole implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($this->originalValue === $value) {
-            return true;
-        }
+        if ($this->originalValue !== $value) {
 
-        switch ($this->userRole->role->name) {
-            case Role::NAME_SERVICE_WORKER:
-                return $this->user->isServiceWorker($this->userRole->service);
-            case Role::NAME_SERVICE_ADMIN:
-                return $this->user->isServiceWorker($this->userRole->service);
-            case Role::NAME_ORGANISATION_ADMIN:
-                return $this->user->isOrganisationAdmin($this->userRole->organisation);
-            case Role::NAME_CONTENT_ADMIN:
-                return $this->user->isContentAdmin();
-            case Role::NAME_GLOBAL_ADMIN:
-                return $this->user->isGlobalAdmin();
-            case Role::NAME_SUPER_ADMIN:
-                return $this->user->isSuperAdmin();
-            default:
-                return false;
+            switch ($this->userRole->role->name) {
+                case Role::NAME_SERVICE_WORKER:
+                    $userHasRole = $this->user->isServiceWorker($this->userRole->service);
+                    // No break.
+                case Role::NAME_SERVICE_ADMIN:
+                    $userHasRole = $this->user->isServiceWorker($this->userRole->service);
+                    // No break.
+                case Role::NAME_ORGANISATION_ADMIN:
+                    $userHasRole = $this->user->isOrganisationAdmin($this->userRole->organisation);
+                    // No break.
+                case Role::NAME_CONTENT_ADMIN:
+                    $userHasRole = $this->user->isContentAdmin();
+                    // No break.
+                case Role::NAME_GLOBAL_ADMIN:
+                    $userHasRole = $this->user->isGlobalAdmin();
+                    // No break.
+                case Role::NAME_SUPER_ADMIN:
+                    $userHasRole = $this->user->isSuperAdmin();
+                    // No break.
+                default:
+                    $userHasRole = false;
+            }
+
+            if (!$userHasRole) {
+                $fail($this->message());
+            }
         }
     }
 

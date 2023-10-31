@@ -2,9 +2,9 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Base64EncodedPng implements Rule
+class Base64EncodedPng implements ValidationRule
 {
     /**
      * @var bool
@@ -23,19 +23,22 @@ class Base64EncodedPng implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
-        if ($this->nullable && $value === null) {
-            return true;
+        if (!$this->nullable && $value === null) {
+            $fail(':attribute is required');
         }
 
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
-        return preg_match('/^(data:image\/png;base64,)/', $value) > 0;
+        if (!preg_match('/^(data:image\/png;base64,)/', $value)) {
+            $fail($this->message());
+        }
     }
 
     /**

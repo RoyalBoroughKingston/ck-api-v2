@@ -3,9 +3,9 @@
 namespace App\Rules;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class DateSanity implements Rule
+class DateSanity implements ValidationRule
 {
     /**
      * @var Carbon\Carbon
@@ -39,10 +39,13 @@ class DateSanity implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
-        return $this->end->greaterThanOrEqualTo($this->start);
+        if (!$this->end->greaterThanOrEqualTo($this->start)) {
+            $fail($this->message());
+        }
     }
 
     /**

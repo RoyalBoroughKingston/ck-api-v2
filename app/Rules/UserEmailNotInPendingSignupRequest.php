@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use App\Models\UpdateRequest;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class UserEmailNotInPendingSignupRequest implements Rule
+class UserEmailNotInPendingSignupRequest implements ValidationRule
 {
     /**
      * @var string|null
@@ -27,16 +28,18 @@ class UserEmailNotInPendingSignupRequest implements Rule
      *
      * @param mixed $email
      */
-    public function passes(string $attribute, $email): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_string($email)) {
-            return false;
+        if (!is_string($value)) {
+            $fail(':attribute must be a string');
         }
 
-        return UpdateRequest::query()
+        if (UpdateRequest::query()
             ->where('updateable_type', UpdateRequest::NEW_TYPE_ORGANISATION_SIGN_UP_FORM)
-            ->where('data->user->email', $email)
-            ->doesntExist();
+            ->where('data->user->email', $value)
+            ->exists()) {
+            $fail($this->message());
+        }
     }
 
     /**

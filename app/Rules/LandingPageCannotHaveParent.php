@@ -3,9 +3,9 @@
 namespace App\Rules;
 
 use App\Models\Page;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class LandingPageCannotHaveParent implements Rule
+class LandingPageCannotHaveParent implements ValidationRule
 {
     /**
      * Parent ID.
@@ -29,10 +29,13 @@ class LandingPageCannotHaveParent implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
-        return $value === Page::PAGE_TYPE_INFORMATION || ($value === Page::PAGE_TYPE_LANDING && is_null($this->parentId));
+        if ($value === Page::PAGE_TYPE_LANDING && !is_null($this->parentId)) {
+            $fail($this->message());
+        }
     }
 
     /**

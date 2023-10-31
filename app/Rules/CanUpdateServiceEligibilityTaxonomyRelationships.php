@@ -5,10 +5,10 @@ namespace App\Rules;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\User;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Arr;
 
-class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
+class CanUpdateServiceEligibilityTaxonomyRelationships implements ValidationRule
 {
     /**
      * @var \App\Models\User
@@ -33,31 +33,32 @@ class CanUpdateServiceEligibilityTaxonomyRelationships implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
         // Immediately fail if the value is not an array of strings.
         if (!is_array($value)) {
-            return false;
+            $fail(':attribute must be an array');
         }
 
         // Allow changing of taxonomies if service admin.
         if (
-            ($this->model instanceof Service && $this->user->isServiceAdmin($this->model))
+            !($this->model instanceof Service && $this->user->isServiceAdmin($this->model))
         ) {
-            return true;
+
+            // Only pass if the taxonomies remain unchanged.
+            $existingTaxonomyIds = $this->model
+                ->taxonomies()
+                ->pluck(table(Taxonomy::class, 'id'))
+                ->toArray();
+            $existingTaxonomies = Arr::sort($existingTaxonomyIds);
+            $newTaxonomies = Arr::sort($value);
+            if ($existingTaxonomies !== $newTaxonomies) {
+                $fail($this->message());
+            }
+
         }
-
-        // Only pass if the taxonomies remain unchanged.
-        $existingTaxonomyIds = $this->model
-            ->taxonomies()
-            ->pluck(table(Taxonomy::class, 'id'))
-            ->toArray();
-        $existingTaxonomies = Arr::sort($existingTaxonomyIds);
-        $newTaxonomies = Arr::sort($value);
-        $taxonomiesUnchanged = $existingTaxonomies === $newTaxonomies;
-
-        return $taxonomiesUnchanged;
     }
 
     /**

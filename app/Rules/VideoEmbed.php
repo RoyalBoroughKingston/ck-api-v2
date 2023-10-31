@@ -2,21 +2,22 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class VideoEmbed implements Rule
+class VideoEmbed implements ValidationRule
 {
     /**
      * Determine if the validation rule passes.
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
         $validDomains = [
@@ -25,7 +26,9 @@ class VideoEmbed implements Rule
             'https://vimeo.com',
         ];
 
-        return Str::startsWith($value, $validDomains);
+        if (!Str::startsWith($value, $validDomains)) {
+            $fail($this->message());
+        }
     }
 
     /**

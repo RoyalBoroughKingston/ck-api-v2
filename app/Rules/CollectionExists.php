@@ -3,9 +3,9 @@
 namespace App\Rules;
 
 use App\Models\Collection;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class CollectionExists implements Rule
+class CollectionExists implements ValidationRule
 {
     /**
      * @var string
@@ -21,18 +21,21 @@ class CollectionExists implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
-        return Collection::query()
+        if (Collection::query()
             ->where('type', '=', $this->type)
             ->where('slug', '=', $value)
-            ->exists();
+            ->doesntExist()) {
+            $fail($this->message());
+        }
     }
 
     /**

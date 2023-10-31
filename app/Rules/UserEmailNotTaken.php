@@ -3,10 +3,11 @@
 namespace App\Rules;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 
-class UserEmailNotTaken implements Rule
+class UserEmailNotTaken implements ValidationRule
 {
     /**
      * @var \App\Models\User|null
@@ -32,18 +33,20 @@ class UserEmailNotTaken implements Rule
      *
      * @param mixed $email
      */
-    public function passes(string $attribute, $email): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_string($email)) {
-            return false;
+        if (!is_string($value)) {
+            $fail(':attribute must be a string');
         }
 
-        return User::query()
-            ->where('email', $email)
+        if (User::query()
+            ->where('email', $value)
             ->when($this->excludedUser, function (Builder $query): Builder {
                 return $query->where('id', '!=', $this->excludedUser->id);
             })
-            ->doesntExist();
+            ->exists()) {
+            $fail($this->message());
+        }
     }
 
     /**

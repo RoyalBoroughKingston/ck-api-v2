@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class UkPhoneNumber implements Rule
+class UkPhoneNumber implements ValidationRule
 {
     /**
      * @var string|null
@@ -24,16 +25,16 @@ class UkPhoneNumber implements Rule
      *
      * @param mixed $value
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
-        $matches = preg_match('/^0([1-6][0-9]{8,10}|7[0-9]{9})$/', $value);
-
-        return $matches === 1;
+        if (preg_match('/^0([1-6][0-9]{8,10}|7[0-9]{9})$/', $value) !== 1) {
+            $fail($this->message());
+        }
     }
 
     /**

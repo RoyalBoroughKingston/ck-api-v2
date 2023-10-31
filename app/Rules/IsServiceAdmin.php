@@ -4,9 +4,9 @@ namespace App\Rules;
 
 use App\Models\Service;
 use App\Models\User;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class IsServiceAdmin implements Rule
+class IsServiceAdmin implements ValidationRule
 {
     /**
      * @var \App\Models\User
@@ -25,17 +25,20 @@ class IsServiceAdmin implements Rule
      * Determine if the validation rule passes.
      *
      * @param mixed $value
+     * @param mixed $fail
      */
-    public function passes(string $attribute, $value): bool
+    public function validate(string $attribute, $value, $fail): void
     {
         // Immediately fail if the value is not a string.
         if (!is_string($value)) {
-            return false;
+            $fail(':attribute must be a string');
         }
 
         $service = Service::query()->find($value);
 
-        return $service ? $this->user->isServiceAdmin($service) : false;
+        if (!$service || !$this->user->isServiceAdmin($service)) {
+            $fail($this->message());
+        }
     }
 
     /**

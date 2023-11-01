@@ -70,6 +70,7 @@ class File extends Model implements Responsable
     public function toResponse($request): Response
     {
         return response()->make($this->getContent(), Response::HTTP_OK, [
+            'Access-Control-Expose-Headers' => ['Content-Type', 'Content-Disposition'],
             'Content-Type' => $this->mime_type,
             'Content-Disposition' => sprintf('inline; filename="%s"', $this->filename),
         ]);

@@ -21,11 +21,8 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any authentication / authorization services.
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->registerPolicies();
-
-        Passport::routes();
         Passport::enableImplicitGrant();
         Passport::tokensExpireIn(Date::now()->addMonths(18));
         Passport::useClientModel(Client::class);
@@ -34,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register()
+    public function register(): void
     {
         Passport::ignoreMigrations();
     }

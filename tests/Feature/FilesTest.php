@@ -18,14 +18,14 @@ class FilesTest extends TestCase
     /**
      * @test
      */
-    public function createFileAsGuest403()
+    public function createFileAsGuest403(): void
     {
         $image = Storage::disk('local')->get('/test-data/image.png');
 
         $response = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -34,7 +34,7 @@ class FilesTest extends TestCase
     /**
      * @test
      */
-    public function createFileAsServiceAdmin201()
+    public function createFileAsServiceAdmin201(): void
     {
         $image = Storage::disk('local')->get('/test-data/image.png');
 
@@ -46,7 +46,7 @@ class FilesTest extends TestCase
         $response = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);

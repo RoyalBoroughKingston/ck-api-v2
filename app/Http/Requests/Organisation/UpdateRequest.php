@@ -23,10 +23,8 @@ class UpdateRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if ($this->user()->isOrganisationAdmin($this->organisation)) {
             return true;
@@ -37,10 +35,8 @@ class UpdateRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'slug' => [
@@ -105,8 +101,6 @@ class UpdateRequest extends FormRequest
 
     /**
      * Check if the user requested only a preview of the update request.
-     *
-     * @return bool
      */
     public function isPreview(): bool
     {
@@ -116,7 +110,7 @@ class UpdateRequest extends FormRequest
     /**
      * {@inheritDoc}
      */
-    public function messages()
+    public function messages(): array
     {
         $urlMessage = 'Please enter a valid web address in the correct format (starting with https:// or http://).';
 

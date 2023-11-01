@@ -22,8 +22,6 @@ class PagesTest extends TestCase
 {
     /**
      * Setup the test environment.
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -34,7 +32,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listEnabledPagesAsGuest200()
+    public function listEnabledPagesAsGuest200(): void
     {
         Page::factory()->withParent()->withChildren()->create();
 
@@ -61,7 +59,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function auditCreatedOnList()
+    public function auditCreatedOnList(): void
     {
         $this->fakeEvents();
 
@@ -75,7 +73,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsGuest200()
+    public function listMixedStatePagesAsGuest200(): void
     {
         $page = Page::factory()->withImage()->withParent()->disabled()
             ->create();
@@ -101,7 +99,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsGlobalAdmin403()
+    public function listMixedStatePagesAsGlobalAdmin403(): void
     {
         /**
          * @var \App\Models\User $user
@@ -125,7 +123,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsContentAdmin200()
+    public function listMixedStatePagesAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -160,7 +158,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsGuestFilterByID200()
+    public function listMixedStatePagesAsGuestFilterByID200(): void
     {
         $pages = Page::factory()->count(2)->create();
         $disabledPage = Page::factory()->disabled()->create();
@@ -174,7 +172,7 @@ class PagesTest extends TestCase
             $disabledLandingPage->id,
         ];
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[id]=' . implode(',', $ids));
+        $response = $this->json('GET', '/core/v1/pages/index?filter[id]='.implode(',', $ids));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2, 'data');
@@ -201,7 +199,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsContentAdminFilterByID200()
+    public function listMixedStatePagesAsContentAdminFilterByID200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -223,7 +221,7 @@ class PagesTest extends TestCase
             $disabledLandingPage->id,
         ];
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[id]=' . implode(',', $ids));
+        $response = $this->json('GET', '/core/v1/pages/index?filter[id]='.implode(',', $ids));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(4, 'data');
@@ -250,12 +248,12 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listPagesAsGuestFilterByParentID200()
+    public function listPagesAsGuestFilterByParentID200(): void
     {
         $page1 = Page::factory()->withChildren()->create();
         $page2 = Page::factory()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]=' . $page1->id);
+        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]='.$page1->id);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(3, 'data');
@@ -288,11 +286,11 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listLandingPageChildPagesAsGuestFilterByParentID200()
+    public function listLandingPageChildPagesAsGuestFilterByParentID200(): void
     {
         $landingPage = Page::factory()->landingPage()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]=' . $landingPage->id);
+        $response = $this->json('GET', '/core/v1/pages/index?filter[parent_id]='.$landingPage->id);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(3, 'data');
@@ -313,7 +311,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listPagesAsGuestFilterByTitle200()
+    public function listPagesAsGuestFilterByTitle200(): void
     {
         $page1 = Page::factory()->create(['title' => 'Page One']);
         $page2 = Page::factory()->create(['title' => 'Second Page']);
@@ -349,7 +347,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsGuestFilterByLandingPage200()
+    public function listMixedStatePagesAsGuestFilterByLandingPage200(): void
     {
         $page1 = Page::factory()->landingPage()->create();
         $page2 = Page::factory()->disabled()->create();
@@ -377,7 +375,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsGuestFilterByInformationPage200()
+    public function listMixedStatePagesAsGuestFilterByInformationPage200(): void
     {
         $page1 = Page::factory()->landingPage()->create();
         $page2 = Page::factory()->disabled()->create();
@@ -405,7 +403,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsContentAdminFilterByLandingPage200()
+    public function listMixedStatePagesAsContentAdminFilterByLandingPage200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -441,7 +439,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listMixedStatePagesAsAdminFilterByInformationPage200()
+    public function listMixedStatePagesAsAdminFilterByInformationPage200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -477,7 +475,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listPagesAsGuestFilterByTitleAndPageType200()
+    public function listPagesAsGuestFilterByTitleAndPageType200(): void
     {
         $page1 = Page::factory()->create(['title' => 'Page One']);
         $page2 = Page::factory()->create(['title' => 'Second Page']);
@@ -536,7 +534,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listEnabledPagesAsGuestIncludeParent200()
+    public function listEnabledPagesAsGuestIncludeParent200(): void
     {
         Page::factory()->withParent()->withChildren()->create();
 
@@ -564,7 +562,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listEnabledPagesAsGuestIncludeLandingPage200()
+    public function listEnabledPagesAsGuestIncludeLandingPage200(): void
     {
         Page::factory()->withParent()->withChildren()->create();
 
@@ -592,7 +590,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listEnabledPagesAsGuestIncludeChildren200()
+    public function listEnabledPagesAsGuestIncludeChildren200(): void
     {
         Page::factory()->withParent()->withChildren()->create();
 
@@ -633,7 +631,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function listLandingPageDescendantsAsGuestIncludeParent200()
+    public function listLandingPageDescendantsAsGuestIncludeParent200(): void
     {
         $page = Page::factory()->withImage()->withChildren()->create();
         $parent = Page::factory()->create();
@@ -642,7 +640,7 @@ class PagesTest extends TestCase
         $landingPage1->appendNode($parent);
         $landingPage2 = Page::factory()->landingPage()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?filter[landing_page]=' . $landingPage1->id . '&include=parent');
+        $response = $this->json('GET', '/core/v1/pages/index?filter[landing_page]='.$landingPage1->id.'&include=parent');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
@@ -698,7 +696,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsGuest401()
+    public function createPageAsGuest401(): void
     {
         $parentPage = Page::factory()->create();
 
@@ -727,7 +725,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsServiceWorker403()
+    public function createPageAsServiceWorker403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -760,7 +758,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsServiceAdmin403()
+    public function createPageAsServiceAdmin403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -793,7 +791,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsOrganisationAdmin403()
+    public function createPageAsOrganisationAdmin403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($service->organisation);
@@ -826,7 +824,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsGlobalAdmin403()
+    public function createPageAsGlobalAdmin403(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $parentPage = Page::factory()->create();
@@ -858,7 +856,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsContentAdmin200()
+    public function createPageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -920,7 +918,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsSuperAdmin201()
+    public function createPageAsSuperAdmin201(): void
     {
         /**
          * @var \App\Models\User $user
@@ -974,7 +972,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createInformationPageWithMinimalDataAsContentAdmin200()
+    public function createInformationPageWithMinimalDataAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1023,7 +1021,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createLandingPageWithMinimalDataAsContentAdmin200()
+    public function createLandingPageWithMinimalDataAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1085,7 +1083,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAuditCreated()
+    public function createPageAuditCreated(): void
     {
         $this->fakeEvents();
 
@@ -1127,7 +1125,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAsContentAdminWithInvalidData422()
+    public function createPageAsContentAdminWithInvalidData422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1288,7 +1286,7 @@ class PagesTest extends TestCase
 
         // Assigned Images not allowed
         $image = File::factory()->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
 
@@ -1314,7 +1312,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createChildPageAsContentAdmin200()
+    public function createChildPageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1373,7 +1371,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createChildPageInheritParentStatusAsContentAdmin200()
+    public function createChildPageInheritParentStatusAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1434,7 +1432,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createInformationPageRootAsContentAdmin200()
+    public function createInformationPageRootAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1495,7 +1493,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createLandingPageAsContentAdmin200()
+    public function createLandingPageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1587,7 +1585,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageAfterSiblingAsContentAdmin200()
+    public function createPageAfterSiblingAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1649,7 +1647,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createFirstChildPageAsContentAdmin200()
+    public function createFirstChildPageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1712,7 +1710,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageWithImagePNGAsContentAdmin200()
+    public function createPageWithImagePNGAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1725,12 +1723,12 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'))
+            'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'))
         );
 
         $data = [
@@ -1783,7 +1781,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageWithImageJPGAsContentAdmin200()
+    public function createPageWithImageJPGAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1796,12 +1794,12 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.jpg',
+            'filename' => Str::random().'.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $data = [
@@ -1854,7 +1852,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageWithImageSVGAsContentAdmin200()
+    public function createPageWithImageSVGAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1867,12 +1865,12 @@ class PagesTest extends TestCase
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'))
+            'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'))
         );
 
         $data = [
@@ -1925,7 +1923,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createInformationPageWithCollectionsAsContentAdmin422()
+    public function createInformationPageWithCollectionsAsContentAdmin422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1964,7 +1962,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createLandingPageWithCollectionsAsContentAdmin200()
+    public function createLandingPageWithCollectionsAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2074,7 +2072,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createInformationPageWithCallToActionAsContentAdmin422()
+    public function createInformationPageWithCallToActionAsContentAdmin422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2198,7 +2196,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createInformationPageWithCallToActionAsContentAdmin200()
+    public function createInformationPageWithCallToActionAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2241,7 +2239,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createLandingPageWithCallToActionsAsContentAdmin200()
+    public function createLandingPageWithCallToActionsAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2325,7 +2323,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageWithSameTitleAsExistingPageIncrementsSlugAsContentAdmin200()
+    public function createPageWithSameTitleAsExistingPageIncrementsSlugAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2399,7 +2397,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function createPageWithSlugAsContentAdmin201()
+    public function createPageWithSlugAsContentAdmin201(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2453,11 +2451,11 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledInformationPageAsGuest200()
+    public function getEnabledInformationPageAsGuest200(): void
     {
         $page = Page::factory()->withImage()->withParent()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -2509,11 +2507,11 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledLandingPageAsGuest200()
+    public function getEnabledLandingPageAsGuest200(): void
     {
         $page = Page::factory()->withImage()->landingPage()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -2554,11 +2552,11 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getInformationPageBySlugAsGuest200()
+    public function getInformationPageBySlugAsGuest200(): void
     {
         $page = Page::factory()->withImage()->withParent()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->slug);
+        $response = $this->json('GET', '/core/v1/pages/'.$page->slug);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'id' => $page->id,
@@ -2568,7 +2566,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledInformationPageWithLandingPageAncestorAsGuest200()
+    public function getEnabledInformationPageWithLandingPageAncestorAsGuest200(): void
     {
         $page = Page::factory()->withImage()->withChildren()->create();
         $parent = Page::factory()->create();
@@ -2576,7 +2574,7 @@ class PagesTest extends TestCase
         $landingPage = Page::factory()->landingPage()->create();
         $landingPage->appendNode($parent);
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
@@ -2643,13 +2641,13 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function auditCreatedOnShow()
+    public function auditCreatedOnShow(): void
     {
         $this->fakeEvents();
 
         $page = Page::factory()->create();
 
-        $this->json('GET', '/core/v1/pages/' . $page->id);
+        $this->json('GET', '/core/v1/pages/'.$page->id);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return $event->getAction() === Audit::ACTION_READ;
@@ -2659,12 +2657,12 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getDisabledPageAsGuest403()
+    public function getDisabledPageAsGuest403(): void
     {
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -2672,7 +2670,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getDisabledPageAsContentAdmin200()
+    public function getDisabledPageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2685,7 +2683,7 @@ class PagesTest extends TestCase
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id);
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
@@ -2738,16 +2736,16 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledPageImagePNGAsGuest200()
+    public function getEnabledPageImagePNGAsGuest200(): void
     {
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
 
-        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
+        $base64Image = 'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -2755,24 +2753,24 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ]);
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.png');
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id.'/image.png');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/png;base64,' . base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/png;base64,'.base64_encode($response->content()));
     }
 
     /**
      * @test
      */
-    public function getEnabledPageImageJPGAsGuest200()
+    public function getEnabledPageImageJPGAsGuest200(): void
     {
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.jpg',
+            'filename' => Str::random().'.jpg',
             'mime_type' => 'image/jepg',
         ]);
 
-        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
+        $base64Image = 'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -2780,24 +2778,24 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ]);
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.jpg');
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id.'/image.jpg');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/jpeg;base64,' . base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/jpeg;base64,'.base64_encode($response->content()));
     }
 
     /**
      * @test
      */
-    public function getEnabledPageImageSVGAsGuest200()
+    public function getEnabledPageImageSVGAsGuest200(): void
     {
         $parentPage = Page::factory()->create();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -2805,9 +2803,9 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ]);
 
-        $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.svg');
+        $response = $this->json('GET', '/core/v1/pages/'.$page->id.'/image.svg');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/svg+xml;base64,' . base64_encode($response->content()));
+        $this->assertEquals($base64Image, 'data:image/svg+xml;base64,'.base64_encode($response->content()));
     }
 
     /**
@@ -2817,7 +2815,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsGuest401()
+    public function updatePageAsGuest401(): void
     {
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
@@ -2826,7 +2824,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -2834,7 +2832,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsServiceWorker403()
+    public function updatePageAsServiceWorker403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -2846,7 +2844,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -2854,7 +2852,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsServiceAdmin403()
+    public function updatePageAsServiceAdmin403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -2866,7 +2864,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -2874,7 +2872,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsOrganisationAdmin403()
+    public function updatePageAsOrganisationAdmin403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($service->organisation);
@@ -2886,7 +2884,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -2894,7 +2892,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsGlobalAdmin403()
+    public function updatePageAsGlobalAdmin403(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
@@ -2905,7 +2903,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -2913,7 +2911,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsContentAdmin200()
+    public function updatePageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2929,7 +2927,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2959,7 +2957,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsSuperAdmin200()
+    public function updatePageAsSuperAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -2976,7 +2974,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $payload);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $payload);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -2996,7 +2994,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAuditCreated()
+    public function updatePageAuditCreated(): void
     {
         $this->fakeEvents();
 
@@ -3014,7 +3012,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return $event->getAction() === Audit::ACTION_UPDATE;
@@ -3024,7 +3022,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAsAdminWithInvalidData422()
+    public function updatePageAsAdminWithInvalidData422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3037,36 +3035,36 @@ class PagesTest extends TestCase
         $page = Page::factory()->withImage()->withParent()->withChildren()->disabled()
             ->create();
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'title' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'content' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'title' => '',
             'content' => '',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'content' => $this->faker->realText(),
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'parent_id' => $this->faker->uuid(),
         ])->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'order' => $page->siblingsAndSelf()->count() + 1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'order' => -1,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'page_type' => Page::PAGE_TYPE_LANDING,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -3074,11 +3072,11 @@ class PagesTest extends TestCase
          * Assigned Images not allowed
          */
         $image = File::factory()->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
 
-        $this->json('PUT', '/core/v1/pages/' . $page->id, [
+        $this->json('PUT', '/core/v1/pages/'.$page->id, [
             'image_file_id' => $image->id,
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -3086,7 +3084,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageAddImageAsContentAdmin200()
+    public function updatePageAddImageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3097,12 +3095,12 @@ class PagesTest extends TestCase
         Passport::actingAs($user);
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.jpg',
+            'filename' => Str::random().'.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
@@ -3112,7 +3110,7 @@ class PagesTest extends TestCase
             'image_file_id' => $image->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3142,7 +3140,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageRemoveImageAsContentAdmin200()
+    public function updatePageRemoveImageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3153,12 +3151,12 @@ class PagesTest extends TestCase
         Passport::actingAs($user);
 
         $image = File::factory()->create([
-            'filename' => Str::random() . '.jpg',
+            'filename' => Str::random().'.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $image->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
@@ -3170,7 +3168,7 @@ class PagesTest extends TestCase
             'image_file_id' => null,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3200,7 +3198,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeImageAsContentAdmin200()
+    public function updatePageChangeImageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3211,21 +3209,21 @@ class PagesTest extends TestCase
         Passport::actingAs($user);
 
         $imageJpg = File::factory()->create([
-            'filename' => Str::random() . '.jpg',
+            'filename' => Str::random().'.jpg',
             'mime_type' => 'image/jpeg',
         ]);
 
         $imageJpg->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
+            'data:image/jpeg;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
         );
 
         $imagePng = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.png',
+            'filename' => Str::random().'.png',
             'mime_type' => 'image/png',
         ]);
 
         $imagePng->uploadBase64EncodedFile(
-            'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'))
+            'data:image/png;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.png'))
         );
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
@@ -3237,7 +3235,7 @@ class PagesTest extends TestCase
             'image_file_id' => $imagePng->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3267,7 +3265,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeParentAsContentAdmin200()
+    public function updatePageChangeParentAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3289,7 +3287,7 @@ class PagesTest extends TestCase
             'parent_id' => $parentPage2->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3319,7 +3317,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeParentInheritStatusAsContentAdmin200()
+    public function updatePageChangeParentInheritStatusAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3341,7 +3339,7 @@ class PagesTest extends TestCase
             'parent_id' => $parentPage2->id,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3371,7 +3369,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangePageTypeAsContentAdmin200()
+    public function updatePageChangePageTypeAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3392,7 +3390,7 @@ class PagesTest extends TestCase
             'page_type' => Page::PAGE_TYPE_LANDING,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -3401,7 +3399,7 @@ class PagesTest extends TestCase
             'parent_id' => null,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3432,7 +3430,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageChangeOrderAsContentAdmin200()
+    public function updatePageChangeOrderAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3450,7 +3448,7 @@ class PagesTest extends TestCase
             'order' => 2,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $children->get(1)->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$children->get(1)->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3464,7 +3462,7 @@ class PagesTest extends TestCase
 
         $this->assertEquals($children->get(1)->id, $children->get(2)->getNextSibling()->id);
 
-        $reponse = $this->getJson('/core/v1/pages/' . $children->get(1)->id);
+        $reponse = $this->getJson('/core/v1/pages/'.$children->get(1)->id);
 
         $reponse->assertJsonFragment([
             'order' => 2,
@@ -3474,7 +3472,7 @@ class PagesTest extends TestCase
             'order' => 0,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $children->get(1)->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$children->get(1)->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3488,7 +3486,7 @@ class PagesTest extends TestCase
 
         $this->assertEquals($children->get(0)->id, $children->get(1)->getNextSibling()->id);
 
-        $reponse = $this->getJson('/core/v1/pages/' . $children->get(1)->id);
+        $reponse = $this->getJson('/core/v1/pages/'.$children->get(1)->id);
 
         $reponse->assertJsonFragment([
             'order' => 0,
@@ -3498,7 +3496,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageEnablePageAsContentAdmin200()
+    public function updatePageEnablePageAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3513,7 +3511,7 @@ class PagesTest extends TestCase
             'enabled' => true,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3536,7 +3534,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageDisabledCascadestoChildPagesAsContentAdmin200()
+    public function updatePageDisabledCascadestoChildPagesAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3555,7 +3553,7 @@ class PagesTest extends TestCase
             'enabled' => 0,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $parent->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$parent->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3578,7 +3576,7 @@ class PagesTest extends TestCase
             'enabled' => 1,
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $parent->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$parent->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3601,7 +3599,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updateInformationPageAddCollectionsAsContentAdmin422()
+    public function updateInformationPageAddCollectionsAsContentAdmin422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3618,7 +3616,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collections->pluck('id'),
         ];
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -3626,7 +3624,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updateLandingPageAddCollectionsAsContentAdmin200()
+    public function updateLandingPageAddCollectionsAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3643,7 +3641,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collections->pluck('id')->all(),
         ];
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3682,7 +3680,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updateLandingPageUpdateCollectionsAsContentAdmin200()
+    public function updateLandingPageUpdateCollectionsAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3704,7 +3702,7 @@ class PagesTest extends TestCase
         $data = [
             'collections' => $collectionIds->all(),
         ];
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3759,7 +3757,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function updatePageUpdateSlugAsContentAdmin200()
+    public function updatePageUpdateSlugAsContentAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3779,7 +3777,7 @@ class PagesTest extends TestCase
             'title' => 'New Title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3799,7 +3797,7 @@ class PagesTest extends TestCase
             'slug' => 'new-title',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3828,7 +3826,7 @@ class PagesTest extends TestCase
             'slug' => 'existing-page',
         ];
 
-        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+        $response = $this->json('PUT', '/core/v1/pages/'.$page->id, $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -3840,11 +3838,11 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsGuest401()
+    public function deletePageAsGuest401(): void
     {
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -3852,7 +3850,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsServiceWorker403()
+    public function deletePageAsServiceWorker403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceWorker($service);
@@ -3861,7 +3859,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
 
@@ -3871,7 +3869,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsServiceAdmin403()
+    public function deletePageAsServiceAdmin403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeServiceAdmin($service);
@@ -3880,7 +3878,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
 
@@ -3890,7 +3888,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsOrganisationAdmin403()
+    public function deletePageAsOrganisationAdmin403(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($service->organisation);
@@ -3899,7 +3897,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
 
@@ -3909,7 +3907,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsGlobalAdmin403()
+    public function deletePageAsGlobalAdmin403(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
 
@@ -3917,7 +3915,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
 
@@ -3927,7 +3925,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsContentAdmin403()
+    public function deletePageAsContentAdmin403(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3938,7 +3936,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -3946,7 +3944,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAsSuperAdmin200()
+    public function deletePageAsSuperAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -3957,7 +3955,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -3967,7 +3965,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageAuditCreated()
+    public function deletePageAuditCreated(): void
     {
         $this->fakeEvents();
 
@@ -3981,7 +3979,7 @@ class PagesTest extends TestCase
 
         $page = Page::factory()->create();
 
-        $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         Event::assertDispatched(EndpointHit::class, function (EndpointHit $event) {
             return $event->getAction() === Audit::ACTION_DELETE;
@@ -3991,7 +3989,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageWithChildrenAsSuperAdmin422()
+    public function deletePageWithChildrenAsSuperAdmin422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -4007,7 +4005,7 @@ class PagesTest extends TestCase
 
         $children = $page->children()->defaultOrder()->get();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -4021,7 +4019,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deleteLandingPageWithChildrenAsSuperAdmin422()
+    public function deleteLandingPageWithChildrenAsSuperAdmin422(): void
     {
         /**
          * @var \App\Models\User $user
@@ -4037,7 +4035,7 @@ class PagesTest extends TestCase
 
         $children = $page->children()->defaultOrder()->get();
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -4050,7 +4048,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageWithCollectionsAsSuperAdmin200()
+    public function deletePageWithCollectionsAsSuperAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -4064,7 +4062,7 @@ class PagesTest extends TestCase
 
         $pageCollectionIds = $page->collections()->pluck('id');
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -4078,7 +4076,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deleteLandingPageWithCollectionsAsSuperAdmin200()
+    public function deleteLandingPageWithCollectionsAsSuperAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -4092,7 +4090,7 @@ class PagesTest extends TestCase
 
         $pageCollectionIds = $page->collections()->pluck('id');
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -4106,7 +4104,7 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function deletePageWithImageAsSuperAdmin200()
+    public function deletePageWithImageAsSuperAdmin200(): void
     {
         /**
          * @var \App\Models\User $user
@@ -4120,7 +4118,7 @@ class PagesTest extends TestCase
 
         $imageId = $page->image_file_id;
 
-        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+        $response = $this->json('DELETE', '/core/v1/pages/'.$page->id);
 
         $response->assertStatus(Response::HTTP_OK);
 

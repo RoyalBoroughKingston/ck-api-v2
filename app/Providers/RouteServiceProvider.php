@@ -23,14 +23,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/';
 
-    protected $namespace = 'App\Http\Controllers';
-
     /**
      * Define your route model bindings, pattern filters, etc.
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->configureRateLimiting();
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(config('local.api_rate_limit'))->by($request->user()?->id ?: $request->ip());
+        });
 
         $this->routes(function () {
             $this->mapApiRoutes();
@@ -87,7 +87,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
-            ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
     }
 
@@ -99,7 +98,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::middleware('api')
-            ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
     }
 
@@ -110,15 +108,5 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware(['web', 'auth'])
             ->group(base_path('routes/passport.php'));
-    }
-
-    /**
-     * Configure the rate limiters for the application.
-     */
-    protected function configureRateLimiting()
-    {
-        RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(config('local.api_rate_limit'))->by($request->user()?->id ?: $request->ip());
-        });
     }
 }

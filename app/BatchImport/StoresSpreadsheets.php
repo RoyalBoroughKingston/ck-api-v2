@@ -2,9 +2,9 @@
 
 namespace App\BatchImport;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use League\Flysystem\FileNotFoundException;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -43,7 +43,7 @@ trait StoresSpreadsheets
     /**
      * Import a base64 encode spreadsheet.
      */
-    public function processSpreadsheet(string $spreadsheet): array
+    public function processSpreadsheet(string $spreadsheet): void
     {
         $filePath = $this->storeBase64FileString($spreadsheet, 'batch-upload');
 

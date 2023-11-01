@@ -45,26 +45,25 @@ class UserHasRole implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($this->originalValue !== $value) {
-
             switch ($this->userRole->role->name) {
                 case Role::NAME_SERVICE_WORKER:
                     $userHasRole = $this->user->isServiceWorker($this->userRole->service);
-                    // No break.
+                    break;
                 case Role::NAME_SERVICE_ADMIN:
                     $userHasRole = $this->user->isServiceWorker($this->userRole->service);
-                    // No break.
+                    break;
                 case Role::NAME_ORGANISATION_ADMIN:
                     $userHasRole = $this->user->isOrganisationAdmin($this->userRole->organisation);
-                    // No break.
+                    break;
                 case Role::NAME_CONTENT_ADMIN:
                     $userHasRole = $this->user->isContentAdmin();
-                    // No break.
+                    break;
                 case Role::NAME_GLOBAL_ADMIN:
                     $userHasRole = $this->user->isGlobalAdmin();
-                    // No break.
+                    break;
                 case Role::NAME_SUPER_ADMIN:
                     $userHasRole = $this->user->isSuperAdmin();
-                    // No break.
+                    break;
                 default:
                     $userHasRole = false;
             }

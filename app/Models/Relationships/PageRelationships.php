@@ -6,6 +6,7 @@ use App\Models\Collection;
 use App\Models\File;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Kalnoy\Nestedset\AncestorsRelation;
 
 trait PageRelationships
 {
@@ -29,7 +30,7 @@ trait PageRelationships
         return $this->collections()->where('type', Collection::TYPE_PERSONA);
     }
 
-    public function landingPageAncestors(): BelongsToMany
+    public function landingPageAncestors(): AncestorsRelation
     {
         return $this->ancestors()->where('page_type', static::PAGE_TYPE_LANDING);
     }

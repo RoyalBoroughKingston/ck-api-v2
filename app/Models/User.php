@@ -103,8 +103,9 @@ class User extends Authenticatable implements Notifiable
 
     /**
      * Send the password reset notification.
+     * @param mixed $token
      */
-    public function sendPasswordResetNotification(string $token)
+    public function sendPasswordResetNotification($token)
     {
         $this->sendEmail(new UserEmail($this->email, [
             'PASSWORD_RESET_LINK' => route('password.reset', ['token' => $token]),

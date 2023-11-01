@@ -175,7 +175,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the parent relationship.
      */
-    public function updateParent(string $parentId = null): self
+    public function updateParent(?string $parentId = null): self
     {
         // If parent_id is null save as root node
         if (is_null($parentId)) {
@@ -190,7 +190,7 @@ class Page extends Model implements AppliesUpdateRequests
     /**
      * Update the sibling order for the page.
      */
-    public function updateOrder(int $order): self
+    public function updateOrder(?int $order): self
     {
         if (!is_null($order)) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
@@ -204,7 +204,7 @@ class Page extends Model implements AppliesUpdateRequests
      * Update the image relationship.
      * Can be passed either null, the current image id or a new image id.
      */
-    public function updateImage(string $imageId): Page
+    public function updateImage(?string $imageId): Page
     {
         if ($imageId !== $this->image_file_id) {
             $currentImage = $this->image;
@@ -238,7 +238,7 @@ class Page extends Model implements AppliesUpdateRequests
      *
      * @param mixed $collections
      */
-    public function updateCollections(array $collectionIds): Page
+    public function updateCollections(?array $collectionIds): Page
     {
         if (is_array($collectionIds)) {
             $this->collections()->sync($collectionIds);

@@ -18,7 +18,7 @@ trait UpdateRequestScopes
         return $query->whereNotNull('updateable_id');
     }
 
-    public function scopeServiceId(Builder $query, int $id): Builder
+    public function scopeServiceId(Builder $query, string $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -27,7 +27,7 @@ trait UpdateRequestScopes
             ->whereIn('updateable_id', $ids);
     }
 
-    public function scopeServiceLocationId(Builder $query, int $id): Builder
+    public function scopeServiceLocationId(Builder $query, string $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -36,7 +36,7 @@ trait UpdateRequestScopes
             ->whereIn('updateable_id', $ids);
     }
 
-    public function scopeLocationId(Builder $query, int $id): Builder
+    public function scopeLocationId(Builder $query, string $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -45,7 +45,7 @@ trait UpdateRequestScopes
             ->whereIn('updateable_id', $ids);
     }
 
-    public function scopeOrganisationId(Builder $query, int $id): Builder
+    public function scopeOrganisationId(Builder $query, string $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -54,7 +54,7 @@ trait UpdateRequestScopes
             ->whereIn('updateable_id', $ids);
     }
 
-    public function scopeOrganisationEventId(Builder $query, int $id): Builder
+    public function scopeOrganisationEventId(Builder $query, string $id): Builder
     {
         $ids = explode(',', $id);
 
@@ -63,7 +63,7 @@ trait UpdateRequestScopes
             ->whereIn('updateable_id', $ids);
     }
 
-    public function scopePageId(Builder $query, int $id): Builder
+    public function scopePageId(Builder $query, string $id): Builder
     {
         $ids = explode(',', $id);
 

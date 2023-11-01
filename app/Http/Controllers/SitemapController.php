@@ -8,7 +8,7 @@ use App\Models\Page;
 use App\Models\Service;
 use DateTime;
 use DOMDocument;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
 class SitemapController extends Controller
@@ -20,7 +20,7 @@ class SitemapController extends Controller
      */
     protected $sitemap;
 
-    public function __invoke(): JsonResponse
+    public function __invoke(): Response
     {
         $sitemap = Cache::remember('sitemap', (60 * 60), function () {
             $this->sitemap = new DOMDocument('1.0', 'UTF-8');

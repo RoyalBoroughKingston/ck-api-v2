@@ -35,7 +35,7 @@ class RootTaxonomyIs implements ValidationRule
 
         $taxonomy = Taxonomy::query()->find($value);
 
-        if (!$taxonomy || $taxonomy->rootIsCalled($this->rootTaxonomyName)) {
+        if (!$taxonomy || !$taxonomy->rootIsCalled($this->rootTaxonomyName)) {
             $fail($this->message());
         }
     }

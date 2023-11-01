@@ -8,7 +8,6 @@ use App\Http\Requests\Setting\IndexRequest;
 use App\Http\Requests\Setting\UpdateRequest;
 use App\Models\File;
 use App\Models\Setting;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
@@ -21,14 +20,14 @@ class SettingController extends Controller
         $this->middleware('auth:api')->except('index');
     }
 
-    public function index(IndexRequest $request): JsonResponse
+    public function index(IndexRequest $request): Setting
     {
         event(EndpointHit::onRead($request, 'Viewed all settings'));
 
         return new Setting();
     }
 
-    public function update(UpdateRequest $request): JsonResponse
+    public function update(UpdateRequest $request): Setting
     {
         return DB::transaction(function () use ($request) {
             Setting::cms()

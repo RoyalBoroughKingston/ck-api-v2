@@ -7,7 +7,6 @@ use App\Models\Page;
 use App\Models\Taxonomy;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 trait CollectionRelationships
 {
@@ -16,7 +15,7 @@ trait CollectionRelationships
         return $this->hasMany(CollectionTaxonomy::class);
     }
 
-    public function taxonomies(): HasManyThrough
+    public function taxonomies(): BelongsToMany
     {
         return $this->belongsToMany(Taxonomy::class, (new CollectionTaxonomy())->getTable());
     }

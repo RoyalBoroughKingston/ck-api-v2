@@ -83,7 +83,7 @@ class ServicesTest extends TestCase
             $serviceAttributes = $service->getAttributes();
             $serviceAttributes['id'] = $service->id ?: uuid();
 
-            if (is_array($serviceEligibilities) && ! empty($serviceEligibilities[$serviceAttributes['id']])) {
+            if (is_array($serviceEligibilities) && !empty($serviceEligibilities[$serviceAttributes['id']])) {
                 $serviceAttributes['eligibility_taxonomies'] = implode(',', $serviceEligibilities[$serviceAttributes['id']]);
             }
 
@@ -560,7 +560,7 @@ class ServicesTest extends TestCase
             'referral_email' => null,
             'referral_url' => null,
             'cqc_location_id' => $this->faker->numerify('#-#########'),
-            'ends_at' => Carbon::now()->addMonths(6)->toDateString().'T00:00:00+0000',
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -654,7 +654,7 @@ class ServicesTest extends TestCase
             'referral_email' => null,
             'referral_url' => null,
             'cqc_location_id' => $this->faker->numerify('#-#########'),
-            'ends_at' => Carbon::now()->addMonths(6)->toDateString().'T00:00:00+0000',
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -756,7 +756,7 @@ class ServicesTest extends TestCase
             'referral_email' => null,
             'referral_url' => null,
             'cqc_location_id' => $this->faker->numerify('#-#########'),
-            'ends_at' => Carbon::now()->addMonths(6)->toDateString().'T00:00:00+0000',
+            'ends_at' => Carbon::now()->addMonths(6)->toDateString() . 'T00:00:00+0000',
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -4206,7 +4206,7 @@ class ServicesTest extends TestCase
         $service = $service->fresh()->load('serviceEligibilities');
 
         foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
-            $this->assertEquals($customFieldValue, $service->{'eligibility_'.$customFieldName.'_custom'});
+            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
         }
     }
 
@@ -4260,7 +4260,7 @@ class ServicesTest extends TestCase
         }
 
         foreach ($payload['eligibility_types']['custom'] as $customFieldName => $customFieldValue) {
-            $this->assertEquals($customFieldValue, $service->{'eligibility_'.$customFieldName.'_custom'});
+            $this->assertEquals($customFieldValue, $service->{'eligibility_' . $customFieldName . '_custom'});
         }
     }
 
@@ -4485,7 +4485,7 @@ class ServicesTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.base64_encode($image),
+            'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
@@ -5378,7 +5378,7 @@ class ServicesTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.base64_encode($image),
+            'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
         $payload = [
@@ -5513,7 +5513,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5538,7 +5538,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5565,7 +5565,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5594,7 +5594,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5619,10 +5619,10 @@ class ServicesTest extends TestCase
             'organisation_id' => $organisation->id,
         ]);
 
-        $this->createServiceSpreadsheets($services, $organisation->id);
+        $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5646,7 +5646,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5670,7 +5670,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5694,7 +5694,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5763,7 +5763,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5850,7 +5850,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5869,7 +5869,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/octet-stream;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/octet-stream;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5888,7 +5888,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5933,7 +5933,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -5983,7 +5983,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6024,7 +6024,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]));
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6046,7 +6046,7 @@ class ServicesTest extends TestCase
         ]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6096,7 +6096,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $response = $this->json('POST', '/core/v1/services/import', [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -6161,7 +6161,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $response = $this->json('POST', '/core/v1/services/import', [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -6219,7 +6219,7 @@ class ServicesTest extends TestCase
         Passport::actingAs($superAdminUser);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6238,7 +6238,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6272,7 +6272,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $serviceEligibilityTaxonomyIds->all()]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6317,7 +6317,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $invalidServiceEligibilityTaxonomyIds]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6347,7 +6347,7 @@ class ServicesTest extends TestCase
 
         $categoryTaxonomyIds = [];
         foreach (Taxonomy::category()->children as $taxonomyCategory) {
-            if (! $taxonomyCategory->children->isEmpty()) {
+            if (!$taxonomyCategory->children->isEmpty()) {
                 $categoryTaxonomyIds[] = $taxonomyCategory->children->first()->id;
             }
         }
@@ -6355,7 +6355,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets(collect([$service]), [$serviceId => $categoryTaxonomyIds]);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6410,7 +6410,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6430,7 +6430,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6466,7 +6466,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.ms-excel;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
+            'spreadsheet' => 'data:application/vnd.ms-excel;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xls'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);
@@ -6486,7 +6486,7 @@ class ServicesTest extends TestCase
         $this->createServiceSpreadsheets($services);
 
         $data = [
-            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
+            'spreadsheet' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' . base64_encode(file_get_contents(Storage::disk('local')->path('test.xlsx'))),
         ];
 
         $response = $this->json('POST', '/core/v1/services/import', $data);

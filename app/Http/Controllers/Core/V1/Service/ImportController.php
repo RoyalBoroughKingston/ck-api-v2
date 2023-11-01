@@ -229,7 +229,11 @@ class ImportController extends Controller
                     $eligibilityTaxonomyIds = explode(',', $value);
                     $invalidEligibilityTaxonomyIds = [];
                     foreach ($eligibilityTaxonomyIds as $eligibilityTaxonomyId) {
-                        if (!$isServiceEligibility->passes($att, $eligibilityTaxonomyId)) {
+                        $eligibilityTaxonomyIdInvalid = false;
+                        $isServiceEligibility->validate($att, $eligibilityTaxonomyId, function () use (&$eligibilityTaxonomyIdInvalid) {
+                            $eligibilityTaxonomyIdInvalid = true;
+                        });
+                        if ($eligibilityTaxonomyIdInvalid) {
                             $invalidEligibilityTaxonomyIds[] = $eligibilityTaxonomyId;
                         }
                     }

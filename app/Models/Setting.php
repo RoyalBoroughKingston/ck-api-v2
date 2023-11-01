@@ -7,7 +7,6 @@ use App\Models\Relationships\SettingRelationships;
 use App\Models\Scopes\SettingScopes;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class Setting extends Model implements Responsable
@@ -37,7 +36,7 @@ class Setting extends Model implements Responsable
      */
     public $timestamps = false;
 
-    public function toResponse(Request $request): JsonResponse
+    public function toResponse($request): JsonResponse
     {
         $data = static::all()
             ->mapWithKeys(function (self $setting) {

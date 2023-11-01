@@ -9,7 +9,6 @@ use App\Http\Requests\Page\IndexRequest;
 use App\Http\Requests\Page\ShowRequest;
 use App\Http\Requests\Page\StoreRequest;
 use App\Http\Requests\Page\UpdateRequest;
-use App\Http\Resources\OrganisationResource;
 use App\Http\Resources\PageResource;
 use App\Http\Responses\ResourceDeleted;
 use App\Http\Responses\UpdateRequestReceived;
@@ -71,7 +70,7 @@ class PageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request, PagePersistenceService $persistenceService): OrganisationResource
+    public function store(StoreRequest $request, PagePersistenceService $persistenceService)
     {
         $entity = $persistenceService->store($request);
 
@@ -91,7 +90,7 @@ class PageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ShowRequest $request, Page $page): OrganisationResource
+    public function show(ShowRequest $request, Page $page): PageResource
     {
         $baseQuery = Page::query()
             ->with(['landingPageAncestors', 'parent', 'children', 'collectionCategories', 'collectionPersonas'])
@@ -108,7 +107,7 @@ class PageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService): OrganisationResource
+    public function update(UpdateRequest $request, Page $page, PagePersistenceService $persistenceService): UpdateRequestReceived
     {
         $updateRequest = $persistenceService->update($request, $page);
 

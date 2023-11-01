@@ -34,8 +34,11 @@ class ChunkReadFilter implements IReadFilter
 
     /**
      * Should the cell be read.
+     * @param mixed $column
+     * @param mixed $row
+     * @param mixed $worksheetName
      */
-    public function readCell(string $column, int $row, string $worksheetName = ''): bool
+    public function readCell($column, $row, $worksheetName = ''): bool
     {
         /**
          * Only read the first (header) row, or rows within the chunksize.

@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Passport\AuthorizationController;
 use App\Models\Client;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Laravel\Passport\Passport;
 
@@ -26,6 +29,10 @@ class AuthServiceProvider extends ServiceProvider
         Passport::enableImplicitGrant();
         Passport::tokensExpireIn(Date::now()->addMonths(18));
         Passport::useClientModel(Client::class);
+
+        $this->app->when(AuthorizationController::class)
+            ->needs(StatefulGuard::class)
+            ->give(fn () => Auth::guard(config('passport.guard', null)));
     }
 
     /**

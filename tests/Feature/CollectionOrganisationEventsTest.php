@@ -48,7 +48,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_list_them()
+    public function guest_can_list_them(): void
     {
         $response = $this->json('GET', '/core/v1/collections/organisation-events');
 
@@ -88,7 +88,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_list_all_of_them()
+    public function guest_can_list_all_of_them(): void
     {
         $response = $this->json('GET', '/core/v1/collections/organisation-events/all');
 
@@ -130,7 +130,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_list_enabled_and_disabled_collections()
+    public function guest_can_list_enabled_and_disabled_collections(): void
     {
         $disabledCollection = Collection::organisationEvents()->first();
 
@@ -157,7 +157,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_list_all_enabled_and_disabled_collections()
+    public function guest_can_list_all_enabled_and_disabled_collections(): void
     {
         $disabledCollection = Collection::organisationEvents()->first();
 
@@ -184,7 +184,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_listed()
+    public function audit_created_when_listed(): void
     {
         $this->fakeEvents();
 
@@ -202,7 +202,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_create_one()
+    public function guest_cannot_create_one(): void
     {
         $response = $this->json('POST', '/core/v1/collections/organisation-events');
 
@@ -212,7 +212,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_create_one()
+    public function service_worker_cannot_create_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -232,7 +232,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_create_one()
+    public function service_admin_cannot_create_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -252,7 +252,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_create_one()
+    public function organisation_admin_cannot_create_one(): void
     {
         /**
          * @var \App\Models\Organisation $organisation
@@ -272,7 +272,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_create_one()
+    public function global_admin_cannot_create_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -290,7 +290,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_create_one()
+    public function super_admin_can_create_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -300,11 +300,11 @@ class CollectionOrganisationEventsTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -366,7 +366,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_create_a_disabled_one()
+    public function super_admin_can_create_a_disabled_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -376,11 +376,11 @@ class CollectionOrganisationEventsTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -420,15 +420,15 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_created_at_beginning()
+    public function order_is_updated_when_created_at_beginning(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -495,15 +495,15 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_created_at_middle()
+    public function order_is_updated_when_created_at_middle(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -570,15 +570,15 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_created_at_end()
+    public function order_is_updated_when_created_at_end(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -645,15 +645,15 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_cannot_be_less_than_1_when_created()
+    public function order_cannot_be_less_than_1_when_created(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -683,15 +683,15 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_cannot_be_greater_than_count_plus_1_when_created()
+    public function order_cannot_be_greater_than_count_plus_1_when_created(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -743,7 +743,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_created()
+    public function audit_created_when_created(): void
     {
         $this->fakeEvents();
 
@@ -754,10 +754,10 @@ class CollectionOrganisationEventsTest extends TestCase
         $user->makeSuperAdmin();
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -789,7 +789,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_view_one()
+    public function guest_can_view_one(): void
     {
         $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
 
@@ -837,7 +837,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_view_one_by_slug()
+    public function guest_can_view_one_by_slug(): void
     {
         $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
 
@@ -885,7 +885,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_viewed()
+    public function audit_created_when_viewed(): void
     {
         $this->fakeEvents();
 
@@ -906,7 +906,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_update_one()
+    public function guest_cannot_update_one(): void
     {
         $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
 
@@ -918,7 +918,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_update_one()
+    public function service_worker_cannot_update_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -939,7 +939,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_update_one()
+    public function service_admin_cannot_update_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -960,7 +960,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_update_one()
+    public function organisation_admin_cannot_update_one(): void
     {
         /**
          * @var \App\Models\Organisation $organisation
@@ -981,7 +981,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_update_one()
+    public function global_admin_cannot_update_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1000,7 +1000,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_update_one()
+    public function super_admin_can_update_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1010,10 +1010,10 @@ class CollectionOrganisationEventsTest extends TestCase
         $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
+            'filename' => Str::random().'.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -1072,7 +1072,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_update_status()
+    public function super_admin_can_update_status(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1136,7 +1136,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_updated_to_beginning()
+    public function order_is_updated_when_updated_to_beginning(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1204,7 +1204,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_updated_to_middle()
+    public function order_is_updated_when_updated_to_middle(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1272,7 +1272,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_updated_to_end()
+    public function order_is_updated_when_updated_to_end(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1340,7 +1340,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_cannot_be_less_than_1_when_updated()
+    public function order_cannot_be_less_than_1_when_updated(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1381,7 +1381,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_cannot_be_greater_than_count_plus_1_when_updated()
+    public function order_cannot_be_greater_than_count_plus_1_when_updated(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1422,7 +1422,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_updated()
+    public function audit_created_when_updated(): void
     {
         $this->fakeEvents();
 
@@ -1460,7 +1460,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_delete_one()
+    public function guest_cannot_delete_one(): void
     {
         $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
 
@@ -1472,7 +1472,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_delete_one()
+    public function service_worker_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -1493,7 +1493,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_delete_one()
+    public function service_admin_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -1514,7 +1514,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_delete_one()
+    public function organisation_admin_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\Organisation $organisation
@@ -1535,7 +1535,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_delete_one()
+    public function global_admin_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1554,7 +1554,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_delete_one()
+    public function super_admin_can_delete_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1575,7 +1575,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_deleted_at_beginning()
+    public function order_is_updated_when_deleted_at_beginning(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1632,7 +1632,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_deleted_at_middle()
+    public function order_is_updated_when_deleted_at_middle(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1689,7 +1689,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function order_is_updated_when_deleted_at_end()
+    public function order_is_updated_when_deleted_at_end(): void
     {
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
@@ -1746,7 +1746,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_deleted()
+    public function audit_created_when_deleted(): void
     {
         $this->fakeEvents();
 
@@ -1775,7 +1775,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_view_image()
+    public function guest_can_view_image(): void
     {
         $organisationEventCollection = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
 
@@ -1788,7 +1788,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_image_viewed()
+    public function audit_created_when_image_viewed(): void
     {
         $this->fakeEvents();
 
@@ -1809,7 +1809,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_upload_image()
+    public function super_admin_can_upload_image(): void
     {
         /**
          * @var \App\Models\User $user
@@ -1824,7 +1824,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $response = $this->json('POST', '/core/v1/collections/organisation-events', [
@@ -1850,7 +1850,7 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_cannot_delete_image()
+    public function super_admin_cannot_delete_image(): void
     {
         /**
          * @var \App\Models\User $user

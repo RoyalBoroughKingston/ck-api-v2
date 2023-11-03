@@ -19,11 +19,9 @@ class UpdateRequestRejected
     /**
      * Handle the event.
      *
-     * @param EndpointHit $event
-     *
      * @throws \Exception
      */
-    public function handle(EndpointHit $event)
+    public function handle(EndpointHit $event): void
     {
         // Only handle specific endpoint events.
         if ($event->isntFor(UpdateRequest::class, Audit::ACTION_DELETE)) {
@@ -43,8 +41,6 @@ class UpdateRequestRejected
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     *
      * @throws \Exception
      */
     protected function notifySubmitterForExisting(UpdateRequest $updateRequest)
@@ -74,8 +70,6 @@ class UpdateRequestRejected
     }
 
     /**
-     * @param \App\Models\UpdateRequest $updateRequest
-     *
      * @throws \Exception
      */
     protected function notifySubmitterForNew(UpdateRequest $updateRequest)

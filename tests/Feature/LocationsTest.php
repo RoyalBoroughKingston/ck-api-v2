@@ -26,7 +26,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_list_them()
+    public function guest_can_list_them(): void
     {
         $location = Location::factory()->create();
 
@@ -76,7 +76,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_listed()
+    public function audit_created_when_listed(): void
     {
         $this->fakeEvents();
 
@@ -94,7 +94,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_create_one()
+    public function guest_cannot_create_one(): void
     {
         $response = $this->json('POST', '/core/v1/locations');
 
@@ -104,7 +104,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_create_one()
+    public function service_worker_cannot_create_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -124,7 +124,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_can_create_one()
+    public function service_admin_can_create_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -170,7 +170,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_can_create_one()
+    public function global_admin_can_create_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -215,7 +215,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function invalid_address_error_returned_when_creating_one()
+    public function invalid_address_error_returned_when_creating_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -252,7 +252,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_created()
+    public function audit_created_when_created(): void
     {
         $this->fakeEvents();
 
@@ -294,7 +294,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_view_one()
+    public function guest_can_view_one(): void
     {
         $location = Location::factory()->create();
 
@@ -325,7 +325,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_viewed()
+    public function audit_created_when_viewed(): void
     {
         $this->fakeEvents();
 
@@ -346,7 +346,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_update_one()
+    public function guest_cannot_update_one(): void
     {
         $location = Location::factory()->create();
 
@@ -358,7 +358,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_update_one()
+    public function service_worker_cannot_update_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -379,7 +379,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_can_request_to_update_one()
+    public function service_admin_can_request_to_update_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -425,7 +425,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_can_update_one()
+    public function global_admin_can_update_one(): void
     {
         $service = Service::factory()->create();
         $user = User::factory()->create();
@@ -471,7 +471,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_updated()
+    public function audit_created_when_updated(): void
     {
         $this->fakeEvents();
 
@@ -510,7 +510,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function only_partial_fields_can_be_updated()
+    public function only_partial_fields_can_be_updated(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -546,7 +546,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function fields_removed_for_existing_update_requests()
+    public function fields_removed_for_existing_update_requests(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -586,7 +586,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_delete_one()
+    public function guest_cannot_delete_one(): void
     {
         $location = Location::factory()->create();
 
@@ -598,7 +598,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function service_worker_cannot_delete_one()
+    public function service_worker_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -619,7 +619,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_cannot_delete_one()
+    public function service_admin_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\Service $service
@@ -640,7 +640,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_delete_one()
+    public function organisation_admin_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\Organisation $organisation
@@ -661,7 +661,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function global_admin_cannot_delete_one()
+    public function global_admin_cannot_delete_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -680,7 +680,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function super_admin_can_delete_one()
+    public function super_admin_can_delete_one(): void
     {
         /**
          * @var \App\Models\User $user
@@ -700,7 +700,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_deleted()
+    public function audit_created_when_deleted(): void
     {
         $this->fakeEvents();
 
@@ -729,7 +729,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function guest_can_view_image()
+    public function guest_can_view_image(): void
     {
         $location = Location::factory()->create();
 
@@ -742,7 +742,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function audit_created_when_image_viewed()
+    public function audit_created_when_image_viewed(): void
     {
         $this->fakeEvents();
 
@@ -763,7 +763,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_can_upload_image()
+    public function organisation_admin_can_upload_image(): void
     {
         $organisation = Organisation::factory()->create();
         /** @var \App\Models\User $user */
@@ -775,7 +775,7 @@ class LocationsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
+            'file' => 'data:image/png;base64,'.base64_encode($image),
         ]);
 
         $response = $this->json('POST', '/core/v1/locations', [
@@ -811,7 +811,7 @@ class LocationsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_can_delete_image()
+    public function organisation_admin_can_delete_image(): void
     {
         $organisation = Organisation::factory()->create();
         /** @var \App\Models\User $user */

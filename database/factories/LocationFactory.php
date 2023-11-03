@@ -8,10 +8,8 @@ class LocationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'address_line_1' => $this->faker->streetAddress(),

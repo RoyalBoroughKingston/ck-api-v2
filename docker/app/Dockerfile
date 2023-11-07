@@ -50,7 +50,8 @@ RUN chown -R www-data: /var/www/html
 
 # Increase the soft ulimit nofiles for users
 RUN sed -i '/End of file/ i *        soft        nofile        40960\n' /etc/security/limits.conf && \
-sed -i '/end of pam-auth-update/ i session required        pam_limits.so' /etc/pam.d/common-session
+sed -i '/end of pam-auth-update/ i session required        pam_limits.so' /etc/pam.d/common-session && \
+sed -i '/end of pam-auth-update/ i session required        pam_limits.so' /etc/pam.d/common-session-noninteractive
 
 
 # Expose port 80 for HTTP access.

@@ -2,20 +2,19 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
-use App\Models\File;
-use App\Models\Location;
-use App\Models\Organisation;
-use App\Models\Service;
-use App\Models\UpdateRequest;
-use App\Models\User;
-use Carbon\CarbonImmutable;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
 use Tests\TestCase;
+use App\Models\File;
+use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Location;
+use App\Events\EndpointHit;
+use Carbon\CarbonImmutable;
+use App\Models\Organisation;
+use App\Models\UpdateRequest;
+use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Event;
 
 class LocationsTest extends TestCase
 {
@@ -731,12 +730,12 @@ class LocationsTest extends TestCase
      */
     public function guest_can_view_image(): void
     {
-        $location = Location::factory()->create();
+        $location = Location::factory()->withJpgImage()->create();
 
-        $response = $this->get("/core/v1/locations/{$location->id}/image.png");
+        $response = $this->get("/core/v1/locations/{$location->id}/image.jpg");
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertHeader('Content-Type', 'image/png');
+        $response->assertHeader('Content-Type', 'image/jpeg');
     }
 
     /**
@@ -768,15 +767,9 @@ class LocationsTest extends TestCase
         $organisation = Organisation::factory()->create();
         /** @var \App\Models\User $user */
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
-        $image = Storage::disk('local')->get('/test-data/image.png');
+        $image = File::factory()->imageJpg()->pendingAssignment()->create();
 
         Passport::actingAs($user);
-
-        $imageResponse = $this->json('POST', '/core/v1/files', [
-            'is_private' => false,
-            'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.base64_encode($image),
-        ]);
 
         $response = $this->json('POST', '/core/v1/locations', [
             'address_line_1' => '30-34 Aire St',
@@ -790,7 +783,7 @@ class LocationsTest extends TestCase
             'has_wheelchair_access' => false,
             'has_induction_loop' => false,
             'has_accessible_toilet' => false,
-            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+            'image_file_id' => $image->id,
         ]);
         $locationId = $this->getResponseContent($response, 'data.id');
 
@@ -802,6 +795,11 @@ class LocationsTest extends TestCase
             'id' => $locationId,
             'image_file_id' => null,
         ]);
+
+        $response = $this->get("/core/v1/locations/{$locationId}/image.jpg");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/jpeg');
     }
 
     /*

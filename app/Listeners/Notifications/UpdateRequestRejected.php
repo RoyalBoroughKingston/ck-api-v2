@@ -82,6 +82,7 @@ class UpdateRequestRejected
                         'SUBMITTER_NAME' => Arr::get($updateRequest->data, 'user.first_name'),
                         'ORGANISATION_NAME' => Arr::get($updateRequest->data, 'organisation.name'),
                         'REQUEST_DATE' => $updateRequest->created_at->format('j/n/Y'),
+                        'TANDC_URL' => config('local.tandc_uri'),
                     ]
                 )
             );

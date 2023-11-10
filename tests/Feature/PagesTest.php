@@ -2,21 +2,21 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
-use App\Models\Collection;
+use Tests\TestCase;
 use App\Models\File;
 use App\Models\Page;
-use App\Models\Service;
-use App\Models\UpdateRequest;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Collection;
+use App\Events\EndpointHit;
 use Faker\Factory as Faker;
+use Illuminate\Support\Str;
+use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
 
 class PagesTest extends TestCase
 {
@@ -566,7 +566,7 @@ class PagesTest extends TestCase
     {
         Page::factory()->withParent()->withChildren()->create();
 
-        $response = $this->json('GET', '/core/v1/pages/index?include=landing-page-ancestors');
+        $response = $this->json('GET', '/core/v1/pages/index?include=landingPageAncestors');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [

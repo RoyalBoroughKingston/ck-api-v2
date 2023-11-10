@@ -49,7 +49,7 @@ class PageController extends Controller
             ->allowedIncludes([
                 'parent',
                 'children',
-                AllowedInclude::relationship('landing-page-ancestors', 'landingPageAncestors'),
+                AllowedInclude::relationship('landingPageAncestors', 'landingPageAncestors'),
             ])
             ->allowedFilters([
                 AllowedFilter::scope('landing_page', 'pageDescendants'),

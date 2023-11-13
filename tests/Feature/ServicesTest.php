@@ -997,7 +997,7 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
@@ -1054,7 +1054,7 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => 'Tel 01234 567890',
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
@@ -1115,11 +1115,13 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1183,11 +1185,13 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1227,7 +1231,7 @@ class ServicesTest extends TestCase
 
         $response = $this->json('POST', '/core/v1/services', $payload);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJsonFragment(['data' => $payload]);
 
@@ -1244,11 +1248,11 @@ class ServicesTest extends TestCase
 
         $contentPng = $this->get("/core/v1/services/test-service-1/gallery-items/$imagePng->id")->content();
 
-        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $contentPng);
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $contentPng);
 
         $contentJpg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageJpg->id")->content();
 
-        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $contentJpg);
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $contentJpg);
     }
 
     /**

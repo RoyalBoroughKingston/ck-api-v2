@@ -822,8 +822,8 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
 
         $collectionArray = $this->getResponseContent($response)['data'];
-        $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.png");
-        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $response->content());
+        $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.jpg");
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $response->content());
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 

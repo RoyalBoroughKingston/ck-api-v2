@@ -44,13 +44,25 @@ class Collection extends Model
 
     public function touchServices(): Collection
     {
-        static::services($this)->get()->each->save();
+        static::services($this)->get()->searchable();
 
         return $this;
     }
 
     public function syncCollectionTaxonomies(EloquentCollection $taxonomies): Collection
     {
+        // Get the affected taxonomies if any
+        $existingTaxonomyIds = $this->collectionTaxonomies()->pluck('taxonomy_id');
+        $newTaxonomyIds = $taxonomies->pluck('id');
+        $removedTaxonomyIds = $existingTaxonomyIds->diff($newTaxonomyIds);
+        $addedTaxonomyIds = $newTaxonomyIds->diff($existingTaxonomyIds);
+        $affectedTaxonomyIds = $removedTaxonomyIds->concat($addedTaxonomyIds)->unique();
+
+        // If no taxonomies affected, return
+        if ($affectedTaxonomyIds->isEmpty()) {
+            return $this;
+        }
+
         // Delete all existing collection taxonomies.
         $this->collectionTaxonomies()->delete();
 
@@ -58,6 +70,14 @@ class Collection extends Model
         foreach ($taxonomies as $taxonomy) {
             $this->collectionTaxonomies()->updateOrCreate(['taxonomy_id' => $taxonomy->id]);
         }
+
+        Taxonomy::query()
+            ->whereIn('id', $affectedTaxonomyIds)
+            ->get()
+            ->each(function ($taxonomy) {
+                $taxonomy->services()->searchable();
+                $taxonomy->organisationEvents()->searchable();
+            });
 
         return $this;
     }

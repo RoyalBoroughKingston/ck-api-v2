@@ -54,7 +54,7 @@ class Taxonomy extends Model
 
     public function touchServices(): Taxonomy
     {
-        $this->services()->get()->each->save();
+        $this->services()->get()->searchable();
 
         return $this;
     }

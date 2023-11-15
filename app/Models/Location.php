@@ -111,7 +111,7 @@ class Location extends Model implements AppliesUpdateRequests
 
     public function touchServices(): Location
     {
-        $this->services()->get()->each->save();
+        $this->services()->get()->searchable();
 
         return $this;
     }

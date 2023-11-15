@@ -14,7 +14,7 @@ class CollectionTaxonomy extends Model
 
     public function touchServices(): CollectionTaxonomy
     {
-        static::services($this)->get()->each->save();
+        static::services($this)->get()->searchable();
 
         return $this;
     }

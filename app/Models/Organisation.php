@@ -116,7 +116,7 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
 
     public function touchServices(): Organisation
     {
-        $this->services()->get()->each->save();
+        $this->services()->get()->searchable();
 
         return $this;
     }

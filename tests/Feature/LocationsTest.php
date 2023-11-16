@@ -15,6 +15,7 @@ use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 
 class LocationsTest extends TestCase
 {
@@ -209,6 +210,49 @@ class LocationsTest extends TestCase
             'has_induction_loop' => false,
             'has_accessible_toilet' => false,
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function organisation_admin_can_upload_image(): void
+    {
+        $organisation = Organisation::factory()->create();
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $image = File::factory()->imageJpg()->pendingAssignment()->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/locations', [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
+            'has_accessible_toilet' => false,
+            'image_file_id' => $image->id,
+        ]);
+        $locationId = $this->getResponseContent($response, 'data.id');
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $this->assertDatabaseHas(table(Location::class), [
+            'id' => $locationId,
+        ]);
+        $this->assertDatabaseMissing(table(Location::class), [
+            'id' => $locationId,
+            'image_file_id' => null,
+        ]);
+
+        $response = $this->get("/core/v1/locations/{$locationId}/image.jpg");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertHeader('Content-Type', 'image/jpeg');
     }
 
     /**
@@ -578,6 +622,124 @@ class LocationsTest extends TestCase
         $this->assertSoftDeleted($updateRequestOne->getTable(), ['id' => $updateRequestOne->id]);
     }
 
+    /**
+     * @test
+     */
+    public function organisation_admin_can_update_image(): void
+    {
+        $organisation = Organisation::factory()->create();
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $location = Location::factory()->create();
+
+        Passport::actingAs($user);
+
+        // PNG
+        $image = File::factory()->imagePng()->pendingAssignment()->create();
+        $payload = [
+            'image_file_id' => $image->id,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the event image for the service location
+        $content = $this->get("/core/v1/locations/$location->id/image.png")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $content);
+
+        // JPG
+        $image = File::factory()->imageJpg()->pendingAssignment()->create();
+        $payload = [
+            'image_file_id' => $image->id,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the event image for the service location
+        $content = $this->get("/core/v1/locations/$location->id/image.jpg")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
+
+        // SVG
+        $image = File::factory()->imageSvg()->pendingAssignment()->create();
+        $payload = [
+            'image_file_id' => $image->id,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the event image for the service location
+        $content = $this->get("/core/v1/locations/$location->id/image.svg")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
+    }
+
+    /**
+     * @test
+     */
+    public function organisation_admin_can_delete_image(): void
+    {
+        $organisation = Organisation::factory()->create();
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        $location = Location::factory()->create([
+            'image_file_id' => File::factory()->create()->id,
+        ]);
+        $payload = [
+            'address_line_1' => $location->address_line_1,
+            'address_line_2' => $location->address_line_2,
+            'address_line_3' => $location->address_line_3,
+            'city' => $location->city,
+            'county' => $location->county,
+            'postcode' => $location->postcode,
+            'country' => $location->country,
+            'accessibility_info' => $location->accessibility_info,
+            'has_wheelchair_access' => $location->has_wheelchair_access,
+            'has_induction_loop' => $location->has_induction_loop,
+            'has_accessible_toilet' => $location->has_accessible_toilet,
+            'image_file_id' => null,
+        ];
+
+        Passport::actingAs($user);
+
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $location->id]);
+        $updateRequest = UpdateRequest::where('updateable_id', $location->id)->firstOrFail();
+        $this->assertEquals(null, $updateRequest->data['image_file_id']);
+    }
+
     /*
      * Delete a specific location.
      */
@@ -753,92 +915,5 @@ class LocationsTest extends TestCase
             return ($event->getAction() === Audit::ACTION_READ) &&
                 ($event->getModel()->id === $location->id);
         });
-    }
-
-    /*
-     * Upload a specific location's image.
-     */
-
-    /**
-     * @test
-     */
-    public function organisation_admin_can_upload_image(): void
-    {
-        $organisation = Organisation::factory()->create();
-        /** @var \App\Models\User $user */
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
-        $image = File::factory()->imageJpg()->pendingAssignment()->create();
-
-        Passport::actingAs($user);
-
-        $response = $this->json('POST', '/core/v1/locations', [
-            'address_line_1' => '30-34 Aire St',
-            'address_line_2' => null,
-            'address_line_3' => null,
-            'city' => 'Leeds',
-            'county' => 'West Yorkshire',
-            'postcode' => 'LS1 4HT',
-            'country' => 'England',
-            'accessibility_info' => null,
-            'has_wheelchair_access' => false,
-            'has_induction_loop' => false,
-            'has_accessible_toilet' => false,
-            'image_file_id' => $image->id,
-        ]);
-        $locationId = $this->getResponseContent($response, 'data.id');
-
-        $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas(table(Location::class), [
-            'id' => $locationId,
-        ]);
-        $this->assertDatabaseMissing(table(Location::class), [
-            'id' => $locationId,
-            'image_file_id' => null,
-        ]);
-
-        $response = $this->get("/core/v1/locations/{$locationId}/image.jpg");
-
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertHeader('Content-Type', 'image/jpeg');
-    }
-
-    /*
-     * Delete a specific location's image.
-     */
-
-    /**
-     * @test
-     */
-    public function organisation_admin_can_delete_image(): void
-    {
-        $organisation = Organisation::factory()->create();
-        /** @var \App\Models\User $user */
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
-        $location = Location::factory()->create([
-            'image_file_id' => File::factory()->create()->id,
-        ]);
-        $payload = [
-            'address_line_1' => $location->address_line_1,
-            'address_line_2' => $location->address_line_2,
-            'address_line_3' => $location->address_line_3,
-            'city' => $location->city,
-            'county' => $location->county,
-            'postcode' => $location->postcode,
-            'country' => $location->country,
-            'accessibility_info' => $location->accessibility_info,
-            'has_wheelchair_access' => $location->has_wheelchair_access,
-            'has_induction_loop' => $location->has_induction_loop,
-            'has_accessible_toilet' => $location->has_accessible_toilet,
-            'image_file_id' => null,
-        ];
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas(table(UpdateRequest::class), ['updateable_id' => $location->id]);
-        $updateRequest = UpdateRequest::where('updateable_id', $location->id)->firstOrFail();
-        $this->assertEquals(null, $updateRequest->data['image_file_id']);
     }
 }

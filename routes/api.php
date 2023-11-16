@@ -99,8 +99,8 @@ Route::prefix('/core/v1')
             // Organisations.
             Route::match(['GET', 'POST'], '/organisations/index', [Core\V1\OrganisationController::class, 'index']);
             Route::apiResource('/organisations', Core\V1\OrganisationController::class);
-            Route::get('/organisations/{organisation}/logo.{suffix}', Core\V1\Organisation\LogoController::class)
-                ->where('suffix', 'png|jpg|jpeg|svg')
+            Route::get('/organisations/{organisation}/logo{suffix}', Core\V1\Organisation\LogoController::class)
+                ->where('suffix', '.png|.jpg|.jpeg|.svg')
                 ->name('organisations.logo');
             Route::post('/organisations/import', Core\V1\Organisation\ImportController::class)
                 ->name('organisations.import');

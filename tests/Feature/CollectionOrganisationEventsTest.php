@@ -2,23 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
-use App\Models\Collection;
-use App\Models\CollectionTaxonomy;
+use Tests\TestCase;
 use App\Models\File;
-use App\Models\Organisation;
-use App\Models\OrganisationEvent;
+use App\Models\User;
+use App\Models\Audit;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\User;
+use App\Models\Collection;
+use App\Events\EndpointHit;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Str;
+use App\Models\Organisation;
 use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use App\Models\OrganisationEvent;
+use App\Models\CollectionTaxonomy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
 
 class CollectionOrganisationEventsTest extends TestCase
 {
@@ -300,11 +300,11 @@ class CollectionOrganisationEventsTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -376,11 +376,11 @@ class CollectionOrganisationEventsTest extends TestCase
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image->uploadBase64EncodedFile($base64Image);
 
@@ -425,10 +425,10 @@ class CollectionOrganisationEventsTest extends TestCase
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -500,10 +500,10 @@ class CollectionOrganisationEventsTest extends TestCase
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -575,10 +575,10 @@ class CollectionOrganisationEventsTest extends TestCase
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -650,10 +650,10 @@ class CollectionOrganisationEventsTest extends TestCase
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -688,10 +688,10 @@ class CollectionOrganisationEventsTest extends TestCase
         // Delete the existing seeded personas.
         $this->truncateCollectionOrganisationEvents();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -743,6 +743,99 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
+    public function super_admin_can_create_one_and_assign_an_image(): void
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+        $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        // SVG
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
+
+        $response = $this->json('POST', '/core/v1/collections/organisation-events', [
+            'name' => 'Test Organisation Event',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $collectionArray = $this->getResponseContent($response)['data'];
+        $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.svg");
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $response->content());
+
+        $this->assertEquals($image->id, $collectionArray['image_file_id']);
+
+        $this->assertDatabaseHas($image->getTable(), [
+            'id' => $image->id,
+            'meta' => null,
+        ]);
+
+        // PNG
+        $image = File::factory()->pendingAssignment()->imagePng()->create();
+
+        $response = $this->json('POST', '/core/v1/collections/organisation-events', [
+            'name' => 'Test Organisation Event',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $collectionArray = $this->getResponseContent($response)['data'];
+        $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.png");
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $response->content());
+
+        $this->assertEquals($image->id, $collectionArray['image_file_id']);
+
+        $this->assertDatabaseHas($image->getTable(), [
+            'id' => $image->id,
+            'meta' => null,
+        ]);
+
+        // JPG
+        $image = File::factory()->pendingAssignment()->imageJpg()->create();
+
+        $response = $this->json('POST', '/core/v1/collections/organisation-events', [
+            'name' => 'Test Organisation Event',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$randomCategory->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $collectionArray = $this->getResponseContent($response)['data'];
+        $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.jpg");
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $response->content());
+
+        $this->assertEquals($image->id, $collectionArray['image_file_id']);
+
+        $this->assertDatabaseHas($image->getTable(), [
+            'id' => $image->id,
+            'meta' => null,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function audit_created_when_created(): void
     {
         $this->fakeEvents();
@@ -754,10 +847,10 @@ class CollectionOrganisationEventsTest extends TestCase
         $user->makeSuperAdmin();
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -1010,10 +1103,10 @@ class CollectionOrganisationEventsTest extends TestCase
         $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $base64Image = 'data:image/svg+xml;base64,'.base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
+        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
         $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random().'.svg',
+            'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
         ]);
 
@@ -1422,6 +1515,100 @@ class CollectionOrganisationEventsTest extends TestCase
     /**
      * @test
      */
+    public function super_admin_can_update_and_assign_an_image(): void
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+        $organisationEvent = Collection::organisationEvents()->inRandomOrder()->firstOrFail();
+        $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
+
+        Passport::actingAs($user);
+
+        // SVG
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
+
+        $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$organisationEvent->id}", [
+            'name' => 'Test Organisation Event',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $organisationEvent = $organisationEvent->fresh();
+        $this->assertEquals($image->id, $organisationEvent->meta['image_file_id']);
+
+        $content = $this->get("/core/v1/collections/organisation-events/{$organisationEvent->id}/image.svg")->content();
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
+
+        $this->assertDatabaseHas($image->getTable(), [
+            'id' => $image->id,
+            'meta' => null,
+        ]);
+
+        // PNG
+        $image = File::factory()->pendingAssignment()->imagePng()->create();
+
+        $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$organisationEvent->id}", [
+            'name' => 'Test Organisation Event',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $organisationEvent = $organisationEvent->fresh();
+        $this->assertEquals($image->id, $organisationEvent->meta['image_file_id']);
+
+        $content = $this->get("/core/v1/collections/organisation-events/{$organisationEvent->id}/image.png")->content();
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $content);
+
+        $this->assertDatabaseHas($image->getTable(), [
+            'id' => $image->id,
+            'meta' => null,
+        ]);
+
+        // JPG
+        $image = File::factory()->pendingAssignment()->imageJpg()->create();
+
+        $response = $this->json('PUT', "/core/v1/collections/organisation-events/{$organisationEvent->id}", [
+            'name' => 'Test Organisation Event',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => $image->id,
+            'order' => 1,
+            'enabled' => true,
+            'sideboxes' => [],
+            'category_taxonomies' => [$taxonomy->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $organisationEvent = $organisationEvent->fresh();
+        $this->assertEquals($image->id, $organisationEvent->meta['image_file_id']);
+
+        $content = $this->get("/core/v1/collections/organisation-events/{$organisationEvent->id}/image.jpg")->content();
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
+
+        $this->assertDatabaseHas($image->getTable(), [
+            'id' => $image->id,
+            'meta' => null,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function audit_created_when_updated(): void
     {
         $this->fakeEvents();
@@ -1824,7 +2011,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.base64_encode($image),
+            'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 
         $response = $this->json('POST', '/core/v1/collections/organisation-events', [

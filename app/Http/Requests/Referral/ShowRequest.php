@@ -14,7 +14,7 @@ class ShowRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (!$this->user()->isGlobalAdmin() && $this->user()->isServiceWorker($this->referral->service)) {
+        if (!$this->user()->isOnlyGlobalAdmin() && $this->user()->isServiceWorker($this->referral->service)) {
             return true;
         }
 

@@ -2,35 +2,35 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
-use App\Models\File;
-use App\Models\HolidayOpeningHour;
-use App\Models\Organisation;
-use App\Models\RegularOpeningHour;
-use App\Models\Role;
-use App\Models\Service;
-use App\Models\ServiceLocation;
-use App\Models\ServiceRefreshToken;
-use App\Models\ServiceTaxonomy;
-use App\Models\SocialMedia;
-use App\Models\Tag;
-use App\Models\Taxonomy;
-use App\Models\UpdateRequest;
-use App\Models\User;
-use App\Models\UserRole;
 use Carbon\Carbon;
+use App\Models\Tag;
+use Tests\TestCase;
+use App\Models\File;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Audit;
+use App\Models\Service;
+use App\Models\Taxonomy;
+use App\Models\UserRole;
+use App\Events\EndpointHit;
+use App\Models\SocialMedia;
 use Carbon\CarbonImmutable;
 use Faker\Factory as Faker;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use App\Models\Organisation;
+use App\Models\UpdateRequest;
+use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use App\Models\ServiceLocation;
+use App\Models\ServiceTaxonomy;
+use Illuminate\Http\UploadedFile;
+use App\Models\HolidayOpeningHour;
+use App\Models\RegularOpeningHour;
+use App\Models\ServiceRefreshToken;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Collection;
 
 class ServicesTest extends TestCase
 {
@@ -997,7 +997,7 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
@@ -1054,7 +1054,7 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => 'Tel 01234 567890',
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
@@ -1115,11 +1115,13 @@ class ServicesTest extends TestCase
             'contact_name' => $this->faker->name(),
             'contact_phone' => random_uk_phone(),
             'contact_email' => $this->faker->safeEmail(),
-            'show_referral_disclaimer' => true,
+            'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,
             'referral_email' => null,
             'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
             'useful_infos' => [
                 [
                     'title' => 'Did you know?',
@@ -1153,6 +1155,104 @@ class ServicesTest extends TestCase
         $response = $this->json('POST', '/core/v1/services', $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @test
+     */
+    public function organisation_admin_can_create_one_with_gallery_items(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service-1',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+
+        // SVG
+        $imageSvg = File::factory()->pendingAssignment()->imageSvg()->create();
+        // PNG
+        $imagePng = File::factory()->pendingAssignment()->imagePng()->create();
+        // JPG
+        $imageJpg = File::factory()->pendingAssignment()->imageJpg()->create();
+
+        $payload['gallery_items'] = [
+            [
+                'file_id' => $imageSvg->id,
+            ],
+            [
+                'file_id' => $imagePng->id,
+            ],
+            [
+                'file_id' => $imageJpg->id,
+            ],
+        ];
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the gallery images for the service
+        $contentSvg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageSvg->id")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $contentSvg);
+
+        $contentPng = $this->get("/core/v1/services/test-service-1/gallery-items/$imagePng->id")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $contentPng);
+
+        $contentJpg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageJpg->id")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $contentJpg);
     }
 
     /**
@@ -4477,26 +4577,93 @@ class ServicesTest extends TestCase
         ]);
         $taxonomy = Taxonomy::factory()->create();
         $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
-        $user = User::factory()->create()->makeGlobalAdmin();
-        $image = Storage::disk('local')->get('/test-data/image.png');
 
+        $user = User::factory()->create()->makeGlobalAdmin();
         Passport::actingAs($user);
 
-        $imageResponse = $this->json('POST', '/core/v1/files', [
-            'is_private' => false,
-            'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
-        ]);
+        // SVG
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
 
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", [
+        $payload = [
             'gallery_items' => [
                 [
-                    'file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+                    'file_id' => $image->id,
                 ],
             ],
-        ]);
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the event image for the service location
+        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
+
+        // PNG
+        $image = File::factory()->pendingAssignment()->imagePng()->create();
+
+        $payload = [
+            'gallery_items' => [
+                [
+                    'file_id' => $image->id,
+                ],
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the event image for the service location
+        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $content);
+
+        // JPG
+        $image = File::factory()->pendingAssignment()->imageJpg()->create();
+
+        $payload = [
+            'gallery_items' => [
+                [
+                    'file_id' => $image->id,
+                ],
+            ],
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // Get the event image for the service location
+        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
     }
 
     /**

@@ -339,6 +339,11 @@ class User extends Authenticatable implements Notifiable
         return $this->hasRole(Role::globalAdmin()) || $this->isSuperAdmin();
     }
 
+    public function isOnlyGlobalAdmin(): bool
+    {
+        return $this->hasRole(Role::globalAdmin()) && !$this->isSuperAdmin();
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->hasRole(Role::superAdmin());

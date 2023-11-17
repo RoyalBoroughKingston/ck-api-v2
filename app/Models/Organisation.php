@@ -52,7 +52,7 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
         $rules['logo_file_id'] = [
             'nullable',
             'exists:files,id',
-            new FileIsMimeType(File::MIME_TYPE_PNG),
+            new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG, File::MIME_TYPE_SVG),
         ];
 
         return ValidatorFacade::make($updateRequest->data, $rules);
@@ -116,7 +116,7 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
 
     public function touchServices(): Organisation
     {
-        $this->services()->get()->each->save();
+        $this->services()->get()->searchable();
 
         return $this;
     }

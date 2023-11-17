@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\File;
 use App\Models\SocialMedia;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -33,5 +34,23 @@ class OrganisationFactory extends Factory
                 'url' => "https://twitter.com/{$this->faker->domainWord()}/",
             ]);
         })->state([]);
+    }
+
+    public function withJpgLogo()
+    {
+        return $this->state(function () {
+            return [
+                'logo_file_id' => File::factory()->imageJpg()->create(),
+            ];
+        });
+    }
+
+    public function withPngLogo()
+    {
+        return $this->state(function () {
+            return [
+                'logo_file_id' => File::factory()->imagePng()->create(),
+            ];
+        });
     }
 }

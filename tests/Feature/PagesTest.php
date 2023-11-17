@@ -3225,23 +3225,9 @@ class PagesTest extends TestCase
 
         Passport::actingAs($user);
 
-        $imageJpg = File::factory()->create([
-            'filename' => Str::random() . '.jpg',
-            'mime_type' => 'image/jpeg',
-        ]);
+        $imageJpg = File::factory()->imageJpg()->pendingAssignment()->create();
 
-        $imageJpg->uploadBase64EncodedFile(
-            'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'))
-        );
-
-        $imagePng = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.png',
-            'mime_type' => 'image/png',
-        ]);
-
-        $imagePng->uploadBase64EncodedFile(
-            'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'))
-        );
+        $imagePng = File::factory()->imagePng()->pendingAssignment()->create();
 
         $page = Page::factory()->withParent()->withChildren()->disabled()
             ->create([

@@ -254,9 +254,11 @@ Route::prefix('/core/v1')
             // Update Requests.
             Route::match(['GET', 'POST'], '/update-requests/index', [Core\V1\UpdateRequestController::class, 'index']);
             Route::apiResource('/update-requests', Core\V1\UpdateRequestController::class)
-                ->only('index', 'show', 'destroy');
+                ->only('index', 'show');
             Route::put('/update-requests/{update_request}/approve', [Core\V1\UpdateRequest\ApproveController::class, 'update'])
                 ->name('update-requests.approve');
+            Route::put('/update-requests/{update_request}/reject', [Core\V1\UpdateRequestController::class, 'destroy'])
+                ->name('update-requests.reject');
 
             // Users.
             Route::match(['GET', 'POST'], '/users/index', [Core\V1\UserController::class, 'index']);

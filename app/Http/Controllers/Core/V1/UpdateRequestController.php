@@ -84,6 +84,9 @@ class UpdateRequestController extends Controller
     public function destroy(DestroyRequest $request, UpdateRequest $updateRequest)
     {
         return DB::transaction(function () use ($request, $updateRequest) {
+            $updateRequest->update([
+                'rejection_message' => $request->input('message'),
+            ]);
             event(EndpointHit::onDelete($request, "Deleted update request [{$updateRequest->id}]", $updateRequest));
 
             $updateRequest->delete($request->user('api'));

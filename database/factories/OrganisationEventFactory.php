@@ -20,6 +20,7 @@ class OrganisationEventFactory extends Factory
 
         return [
             'title' => 'Organisation Event Title',
+            'slug' => 'organisation-event-title',
             'start_date' => $date->format('Y-m-d'),
             'end_date' => $date->format('Y-m-d'),
             'start_time' => $starttime,

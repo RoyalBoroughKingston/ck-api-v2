@@ -3,6 +3,7 @@
 namespace App\UpdateRequest;
 
 use App\Contracts\AppliesUpdateRequests;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\OrganisationEvent\StoreRequest;
 use App\Models\File;
 use App\Models\OrganisationEvent;
@@ -15,6 +16,18 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
 {
+    /**
+     * Unique Slug Generator.
+     *
+     * @var \App\Generators\UniqueSlugGenerator
+     */
+    protected $slugGenerator;
+
+    public function __construct(UniqueSlugGenerator $slugGenerator)
+    {
+        $this->slugGenerator = $slugGenerator;
+    }
+
     /**
      * Check if the update request is valid.
      */
@@ -46,6 +59,7 @@ class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
 
         $organisationEvent = OrganisationEvent::create([
             'title' => $data->get('title'),
+            'slug' => $this->slugGenerator->generate($data->get('slug', $data->get('title')), table(OrganisationEvent::class)),
             'start_date' => $data->get('start_date'),
             'end_date' => $data->get('end_date'),
             'start_time' => $data->get('start_time'),

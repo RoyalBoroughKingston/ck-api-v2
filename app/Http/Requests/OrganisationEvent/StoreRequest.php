@@ -14,6 +14,7 @@ use App\Rules\FileIsPendingAssignment;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
 use App\Rules\RootTaxonomyIs;
+use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
@@ -51,6 +52,7 @@ class StoreRequest extends FormRequest
                 },
             ],
             'title' => ['required', 'string', 'min:1', 'max:255'],
+            'slug' => ['string', 'min:1', 'max:255', new Slug()],
             'start_date' => ['required', 'date_format:Y-m-d', 'after:today', new DateSanity($this)],
             'end_date' => ['required', 'date_format:Y-m-d', new DateSanity($this)],
             'start_time' => ['required', 'date_format:H:i:s', new DateSanity($this)],

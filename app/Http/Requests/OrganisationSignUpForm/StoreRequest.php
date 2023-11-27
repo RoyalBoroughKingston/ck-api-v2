@@ -232,17 +232,17 @@ class StoreRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        logger('Before', ['user' => $this->user, 'organisation' => $this->organisation]);
         $user = $this->user;
         $user['phone'] = Str::remove(' ', $user['phone']);
 
         $organisation = $this->organisation;
-        $organisation['phone'] = Str::remove(' ', $organisation['phone']);
+        if ($organisation['phone'] ?? false) {
+            $organisation['phone'] = Str::remove(' ', $organisation['phone']);
+        }
 
         $this->merge([
             'user' => $user,
             'organisation' => $organisation,
         ]);
-        logger('After', ['user' => $this->user, 'organisation' => $this->organisation]);
     }
 }

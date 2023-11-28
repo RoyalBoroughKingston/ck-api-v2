@@ -312,6 +312,9 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             }
         }
 
+        // Update the search index
+        $this->save();
+
         // Ensure conditional fields are reset if needed.
         $this->resetConditionalFields();
 

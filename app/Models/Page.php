@@ -158,7 +158,7 @@ class Page extends Model implements AppliesUpdateRequests
     {
         if ($this->parent && $this->parent->enabled === self::DISABLED) {
             $this->enabled = self::DISABLED;
-        } elseif (!is_null($status)) {
+        } elseif (!is_null($status) && $status !== $this->enabled) {
             $this->enabled = $status;
         }
 
@@ -192,7 +192,7 @@ class Page extends Model implements AppliesUpdateRequests
      */
     public function updateOrder(?int $order): self
     {
-        if (!is_null($order)) {
+        if (!is_null($order) && $order !== $this->order) {
             $siblingAtIndex = $this->siblingAtIndex($order)->first();
             $this->beforeOrAfterNode($siblingAtIndex, $siblingAtIndex->getLft() > $this->getLft());
         }
@@ -284,7 +284,7 @@ class Page extends Model implements AppliesUpdateRequests
             $slug = $slugGenerator->generate($slug, 'pages');
         }
 
-        // Update the organisation event record.
+        // Update the page record.
         $this->update([
             'title' => Arr::get($data, 'title', $this->title),
             'slug' => $slug,
@@ -293,28 +293,16 @@ class Page extends Model implements AppliesUpdateRequests
             'page_type' => Arr::get($data, 'page_type', $this->page_type),
         ]);
 
-        if (Arr::has($data, 'parent_id')) {
-            $this->updateParent(Arr::get($data, 'parent_id'));
-            $this->updateStatus(Arr::get($data, 'enabled', $this->enabled));
-        }
-
-        if (Arr::has($data, 'enabled')) {
-            $this->updateStatus(Arr::get($data, 'enabled'));
-        }
-
-        if (Arr::has($data, 'order')) {
-            $this->updateOrder(Arr::get($data, 'order'));
-        }
-
-        if (Arr::has($data, 'image_file_id')) {
-            $this->updateImage(Arr::get($data, 'image_file_id'));
-        }
+        $this->updateParent(Arr::get($data, 'parent_id', $this->parent_id))
+            ->updateStatus(Arr::get($data, 'enabled', $this->enabled))
+            ->updateOrder(Arr::get($data, 'order', $this->order))
+            ->updateImage(Arr::get($data, 'image_file_id', $this->image_file_id));
 
         if (Arr::has($data, 'collections')) {
             $this->updateCollections(Arr::get($data, 'collections'));
         }
 
-        // Update model so far
+        // Update the search index
         $this->save();
 
         return $updateRequest;

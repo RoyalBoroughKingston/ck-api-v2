@@ -1835,6 +1835,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
+        $data['excerpt'] = trim($data['excerpt']);
         $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);

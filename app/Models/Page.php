@@ -73,10 +73,10 @@ class Page extends Model implements AppliesUpdateRequests
             foreach ($sectionContent['content'] as $i => $contentBlock) {
                 switch ($contentBlock['type']) {
                     case 'copy':
-                        $content[] = $this->onlyAlphaNumeric($contentBlock['value']);
+                        $content[] = $this->onlyWords($contentBlock['value']);
                         break;
                     case 'cta':
-                        $content[] = $this->onlyAlphaNumeric($contentBlock['title'] . ' ' . $contentBlock['description']);
+                        $content[] = $this->onlyWords($contentBlock['title'] . ' ' . $contentBlock['description']);
                         break;
                     default:
                         break;
@@ -92,7 +92,7 @@ class Page extends Model implements AppliesUpdateRequests
         return [
             'id' => $this->id,
             'enabled' => $this->enabled,
-            'title' => $this->onlyAlphaNumeric($this->title),
+            'title' => $this->onlyWords($this->title),
             'content' => $contentSections,
             'collection_categories' => $this->collections()->where('type', Collection::TYPE_CATEGORY)->pluck('name')->all(),
             'collection_personas' => $this->collections()->where('type', Collection::TYPE_PERSONA)->pluck('name')->all(),

@@ -27,10 +27,10 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                 ],
                 'functions' => [
                     [
-                        'field_value_factor' => [
-                            'field' => 'score',
-                            'missing' => 1,
-                            'modifier' => 'ln1p',
+                        'script_score' => [
+                            'script' => [
+                                'source' => "((doc['score'].value + 1) * 0.1) + 1",
+                            ],
                         ],
                     ],
                 ],

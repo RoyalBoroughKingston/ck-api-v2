@@ -60,14 +60,14 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     {
         $organisationEvent = [
             'id' => $this->id,
-            'title' => $this->onlyAlphaNumeric($this->title),
-            'intro' => $this->onlyAlphaNumeric($this->intro),
-            'description' => $this->onlyAlphaNumeric($this->description),
+            'title' => $this->onlyWords($this->title),
+            'intro' => $this->onlyWords($this->intro),
+            'description' => $this->onlyWords($this->description),
             'start_date' => $this->start_date->setTimeFromTimeString($this->start_time)->toDateTimeLocalString(),
             'end_date' => $this->end_date->setTimeFromTimeString($this->end_time)->toDateTimeLocalString(),
             'is_free' => $this->is_free,
             'is_virtual' => $this->is_virtual,
-            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
+            'organisation_name' => $this->onlyWords($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => $this->collections()->pluck('name')->toArray(),
             'event_location' => null,

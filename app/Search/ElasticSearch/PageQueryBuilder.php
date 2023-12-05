@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 
 namespace App\Search\ElasticSearch;
 
@@ -50,18 +50,6 @@ class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 
     protected function applyQuery(string $query): void
     {
-        // $this->addMatch('title', $query, $this->shouldPath, 3);
-        // $this->addMatch('content.introduction.title', $query, $this->shouldPath, 2);
-        // $this->addMatch('content.introduction.content', $query, $this->shouldPath);
-        // $this->addMatch('content.about.title', $query, $this->shouldPath, 2);
-        // $this->addMatch('content.about.content', $query, $this->shouldPath);
-        // $this->addMatch('content.info_pages.title', $query, $this->shouldPath, 2);
-        // $this->addMatch('content.info_pages.content', $query, $this->shouldPath);
-        // $this->addMatch('content.collections.title', $query, $this->shouldPath, 2);
-        // $this->addMatch('content.collections.content', $query, $this->shouldPath);
-        // $this->addMatch('collection_categories', $query, $this->shouldPath);
-        // $this->addMatch('collection_personas', $query, $this->shouldPath);
-
         $this->addMatch('title', $query, $this->shouldPath, 2);
         $this->addMatch('title', $query, $this->shouldPath, 3, 'AUTO', 'AND');
         $this->addMatchPhrase('title', $query, $this->shouldPath, 5);

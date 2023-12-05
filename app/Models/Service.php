@@ -111,14 +111,14 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
         return [
             'id' => $this->id,
-            'name' => $this->onlyAlphaNumeric($this->name),
-            'intro' => $this->onlyAlphaNumeric($this->intro),
-            'description' => $this->onlyAlphaNumeric($this->description),
+            'name' => $this->onlyWords($this->name),
+            'intro' => $this->onlyWords($this->intro),
+            'description' => $this->onlyWords($this->description),
             'wait_time' => $this->wait_time,
             'is_free' => $this->is_free,
             'status' => $this->status,
             'score' => $this->score,
-            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
+            'organisation_name' => $this->onlyWords($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => static::collections($this)->where('type', Collection::TYPE_CATEGORY)->pluck('name')->toArray(),
             'collection_personas' => static::collections($this)->where('type', Collection::TYPE_PERSONA)->pluck('name')->toArray(),

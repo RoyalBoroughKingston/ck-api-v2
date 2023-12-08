@@ -293,7 +293,7 @@ class Page extends Model implements AppliesUpdateRequests
             'page_type' => Arr::get($data, 'page_type', $this->page_type),
         ]);
 
-        $this->updateParent(Arr::get($data, 'parent_id', $this->parent_id))
+        $this->updateParent(Arr::get($data, 'parent_id', $this->parent_uuid))
             ->updateStatus(Arr::get($data, 'enabled', $this->enabled))
             ->updateOrder(Arr::get($data, 'order', $this->order))
             ->updateImage(Arr::get($data, 'image_file_id', $this->image_file_id));

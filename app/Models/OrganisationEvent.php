@@ -60,14 +60,14 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     {
         $organisationEvent = [
             'id' => $this->id,
-            'title' => $this->onlyAlphaNumeric($this->title),
-            'intro' => $this->onlyAlphaNumeric($this->intro),
-            'description' => $this->onlyAlphaNumeric($this->description),
+            'title' => $this->makeSearchable($this->title),
+            'intro' => $this->makeSearchable($this->intro),
+            'description' => $this->makeSearchable($this->description),
             'start_date' => $this->start_date->setTimeFromTimeString($this->start_time)->toDateTimeLocalString(),
             'end_date' => $this->end_date->setTimeFromTimeString($this->end_time)->toDateTimeLocalString(),
             'is_free' => $this->is_free,
             'is_virtual' => $this->is_virtual,
-            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
+            'organisation_name' => $this->makeSearchable($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => $this->collections()->pluck('name')->toArray(),
             'event_location' => null,
@@ -170,6 +170,9 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
             $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
             $this->syncTaxonomyRelationships($taxonomies);
         }
+
+        // Update the search index
+        $this->save();
 
         // Ensure conditional fields are reset if needed.
         $this->resetConditionalFields();

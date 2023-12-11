@@ -1835,6 +1835,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
+        $data['excerpt'] = trim($data['excerpt']);
         $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
@@ -1874,7 +1875,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
+            'excerpt' => trim(substr($this->faker->paragraph(2), 0, 149)),
             'content' => [
                 'introduction' => [
                     'content' => [

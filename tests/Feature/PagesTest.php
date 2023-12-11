@@ -1875,7 +1875,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
+            'excerpt' => trim(substr($this->faker->paragraph(2), 0, 149)),
             'content' => [
                 'introduction' => [
                     'content' => [

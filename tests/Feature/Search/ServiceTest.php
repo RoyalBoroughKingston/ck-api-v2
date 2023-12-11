@@ -103,8 +103,21 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_service_name(): void
     {
-        $service1 = Service::factory()->create(['name' => 'hunt remind voice']);
-        $service2 = Service::factory()->create();
+        $service1 = Service::factory()->create([
+            'name' => 'hunt remind voice',
+        ]);
+        Service::factory()->create([
+            'name' => 'bend simple orange',
+        ]);
+        Service::factory()->create([
+            'name' => 'pigs sake wooden',
+        ]);
+        Service::factory()->create([
+            'name' => 'exam punt pencil',
+        ]);
+        Service::factory()->create([
+            'name' => 'shadow relay kinks',
+        ]);
 
         sleep(1);
 

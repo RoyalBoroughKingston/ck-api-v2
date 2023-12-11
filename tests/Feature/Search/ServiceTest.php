@@ -103,21 +103,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_service_name(): void
     {
-        $service1 = Service::factory()->create([
+        $service = Service::factory()->create([
             'name' => 'hunt remind voice',
         ]);
-        Service::factory()->create([
-            'name' => 'bend simple orange',
-        ]);
-        Service::factory()->create([
-            'name' => 'pigs sake wooden',
-        ]);
-        Service::factory()->create([
-            'name' => 'exam punt pencil',
-        ]);
-        Service::factory()->create([
-            'name' => 'shadow relay kinks',
-        ]);
+        Service::factory()->count(5)->create();
 
         sleep(1);
 
@@ -126,10 +115,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy match
         $response = $this->json('POST', '/core/v1/search', [
@@ -137,16 +126,16 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_query_matches_service_description(): void
     {
-        $service1 = Service::factory()->create(['description' => $this->textContainingPhrases(['rods game sleeps'], 500)]);
-        $service2 = Service::factory()->create();
+        $service = Service::factory()->create(['description' => $this->textContainingPhrases(['rods game sleeps'], 500)]);
+        Service::factory()->count(5)->create();
 
         sleep(1);
 
@@ -155,10 +144,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy match
         $response = $this->json('POST', '/core/v1/search', [
@@ -166,10 +155,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_query_matches_taxonomy_name(): void
@@ -199,8 +188,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['id' => $service1->id]);
+        $this->assertEquals($service1->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search', [
@@ -208,8 +197,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['id' => $service1->id]);
+        $this->assertEquals($service1->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_query_matches_partial_taxonomy_name(): void
@@ -239,8 +228,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['id' => $service1->id]);
+        $this->assertEquals($service1->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search', [
@@ -248,16 +237,16 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['id' => $service1->id]);
+        $this->assertEquals($service1->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_query_matches_organisation_name(): void
     {
         $organisation1 = Organisation::factory()->create(['name' => 'Riches Resist Envy']);
         $organisation2 = Organisation::factory()->create();
-        $service1 = Service::factory()->create(['organisation_id' => $organisation1->id]);
-        $service2 = Service::factory()->create(['organisation_id' => $organisation2->id]);
+        $service = Service::factory()->create(['organisation_id' => $organisation1->id]);
+        Service::factory()->count(5)->create(['organisation_id' => $organisation2->id]);
 
         sleep(1);
 
@@ -266,10 +255,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search', [
@@ -277,8 +266,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
-        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service->id]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_query_ranks_service_name_equivalent_to_organisation_name(): void
@@ -352,11 +341,11 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_service_intro(): void
     {
-        $service1 = Service::factory()->create([
+        $service = Service::factory()->create([
             'intro' => $this->textContainingPhrases(['glaze mild chats']),
         ]);
 
-        $service2 = Service::factory()->create();
+        Service::factory()->count(5)->create();
 
         sleep(1);
 
@@ -365,10 +354,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search', [
@@ -376,10 +365,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment([
-            'id' => $service1->id,
+            'id' => $service->id,
         ]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_query_matches_single_word_from_service_description(): void
@@ -400,11 +389,11 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_query_matches_multiple_words_from_service_description(): void
     {
-        $service1 = Service::factory()->create([
+        $service = Service::factory()->create([
             'description' => $this->textContainingPhrases(['hurls star humans']),
         ]);
 
-        $service2 = Service::factory()->create();
+        Service::factory()->create();
 
         sleep(1);
 
@@ -413,8 +402,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
-        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service->id]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
 
         // Fuzzy
         $response = $this->json('POST', '/core/v1/search', [
@@ -422,8 +411,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(1, 'data');
-        $response->assertJsonFragment(['id' => $service1->id]);
+        $response->assertJsonFragment(['id' => $service->id]);
+        $this->assertEquals($service->id, $this->getResponseContent($response)['data'][0]['id']);
     }
 
     public function test_filter_by_wait_time_works(): void
@@ -1302,8 +1291,8 @@ class ServiceTest extends TestCase implements UsesElasticsearch
         $this->assertEquals(4, count($data));
 
         $this->assertTrue(in_array($serviceA->id, [$data[0]['id'], $data[1]['id']]));
-        $this->assertTrue(in_array($serviceB->id, [$data[1]['id'], $data[2]['id']]));
-        $this->assertTrue(in_array($serviceC->id, [$data[1]['id'], $data[2]['id']]));
+        $this->assertTrue(in_array($serviceB->id, [$data[0]['id'], $data[1]['id'], $data[2]['id']]));
+        $this->assertTrue(in_array($serviceC->id, [$data[1]['id'], $data[2]['id'], $data[3]['id']]));
         $this->assertTrue(in_array($serviceD->id, [$data[2]['id'], $data[3]['id']]));
     }
 

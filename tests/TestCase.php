@@ -150,6 +150,7 @@ abstract class TestCase extends BaseTestCase
 
             return;
         } else {
+            config(['elastic.scout_driver.refresh_documents' => true]);
             Service::enableSearchSyncing();
             OrganisationEvent::enableSearchSyncing();
             Page::enableSearchSyncing();
@@ -173,6 +174,7 @@ abstract class TestCase extends BaseTestCase
 
             return;
         } else {
+            config(['elastic.scout_driver.refresh_documents' => false]);
             Service::enableSearchSyncing();
             OrganisationEvent::enableSearchSyncing();
             Page::enableSearchSyncing();

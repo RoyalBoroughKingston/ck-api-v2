@@ -28,6 +28,8 @@ class ServiceFactory extends Factory
             'status' => Service::STATUS_ACTIVE,
             'intro' => mb_substr($this->faker->paragraph(2), 0, 149),
             'description' => $this->faker->paragraph(5),
+            // 'intro' => 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+            // 'description' => 'Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
             'is_free' => true,
             'url' => $this->faker->url(),
             'contact_name' => $this->faker->name(),

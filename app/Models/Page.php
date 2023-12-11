@@ -73,10 +73,10 @@ class Page extends Model implements AppliesUpdateRequests
             foreach ($sectionContent['content'] as $i => $contentBlock) {
                 switch ($contentBlock['type']) {
                     case 'copy':
-                        $content[] = $this->onlyWords($contentBlock['value']);
+                        $content[] = $this->makeSearchable($contentBlock['value']);
                         break;
                     case 'cta':
-                        $content[] = $this->onlyWords($contentBlock['title'] . ' ' . $contentBlock['description']);
+                        $content[] = $this->makeSearchable($contentBlock['title'] . ' ' . $contentBlock['description']);
                         break;
                     default:
                         break;
@@ -92,7 +92,7 @@ class Page extends Model implements AppliesUpdateRequests
         return [
             'id' => $this->id,
             'enabled' => $this->enabled,
-            'title' => $this->onlyWords($this->title),
+            'title' => $this->makeSearchable($this->title),
             'content' => $contentSections,
             'collection_categories' => $this->collections()->where('type', Collection::TYPE_CATEGORY)->pluck('name')->all(),
             'collection_personas' => $this->collections()->where('type', Collection::TYPE_PERSONA)->pluck('name')->all(),

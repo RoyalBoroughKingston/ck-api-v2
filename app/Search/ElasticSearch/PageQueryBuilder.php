@@ -50,12 +50,12 @@ class PageQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuilder
 
     protected function applyQuery(string $query): void
     {
-        $this->addMatch('title', $query, $this->shouldPath, 2);
-        $this->addMatch('title', $query, $this->shouldPath, 3, 'AUTO', 'AND');
-        $this->addMatchPhrase('title', $query, $this->shouldPath, 5);
-        $this->addMatch('content.introduction.title', $query, $this->shouldPath, 1.5);
-        $this->addMatch('content.introduction.title', $query, $this->shouldPath, 2, 'AUTO', 'AND');
-        $this->addMatchPhrase('content.introduction.title', $query, $this->shouldPath, 2.5);
+        $this->addMatch('title', $query, $this->shouldPath, 3);
+        $this->addMatch('title', $query, $this->shouldPath, 4, 'AUTO', 'AND');
+        $this->addMatchPhrase('title', $query, $this->shouldPath, 6);
+        $this->addMatch('content.introduction.title', $query, $this->shouldPath, 2);
+        $this->addMatch('content.introduction.title', $query, $this->shouldPath, 3, 'AUTO', 'AND');
+        $this->addMatchPhrase('content.introduction.title', $query, $this->shouldPath, 4);
         $this->addMatch('content.introduction.content', $query, $this->shouldPath);
         $this->addMatch('content.introduction.content', $query, $this->shouldPath, 1.5, 'AUTO', 'AND');
         $this->addMatchPhrase('content.introduction.content', $query, $this->shouldPath, 2);

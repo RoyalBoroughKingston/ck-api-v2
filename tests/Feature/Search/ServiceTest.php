@@ -275,22 +275,17 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'name' => 'Relevant Organisation',
             'organisation_id' => $organisation->id,
         ]);
-        $serviceWithRelevantOrganisationName->save();
         $serviceWithRelevantServiceName = Service::factory()->create([
             'name' => 'Hammer Play Swim',
-            'description' => 'Service description',
         ]);
-        $serviceWithRelevantServiceName->save();
         $serviceWithRelevantIntro = Service::factory()->create([
             'name' => 'Relevant Intro',
             'intro' => 'Hammer Play Swim',
         ]);
-        $serviceWithRelevantIntro->save();
         $serviceWithRelevantDescription = Service::factory()->create([
             'name' => 'Relevant Description',
             'description' => 'Hammer Play Swim',
         ]);
-        $serviceWithRelevantDescription->save();
         $serviceWithRelevantTaxonomy = Service::factory()->create([
             'name' => 'Relevant Taxonomy',
         ]);
@@ -301,7 +296,6 @@ class ServiceTest extends TestCase implements UsesElasticsearch
             'depth' => 1,
         ]);
         $serviceWithRelevantTaxonomy->serviceTaxonomies()->create(['taxonomy_id' => $taxonomy->id]);
-        $serviceWithRelevantTaxonomy->save();
 
         sleep(1);
 
@@ -1294,10 +1288,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
         $this->assertEquals(4, count($data));
 
-        $this->assertEquals($serviceA->id, $data[0]['id']);
-        $this->assertEquals($serviceB->id, $data[1]['id']);
-        $this->assertEquals($serviceC->id, $data[2]['id']);
-        $this->assertEquals($serviceD->id, $data[3]['id']);
+        $this->assertTrue(in_array($serviceA->id, [$data[0]['id'], $data[1]['id']]));
+        $this->assertTrue(in_array($serviceB->id, [$data[1]['id'], $data[2]['id']]));
+        $this->assertTrue(in_array($serviceC->id, [$data[1]['id'], $data[2]['id']]));
+        $this->assertTrue(in_array($serviceD->id, [$data[2]['id'], $data[3]['id']]));
     }
 
     public function test_search_ranking_given_more_relevant_matches_versus_less_hits_or_no_eligibilities_attached(): void

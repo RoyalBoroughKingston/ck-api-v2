@@ -81,8 +81,9 @@ abstract class Model extends BaseModel
      *
      * @author
      */
-    public function onlyWords($string)
+    public function makeSearchable($string)
     {
+        $string = mb_strtolower($string);
         preg_match_all('/(?:\b([A-Z,a-z]+)\b)/i', $string, $words);
 
         return implode(' ', array_filter($words[1], function ($word) {

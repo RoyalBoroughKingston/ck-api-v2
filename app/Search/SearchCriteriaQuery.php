@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 
 namespace App\Search;
 
@@ -100,7 +100,7 @@ class SearchCriteriaQuery
 
     public function setQuery(?string $query): void
     {
-        $this->query = $query;
+        $this->query = mb_strtolower($query);
     }
 
     public function hasType(): bool

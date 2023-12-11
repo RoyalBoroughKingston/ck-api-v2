@@ -4,6 +4,7 @@ namespace App\Http\Requests\OrganisationEvent;
 
 use App\Http\Requests\HasMissingValues;
 use App\Models\File;
+use App\Models\OrganisationEvent;
 use App\Models\Role;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
@@ -15,6 +16,7 @@ use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
 use App\Rules\NullableIf;
 use App\Rules\RootTaxonomyIs;
+use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
 use App\Rules\UserHasRole;
 use Illuminate\Foundation\Http\FormRequest;
@@ -43,6 +45,21 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title' => ['string', 'min:1', 'max:255'],
+            'slug' => [
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique(table(OrganisationEvent::class), 'slug')->ignoreModel($this->organisation_event),
+                new Slug(),
+                new UserHasRole(
+                    $this->user('api'),
+                    new UserRole([
+                        'user_id' => $this->user('api')->id,
+                        'role_id' => Role::organisationAdmin()->id,
+                    ]),
+                    $this->organisation_event->slug
+                ),
+            ],
             'start_date' => ['date_format:Y-m-d', 'after:today', new DateSanity($this)],
             'end_date' => ['date_format:Y-m-d', new DateSanity($this)],
             'start_time' => ['date_format:H:i:s', new DateSanity($this)],

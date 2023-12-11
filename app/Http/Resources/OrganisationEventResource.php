@@ -15,6 +15,7 @@ class OrganisationEventResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'has_image' => $this->hasImage(),
             'title' => $this->title,
             'intro' => $this->intro,

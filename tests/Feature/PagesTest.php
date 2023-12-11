@@ -901,7 +901,6 @@ class PagesTest extends TestCase
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        // $data['slug'] = Str::slug($data['title']);
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
         $this->assertEquals($data, $updateRequest->data);
 
@@ -1836,6 +1835,7 @@ class PagesTest extends TestCase
             ->firstOrFail();
 
         $data['page_type'] = Page::PAGE_TYPE_INFORMATION;
+        $data['excerpt'] = trim($data['excerpt']);
         $this->assertEquals($data, $updateRequest->data);
 
         $this->approveUpdateRequest($updateRequest->id);
@@ -1875,7 +1875,7 @@ class PagesTest extends TestCase
 
         $data = [
             'title' => $this->faker->sentence(),
-            'excerpt' => substr($this->faker->paragraph(2), 0, 149),
+            'excerpt' => trim(substr($this->faker->paragraph(2), 0, 149)),
             'content' => [
                 'introduction' => [
                     'content' => [
@@ -2578,6 +2578,7 @@ class PagesTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonResource([
             'id',
+            'slug',
             'title',
             'excerpt',
             'content',
@@ -2738,16 +2739,7 @@ class PagesTest extends TestCase
      */
     public function getEnabledPageImagePNGAsGuest200(): void
     {
-        $parentPage = Page::factory()->create();
-
-        $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.png',
-            'mime_type' => 'image/png',
-        ]);
-
-        $base64Image = 'data:image/png;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.png'));
-
-        $image->uploadBase64EncodedFile($base64Image);
+        $image = File::factory()->imagePng()->create();
 
         $page = Page::factory()->create([
             'image_file_id' => $image->id,
@@ -2755,7 +2747,7 @@ class PagesTest extends TestCase
 
         $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.png');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/png;base64,' . base64_encode($response->content()));
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $response->content());
     }
 
     /**
@@ -2763,16 +2755,7 @@ class PagesTest extends TestCase
      */
     public function getEnabledPageImageJPGAsGuest200(): void
     {
-        $parentPage = Page::factory()->create();
-
-        $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.jpg',
-            'mime_type' => 'image/jepg',
-        ]);
-
-        $base64Image = 'data:image/jpeg;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.jpg'));
-
-        $image->uploadBase64EncodedFile($base64Image);
+        $image = File::factory()->imageJpg()->create();
 
         $page = Page::factory()->create([
             'image_file_id' => $image->id,
@@ -2780,24 +2763,15 @@ class PagesTest extends TestCase
 
         $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.jpg');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/jpeg;base64,' . base64_encode($response->content()));
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $response->content());
     }
 
     /**
      * @test
      */
-    public function getEnabledPageImageSVGAsGuest200(): void
+    public function getEnabledPageImageSvgAsGuest200(): void
     {
-        $parentPage = Page::factory()->create();
-
-        $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
-            'mime_type' => 'image/svg+xml',
-        ]);
-
-        $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
-
-        $image->uploadBase64EncodedFile($base64Image);
+        $image = File::factory()->imageSvg()->create();
 
         $page = Page::factory()->create([
             'image_file_id' => $image->id,
@@ -2805,7 +2779,7 @@ class PagesTest extends TestCase
 
         $response = $this->json('GET', '/core/v1/pages/' . $page->id . '/image.svg');
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertEquals($base64Image, 'data:image/svg+xml;base64,' . base64_encode($response->content()));
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $response->content());
     }
 
     /**

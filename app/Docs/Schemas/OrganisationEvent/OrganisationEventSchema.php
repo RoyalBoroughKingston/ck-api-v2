@@ -15,6 +15,7 @@ class OrganisationEventSchema extends Schema
             ->properties(
                 Schema::string('id')
                     ->format(Schema::FORMAT_UUID),
+                Schema::string('slug'),
                 Schema::string('organisation_id')
                     ->format(Schema::FORMAT_UUID),
                 Schema::string('title'),

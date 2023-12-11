@@ -3,6 +3,7 @@
 namespace App\Services\DataPersistence;
 
 use App\Contracts\DataPersistenceService;
+use App\Generators\UniqueSlugGenerator;
 use App\Models\Model;
 use App\Models\OrganisationEvent;
 use App\Models\Taxonomy;
@@ -13,6 +14,18 @@ use Illuminate\Support\Facades\DB;
 class OrganisationEventPersistenceService implements DataPersistenceService
 {
     use ResizesImages;
+
+    /**
+     * Unique Slug Generator.
+     *
+     * @var \App\Generators\UniqueSlugGenerator
+     */
+    protected $slugGenerator;
+
+    public function __construct(UniqueSlugGenerator $slugGenerator)
+    {
+        $this->slugGenerator = $slugGenerator;
+    }
 
     /**
      * Store the model.
@@ -43,6 +56,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
             // Create the OrganisationEvent.
             $organisationEvent = OrganisationEvent::create([
                 'title' => $request->title,
+                'slug' => $this->slugGenerator->generate($request->input('slug', $request->input('title')), 'organisation_events'),
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'start_time' => $request->start_time,
@@ -91,6 +105,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
         return DB::transaction(function () use ($request, $event) {
             $data = array_filter_missing([
                 'title' => $request->missingValue('title'),
+                'slug' => $request->missingValue('slug'),
                 'start_date' => $request->missingValue('start_date'),
                 'end_date' => $request->missingValue('end_date'),
                 'start_time' => $request->missingValue('start_time'),

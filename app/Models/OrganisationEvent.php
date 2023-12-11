@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\AppliesUpdateRequests;
+use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\Mutators\OrganisationEventMutators;
 use App\Models\Relationships\OrganisationEventRelationships;
@@ -59,14 +60,14 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     {
         $organisationEvent = [
             'id' => $this->id,
-            'title' => $this->onlyAlphaNumeric($this->title),
-            'intro' => $this->onlyAlphaNumeric($this->intro),
-            'description' => $this->onlyAlphaNumeric($this->description),
+            'title' => $this->makeSearchable($this->title),
+            'intro' => $this->makeSearchable($this->intro),
+            'description' => $this->makeSearchable($this->description),
             'start_date' => $this->start_date->setTimeFromTimeString($this->start_time)->toDateTimeLocalString(),
             'end_date' => $this->end_date->setTimeFromTimeString($this->end_time)->toDateTimeLocalString(),
             'is_free' => $this->is_free,
             'is_virtual' => $this->is_virtual,
-            'organisation_name' => $this->onlyAlphaNumeric($this->organisation->name),
+            'organisation_name' => $this->makeSearchable($this->organisation->name),
             'taxonomy_categories' => $this->taxonomies()->pluck('name')->toArray(),
             'collection_categories' => $this->collections()->pluck('name')->toArray(),
             'event_location' => null,
@@ -116,7 +117,12 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
+        $slugGenerator = app(UniqueSlugGenerator::class);
         $data = $updateRequest->data;
+        $slug = Arr::get($data, 'slug', $this->slug);
+        if ($slug !== $this->slug) {
+            $slug = $slugGenerator->generate($slug, 'pages');
+        }
 
         // Update the Image File entity if new
         if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
@@ -133,6 +139,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $this->update([
             'organisation_id' => $this->organisation_id,
             'title' => Arr::get($data, 'title', $this->title),
+            'slug' => $slug,
             'intro' => Arr::get($data, 'intro', $this->intro),
             'description' => sanitize_markdown(
                 Arr::get($data, 'description', $this->description)
@@ -163,6 +170,9 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
             $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
             $this->syncTaxonomyRelationships($taxonomies);
         }
+
+        // Update the search index
+        $this->save();
 
         // Ensure conditional fields are reset if needed.
         $this->resetConditionalFields();

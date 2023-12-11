@@ -16,6 +16,7 @@ use App\Rules\UserEmailNotInPendingSignupRequest;
 use App\Rules\UserEmailNotTaken;
 use App\Rules\VideoEmbed;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
@@ -224,5 +225,24 @@ class StoreRequest extends FormRequest
             'service.url.url' => '4. Service, Details tab - Please enter a valid web address in the correct format (starting with https:// or http://).',
             'service.contact_email.email' => "4. Service, Additional Info tab - Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $user = $this->user;
+        $user['phone'] = Str::remove(' ', $user['phone']);
+
+        $organisation = $this->organisation;
+        if ($organisation['phone'] ?? false) {
+            $organisation['phone'] = Str::remove(' ', $organisation['phone']);
+        }
+
+        $this->merge([
+            'user' => $user,
+            'organisation' => $organisation,
+        ]);
     }
 }

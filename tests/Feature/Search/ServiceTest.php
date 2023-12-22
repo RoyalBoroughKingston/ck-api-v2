@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Search;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Service;
 use App\Models\Taxonomy;
@@ -1451,5 +1452,69 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
         $this->assertEquals($service0->id, $data[0]['id']);
         $this->assertEquals($service5->id, $data[1]['id']);
+    }
+
+    /**
+     * @test
+     */
+    public function freshnessOfServiceDoesNotAffectSearchResult()
+    {
+        $organisation = \App\Models\Organisation::factory()->create();
+        $serviceParams = [
+            'organisation_id' => $organisation->id,
+            'name' => 'Royal Organs Hike',
+        ];
+        $service5 = Service::factory()->create(array_merge($serviceParams, [
+            'score' => 5,
+            'created_at' => Carbon::now()->subMonths(24),
+            'updated_at' => Carbon::now()->subMonths(24),
+            'last_modified_at' => Carbon::now()->subMonths(24),
+        ]));
+        $service4 = Service::factory()->create(array_merge($serviceParams, [
+            'score' => 4,
+            'created_at' => Carbon::now()->subMonths(12),
+            'updated_at' => Carbon::now()->subMonths(12),
+            'last_modified_at' => Carbon::now()->subMonths(12),
+        ]));
+        $service3 = Service::factory()->create(array_merge($serviceParams, [
+            'score' => 3,
+            'created_at' => Carbon::now()->subMonths(6),
+            'updated_at' => Carbon::now()->subMonths(6),
+            'last_modified_at' => Carbon::now()->subMonths(6),
+        ]));
+        $service2 = Service::factory()->create(array_merge($serviceParams, [
+            'score' => 2,
+            'created_at' => Carbon::now()->subMonths(3),
+            'updated_at' => Carbon::now()->subMonths(3),
+            'last_modified_at' => Carbon::now()->subMonths(3),
+        ]));
+        $service1 = Service::factory()->create(array_merge($serviceParams, [
+            'score' => 1,
+            'created_at' => Carbon::now()->subMonths(1),
+            'updated_at' => Carbon::now()->subMonths(1),
+            'last_modified_at' => Carbon::now()->subMonths(1),
+        ]));
+        $service0 = Service::factory()->create(array_merge($serviceParams, [
+            'score' => 0,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'last_modified_at' => Carbon::now(),
+        ]));
+
+        sleep(1);
+
+        $response = $this->json('POST', '/core/v1/search', [
+            'query' => 'royal organs hike',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $data = $this->getResponseContent($response)['data'];
+
+        $this->assertEquals($service5->id, $data[0]['id']);
+        $this->assertEquals($service4->id, $data[1]['id']);
+        $this->assertEquals($service3->id, $data[2]['id']);
+        $this->assertEquals($service2->id, $data[3]['id']);
+        $this->assertEquals($service1->id, $data[4]['id']);
+        $this->assertEquals($service0->id, $data[5]['id']);
     }
 }

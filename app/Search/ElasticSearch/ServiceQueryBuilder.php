@@ -29,7 +29,7 @@ class ServiceQueryBuilder extends ElasticsearchQueryBuilder implements QueryBuil
                     [
                         'script_score' => [
                             'script' => [
-                                'source' => "((doc['score'].value + 1) * 0.1) + 1",
+                                'source' => "doc['score'].size() == 0 ? 1 : ((doc['score'].value + 1) * 0.1) + 1",
                             ],
                         ],
                     ],

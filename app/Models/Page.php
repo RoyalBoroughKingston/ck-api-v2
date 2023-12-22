@@ -70,7 +70,7 @@ class Page extends Model implements AppliesUpdateRequests
         $contentSections = [];
         foreach ($this->content as $sectionLabel => $sectionContent) {
             $content = [];
-            foreach ($sectionContent['content'] as $i => $contentBlock) {
+            foreach ($sectionContent['content'] ?? [] as $i => $contentBlock) {
                 switch ($contentBlock['type']) {
                     case 'copy':
                         $content[] = $this->makeSearchable($contentBlock['value']);

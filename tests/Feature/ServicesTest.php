@@ -4826,7 +4826,7 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['data' => $payload]);
+        $response->assertJsonFragment($payload);
 
         $updateRequestId = $response->json()['id'];
 
@@ -4881,7 +4881,8 @@ class ServicesTest extends TestCase
         ));
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['id' => null, 'data' => $payload]);
+        $response->assertJsonFragment(['id' => null]);
+        $response->assertJsonFragment($payload);
     }
 
     /**
@@ -4905,7 +4906,7 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['data' => $payload]);
+        $response->assertJsonFragment($payload);
 
         $data = UpdateRequest::query()
             ->where('updateable_type', UpdateRequest::EXISTING_TYPE_SERVICE)

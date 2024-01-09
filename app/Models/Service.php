@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\AppliesUpdateRequests;
 use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as UpdateServiceRequest;
+use App\Http\Resources\OrganisationResource;
 use App\Models\Mutators\ServiceMutators;
 use App\Models\Relationships\ServiceRelationships;
 use App\Models\Scopes\ServiceScopes;
@@ -327,6 +328,10 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
      */
     public function getData(array $data): array
     {
+        if (isset($data['organisation_id'])) {
+            $data['organisation'] = new OrganisationResource(Organisation::find($data['organisation_id']));
+        }
+
         return $data;
     }
 

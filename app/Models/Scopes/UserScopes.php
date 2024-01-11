@@ -4,8 +4,8 @@ namespace App\Models\Scopes;
 
 use App\Models\Role;
 use App\Models\UserRole;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 trait UserScopes
 {

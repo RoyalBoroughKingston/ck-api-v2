@@ -1692,6 +1692,186 @@ class OrganisationEventsTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function postCreateOrganisationEventStartsInPastAsOrganisationAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $location = Location::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $start = $this->faker->dateTimeBetween('-7 days', '-1 days')->format('Y-m-d');
+        $end = $this->faker->dateTimeBetween('+1 days', '+7 days')->format('Y-m-d');
+
+        $payload = [
+            'title' => $this->faker->sentence(3),
+            'start_date' => $start,
+            'end_date' => $end,
+            'start_time' => '09:00:00',
+            'end_time' => '13:00:00',
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'organiser_name' => null,
+            'organiser_phone' => null,
+            'organiser_email' => null,
+            'organiser_url' => null,
+            'booking_title' => null,
+            'booking_summary' => null,
+            'booking_url' => null,
+            'booking_cta' => null,
+            'homepage' => false,
+            'is_virtual' => true,
+            'location_id' => null,
+            'organisation_id' => $organisation->id,
+            'category_taxonomies' => [],
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * @test
+     */
+    public function postCreateOrganisationEventEndsInPastAsOrganisationAdmin422(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $location = Location::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $start = $this->faker->dateTimeBetween('-7 days', '-4 days')->format('Y-m-d');
+        $end = $this->faker->dateTimeBetween('-3 days', '-1 days')->format('Y-m-d');
+
+        $payload = [
+            'title' => $this->faker->sentence(3),
+            'start_date' => $start,
+            'end_date' => $end,
+            'start_time' => '09:00:00',
+            'end_time' => '13:00:00',
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'organiser_name' => null,
+            'organiser_phone' => null,
+            'organiser_email' => null,
+            'organiser_url' => null,
+            'booking_title' => null,
+            'booking_summary' => null,
+            'booking_url' => null,
+            'booking_cta' => null,
+            'homepage' => false,
+            'is_virtual' => true,
+            'location_id' => null,
+            'organisation_id' => $organisation->id,
+            'category_taxonomies' => [],
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @test
+     */
+    public function postCreateOrganisationEventEndsBeforeItStartsAsOrganisationAdmin422(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $location = Location::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $start = $this->faker->dateTimeBetween('+4 days', '+7 days')->format('Y-m-d');
+        $end = $this->faker->dateTimeBetween('+1 days', '+3 days')->format('Y-m-d');
+
+        $payload = [
+            'title' => $this->faker->sentence(3),
+            'start_date' => $start,
+            'end_date' => $end,
+            'start_time' => '09:00:00',
+            'end_time' => '13:00:00',
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'organiser_name' => null,
+            'organiser_phone' => null,
+            'organiser_email' => null,
+            'organiser_url' => null,
+            'booking_title' => null,
+            'booking_summary' => null,
+            'booking_url' => null,
+            'booking_cta' => null,
+            'homepage' => false,
+            'is_virtual' => true,
+            'location_id' => null,
+            'organisation_id' => $organisation->id,
+            'category_taxonomies' => [],
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @test
+     */
+    public function postCreateOrganisationEventStartsTodayAsOrganisationAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $location = Location::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $start = Carbon::now()->format('Y-m-d');
+        $end = Carbon::now()->addDay()->format('Y-m-d');
+
+        $payload = [
+            'title' => $this->faker->sentence(3),
+            'start_date' => $start,
+            'end_date' => $end,
+            'start_time' => '09:00:00',
+            'end_time' => '21:00:00',
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'organiser_name' => null,
+            'organiser_phone' => null,
+            'organiser_email' => null,
+            'organiser_url' => null,
+            'booking_title' => null,
+            'booking_summary' => null,
+            'booking_url' => null,
+            'booking_cta' => null,
+            'homepage' => false,
+            'is_virtual' => true,
+            'location_id' => null,
+            'organisation_id' => $organisation->id,
+            'category_taxonomies' => [],
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
      * Get a single OrganisationEvent
      */
 

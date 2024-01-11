@@ -4,8 +4,8 @@ namespace App\Models\Scopes;
 
 use App\Models\Role;
 use App\Models\UserRole;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 trait UserScopes
 {
@@ -59,10 +59,10 @@ EOT;
 
         $bindings = [
             Role::superAdmin()->id,
+            Role::globalAdmin()->id,
             Role::organisationAdmin()->id,
             Role::serviceAdmin()->id,
             Role::serviceWorker()->id,
-            Role::globalAdmin()->id,
             Role::contentAdmin()->id,
         ];
 

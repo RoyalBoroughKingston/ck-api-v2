@@ -253,6 +253,51 @@ class UpdateRequestsTest extends TestCase
     /**
      * @test
      */
+    public function getFilterUpdateRequestsByTypeAsSuperAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create([
+            'name' => 'Name with, comma',
+        ]);
+        $creatingUser = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        $location = Location::factory()->create();
+        $locationUpdateRequest = $location->updateRequests()->create([
+            'user_id' => $creatingUser->id,
+            'data' => [
+                'address_line_1' => $this->faker->streetAddress(),
+                'address_line_2' => null,
+                'address_line_3' => null,
+                'city' => $this->faker->city(),
+                'county' => 'West Yorkshire',
+                'postcode' => $this->faker->postcode(),
+                'country' => 'United Kingdom',
+                'accessibility_info' => null,
+            ],
+        ]);
+
+        $organisationUpdateRequest = $organisation->updateRequests()->create([
+            'user_id' => $creatingUser->id,
+            'data' => [
+                'name' => 'Test Name',
+                'description' => 'Lorem ipsum',
+                'url' => 'https://example.com',
+                'email' => 'phpunit@example.com',
+                'phone' => '07700000000',
+            ],
+        ]);
+
+        $superAdminUser = User::factory()->create()->makeSuperAdmin();
+        Passport::actingAs($superAdminUser);
+        $response = $this->json('GET', '/core/v1/update-requests?filter[type]=' . UpdateRequest::EXISTING_TYPE_ORGANISATION);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonMissing(['id' => $locationUpdateRequest->id]);
+        $response->assertJsonFragment(['id' => $organisationUpdateRequest->id]);
+    }
+
+    /**
+     * @test
+     */
     public function can_sort_by_entry(): void
     {
         $location = Location::factory()->create([

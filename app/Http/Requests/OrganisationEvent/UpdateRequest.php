@@ -60,8 +60,8 @@ class UpdateRequest extends FormRequest
                     $this->organisation_event->slug
                 ),
             ],
-            'start_date' => ['date_format:Y-m-d', 'after:today', new DateSanity($this)],
-            'end_date' => ['date_format:Y-m-d', new DateSanity($this)],
+            'start_date' => ['date_format:Y-m-d', new DateSanity($this)],
+            'end_date' => ['date_format:Y-m-d', 'after_or_equal:today', new DateSanity($this)],
             'start_time' => ['date_format:H:i:s', new DateSanity($this)],
             'end_time' => ['date_format:H:i:s', new DateSanity($this)],
             'intro' => ['string', 'min:1', 'max:300'],

@@ -5064,24 +5064,6 @@ class ServicesTest extends TestCase
         $response = $this->json('DELETE', "/core/v1/services/{$service->id}");
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
-
-        // $this->assertDatabaseHas((new Service())->getTable(), ['id' => $service->id]);
-
-        // //Then an update request should be created for the new service
-        // $updateRequest = UpdateRequest::query()
-        //     ->where('updateable_type', UpdateRequest::DESTROY_TYPE_SERVICE_GLOBAL_ADMIN)
-        //     ->where('updateable_id', $service->id)
-        //     ->firstOrFail();
-
-        // // Simulate frontend check by making call with UpdateRequest ID.
-
-        // Passport::actingAs(User::factory()->create()->makeSuperAdmin());
-
-        // $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
-
-        // $response->assertStatus(Response::HTTP_OK);
-
-        // $this->assertDatabaseMissing((new Service())->getTable(), ['id' => $service->id]);
     }
 
     /**

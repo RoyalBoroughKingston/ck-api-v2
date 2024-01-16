@@ -33,7 +33,10 @@ class ServiceTest extends TestCase implements UsesElasticsearch
 
     public function test_guest_can_search(): void
     {
-        Service::factory()->create(['name' => 'This is a test']);
+        $service = Service::factory()->create(['name' => 'This is a test']);
+        $serviceLocation = ServiceLocation::factory()->create([
+            'service_id' => $service->id,
+        ]);
 
         sleep(1);
 
@@ -93,7 +96,11 @@ class ServiceTest extends TestCase implements UsesElasticsearch
                     'last_modified_at',
                     'created_at',
                     'updated_at',
-                    'service_locations',
+                    'service_locations' => [
+                        [
+                            'location',
+                        ],
+                    ],
                     'cqc_location_id',
                 ],
             ],

@@ -78,6 +78,9 @@ class Page extends Model implements AppliesUpdateRequests
                     case 'cta':
                         $content[] = $this->makeSearchable($contentBlock['title'] . ' ' . $contentBlock['description']);
                         break;
+                    case 'video':
+                        $content[] = $this->makeSearchable($contentBlock['title']);
+                        break;
                     default:
                         break;
                 }

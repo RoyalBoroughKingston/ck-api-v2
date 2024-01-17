@@ -14,7 +14,6 @@ use App\Models\UserRole;
 use App\Models\UsefulInfo;
 use App\Events\EndpointHit;
 use App\Models\SocialMedia;
-use Carbon\CarbonImmutable;
 use App\Models\Organisation;
 use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
@@ -1507,7 +1506,7 @@ class UpdateRequestsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas($service->getTable(), [
-            'last_modified_at' => $newNow->format(CarbonImmutable::ISO8601),
+            'last_modified_at' => $newNow->toDateTimeString(),
         ]);
     }
 }

@@ -19,6 +19,7 @@ use App\Models\UpdateRequest;
 use Illuminate\Http\Response;
 use Laravel\Passport\Passport;
 use App\Models\ServiceLocation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -1495,6 +1496,7 @@ class UpdateRequestsTest extends TestCase
             'created_at' => $oldNow,
             'updated_at' => $oldNow,
         ]);
+
         $updateRequest = $service->updateRequests()->create([
             'user_id' => User::factory()->create()->id,
             'data' => [
@@ -1506,6 +1508,48 @@ class UpdateRequestsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas($service->getTable(), [
+            'last_modified_at' => $newNow->toDateTimeString(),
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function lastModifiedAtIsUpdatedWhenServiceUpdatedByUpdateRequest()
+    {
+        $oldNow = Date::now()->subMonths(6);
+        $newNow = Date::now();
+        Date::setTestNow($newNow);
+
+        $service = Service::factory()->create([
+            'slug' => 'test-service',
+            'status' => Service::STATUS_ACTIVE,
+            'last_modified_at' => $oldNow,
+            'created_at' => $oldNow,
+            'updated_at' => $oldNow,
+        ]);
+        $taxonomy = Taxonomy::factory()->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+        $user = User::factory()->create()->makeServiceAdmin($service);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'name' => 'Test Service',
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas($service->getTable(), [
+            'id' => $service->id,
             'last_modified_at' => $newNow->toDateTimeString(),
         ]);
     }

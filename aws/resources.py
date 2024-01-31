@@ -1074,7 +1074,75 @@ def create_aws_web_acl_resource(template, aws_metric_name_variable,  aws_managed
                     Statement=wafv2.StatementOne(
                         ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
                             Name='AWSManagedRulesCommonRuleSet',
-                            VendorName='AWS'
+                            VendorName='AWS',
+                            ExcludedRules=[
+                                wafv2.ExcludedRule(
+                                    Name='NoUserAgent_HEADER'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='UserAgent_BadBots_HEADER'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_QUERYSTRING'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_Cookie_HEADER'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='SizeRestrictions_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_COOKIE'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='EC2MetaDataSSRF_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericLFI_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericLFI_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericLFI_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='RestrictedExtensions_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='RestrictedExtensions_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericRFI_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericRFI_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='GenericRFI_URIPATH'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_COOKIE'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_QUERYARGUMENTS'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_BODY'
+                                ),
+                                wafv2.ExcludedRule(
+                                    Name='CrossSiteScripting_URIPATH'
+                                )
+                            ]
                         )
                     ),
                     OverrideAction=wafv2.OverrideAction(

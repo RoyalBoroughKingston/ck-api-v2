@@ -1018,7 +1018,7 @@ def create_fortinet_web_acl_resource(template, fortinet_metric_name_variable, fo
             'FortinetWAFWebACL',
             Condition=fortinet_managed_rules_all_rules_group_condition,
             DefaultAction=wafv2.DefaultAction(
-                Block=wafv2.BlockAction()
+                Allow=wafv2.AllowAction()
             ),
             Rules=[
                 wafv2.WebACLRule(
@@ -1029,8 +1029,8 @@ def create_fortinet_web_acl_resource(template, fortinet_metric_name_variable, fo
                             VendorName='Fortinet'
                         )
                     ),
-                    Action=wafv2.RuleAction(
-                        Block=wafv2.BlockAction()
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
                     ),
                     Priority=1,
                     VisibilityConfig=wafv2.VisibilityConfig(
@@ -1066,7 +1066,7 @@ def create_aws_web_acl_resource(template, aws_metric_name_variable,  aws_managed
             'AWSWAFWebACL',
             Condition=aws_managed_rules_common_rules_group_condition,
             DefaultAction=wafv2.DefaultAction(
-                Block=wafv2.BlockAction()
+                Allow=wafv2.AllowAction()
             ),
             Rules=[
                 wafv2.WebACLRule(

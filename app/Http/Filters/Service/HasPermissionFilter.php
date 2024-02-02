@@ -3,17 +3,20 @@
 namespace App\Http\Filters\Service;
 
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\QueryBuilder\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 
 class HasPermissionFilter implements Filter
 {
     public function __invoke(Builder $query, $value, string $property): Builder
     {
-        $serviceIds = request()->user('api')
-            ? request()->user('api')->services()->pluck(table(Service::class, 'id'))->toArray()
+        $user = request()->user('api');
+        if (!$user || !$user->isGlobalAdmin()) {
+            $serviceIds = $user
+            ? $user->services()->pluck(table(Service::class, 'id'))->toArray()
             : [];
-
-        return $query->whereIn(table(Service::class, 'id'), $serviceIds);
+            $query->whereIn(table(Service::class, 'id'), $serviceIds);
+        }
+        return $query;
     }
 }

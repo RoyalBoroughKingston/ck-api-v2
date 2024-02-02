@@ -1086,7 +1086,97 @@ def create_aws_web_acl_resource(template, aws_metric_name_variable,  aws_managed
                         MetricName=Join('-',[aws_metric_name_variable, 'CommonRuleSet']),
                         SampledRequestsEnabled=True
                     )
-                )
+                ),
+                wafv2.WebACLRule(
+                    Name='AWS-AWSManagedRulesKnownBadInputsRuleSet',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='AWSManagedRulesKnownBadInputsRuleSet',
+                            VendorName='AWS'
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=2,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[aws_metric_name_variable, 'KnownBadInputs']),
+                        SampledRequestsEnabled=True
+                    )
+                ),
+                wafv2.WebACLRule(
+                    Name='AWS-AWSManagedRulesSQLiRuleSet',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='AWSManagedRulesSQLiRuleSet',
+                            VendorName='AWS'
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=2,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[aws_metric_name_variable, 'SQLi']),
+                        SampledRequestsEnabled=True
+                    )
+                ),
+                wafv2.WebACLRule(
+                    Name='AWS-AWSManagedRulesPHPRuleSet',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='AWSManagedRulesPHPRuleSet',
+                            VendorName='AWS'
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=2,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[aws_metric_name_variable, 'PHP']),
+                        SampledRequestsEnabled=True
+                    )
+                ),
+                wafv2.WebACLRule(
+                    Name='AWS-AWSManagedRulesAmazonIpReputationList',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='AWSManagedRulesAmazonIpReputationList',
+                            VendorName='AWS'
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=2,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[aws_metric_name_variable, 'AmazonIpReputationList']),
+                        SampledRequestsEnabled=True
+                    )
+                ),
+                wafv2.WebACLRule(
+                    Name='AWS-AWSManagedRulesAnonymousIpList',
+                    Statement=wafv2.StatementOne(
+                        ManagedRuleGroupStatement=wafv2.ManagedRuleGroupStatement(
+                            Name='AWSManagedRulesAnonymousIpList',
+                            VendorName='AWS'
+                        )
+                    ),
+                    OverrideAction=wafv2.OverrideAction(
+                        **{"None":wafv2.NoneAction()}
+                    ),
+                    Priority=2,
+                    VisibilityConfig=wafv2.VisibilityConfig(
+                        CloudWatchMetricsEnabled=True,
+                        MetricName=Join('-',[aws_metric_name_variable, 'AnonymousIpList']),
+                        SampledRequestsEnabled=True
+                    )
+                ),
             ],
             Scope='REGIONAL',
             VisibilityConfig=wafv2.VisibilityConfig(

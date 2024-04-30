@@ -148,8 +148,7 @@ class OpenApi extends BaseOpenApi implements Responsable
                 Tags\TaxonomyOrganisationsTag::create(),
                 Tags\UpdateRequestsTag::create(),
                 Tags\UsersTag::create()
-            )
-            ->externalDocs(ExternalDocs::create());
+            );
     }
 
     /**

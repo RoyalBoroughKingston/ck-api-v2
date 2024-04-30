@@ -994,7 +994,7 @@ class OrganisationsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_cannot_update_with_no_form_of_contact(): void
+    public function organisation_admin_can_update_with_no_form_of_contact(): void
     {
         $organisation = Organisation::factory()->create([
             'email' => 'info@test-org.example.com',
@@ -1013,7 +1013,7 @@ class OrganisationsTest extends TestCase
             'phone' => null,
         ]);
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**

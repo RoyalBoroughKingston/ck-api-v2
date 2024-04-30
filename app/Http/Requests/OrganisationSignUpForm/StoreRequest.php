@@ -80,14 +80,14 @@ class StoreRequest extends FormRequest
             'organisation.description' => ['required_without:organisation.id', 'nullable', 'string', 'min:1', 'max:10000'],
             'organisation.url' => ['required_without:organisation.id', 'nullable', 'url', 'max:255'],
             'organisation.email' => [
+                'sometimes',
                 'nullable',
-                'required_without_all:organisation.id,organisation.phone',
                 'email',
                 'max:255',
             ],
             'organisation.phone' => [
+                'sometimes',
                 'nullable',
-                'required_without_all:organisation.id,organisation.email',
                 'string',
                 'min:1',
                 'max:255',
@@ -212,8 +212,8 @@ class StoreRequest extends FormRequest
             'organisation.description.required' => '3. Organisation - Please enter a one-line summary of the organisation.',
             'organisation.url.required' => '3. Organisation - Please enter a valid web address in the correct format (starting with https:// or http://).',
             'organisation.url.url' => '3. Organisation - Please enter a valid web address in the correct format (starting with https:// or http://).',
-            'organisation.email.required_without' => '3. Organisation - Please enter a public email address and/or a public phone number.',
-            'organisation.phone.required_without' => '3. Organisation - Please enter a public phone number and/or public email address.',
+            'organisation.email.required_without_all' => '3. Organisation - Please enter a public email address and/or a public phone number.',
+            'organisation.phone.required_without_all' => '3. Organisation - Please enter a public phone number and/or public email address.',
             'organisation.email.email' => '3. Organisation - Please enter the email for your organisation (eg. name@example.com).',
 
             'service.slug.required' => "4. Service, Details tab - Please enter the name of your {$type}.",

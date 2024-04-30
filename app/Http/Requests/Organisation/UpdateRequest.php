@@ -56,16 +56,12 @@ class UpdateRequest extends FormRequest
                 'url',
                 'max:255'],
             'email' => [
-                new NullableIf(function () {
-                    return $this->user()->isGlobalAdmin() || $this->input('phone', $this->organisation->phone) !== null;
-                }),
+                'nullable',
                 'email',
                 'max:255',
             ],
             'phone' => [
-                new NullableIf(function () {
-                    return $this->user()->isGlobalAdmin() || $this->input('email', $this->organisation->email) !== null;
-                }),
+                'nullable',
                 'string',
                 'min:1',
                 'max:255',

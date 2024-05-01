@@ -4,6 +4,7 @@ namespace App\UpdateRequest;
 
 use App\Contracts\AppliesUpdateRequests;
 use App\Http\Requests\Service\StoreRequest;
+use App\Models\File;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
@@ -68,7 +69,33 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
             'last_modified_at' => Carbon::now(),
         ];
 
+        // Add the custom elegibility types
+        if ($data->has('eligibility_types') && $data['eligibility_types']['custom'] ?? null) {
+            // Create the custom fields
+            foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
+                $fieldName = 'eligibility_' . $customEligibilityType . '_custom';
+                $insert[$fieldName] = $value;
+            }
+        }
+
         $service = Service::create($insert);
+
+        // Create the service eligibility taxonomy records
+        if ($data->has('eligibility_types') && $data['eligibility_types']['taxonomies'] ?? null) {
+            $eligibilityTypes = Taxonomy::whereIn('id', $data['eligibility_types']['taxonomies'])->get();
+            $service->syncEligibilityRelationships($eligibilityTypes);
+        }
+
+        // Update the logo file
+        if ($data->get('logo_file_id')) {
+            /** @var \App\Models\File $file */
+            $file = File::findOrFail($data['logo_file_id'])->assigned();
+
+            // Create resized version for common dimensions.
+            foreach (config('local.cached_image_dimensions') as $maxDimension) {
+                $file->resizedVersion($maxDimension);
+            }
+        }
 
         if ($data->has('useful_infos')) {
             $service->usefulInfos()->delete();

@@ -69,7 +69,7 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
             'last_modified_at' => Carbon::now(),
         ];
 
-        // Add the elegibility types
+        // Add the custom elegibility types
         if ($data->has('eligibility_types') && $data['eligibility_types']['custom'] ?? null) {
             // Create the custom fields
             foreach ($data['eligibility_types']['custom'] as $customEligibilityType => $value) {
@@ -80,8 +80,14 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
 
         $service = Service::create($insert);
 
+        // Create the service eligibility taxonomy records
+        if ($data->has('eligibility_types') && $data['eligibility_types']['taxonomies'] ?? null) {
+            $eligibilityTypes = Taxonomy::whereIn('id', $data['eligibility_types']['taxonomies'])->get();
+            $service->syncEligibilityRelationships($eligibilityTypes);
+        }
+
         // Update the logo file
-        if ($data->has('logo_file_id')) {
+        if ($data->get('logo_file_id')) {
             /** @var \App\Models\File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
@@ -145,12 +151,6 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
         if ($data->has('category_taxonomies')) {
             $taxonomies = Taxonomy::whereIn('id', $data['category_taxonomies'])->get();
             $service->syncTaxonomyRelationships($taxonomies);
-        }
-
-        // Create the service eligibility taxonomy records
-        if ($data->has('eligibility_types') && $data['eligibility_types']['taxonomies'] ?? null) {
-            $eligibilityTypes = Taxonomy::whereIn('id', $data['eligibility_types']['taxonomies'])->get();
-            $service->syncEligibilityRelationships($eligibilityTypes);
         }
 
         // Ensure conditional fields are reset if needed.

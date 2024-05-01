@@ -355,6 +355,7 @@ class OrganisationEventsTest extends TestCase
                 return Location::factory()->create([
                     'has_wheelchair_access' => false,
                     'has_induction_loop' => false,
+                    'has_accessible_toilet' => false,
                 ])->id;
             },
         ]);
@@ -366,6 +367,7 @@ class OrganisationEventsTest extends TestCase
                 return Location::factory()->create([
                     'has_wheelchair_access' => true,
                     'has_induction_loop' => false,
+                    'has_accessible_toilet' => false,
                 ])->id;
             },
         ]);
@@ -377,6 +379,7 @@ class OrganisationEventsTest extends TestCase
                 return Location::factory()->create([
                     'has_wheelchair_access' => false,
                     'has_induction_loop' => true,
+                    'has_accessible_toilet' => false,
                 ])->id;
             },
         ]);
@@ -388,10 +391,49 @@ class OrganisationEventsTest extends TestCase
                 return Location::factory()->create([
                     'has_wheelchair_access' => true,
                     'has_induction_loop' => true,
+                    'has_accessible_toilet' => false,
                 ])->id;
             },
         ]);
         $organisationEvent5 = OrganisationEvent::factory()->create([
+            'title' => 'Organisation Event 5',
+            'slug' => 'organisation-event-5',
+            'is_virtual' => false,
+            'location_id' => function () {
+                return Location::factory()->create([
+                    'has_wheelchair_access' => false,
+                    'has_induction_loop' => false,
+                    'has_accessible_toilet' => true,
+                ])->id;
+            },
+        ]);
+        $organisationEvent6 = OrganisationEvent::factory()->create([
+            'title' => 'Organisation Event 6',
+            'slug' => 'organisation-event-6',
+            'is_virtual' => false,
+            'location_id' => function () {
+                return Location::factory()->create([
+                    'has_wheelchair_access' => true,
+                    'has_induction_loop' => false,
+                    'has_accessible_toilet' => true,
+                ])->id;
+            },
+        ]);
+        $organisationEvent7 = OrganisationEvent::factory()->create([
+            'title' => 'Organisation Event 7',
+            'slug' => 'organisation-event-7',
+            'is_virtual' => false,
+            'location_id' => function () {
+                return Location::factory()->create([
+                    'has_wheelchair_access' => true,
+                    'has_induction_loop' => true,
+                    'has_accessible_toilet' => true,
+                ])->id;
+            },
+        ]);
+        $organisationEvent8 = OrganisationEvent::factory()->create([
+            'title' => 'Organisation Event 8',
+            'slug' => 'organisation-event-8',
             'is_virtual' => true,
         ]);
 
@@ -400,36 +442,71 @@ class OrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent2->id]);
         $response->assertJsonFragment(['id' => $organisationEvent4->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent6->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent7->id]);
         $response->assertJsonMissing(['id' => $organisationEvent1->id]);
         $response->assertJsonMissing(['id' => $organisationEvent3->id]);
         $response->assertJsonMissing(['id' => $organisationEvent5->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent8->id]);
 
         $response = $this->json('GET', '/core/v1/organisation-events?filter[has_induction_loop]=1');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent3->id]);
         $response->assertJsonFragment(['id' => $organisationEvent4->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent7->id]);
         $response->assertJsonMissing(['id' => $organisationEvent1->id]);
         $response->assertJsonMissing(['id' => $organisationEvent2->id]);
         $response->assertJsonMissing(['id' => $organisationEvent5->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent8->id]);
 
         $response = $this->json('GET', '/core/v1/organisation-events?filter[has_wheelchair_access]=1&filter[has_induction_loop]=1');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent4->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent7->id]);
         $response->assertJsonMissing(['id' => $organisationEvent1->id]);
         $response->assertJsonMissing(['id' => $organisationEvent2->id]);
         $response->assertJsonMissing(['id' => $organisationEvent3->id]);
         $response->assertJsonMissing(['id' => $organisationEvent5->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent6->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent8->id]);
+
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_accessible_toilet]=1');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $organisationEvent5->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent6->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent7->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent1->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent2->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent3->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent4->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent8->id]);
+
+        $response = $this->json('GET', '/core/v1/organisation-events?filter[has_wheelchair_access]=1&filter[has_induction_loop]=1&filter[has_accessible_toilet]=1');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['id' => $organisationEvent7->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent1->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent2->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent3->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent4->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent5->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent6->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent8->id]);
 
         $response = $this->json('GET', '/core/v1/organisation-events?filter[has_wheelchair_access]=0');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['id' => $organisationEvent1->id]);
         $response->assertJsonFragment(['id' => $organisationEvent3->id]);
+        $response->assertJsonFragment(['id' => $organisationEvent5->id]);
         $response->assertJsonMissing(['id' => $organisationEvent2->id]);
         $response->assertJsonMissing(['id' => $organisationEvent4->id]);
-        $response->assertJsonMissing(['id' => $organisationEvent5->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent6->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent7->id]);
+        $response->assertJsonMissing(['id' => $organisationEvent8->id]);
     }
 
     /**

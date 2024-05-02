@@ -68,7 +68,7 @@ class UpdateRequest extends FormRequest
             'description' => [
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(3000, 'Description tab - The long description must be 3000 characters or fewer.'),
+                new MarkdownMaxLength(10000, 'Description tab - The long description must be 10000 characters or fewer.'),
             ],
             'is_free' => ['boolean'],
             'fees_text' => ['nullable', 'string', 'min:1', 'max:255', 'required_if:is_free,false'],

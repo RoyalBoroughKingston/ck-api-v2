@@ -62,7 +62,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(3000, 'Description tab - The long description must be 3000 characters or fewer.'),
+                new MarkdownMaxLength(10000, 'Description tab - The long description must be 10000 characters or fewer.'),
             ],
             'is_free' => ['required', 'boolean'],
             'fees_text' => [

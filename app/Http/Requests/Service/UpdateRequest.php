@@ -117,7 +117,7 @@ class UpdateRequest extends FormRequest
             'fees_url' => ['nullable', 'url', 'max:255'],
             'testimonial' => ['nullable', 'string', 'min:1', 'max:255'],
             'video_embed' => ['nullable', 'string', 'url', 'max:255', new VideoEmbed()],
-            'url' => ['url', 'max:255'],
+            'url' => ['nullable', 'url', 'max:255'],
             'contact_name' => ['nullable', 'string', 'min:1', 'max:255'],
             'contact_phone' => [
                 'nullable',

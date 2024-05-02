@@ -10,7 +10,6 @@ use App\Models\Taxonomy;
 use App\Rules\CanUpdateCategoryTaxonomyRelationships;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
-use App\Rules\NullableIf;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
@@ -50,9 +49,7 @@ class UpdateRequest extends FormRequest
             'name' => ['string', 'min:1', 'max:255'],
             'description' => ['string', 'min:1', 'max:10000'],
             'url' => [
-                new NullableIf(function () {
-                    return $this->user()->isGlobalAdmin();
-                }),
+                'nullable',
                 'url',
                 'max:255'],
             'email' => [

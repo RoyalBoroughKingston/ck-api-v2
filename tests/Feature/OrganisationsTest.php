@@ -960,7 +960,7 @@ class OrganisationsTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_can_update_with_single_form_of_contact(): void
+    public function organisation_admin_can_update_with_no_form_of_contact(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -968,8 +968,8 @@ class OrganisationsTest extends TestCase
             'slug' => 'test-org',
             'name' => 'Test Org',
             'description' => 'Test description',
-            'url' => 'http://test-org.example.com',
-            'email' => 'info@test-org.example.com',
+            'url' => null,
+            'email' => null,
             'phone' => null,
         ];
 
@@ -989,31 +989,6 @@ class OrganisationsTest extends TestCase
             ->where('updateable_id', $organisation->id)
             ->firstOrFail()->data;
         $this->assertEquals($data, $payload);
-    }
-
-    /**
-     * @test
-     */
-    public function organisation_admin_can_update_with_no_form_of_contact(): void
-    {
-        $organisation = Organisation::factory()->create([
-            'email' => 'info@test-org.example.com',
-            'phone' => null,
-        ]);
-        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
-
-        Passport::actingAs($user);
-
-        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", [
-            'slug' => 'test-org',
-            'name' => 'Test Org',
-            'description' => 'Test description',
-            'url' => 'http://test-org.example.com',
-            'email' => null,
-            'phone' => null,
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK);
     }
 
     /**

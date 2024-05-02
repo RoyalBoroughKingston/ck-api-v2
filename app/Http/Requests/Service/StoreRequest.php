@@ -99,7 +99,7 @@ class StoreRequest extends FormRequest
             'fees_url' => ['present', 'nullable', 'url', 'max:255'],
             'testimonial' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'video_embed' => ['present', 'nullable', 'url', 'max:255', new VideoEmbed()],
-            'url' => ['required', 'url', 'max:255'],
+            'url' => ['present', 'nullable', 'url', 'max:255'],
             'contact_name' => ['present', 'nullable', 'string', 'min:1', 'max:255'],
             'contact_phone' => [
                 'present',

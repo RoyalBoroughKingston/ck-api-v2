@@ -792,7 +792,7 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_can_create_one_with_single_form_of_contact(): void
+    public function organisation_admin_can_create_one_with_no_form_of_contact(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -813,10 +813,10 @@ class ServicesTest extends TestCase
             'fees_url' => null,
             'testimonial' => null,
             'video_embed' => null,
-            'url' => $this->faker->url(),
+            'url' => null,
             'contact_name' => $this->faker->name(),
             'contact_phone' => null,
-            'contact_email' => $this->faker->safeEmail(),
+            'contact_email' => null,
             'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,

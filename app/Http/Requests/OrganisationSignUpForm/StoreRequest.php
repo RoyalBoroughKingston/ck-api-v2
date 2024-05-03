@@ -82,7 +82,7 @@ class StoreRequest extends FormRequest
                 'nullable',
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(10000, 'Description tab - The long description must be 10000 characters or fewer.'),
+                new MarkdownMaxLength(config('local.organisation_description_max_chars'), 'Description tab - The long description must be ' . config('local.organisation_description_max_chars') . ' characters or fewer.'),
             ],
             'organisation.url' => ['sometimes', 'nullable', 'url', 'max:255'],
             'organisation.email' => [
@@ -127,7 +127,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(3000),
+                new MarkdownMaxLength(config('local.service_description_max_chars'), 'Description tab - The long description must be ' . config('local.service_description_max_chars') . ' characters or fewer.'),
             ],
             'service.wait_time' => ['sometimes', 'present', 'nullable', Rule::in([
                 Service::WAIT_TIME_ONE_WEEK,
@@ -157,7 +157,7 @@ class StoreRequest extends FormRequest
                 'required_with:service.useful_infos.*',
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(10000),
+                new MarkdownMaxLength(config('local.useful_info_description_max_chars')),
             ],
             'service.useful_infos.*.order' => [
                 'required_with:service.useful_infos.*',

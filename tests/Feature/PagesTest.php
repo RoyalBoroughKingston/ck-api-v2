@@ -1176,6 +1176,22 @@ class PagesTest extends TestCase
             ],
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
+        // Exceeds max characters for 'copy' content type
+        $this->json('POST', '/core/v1/pages', [
+            'title' => $this->faker->sentence(),
+            'excerpt' => str_pad($this->faker->paragraph(2), 151, 'words '),
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => implode(' ', array_fill(0, config('local.page_copy_max_chars') + 1, 'test')),
+                        ],
+                    ],
+                ],
+            ],
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
         // Invalid parent id
         $this->json('POST', '/core/v1/pages', [
             'title' => $this->faker->sentence(),

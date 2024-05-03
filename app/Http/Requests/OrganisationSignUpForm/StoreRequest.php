@@ -77,7 +77,13 @@ class StoreRequest extends FormRequest
                 new Slug(),
             ],
             'organisation.name' => ['required_without:organisation.id', 'nullable', 'string', 'min:1', 'max:255'],
-            'organisation.description' => ['required_without:organisation.id', 'nullable', 'string', 'min:1', 'max:10000'],
+            'organisation.description' => [
+                'required_without:organisation.id',
+                'nullable',
+                'string',
+                new MarkdownMinLength(1),
+                new MarkdownMaxLength(10000, 'Description tab - The long description must be 10000 characters or fewer.'),
+            ],
             'organisation.url' => ['sometimes', 'nullable', 'url', 'max:255'],
             'organisation.email' => [
                 'sometimes',

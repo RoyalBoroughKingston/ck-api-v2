@@ -10,6 +10,8 @@ use App\Models\Taxonomy;
 use App\Rules\CanUpdateCategoryTaxonomyRelationships;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\MarkdownMaxLength;
+use App\Rules\MarkdownMinLength;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
@@ -47,7 +49,11 @@ class UpdateRequest extends FormRequest
                 new Slug(),
             ],
             'name' => ['string', 'min:1', 'max:255'],
-            'description' => ['string', 'min:1', 'max:10000'],
+            'description' => [
+                'string',
+                new MarkdownMinLength(1),
+                new MarkdownMaxLength(10000, 'Description tab - The long description must be 10000 characters or fewer.'),
+            ],
             'url' => [
                 'nullable',
                 'url',

@@ -100,7 +100,7 @@ class UpdateRequest extends FormRequest
             'description' => [
                 'string',
                 new MarkdownMinLength(1),
-                new MarkdownMaxLength(3000, 'Description tab - The long description must be 3000 characters or fewer.'),
+                new MarkdownMaxLength(config('local.service_description_max_chars'), 'Description tab - The long description must be ' . config('local.service_description_max_chars') . ' characters or fewer.'),
             ],
             'wait_time' => [
                 'nullable',
@@ -218,7 +218,7 @@ class UpdateRequest extends FormRequest
             'useful_infos' => ['array'],
             'useful_infos.*' => ['array'],
             'useful_infos.*.title' => ['required_with:useful_infos.*', 'string', 'min:1', 'max:255'],
-            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(1000)],
+            'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(config('local.useful_info_description_max_chars'))],
             'useful_infos.*.order' => [
                 'required_with:useful_infos.*',
                 'integer',

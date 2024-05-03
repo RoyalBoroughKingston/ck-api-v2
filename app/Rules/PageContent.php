@@ -40,12 +40,20 @@ class PageContent implements ValidationRule
         // Immediately fail if the value is not an array.
         if (!is_array($value)) {
             $fail(__('validation.array'));
+
+            return;
         }
 
         if ($value['type'] === 'copy') {
             if (!array_key_exists('value', $value)) {
                 $fail('Invalid format for content');
+
+                return;
             }
+
+            $validateMarkdown = new MarkdownMaxLength(config('local.page_copy_max_chars'), 'Description tab - The page content must be ' . config('local.page_copy_max_chars') . ' characters or fewer.');
+
+            $validateMarkdown->validate($attribute, $value['value'], fn ($msg) => $fail($msg));
 
             if (($this->pageType === 'landing' && mb_strpos($attribute, 'introduction') && empty($value['value']))) {
                 $fail('Page content is required for introduction');

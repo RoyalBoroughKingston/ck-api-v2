@@ -23,7 +23,19 @@ class PageResource extends JsonResource
             'enabled' => $this->enabled,
             'page_type' => $this->page_type,
             'image' => new FileResource($this->image),
-            'parent' => new static($this->whenLoaded('parent')),
+            'parent' => $this->whenLoaded('parent', function () {
+                return $this->parent ? [
+                    'id' => $this->parent->id,
+                    'title' => $this->parent->title,
+                    'slug' => $this->parent->slug,
+                    'excerpt' => $this->parent->excerpt,
+                    'order' => $this->parent->order,
+                    'enabled' => $this->parent->enabled,
+                    'page_type' => $this->parent->page_type,
+                    'created_at' => $this->parent->created_at->format(CarbonImmutable::ISO8601),
+                    'updated_at' => $this->parent->updated_at->format(CarbonImmutable::ISO8601),
+                ] : null;
+            }),
             'children' => $this->whenLoaded('children', function () {
                 return $this->children->map(function ($child) {
                     return [

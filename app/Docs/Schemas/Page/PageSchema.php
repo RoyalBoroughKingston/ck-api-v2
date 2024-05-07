@@ -34,6 +34,8 @@ class PageSchema extends Schema
                 PageListItemSchema::create('parent'),
                 Schema::array('children')
                     ->items(PageListItemSchema::create()),
+                Schema::array('ancestors')
+                    ->items(PageListItemSchema::create()),
                 Schema::array('collection_categories')
                     ->items(CollectionCategorySchema::create()),
                 Schema::array('collection_personas')

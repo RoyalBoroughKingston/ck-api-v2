@@ -792,7 +792,7 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
-    public function organisation_admin_can_create_one_with_single_form_of_contact(): void
+    public function organisation_admin_can_create_one_with_no_form_of_contact(): void
     {
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
@@ -802,6 +802,64 @@ class ServicesTest extends TestCase
         $payload = [
             'organisation_id' => $organisation->id,
             'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => null,
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => null,
+            'contact_email' => null,
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    /**
+     * @test
+     */
+    public function organisation_admin_is_made_a_service_admin_when_they_create_one(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service-1',
             'name' => 'Test Service',
             'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
@@ -845,6 +903,18 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment($payload);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $service = Service::where('slug', 'test-service-1')->first();
+
+        $this->assertTrue($user->isServiceAdmin($service));
     }
 
     /**
@@ -1253,6 +1323,119 @@ class ServicesTest extends TestCase
         $contentJpg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageJpg->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $contentJpg);
+    }
+
+    /**
+     * @test
+     */
+    public function organisation_admin_can_create_one_with_elegibility_fields(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        $taxonomyIds = Taxonomy::serviceEligibility()
+            ->children
+            ->map(function ($taxonomy) {
+                return $taxonomy
+                    ->children()
+                    ->inRandomOrder()
+                    ->pluck('id')
+                    ->first();
+            })
+            ->toArray();
+
+        sort($taxonomyIds, SORT_STRING);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service-1',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+            'eligibility_types' => [
+                'custom' => [
+                    'age_group' => 'created with custom age group',
+                    'disability' => 'created with custom disability',
+                    'ethnicity' => 'created with custom ethnicity',
+                    'gender' => 'created with custom gender',
+                    'income' => 'created with custom income',
+                    'language' => 'created with custom language',
+                    'housing' => 'created with custom housing',
+                    'other' => 'created with custom other',
+                ],
+                'taxonomies' => $taxonomyIds,
+            ],
+        ];
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonFragment(['data' => $payload]);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals($updateRequest->data, $payload);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $service = Service::where('slug', 'test-service-1')->first();
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service->id,
+            'eligibility_age_group_custom' => 'created with custom age group',
+            'eligibility_disability_custom' => 'created with custom disability',
+            'eligibility_ethnicity_custom' => 'created with custom ethnicity',
+            'eligibility_gender_custom' => 'created with custom gender',
+            'eligibility_income_custom' => 'created with custom income',
+            'eligibility_language_custom' => 'created with custom language',
+            'eligibility_housing_custom' => 'created with custom housing',
+            'eligibility_other_custom' => 'created with custom other',
+        ]);
+
+        foreach ($taxonomyIds as $taxonomyId) {
+            $this->assertDatabaseHas('service_eligibilities', [
+                'service_id' => $service->id,
+                'taxonomy_id' => $taxonomyId,
+            ]);
+        }
     }
 
     /**
@@ -3192,7 +3375,7 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
-    public function service_admin_can_update_one_with_single_form_of_contact(): void
+    public function service_admin_can_update_one_with_no_form_of_contact(): void
     {
         $service = Service::factory()->create([
             'slug' => 'test-service',
@@ -3217,10 +3400,10 @@ class ServicesTest extends TestCase
             'fees_url' => null,
             'testimonial' => null,
             'video_embed' => null,
-            'url' => $this->faker->url(),
+            'url' => null,
             'contact_name' => $this->faker->name(),
             'contact_phone' => null,
-            'contact_email' => $this->faker->safeEmail(),
+            'contact_email' => null,
             'show_referral_disclaimer' => false,
             'referral_method' => Service::REFERRAL_METHOD_NONE,
             'referral_button_text' => null,

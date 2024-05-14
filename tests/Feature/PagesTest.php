@@ -44,7 +44,7 @@ class PagesTest extends TestCase
                     'id',
                     'slug',
                     'title',
-                    'content',
+                    'excerpt',
                     'order',
                     'enabled',
                     'page_type',
@@ -546,7 +546,7 @@ class PagesTest extends TestCase
                     'id',
                     'slug',
                     'title',
-                    'content',
+                    'excerpt',
                     'order',
                     'enabled',
                     'page_type',
@@ -574,7 +574,7 @@ class PagesTest extends TestCase
                     'id',
                     'slug',
                     'title',
-                    'content',
+                    'excerpt',
                     'order',
                     'enabled',
                     'page_type',
@@ -602,7 +602,7 @@ class PagesTest extends TestCase
                     'id',
                     'slug',
                     'title',
-                    'content',
+                    'excerpt',
                     'order',
                     'enabled',
                     'page_type',
@@ -612,13 +612,9 @@ class PagesTest extends TestCase
                             'id',
                             'slug',
                             'title',
-                            'image',
-                            'content',
                             'order',
                             'enabled',
                             'page_type',
-                            'created_at',
-                            'updated_at',
                         ],
                     ],
                     'created_at',
@@ -648,7 +644,7 @@ class PagesTest extends TestCase
                     'id',
                     'slug',
                     'title',
-                    'content',
+                    'excerpt',
                     'order',
                     'enabled',
                     'page_type',
@@ -961,6 +957,7 @@ class PagesTest extends TestCase
             'landing_page',
             'parent',
             'children',
+            'ancestors',
             'collection_categories',
             'collection_personas',
             'created_at',
@@ -1170,6 +1167,22 @@ class PagesTest extends TestCase
                         [
                             'type' => 'copy',
                             'copy' => $this->faker->realText(),
+                        ],
+                    ],
+                ],
+            ],
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        // Exceeds max characters for 'copy' content type
+        $this->json('POST', '/core/v1/pages', [
+            'title' => $this->faker->sentence(),
+            'excerpt' => str_pad($this->faker->paragraph(2), 151, 'words '),
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => implode(' ', array_fill(0, config('local.page_copy_max_chars') + 1, 'test')),
                         ],
                     ],
                 ],
@@ -2600,30 +2613,26 @@ class PagesTest extends TestCase
                 'updated_at',
             ],
             'landing_page',
-            'parent' => [
-                'id',
-                'slug',
-                'title',
-                'image',
-                'content',
-                'order',
-                'enabled',
-                'page_type',
-                'created_at',
-                'updated_at',
-            ],
             'children' => [
                 '*' => [
                     'id',
                     'slug',
                     'title',
-                    'image',
-                    'content',
-                    'order',
-                    'enabled',
+                    'excerpt',
                     'page_type',
-                    'created_at',
-                    'updated_at',
+                    'enabled',
+                    'order',
+                ],
+            ],
+            'ancestors' => [
+                '*' => [
+                    'id',
+                    'slug',
+                    'title',
+                    'excerpt',
+                    'page_type',
+                    'enabled',
+                    'order',
                 ],
             ],
             'created_at',
@@ -2662,15 +2671,13 @@ class PagesTest extends TestCase
                     'id',
                     'slug',
                     'title',
-                    'image',
-                    'content',
-                    'order',
-                    'enabled',
+                    'excerpt',
                     'page_type',
-                    'created_at',
-                    'updated_at',
+                    'enabled',
+                    'order',
                 ],
             ],
+            'ancestors',
             'created_at',
             'updated_at',
         ]);
@@ -2693,12 +2700,16 @@ class PagesTest extends TestCase
     /**
      * @test
      */
-    public function getEnabledInformationPageWithLandingPageAncestorAsGuest200(): void
+    public function getEnabledInformationPageWithAncestorsAsGuest200(): void
     {
         $page = Page::factory()->withImage()->withChildren()->create();
-        $parent = Page::factory()->create();
+        $parent = Page::factory()->create([
+            'title' => 'Parent',
+        ]);
         $parent->appendNode($page);
-        $landingPage = Page::factory()->landingPage()->create();
+        $landingPage = Page::factory()->landingPage()->create([
+            'title' => 'Landing Page',
+        ]);
         $landingPage->appendNode($parent);
 
         $response = $this->json('GET', '/core/v1/pages/' . $page->id);
@@ -2718,52 +2729,34 @@ class PagesTest extends TestCase
                 'created_at',
                 'updated_at',
             ],
-            'landing_page' => [
-                'id',
-                'title',
-                'image',
-                'content',
-                'order',
-                'enabled',
-                'page_type',
-                'created_at',
-                'updated_at',
-            ],
-            'parent' => [
-                'id',
-                'title',
-                'image',
-                'content',
-                'order',
-                'enabled',
-                'page_type',
-                'created_at',
-                'updated_at',
-            ],
             'children' => [
                 '*' => [
                     'id',
+                    'slug',
                     'title',
-                    'image',
-                    'content',
-                    'order',
-                    'enabled',
+                    'excerpt',
                     'page_type',
-                    'created_at',
-                    'updated_at',
+                    'enabled',
+                    'order',
+                ],
+            ],
+            'ancestors' => [
+                '*' => [
+                    'id',
+                    'slug',
+                    'title',
+                    'excerpt',
+                    'page_type',
+                    'enabled',
+                    'order',
                 ],
             ],
             'created_at',
             'updated_at',
         ]);
 
-        $response->assertJson([
-            'data' => [
-                'landing_page' => [
-                    'id' => $landingPage->id,
-                ],
-            ],
-        ]);
+        $this->assertEquals($landingPage->id, $response->json('data')['ancestors'][0]['id']);
+        $this->assertEquals($parent->id, $response->json('data')['ancestors'][1]['id']);
     }
 
     /**
@@ -2830,30 +2823,26 @@ class PagesTest extends TestCase
                 'updated_at',
             ],
             'landing_page',
-            'parent' => [
-                'id',
-                'slug',
-                'title',
-                'image',
-                'content',
-                'order',
-                'enabled',
-                'page_type',
-                'created_at',
-                'updated_at',
-            ],
             'children' => [
                 '*' => [
                     'id',
                     'slug',
                     'title',
-                    'image',
-                    'content',
-                    'order',
-                    'enabled',
+                    'excerpt',
                     'page_type',
-                    'created_at',
-                    'updated_at',
+                    'enabled',
+                    'order',
+                ],
+            ],
+            'ancestors' => [
+                '*' => [
+                    'id',
+                    'slug',
+                    'title',
+                    'excerpt',
+                    'page_type',
+                    'enabled',
+                    'order',
                 ],
             ],
             'created_at',

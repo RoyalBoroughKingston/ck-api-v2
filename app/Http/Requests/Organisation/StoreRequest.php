@@ -9,6 +9,8 @@ use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\FileIsMimeType;
 use App\Rules\FileIsPendingAssignment;
+use App\Rules\MarkdownMaxLength;
+use App\Rules\MarkdownMinLength;
 use App\Rules\RootTaxonomyIs;
 use App\Rules\Slug;
 use App\Rules\UkPhoneNumber;
@@ -46,7 +48,12 @@ class StoreRequest extends FormRequest
                 new Slug(),
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],
-            'description' => ['required', 'string', 'min:1', 'max:10000'],
+            'description' => [
+                'required',
+                'string',
+                new MarkdownMinLength(1),
+                new MarkdownMaxLength(config('local.organisation_description_max_chars'), 'Description tab - The long description must be ' . config('local.organisation_description_max_chars') . ' characters or fewer.'),
+            ],
             'url' => ['present', 'nullable', 'url', 'max:255'],
             'email' => ['present', 'nullable', 'email', 'max:255'],
             'phone' => [

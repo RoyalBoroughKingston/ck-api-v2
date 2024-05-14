@@ -68,8 +68,34 @@ return [
         150,
         350,
     ],
+
     /**
      * The request api rate limit per minute per user / IP.
      */
     'api_rate_limit' => env('API_RATE_LIMIT', 300),
+
+    /**
+     * Organisation description character limit.
+     */
+    'organisation_description_max_chars' => env('ORG_DESCRIPTION_MAX_CHARS', 3000),
+
+    /**
+     * Service description character limit.
+     */
+    'service_description_max_chars' => env('SERVICE_DESCRIPTION_MAX_CHARS', 10000),
+
+    /**
+     * Useful Info description character limit.
+     */
+    'useful_info_description_max_chars' => env('USEFUL_INFO_DESCRIPTION_MAX_CHARS', 1000),
+
+    /**
+     * Organisation Event description character limit.
+     */
+    'event_description_max_chars' => env('EVENT_DESCRIPTION_MAX_CHARS', 10000),
+
+    /**
+     * Page copy character limit.
+     */
+    'page_copy_max_chars' => env('PAGE_COPY_MAX_CHARS', 60000),
 ];

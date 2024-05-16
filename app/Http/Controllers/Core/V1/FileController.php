@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Core\V1;
 
 use App\Events\EndpointHit;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\File\ShowRequest;
 use App\Http\Requests\File\StoreRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
@@ -16,7 +17,7 @@ class FileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->except('show');
     }
 
     /**
@@ -33,6 +34,7 @@ class FileController extends Controller
                 'mime_type' => $request->mime_type,
                 'meta' => [
                     'type' => File::META_TYPE_PENDING_ASSIGNMENT,
+                    'alt_text' => $request->alt_text,
                 ],
                 'is_private' => $request->is_private,
             ]);
@@ -43,5 +45,15 @@ class FileController extends Controller
 
             return new FileResource($file);
         });
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(ShowRequest $request, File $file)
+    {
+        return new FileResource($file);
     }
 }

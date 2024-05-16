@@ -61,6 +61,7 @@ class File extends Model implements Responsable
         'is_private' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'meta' => 'array',
     ];
 
     /**

@@ -82,7 +82,7 @@ Route::prefix('/core/v1')
 
             // Files.
             Route::apiResource('/files', Core\V1\FileController::class)
-                ->only('store');
+                ->only('store', 'show');
 
             // Locations.
             Route::match(['GET', 'POST'], '/locations/index', [Core\V1\LocationController::class, 'index']);

@@ -61,7 +61,7 @@ class OrganisationsTest extends TestCase
      */
     public function guest_can_list_them(): void
     {
-        $organisation = Organisation::factory()->create();
+        $organisation = Organisation::factory()->withPngLogo()->create();
 
         $response = $this->json('GET', '/core/v1/organisations');
 
@@ -73,6 +73,11 @@ class OrganisationsTest extends TestCase
                 'slug' => $organisation->slug,
                 'name' => $organisation->name,
                 'description' => $organisation->description,
+                'image' => [
+                    'id' => $organisation->logoFile->id,
+                    'mime_type' => $organisation->logoFile->mime_type,
+                    'alt_text' => $organisation->logoFile->altText,
+                ],
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
@@ -593,7 +598,7 @@ class OrganisationsTest extends TestCase
      */
     public function guest_can_view_one(): void
     {
-        $organisation = Organisation::factory()->create();
+        $organisation = Organisation::factory()->withPngLogo()->create();
 
         $organisation->socialMedias()->create([
             'type' => SocialMedia::TYPE_INSTAGRAM,
@@ -610,6 +615,11 @@ class OrganisationsTest extends TestCase
                 'slug' => $organisation->slug,
                 'name' => $organisation->name,
                 'description' => $organisation->description,
+                'image' => [
+                    'id' => $organisation->logoFile->id,
+                    'mime_type' => $organisation->logoFile->mime_type,
+                    'alt_text' => $organisation->logoFile->altText,
+                ],
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
@@ -643,6 +653,7 @@ class OrganisationsTest extends TestCase
                 'slug' => $organisation->slug,
                 'name' => $organisation->name,
                 'description' => $organisation->description,
+                'image' => null,
                 'url' => $organisation->url,
                 'email' => $organisation->email,
                 'phone' => $organisation->phone,
@@ -1541,8 +1552,10 @@ class OrganisationsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+        $imageResponse->assertStatus(Response::HTTP_CREATED);
 
         $response = $this->json('POST', '/core/v1/organisations', [
             'slug' => 'test-org',

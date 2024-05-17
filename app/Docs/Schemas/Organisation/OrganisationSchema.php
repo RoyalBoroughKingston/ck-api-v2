@@ -20,6 +20,13 @@ class OrganisationSchema extends Schema
                 Schema::string('name'),
                 Schema::string('slug'),
                 Schema::string('description'),
+                Schema::object('image')
+                    ->properties(
+                        Schema::string('id'),
+                        Schema::string('mime_type'),
+                        Schema::string('alt_text')
+                    )
+                    ->nullable(),
                 Schema::string('url')
                     ->nullable(),
                 Schema::string('email')

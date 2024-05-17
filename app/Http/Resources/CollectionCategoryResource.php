@@ -23,8 +23,6 @@ class CollectionCategoryResource extends JsonResource
                 'id' => $this->image->id,
                 'mime_type' => $this->image->mime_type,
                 'alt_text' => $this->image->meta['alt_text'] ?? null,
-                'created_at' => $this->image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $this->image->updated_at->format(CarbonImmutable::ISO8601),
             ] : null,
             'order' => $this->order,
             'enabled' => $this->enabled,

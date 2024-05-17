@@ -627,8 +627,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
@@ -666,8 +664,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
@@ -705,8 +701,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
@@ -1521,8 +1515,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
             'order' => 1,
             'enabled' => true,
@@ -1670,8 +1662,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
@@ -1705,8 +1695,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
@@ -1740,8 +1728,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
@@ -1971,8 +1957,6 @@ class CollectionCategoriesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
-                'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
-                'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
             'order' => 1,
             'enabled' => true,

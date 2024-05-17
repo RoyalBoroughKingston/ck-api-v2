@@ -2,21 +2,21 @@
 
 namespace Tests\Feature;
 
-use App\Events\EndpointHit;
-use App\Models\Audit;
-use App\Models\Collection;
-use App\Models\CollectionTaxonomy;
+use Tests\TestCase;
 use App\Models\File;
-use App\Models\Organisation;
+use App\Models\User;
+use App\Models\Audit;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\User;
+use App\Models\Collection;
+use App\Events\EndpointHit;
 use Carbon\CarbonImmutable;
+use App\Models\Organisation;
 use Illuminate\Http\Response;
+use Laravel\Passport\Passport;
+use App\Models\CollectionTaxonomy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
 
 class CollectionPersonasTest extends TestCase
 {
@@ -47,6 +47,7 @@ class CollectionPersonasTest extends TestCase
                     'content',
                 ],
             ],
+            'image',
             'category_taxonomies' => [
                 '*' => [
                     'id',
@@ -91,6 +92,7 @@ class CollectionPersonasTest extends TestCase
                             'content',
                         ],
                     ],
+                    'image',
                     'category_taxonomies' => [
                         '*' => [
                             'id',
@@ -1936,8 +1938,10 @@ class CollectionPersonasTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,'.base64_encode($image),
+            'alt_text' => 'image description',
+            'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+        $imageResponse->assertStatus(Response::HTTP_CREATED);
 
         $response = $this->json('POST', '/core/v1/collections/personas', [
             'name' => 'Test Persona',
@@ -1952,6 +1956,14 @@ class CollectionPersonasTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $this->getResponseContent($imageResponse, 'data.id'),
+                'mime_type' => 'image/png',
+                'alt_text' => 'image description',
+            ],
+        ]);
         $collectionArray = $this->getResponseContent($response)['data'];
         $content = $this->get("/core/v1/collections/personas/{$collectionArray['id']}/image.png")->content();
         $this->assertEquals($image, $content);

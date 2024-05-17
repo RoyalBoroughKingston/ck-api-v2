@@ -34,7 +34,7 @@ class OrganisationEventsTest extends TestCase
      */
     public function listOrganisationEventsAsGuest200(): void
     {
-        $organisationEvent = OrganisationEvent::factory()->create();
+        $organisationEvent = OrganisationEvent::factory()->withImage()->create();
 
         $response = $this->json('GET', '/core/v1/organisation-events');
 
@@ -49,6 +49,7 @@ class OrganisationEventsTest extends TestCase
             'end_time',
             'intro',
             'description',
+            'image',
             'is_free',
             'fees_text',
             'fees_url',
@@ -78,6 +79,11 @@ class OrganisationEventsTest extends TestCase
             'end_time' => $organisationEvent->end_time,
             'intro' => $organisationEvent->intro,
             'description' => $organisationEvent->description,
+            'image' => [
+                'id' => $organisationEvent->imageFile->id,
+                'mime_type' => $organisationEvent->imageFile->mime_type,
+                'alt_text' => $organisationEvent->imageFile->meta['alt_text'],
+            ],
             'is_free' => $organisationEvent->is_free,
             'fees_text' => $organisationEvent->fees_text,
             'fees_url' => $organisationEvent->fees_url,
@@ -700,8 +706,6 @@ class OrganisationEventsTest extends TestCase
 
         $response->assertJsonFragment($payload);
 
-        $responseData = json_decode($response->getContent());
-
         //Then an update request should be created for the new event
         $updateRequest = UpdateRequest::findOrFail($response->json('id'));
 
@@ -1298,8 +1302,10 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+        $imageResponse->assertStatus(Response::HTTP_CREATED);
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
@@ -1366,8 +1372,10 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+        $imageResponse->assertStatus(Response::HTTP_CREATED);
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
@@ -1957,7 +1965,7 @@ class OrganisationEventsTest extends TestCase
      */
     public function getSingleOrganisationEventAsGuest200(): void
     {
-        $organisationEvent = OrganisationEvent::factory()->create();
+        $organisationEvent = OrganisationEvent::factory()->withImage()->create();
 
         $response = $this->json('GET', "/core/v1/organisation-events/{$organisationEvent->id}");
 
@@ -1973,6 +1981,11 @@ class OrganisationEventsTest extends TestCase
             'end_time' => $organisationEvent->end_time,
             'intro' => $organisationEvent->intro,
             'description' => $organisationEvent->description,
+            'image' => [
+                'id' => $organisationEvent->imageFile->id,
+                'mime_type' => $organisationEvent->imageFile->mime_type,
+                'alt_text' => $organisationEvent->imageFile->meta['alt_text'],
+            ],
             'is_free' => $organisationEvent->is_free,
             'fees_text' => $organisationEvent->fees_text,
             'fees_url' => $organisationEvent->fees_url,
@@ -2018,6 +2031,7 @@ class OrganisationEventsTest extends TestCase
             'end_time' => $organisationEvent->end_time,
             'intro' => $organisationEvent->intro,
             'description' => $organisationEvent->description,
+            'image' => null,
             'is_free' => $organisationEvent->is_free,
             'fees_text' => $organisationEvent->fees_text,
             'fees_url' => $organisationEvent->fees_url,
@@ -2461,8 +2475,11 @@ class OrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+
+        $imageResponse->assertStatus(Response::HTTP_CREATED);
 
         $organisationEvent = OrganisationEvent::factory()->create();
 

@@ -19,6 +19,13 @@ class CollectionCategoryResource extends JsonResource
             'name' => $this->name,
             'intro' => $this->meta['intro'],
             'image_file_id' => $this->meta['image_file_id'] ?? null,
+            'image' => $this->image ? [
+                'id' => $this->image->id,
+                'mime_type' => $this->image->mime_type,
+                'alt_text' => $this->image->meta['alt_text'] ?? null,
+                'created_at' => $this->image->created_at->format(CarbonImmutable::ISO8601),
+                'updated_at' => $this->image->updated_at->format(CarbonImmutable::ISO8601),
+            ] : null,
             'order' => $this->order,
             'enabled' => $this->enabled,
             'homepage' => $this->homepage,

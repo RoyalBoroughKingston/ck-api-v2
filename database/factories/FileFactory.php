@@ -18,12 +18,16 @@ class FileFactory extends Factory
             'filename' => Str::random() . '.dat',
             'mime_type' => 'text/plain',
             'is_private' => false,
+            'meta' => ['alt_text' => $this->faker->sentence],
         ];
     }
 
     public function pendingAssignment()
     {
-        return $this->state(['meta' => ['type' => File::META_TYPE_PENDING_ASSIGNMENT]]);
+        return $this->state(['meta' => [
+            'type' => File::META_TYPE_PENDING_ASSIGNMENT,
+            'alt_text' => $this->faker->sentence,
+        ]]);
     }
 
     public function imagePng()
@@ -34,7 +38,6 @@ class FileFactory extends Factory
         })->state([
             'filename' => Str::random() . '.png',
             'mime_type' => 'image/png',
-            'meta' => ['alt_text' => $this->faker->sentence],
         ]);
     }
 
@@ -46,7 +49,6 @@ class FileFactory extends Factory
         })->state([
             'filename' => Str::random() . '.jpg',
             'mime_type' => 'image/jpeg',
-            'meta' => ['alt_text' => $this->faker->sentence],
         ]);
     }
 
@@ -58,7 +60,6 @@ class FileFactory extends Factory
         })->state([
             'filename' => Str::random() . '.svg',
             'mime_type' => 'image/svg+xml',
-            'meta' => ['alt_text' => $this->faker->sentence],
         ]);
     }
 }

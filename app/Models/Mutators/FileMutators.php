@@ -32,4 +32,20 @@ trait FileMutators
             }
         );
     }
+
+    /**
+     * Get the alt_text meta value.
+     *
+     * @return string
+     */
+    protected function altText(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $meta = json_decode($attributes['meta']);
+
+                return $meta->alt_text ?? null;
+            }
+        );
+    }
 }

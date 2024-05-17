@@ -28,7 +28,7 @@ class LocationsTest extends TestCase
      */
     public function guest_can_list_them(): void
     {
-        $location = Location::factory()->create();
+        $location = Location::factory()->withJpgImage()->create();
 
         $response = $this->json('GET', '/core/v1/locations');
 
@@ -45,6 +45,7 @@ class LocationsTest extends TestCase
             'country',
             'lat',
             'lon',
+            'image',
             'accessibility_info',
             'has_wheelchair_access',
             'has_induction_loop',
@@ -64,6 +65,11 @@ class LocationsTest extends TestCase
             'country' => $location->country,
             'lat' => $location->lat,
             'lon' => $location->lon,
+            'image' => [
+                'id' => $location->imageFile->id,
+                'mime_type' => $location->imageFile->mime_type,
+                'alt_text' => $location->imageFile->altText,
+            ],
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
             'has_induction_loop' => $location->has_induction_loop,
@@ -160,6 +166,7 @@ class LocationsTest extends TestCase
             'county' => 'West Yorkshire',
             'postcode' => 'LS1 4HT',
             'country' => 'England',
+            'image' => null,
             'accessibility_info' => null,
             'has_wheelchair_access' => false,
             'has_induction_loop' => false,
@@ -205,6 +212,7 @@ class LocationsTest extends TestCase
             'county' => 'West Yorkshire',
             'postcode' => 'LS1 4HT',
             'country' => 'England',
+            'image' => null,
             'accessibility_info' => null,
             'has_wheelchair_access' => false,
             'has_induction_loop' => false,
@@ -241,12 +249,18 @@ class LocationsTest extends TestCase
         $locationId = $this->getResponseContent($response, 'data.id');
 
         $response->assertStatus(Response::HTTP_CREATED);
+
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $this->assertDatabaseHas(table(Location::class), [
             'id' => $locationId,
-        ]);
-        $this->assertDatabaseMissing(table(Location::class), [
-            'id' => $locationId,
-            'image_file_id' => null,
+            'image_file_id' => $image->id,
         ]);
 
         $response = $this->get("/core/v1/locations/{$locationId}/image.jpg");
@@ -339,7 +353,7 @@ class LocationsTest extends TestCase
      */
     public function guest_can_view_one(): void
     {
-        $location = Location::factory()->create();
+        $location = Location::factory()->withJpgImage()->create();
 
         $response = $this->json('GET', "/core/v1/locations/{$location->id}");
 
@@ -356,6 +370,11 @@ class LocationsTest extends TestCase
             'country' => $location->country,
             'lat' => $location->lat,
             'lon' => $location->lon,
+            'image' => [
+                'id' => $location->imageFile->id,
+                'mime_type' => $location->imageFile->mime_type,
+                'alt_text' => $location->imageFile->alt_text,
+            ],
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
             'has_induction_loop' => $location->has_induction_loop,

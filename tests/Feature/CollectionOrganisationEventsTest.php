@@ -61,6 +61,7 @@ class CollectionOrganisationEventsTest extends TestCase
             'order',
             'enabled',
             'image_file_id',
+            'image',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -102,6 +103,7 @@ class CollectionOrganisationEventsTest extends TestCase
                     'name',
                     'intro',
                     'image_file_id',
+                    'image',
                     'order',
                     'enabled',
                     'sideboxes' => [
@@ -327,6 +329,11 @@ class CollectionOrganisationEventsTest extends TestCase
             'name',
             'intro',
             'image_file_id',
+            'image' => [
+                'id',
+                'mime_type',
+                'alt_text',
+            ],
             'order',
             'enabled',
             'sideboxes' => [
@@ -356,6 +363,13 @@ class CollectionOrganisationEventsTest extends TestCase
         ]);
         $response->assertJsonFragment([
             'id' => $randomCategory->id,
+        ]);
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
 
         $collectionArray = $this->getResponseContent($response)['data'];
@@ -769,16 +783,21 @@ class CollectionOrganisationEventsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $collectionArray = $this->getResponseContent($response)['data'];
         $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.svg");
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $response->content());
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
-        ]);
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // PNG
         $image = File::factory()->pendingAssignment()->imagePng()->create();
@@ -795,16 +814,21 @@ class CollectionOrganisationEventsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $collectionArray = $this->getResponseContent($response)['data'];
         $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.png");
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $response->content());
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
-        ]);
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // JPG
         $image = File::factory()->pendingAssignment()->imageJpg()->create();
@@ -821,16 +845,21 @@ class CollectionOrganisationEventsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $collectionArray = $this->getResponseContent($response)['data'];
         $response = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.jpg");
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $response->content());
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
-        ]);
+        $this->assertFalse($image->fresh()->pendingAssignment);
     }
 
     /**
@@ -1548,10 +1577,15 @@ class CollectionOrganisationEventsTest extends TestCase
         $content = $this->get("/core/v1/collections/organisation-events/{$organisationEvent->id}/image.svg")->content();
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
+
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // PNG
         $image = File::factory()->pendingAssignment()->imagePng()->create();
@@ -1574,10 +1608,15 @@ class CollectionOrganisationEventsTest extends TestCase
         $content = $this->get("/core/v1/collections/organisation-events/{$organisationEvent->id}/image.png")->content();
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $content);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
+
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // JPG
         $image = File::factory()->pendingAssignment()->imageJpg()->create();
@@ -1600,10 +1639,15 @@ class CollectionOrganisationEventsTest extends TestCase
         $content = $this->get("/core/v1/collections/organisation-events/{$organisationEvent->id}/image.jpg")->content();
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
+
+        $this->assertFalse($image->fresh()->pendingAssignment);
     }
 
     /**
@@ -2011,8 +2055,10 @@ class CollectionOrganisationEventsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
+        $imageResponse->assertStatus(Response::HTTP_CREATED);
 
         $response = $this->json('POST', '/core/v1/collections/organisation-events', [
             'name' => 'Test Organisation Event',
@@ -2028,6 +2074,14 @@ class CollectionOrganisationEventsTest extends TestCase
         $collectionArray = $this->getResponseContent($response)['data'];
         $content = $this->get("/core/v1/collections/organisation-events/{$collectionArray['id']}/image.png")->content();
         $this->assertEquals($image, $content);
+
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $this->getResponseContent($imageResponse, 'data.id'),
+                'mime_type' => 'image/png',
+                'alt_text' => 'image description',
+            ],
+        ]);
     }
 
     /*

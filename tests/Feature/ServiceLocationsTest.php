@@ -776,6 +776,7 @@ class ServiceLocationsTest extends TestCase
         $imageResponse = $this->json('POST', '/core/v1/files', [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . base64_encode($image),
         ]);
 

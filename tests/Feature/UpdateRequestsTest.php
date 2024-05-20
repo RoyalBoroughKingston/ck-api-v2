@@ -1066,6 +1066,7 @@ class UpdateRequestsTest extends TestCase
         $imagePayload = [
             'is_private' => false,
             'mime_type' => 'image/png',
+            'alt_text' => 'image description',
             'file' => 'data:image/png;base64,' . self::BASE64_ENCODED_PNG,
         ];
 

@@ -22,7 +22,11 @@ class PageResource extends JsonResource
             'order' => $this->order,
             'enabled' => $this->enabled,
             'page_type' => $this->page_type,
-            'image' => new FileResource($this->image),
+            'image' => $this->image ? [
+                'id' => $this->image->id,
+                'mime_type' => $this->image->mime_type,
+                'alt_text' => $this->image->altText,
+            ] : null,
             'parent' => $this->whenLoaded('parent', function () {
                 return $this->parent ? [
                     'id' => $this->parent->id,

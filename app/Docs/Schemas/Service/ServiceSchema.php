@@ -33,6 +33,13 @@ class ServiceSchema extends Schema
                     ->enum(Service::STATUS_ACTIVE, Service::STATUS_INACTIVE),
                 Schema::string('intro'),
                 Schema::string('description'),
+                Schema::object('image')
+                    ->properties(
+                        Schema::string('id'),
+                        Schema::string('mime_type'),
+                        Schema::string('alt_text')
+                    )
+                    ->nullable(),
                 Schema::string('wait_time')
                     ->enum(
                         Service::WAIT_TIME_ONE_WEEK,

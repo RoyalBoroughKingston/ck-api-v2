@@ -31,6 +31,7 @@ class Collection extends Model
     protected $casts = [
         'enabled' => 'boolean',
         'homepage' => 'boolean',
+        'meta' => 'array',
     ];
 
     /**

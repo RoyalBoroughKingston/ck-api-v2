@@ -42,6 +42,7 @@ class CollectionCategoriesTest extends TestCase
             'enabled',
             'homepage',
             'image_file_id',
+            'image',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -86,6 +87,7 @@ class CollectionCategoriesTest extends TestCase
                     'enabled',
                     'homepage',
                     'image_file_id',
+                    'image',
                     'sideboxes' => [
                         '*' => [
                             'title',
@@ -281,10 +283,7 @@ class CollectionCategoriesTest extends TestCase
         $user->makeSuperAdmin();
         $randomCategory = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
-            'mime_type' => 'image/svg+xml',
-        ]);
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
 
         $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
@@ -318,6 +317,7 @@ class CollectionCategoriesTest extends TestCase
             'enabled',
             'homepage',
             'image_file_id',
+            'image',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -622,10 +622,15 @@ class CollectionCategoriesTest extends TestCase
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
+
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // PNG
         $image = File::factory()->pendingAssignment()->imagePng()->create();
@@ -654,10 +659,15 @@ class CollectionCategoriesTest extends TestCase
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
+
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // JPG
         $image = File::factory()->pendingAssignment()->imageJpg()->create();
@@ -686,10 +696,15 @@ class CollectionCategoriesTest extends TestCase
 
         $this->assertEquals($image->id, $collectionArray['image_file_id']);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
         ]);
+
+        $this->assertFalse($image->fresh()->pendingAssignment);
     }
 
     /**
@@ -1096,6 +1111,7 @@ class CollectionCategoriesTest extends TestCase
             'order',
             'enabled',
             'image_file_id',
+            'image',
             'homepage',
             'sideboxes' => [
                 '*' => [
@@ -1146,6 +1162,7 @@ class CollectionCategoriesTest extends TestCase
             'order',
             'enabled',
             'image_file_id',
+            'image',
             'homepage',
             'sideboxes' => [
                 '*' => [
@@ -1442,10 +1459,7 @@ class CollectionCategoriesTest extends TestCase
         $category = Collection::categories()->inRandomOrder()->firstOrFail();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
-            'mime_type' => 'image/svg+xml',
-        ]);
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
 
         $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
@@ -1474,6 +1488,7 @@ class CollectionCategoriesTest extends TestCase
             'enabled',
             'homepage',
             'image_file_id',
+            'image',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -1496,6 +1511,11 @@ class CollectionCategoriesTest extends TestCase
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
             'order' => 1,
             'enabled' => true,
             'homepage' => false,
@@ -1637,16 +1657,21 @@ class CollectionCategoriesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $category = $category->fresh();
         $this->assertEquals($image->id, $category->meta['image_file_id']);
 
         $content = $this->get("/core/v1/collections/categories/{$category->id}/image.svg")->content();
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
-        ]);
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // PNG
         $image = File::factory()->pendingAssignment()->imagePng()->create();
@@ -1665,16 +1690,21 @@ class CollectionCategoriesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $category = $category->fresh();
         $this->assertEquals($image->id, $category->meta['image_file_id']);
 
         $content = $this->get("/core/v1/collections/categories/{$category->id}/image.png")->content();
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $content);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
-        ]);
+        $this->assertFalse($image->fresh()->pendingAssignment);
 
         // JPG
         $image = File::factory()->pendingAssignment()->imageJpg()->create();
@@ -1693,16 +1723,21 @@ class CollectionCategoriesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+
         $category = $category->fresh();
         $this->assertEquals($image->id, $category->meta['image_file_id']);
 
         $content = $this->get("/core/v1/collections/categories/{$category->id}/image.jpg")->content();
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
 
-        $this->assertDatabaseHas($image->getTable(), [
-            'id' => $image->id,
-            'meta' => null,
-        ]);
+        $this->assertFalse($image->fresh()->pendingAssignment);
     }
 
     /**
@@ -1820,6 +1855,7 @@ class CollectionCategoriesTest extends TestCase
             'enabled',
             'homepage',
             'image_file_id',
+            'image',
             'sideboxes' => [
                 '*' => [
                     'title',
@@ -1864,10 +1900,7 @@ class CollectionCategoriesTest extends TestCase
         $category->addToHomepage()->save();
         $taxonomy = Taxonomy::category()->children()->inRandomOrder()->firstOrFail();
 
-        $image = File::factory()->pendingAssignment()->create([
-            'filename' => Str::random() . '.svg',
-            'mime_type' => 'image/svg+xml',
-        ]);
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
 
         $base64Image = 'data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg'));
 
@@ -1894,6 +1927,7 @@ class CollectionCategoriesTest extends TestCase
             'name',
             'intro',
             'image_file_id',
+            'image',
             'order',
             'enabled',
             'homepage',
@@ -1919,6 +1953,11 @@ class CollectionCategoriesTest extends TestCase
             'name' => 'Test Category',
             'intro' => 'Lorem ipsum',
             'image_file_id' => $image->id,
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
             'order' => 1,
             'enabled' => true,
             'homepage' => false,

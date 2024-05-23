@@ -2609,8 +2609,7 @@ class PagesTest extends TestCase
             'image' => [
                 'id',
                 'mime_type',
-                'created_at',
-                'updated_at',
+                'alt_text',
             ],
             'landing_page',
             'children' => [
@@ -2661,8 +2660,7 @@ class PagesTest extends TestCase
             'image' => [
                 'id',
                 'mime_type',
-                'created_at',
-                'updated_at',
+                'alt_text',
             ],
             'landing_page',
             'parent',
@@ -2726,8 +2724,7 @@ class PagesTest extends TestCase
             'image' => [
                 'id',
                 'mime_type',
-                'created_at',
-                'updated_at',
+                'alt_text',
             ],
             'children' => [
                 '*' => [
@@ -2819,8 +2816,7 @@ class PagesTest extends TestCase
             'image' => [
                 'id',
                 'mime_type',
-                'created_at',
-                'updated_at',
+                'alt_text',
             ],
             'landing_page',
             'children' => [

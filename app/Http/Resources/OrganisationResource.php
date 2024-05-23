@@ -19,6 +19,11 @@ class OrganisationResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'description' => $this->description,
+            'image' => $this->logoFile ? [
+                'id' => $this->logoFile->id,
+                'mime_type' => $this->logoFile->mime_type,
+                'alt_text' => $this->logoFile->altText,
+            ] : null,
             'url' => $this->url,
             'email' => $this->email,
             'phone' => $this->phone,

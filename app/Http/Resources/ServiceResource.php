@@ -23,6 +23,11 @@ class ServiceResource extends JsonResource
             'status' => $this->status,
             'intro' => $this->intro,
             'description' => $this->description,
+            'image' => $this->logoFile ? [
+                'id' => $this->logoFile->id,
+                'mime_type' => $this->logoFile->mime_type,
+                'alt_text' => $this->logoFile->altText,
+            ] : null,
             'wait_time' => $this->wait_time,
             'is_free' => $this->is_free,
             'fees_text' => $this->fees_text,

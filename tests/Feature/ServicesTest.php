@@ -104,7 +104,7 @@ class ServicesTest extends TestCase
     public function guest_can_list_them(): void
     {
         /** @var \App\Models\Service $service */
-        $service = Service::factory()->create();
+        $service = Service::factory()->withPngLogo()->create();
         $service->usefulInfos()->create([
             'title' => 'Did You Know?',
             'description' => 'This is a test description',
@@ -135,6 +135,11 @@ class ServicesTest extends TestCase
             'status' => $service->status,
             'intro' => $service->intro,
             'description' => $service->description,
+            'image' => [
+                'id' => $service->logoFile->id,
+                'mime_type' => $service->logoFile->mime_type,
+                'alt_text' => $service->logoFile->altText,
+            ],
             'wait_time' => $service->wait_time,
             'is_free' => $service->is_free,
             'fees_text' => $service->fees_text,
@@ -1235,6 +1240,13 @@ class ServicesTest extends TestCase
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
 
+        // SVG
+        $imageSvg = File::factory()->pendingAssignment()->imageSvg()->create();
+        // PNG
+        $imagePng = File::factory()->pendingAssignment()->imagePng()->create();
+        // JPG
+        $imageJpg = File::factory()->pendingAssignment()->imageJpg()->create();
+
         Passport::actingAs($user);
 
         $payload = [
@@ -1276,27 +1288,18 @@ class ServicesTest extends TestCase
                 ],
             ],
             'tags' => [],
-            'gallery_items' => [],
+            'gallery_items' => [
+                [
+                    'file_id' => $imageSvg->id,
+                ],
+                [
+                    'file_id' => $imagePng->id,
+                ],
+                [
+                    'file_id' => $imageJpg->id,
+                ],
+            ],
             'category_taxonomies' => [],
-        ];
-
-        // SVG
-        $imageSvg = File::factory()->pendingAssignment()->imageSvg()->create();
-        // PNG
-        $imagePng = File::factory()->pendingAssignment()->imagePng()->create();
-        // JPG
-        $imageJpg = File::factory()->pendingAssignment()->imageJpg()->create();
-
-        $payload['gallery_items'] = [
-            [
-                'file_id' => $imageSvg->id,
-            ],
-            [
-                'file_id' => $imagePng->id,
-            ],
-            [
-                'file_id' => $imageJpg->id,
-            ],
         ];
 
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -1310,6 +1313,27 @@ class ServicesTest extends TestCase
         $this->assertEquals($updateRequest->data, $payload);
 
         $this->approveUpdateRequest($updateRequest->id);
+
+        $response = $this->json('GET', '/core/v1/services/test-service-1');
+
+        $response->assertJsonFragment([
+            'file_id' => $imageSvg->id,
+            'url' => url("core/v1/services/{$response->json('data.id')}/gallery-items/$imageSvg->id"),
+            'mime_type' => $imageSvg->mime_type,
+            'alt_text' => $imageSvg->meta['alt_text'],
+        ]);
+        $response->assertJsonFragment([
+            'file_id' => $imagePng->id,
+            'url' => url("core/v1/services/{$response->json('data.id')}/gallery-items/$imagePng->id"),
+            'mime_type' => $imagePng->mime_type,
+            'alt_text' => $imagePng->meta['alt_text'],
+        ]);
+        $response->assertJsonFragment([
+            'file_id' => $imageJpg->id,
+            'url' => url("core/v1/services/{$response->json('data.id')}/gallery-items/$imageJpg->id"),
+            'mime_type' => $imageJpg->mime_type,
+            'alt_text' => $imageJpg->meta['alt_text'],
+        ]);
 
         // Get the gallery images for the service
         $contentSvg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageSvg->id")->content();
@@ -4076,6 +4100,42 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
+    public function service_admin_can_update_logo(): void
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $service = Service::factory()->create([
+            'slug' => 'test-service',
+        ]);
+        $taxonomy = Taxonomy::factory()->create();
+        $service->syncTaxonomyRelationships(new Collection([$taxonomy]));
+
+        $image = File::factory()->pendingAssignment()->imagePng()->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'logo_file_id' => $image->id,
+        ];
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->approveUpdateRequest($response->json()['id']);
+
+        $response = $this->json('GET', "/core/v1/services/{$service->id}");
+
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function global_admin_can_update_status(): void
     {
         $user = User::factory()->create()->makeGlobalAdmin();
@@ -4705,9 +4765,7 @@ class ServicesTest extends TestCase
          * @var \App\Models\User $user
          */
         $user = User::factory()->create();
-        $service = Service::factory()->create([
-            'logo_file_id' => File::factory()->create()->id,
-        ]);
+        $service = Service::factory()->withPngLogo()->create();
         $user->makeServiceAdmin($service);
         $payload = [
             'slug' => $service->slug,
@@ -4787,6 +4845,15 @@ class ServicesTest extends TestCase
 
         $this->approveUpdateRequest($updateRequest->id);
 
+        $response = $this->json('GET', '/core/v1/services/test-service');
+
+        $response->assertJsonFragment([
+            'file_id' => $image->id,
+            'url' => url("core/v1/services/$service->id/gallery-items/$image->id"),
+            'mime_type' => $image->mime_type,
+            'alt_text' => $image->meta['alt_text'],
+        ]);
+
         // Get the event image for the service location
         $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
 
@@ -4815,6 +4882,15 @@ class ServicesTest extends TestCase
 
         $this->approveUpdateRequest($updateRequest->id);
 
+        $response = $this->json('GET', '/core/v1/services/test-service');
+
+        $response->assertJsonFragment([
+            'file_id' => $image->id,
+            'url' => url("core/v1/services/$service->id/gallery-items/$image->id"),
+            'mime_type' => $image->mime_type,
+            'alt_text' => $image->meta['alt_text'],
+        ]);
+
         // Get the event image for the service location
         $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
 
@@ -4842,6 +4918,15 @@ class ServicesTest extends TestCase
         $this->assertEquals($updateRequest->data, $payload);
 
         $this->approveUpdateRequest($updateRequest->id);
+
+        $response = $this->json('GET', '/core/v1/services/test-service');
+
+        $response->assertJsonFragment([
+            'file_id' => $image->id,
+            'url' => url("/core/v1/services/$service->id/gallery-items/$image->id"),
+            'mime_type' => $image->mime_type,
+            'alt_text' => $image->meta['alt_text'],
+        ]);
 
         // Get the event image for the service location
         $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
@@ -5704,15 +5789,9 @@ class ServicesTest extends TestCase
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create();
         $user->makeOrganisationAdmin($organisation);
-        $image = Storage::disk('local')->get('/test-data/image.png');
+        $image = File::factory()->pendingAssignment()->imagePng()->create();
 
         Passport::actingAs($user);
-
-        $imageResponse = $this->json('POST', '/core/v1/files', [
-            'is_private' => false,
-            'mime_type' => 'image/png',
-            'file' => 'data:image/png;base64,' . base64_encode($image),
-        ]);
 
         $payload = [
             'organisation_id' => $organisation->id,
@@ -5755,7 +5834,7 @@ class ServicesTest extends TestCase
             'tags' => [],
             'gallery_items' => [],
             'category_taxonomies' => [],
-            'logo_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+            'logo_file_id' => $image->id,
         ];
 
         $response = $this->json('POST', '/core/v1/services', $payload);
@@ -5768,7 +5847,7 @@ class ServicesTest extends TestCase
             'updateable_id' => null,
         ]);
         $updateRequest = UpdateRequest::where('id', $updateRequestId)->firstOrFail();
-        $this->assertEquals($this->getResponseContent($imageResponse, 'data.id'), $updateRequest->data['logo_file_id']);
+        $this->assertEquals($image->id, $updateRequest->data['logo_file_id']);
 
         Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
@@ -5778,7 +5857,7 @@ class ServicesTest extends TestCase
         // Get the event image for the update request
         $response = $this->get("/core/v1/services/new/logo.png?update_request_id=$updateRequestId");
 
-        $this->assertEquals($image, $response->content());
+        $this->assertEquals($image->getContent(), $response->content());
 
         $serviceApproveResponse = $this->put(
             route(
@@ -5796,6 +5875,16 @@ class ServicesTest extends TestCase
         unset($payload['tags']);
 
         $this->assertDatabaseHas('services', $payload);
+
+        $response = $this->json('GET', "/core/v1/services/test-service");
+
+        $response->assertJsonFragment([
+            'image' => [
+                'id' => $image->id,
+                'mime_type' => $image->mime_type,
+                'alt_text' => $image->meta['alt_text'],
+            ],
+        ]);
     }
 
     /*
@@ -5808,12 +5897,7 @@ class ServicesTest extends TestCase
     public function guest_can_view_gallery_item(): void
     {
         /** @var \App\Models\File $file */
-        $file = File::factory()->create([
-            'filename' => 'random-name.png',
-            'mime_type' => 'image/png',
-        ])->upload(
-            Storage::disk('local')->get('/test-data/image.png')
-        );
+        $file = File::factory()->pendingAssignment()->imagePng()->create();
 
         /** @var \App\Models\Service $service */
         $service = Service::factory()->create();

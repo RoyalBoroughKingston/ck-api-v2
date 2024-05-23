@@ -2,16 +2,16 @@
 
 namespace App\UpdateRequest;
 
-use App\Contracts\AppliesUpdateRequests;
-use App\Http\Requests\Service\StoreRequest;
+use Carbon\Carbon;
 use App\Models\File;
 use App\Models\Service;
 use App\Models\Taxonomy;
-use App\Models\UpdateRequest;
-use Carbon\Carbon;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Arr;
+use App\Models\UpdateRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Contracts\AppliesUpdateRequests;
+use App\Http\Requests\Service\StoreRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
@@ -115,6 +115,17 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
                 $service->offerings()->create([
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
+                ]);
+            }
+        }
+
+        // Update the social media records.
+        if ($data->has('social_medias')) {
+            $service->socialMedias()->delete();
+            foreach ($data['social_medias'] as $socialMedia) {
+                $service->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
                 ]);
             }
         }

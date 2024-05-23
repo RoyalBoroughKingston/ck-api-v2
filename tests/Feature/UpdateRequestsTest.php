@@ -1031,6 +1031,7 @@ class UpdateRequestsTest extends TestCase
                 'referral_email' => $service->referral_email,
                 'referral_url' => $service->referral_url,
                 'useful_infos' => [],
+                'social_medias' => [],
                 'category_taxonomies' => $service->taxonomies()->pluck('taxonomies.id')->toArray(),
             ],
         ]);
@@ -1118,6 +1119,7 @@ class UpdateRequestsTest extends TestCase
                 ],
             ],
             'logo_file_id' => $logoImage['id'],
+            'social_medias' => [],
             'gallery_items' => [
                 [
                     'file_id' => $galleryImage1['id'],

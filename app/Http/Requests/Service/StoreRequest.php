@@ -2,26 +2,27 @@
 
 namespace App\Http\Requests\Service;
 
-use App\Http\Requests\HasMissingValues;
+use App\Rules\Slug;
 use App\Models\File;
-use App\Models\Organisation;
 use App\Models\Role;
+use App\Rules\InOrder;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
+use App\Rules\VideoEmbed;
+use App\Rules\UserHasRole;
+use App\Models\SocialMedia;
+use Carbon\CarbonImmutable;
+use App\Models\Organisation;
+use App\Rules\UkPhoneNumber;
 use App\Rules\FileIsMimeType;
-use App\Rules\FileIsPendingAssignment;
-use App\Rules\InOrder;
+use App\Rules\RootTaxonomyIs;
+use Illuminate\Validation\Rule;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
-use App\Rules\RootTaxonomyIs;
-use App\Rules\Slug;
-use App\Rules\UkPhoneNumber;
-use App\Rules\UserHasRole;
-use App\Rules\VideoEmbed;
-use Carbon\CarbonImmutable;
+use App\Rules\FileIsPendingAssignment;
+use App\Http\Requests\HasMissingValues;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -196,7 +197,16 @@ class StoreRequest extends FormRequest
             'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
             'offerings.*.order' => ['required_with:offerings.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->offerings, 'order'))],
 
-            'social_medias' => ['nullable', 'size:0'],
+            'social_medias' => ['present', 'array'],
+            'social_medias.*' => ['array'],
+            'social_medias.*.type' => ['required_with:social_medias.*', Rule::in([
+                SocialMedia::TYPE_TWITTER,
+                SocialMedia::TYPE_FACEBOOK,
+                SocialMedia::TYPE_INSTAGRAM,
+                SocialMedia::TYPE_YOUTUBE,
+                SocialMedia::TYPE_OTHER,
+            ])],
+            'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
             'gallery_items' => ['present', 'array'],
             'gallery_items.*' => ['array'],
@@ -301,6 +311,7 @@ class StoreRequest extends FormRequest
             'contact_email.email' => "Additional Info tab -  Please enter an email address users can use to contact your {$type} (eg. name@example.com).",
             'useful_infos.*.title.required_with' => 'Good to know tab - Please select a title.',
             'useful_infos.*.description.required_with' => 'Good to know tab - Please enter a description.',
+            'social_medias.*.url.url' => 'Additional info tab - Please enter a valid social media web address (eg. https://www.youtube.com/watch?v=h-2sgpokvGI).',
         ];
     }
 

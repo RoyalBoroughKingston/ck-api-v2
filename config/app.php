@@ -172,6 +172,7 @@ return [
         App\Providers\MigrationServiceProvider::class,
         App\Providers\ModelServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
         App\Providers\TestingServiceProvider::class,
         App\Providers\TwilioServiceProvider::class,
     ])->toArray(),

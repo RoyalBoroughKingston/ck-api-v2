@@ -282,6 +282,17 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
             $this->tags()->sync($tagIds);
         }
 
+        // Update the social media records.
+        if (array_key_exists('social_medias', $updateRequest->data)) {
+            $this->socialMedias()->delete();
+            foreach ($data['social_medias'] as $socialMedia) {
+                $this->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ]);
+            }
+        }
+
         // Update the gallery item records.
         if (array_key_exists('gallery_items', $data)) {
             $this->serviceGalleryItems()->delete();

@@ -63,6 +63,7 @@ class ServicePersistenceService implements DataPersistenceService
                 'referral_url' => $request->missingValue('referral_url'),
                 'useful_infos' => $request->has('useful_infos') ? [] : new MissingValue(),
                 'offerings' => $request->has('offerings') ? [] : new MissingValue(),
+                'social_medias' => $request->has('social_medias') ? [] : new MissingValue(),
                 'gallery_items' => $request->has('gallery_items') ? [] : new MissingValue(),
                 'tags' => $request->has('tags') ? [] : new MissingValue(),
                 'category_taxonomies' => $request->missingValue('category_taxonomies'),
@@ -86,6 +87,14 @@ class ServicePersistenceService implements DataPersistenceService
                 $data['offerings'][] = [
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
+                ];
+            }
+
+            // Loop through each social media.
+            foreach ($request->input('social_medias', []) as $socialMedia) {
+                $data['social_medias'][] = [
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
                 ];
             }
 
@@ -198,6 +207,14 @@ class ServicePersistenceService implements DataPersistenceService
                 $service->offerings()->create([
                     'offering' => $offering['offering'],
                     'order' => $offering['order'],
+                ]);
+            }
+
+            // Create the social media records.
+            foreach ($request->social_medias as $socialMedia) {
+                $service->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
                 ]);
             }
 

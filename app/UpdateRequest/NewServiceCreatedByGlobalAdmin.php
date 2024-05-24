@@ -120,6 +120,17 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
             }
         }
 
+        // Update the social media records.
+        if ($data->has('social_medias')) {
+            $service->socialMedias()->delete();
+            foreach ($data['social_medias'] as $socialMedia) {
+                $service->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ]);
+            }
+        }
+
         // Update the gallery item records.
         if ($data->has('gallery_items')) {
             $service->serviceGalleryItems()->delete();

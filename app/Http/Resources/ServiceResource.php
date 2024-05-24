@@ -45,6 +45,7 @@ class ServiceResource extends JsonResource
             'referral_url' => $this->referral_url,
             'useful_infos' => UsefulInfoResource::collection($this->usefulInfos),
             'offerings' => OfferingResource::collection($this->offerings),
+            'social_medias' => SocialMediaResource::collection($this->socialMedias),
             'gallery_items' => ServiceGalleryItemResource::collection($this->serviceGalleryItems),
             'tags' => TagResource::collection($this->tags),
             'category_taxonomies' => TaxonomyResource::collection($this->taxonomies),

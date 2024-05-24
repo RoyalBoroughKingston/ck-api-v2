@@ -81,11 +81,13 @@ class UpdateRequest extends FormRequest
             'social_medias.*.type' => [
                 'required_with:social_medias.*',
                 Rule::in([
-                    SocialMedia::TYPE_TWITTER,
                     SocialMedia::TYPE_FACEBOOK,
                     SocialMedia::TYPE_INSTAGRAM,
-                    SocialMedia::TYPE_YOUTUBE,
                     SocialMedia::TYPE_OTHER,
+                    SocialMedia::TYPE_TIKTOK,
+                    SocialMedia::TYPE_TWITTER,
+                    SocialMedia::TYPE_SNAPCHAT,
+                    SocialMedia::TYPE_YOUTUBE,
                 ]),
             ],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],

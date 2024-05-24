@@ -82,6 +82,8 @@ class ServiceSchema extends Schema
                     ->items(UsefulInfoSchema::create()),
                 Schema::array('offerings')
                     ->items(OfferingSchema::create()),
+                Schema::array('social_medias')
+                    ->items(SocialMediaSchema::create()),
                 Schema::array('gallery_items')
                     ->items(GalleryItemSchema::create()),
                 Schema::array('tags')

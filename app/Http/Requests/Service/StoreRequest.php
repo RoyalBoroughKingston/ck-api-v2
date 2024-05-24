@@ -2,27 +2,27 @@
 
 namespace App\Http\Requests\Service;
 
-use App\Rules\Slug;
+use App\Http\Requests\HasMissingValues;
 use App\Models\File;
+use App\Models\Organisation;
 use App\Models\Role;
-use App\Rules\InOrder;
 use App\Models\Service;
+use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
-use App\Rules\VideoEmbed;
-use App\Rules\UserHasRole;
-use App\Models\SocialMedia;
-use Carbon\CarbonImmutable;
-use App\Models\Organisation;
-use App\Rules\UkPhoneNumber;
 use App\Rules\FileIsMimeType;
-use App\Rules\RootTaxonomyIs;
-use Illuminate\Validation\Rule;
+use App\Rules\FileIsPendingAssignment;
+use App\Rules\InOrder;
 use App\Rules\MarkdownMaxLength;
 use App\Rules\MarkdownMinLength;
-use App\Rules\FileIsPendingAssignment;
-use App\Http\Requests\HasMissingValues;
+use App\Rules\RootTaxonomyIs;
+use App\Rules\Slug;
+use App\Rules\UkPhoneNumber;
+use App\Rules\UserHasRole;
+use App\Rules\VideoEmbed;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -200,11 +200,13 @@ class StoreRequest extends FormRequest
             'social_medias' => ['present', 'array'],
             'social_medias.*' => ['array'],
             'social_medias.*.type' => ['required_with:social_medias.*', Rule::in([
-                SocialMedia::TYPE_TWITTER,
                 SocialMedia::TYPE_FACEBOOK,
                 SocialMedia::TYPE_INSTAGRAM,
-                SocialMedia::TYPE_YOUTUBE,
                 SocialMedia::TYPE_OTHER,
+                SocialMedia::TYPE_TIKTOK,
+                SocialMedia::TYPE_TWITTER,
+                SocialMedia::TYPE_SNAPCHAT,
+                SocialMedia::TYPE_YOUTUBE,
             ])],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 

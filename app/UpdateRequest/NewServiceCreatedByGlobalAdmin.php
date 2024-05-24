@@ -2,18 +2,18 @@
 
 namespace App\UpdateRequest;
 
-use Carbon\Carbon;
-use App\Models\Tag;
-use App\Models\File;
-use App\Models\Service;
-use App\Models\Taxonomy;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use App\Models\UpdateRequest;
 use App\Contracts\AppliesUpdateRequests;
 use App\Http\Requests\Service\StoreRequest;
+use App\Models\File;
+use App\Models\Service;
+use App\Models\Tag;
+use App\Models\Taxonomy;
+use App\Models\UpdateRequest;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Str;
 
 class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
 {

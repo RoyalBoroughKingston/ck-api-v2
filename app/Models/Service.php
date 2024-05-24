@@ -2,33 +2,33 @@
 
 namespace App\Models;
 
-use App\Sms\Sms;
-use App\Emails\Email;
-use Carbon\CarbonImmutable;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use App\Rules\FileIsMimeType;
-use Illuminate\Http\Response;
-use App\Notifications\Notifiable;
-use App\Models\Scopes\ServiceScopes;
-use App\Notifications\Notifications;
-use Illuminate\Support\Facades\Date;
-use App\UpdateRequest\UpdateRequests;
-use ElasticScoutDriverPlus\Searchable;
-use Illuminate\Support\Facades\Storage;
 use App\Contracts\AppliesUpdateRequests;
-use App\Models\Mutators\ServiceMutators;
-use App\Http\Resources\OrganisationResource;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Contracts\Validation\Validator;
-use App\Models\Relationships\ServiceRelationships;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\TaxonomyRelationships\HasTaxonomyRelationships;
-use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
-use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use App\Emails\Email;
 use App\Http\Requests\Service\UpdateRequest as UpdateServiceRequest;
+use App\Http\Resources\OrganisationResource;
+use App\Models\Mutators\ServiceMutators;
+use App\Models\Relationships\ServiceRelationships;
+use App\Models\Scopes\ServiceScopes;
+use App\Notifications\Notifiable;
+use App\Notifications\Notifications;
+use App\Rules\FileIsMimeType;
+use App\Sms\Sms;
+use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateServiceEligibilityTaxonomyRelationships;
+use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
+use App\UpdateRequest\UpdateRequests;
+use Carbon\CarbonImmutable;
+use ElasticScoutDriverPlus\Searchable;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Str;
 
 class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
 {

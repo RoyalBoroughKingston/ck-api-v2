@@ -3947,6 +3947,98 @@ class PagesTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function updatePageWithConflictingUpdateRequestsAsContentAdmin200(): void
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create()->makeContentAdmin();
+
+        Passport::actingAs($user);
+
+        $page = Page::factory()->create();
+
+        $data1 = [
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => 'Updated text 1',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $response1 = $this->json('PUT', '/core/v1/pages/' . $page->id, $data1);
+
+        $response1->assertStatus(Response::HTTP_OK);
+
+        $updateRequest1 = UpdateRequest::find($response1->json()['id']);
+
+        $this->assertEquals($data1, $updateRequest1->data);
+
+        $data2 = [
+            'title' => 'New page title',
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'video',
+                            'title' => 'Updated video title',
+                            'url' => 'https://www.youtube.com/watch?v=dummy_id',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $response2 = $this->json('PUT', '/core/v1/pages/' . $page->id, $data2);
+
+        $response2->assertStatus(Response::HTTP_OK);
+
+        $updateRequest2 = UpdateRequest::find($response2->json()['id']);
+
+        $this->assertEquals($data2, $updateRequest2->data);
+
+        $data3 = [
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => 'Updated text 3',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $response3 = $this->json('PUT', '/core/v1/pages/' . $page->id, $data3);
+
+        $response3->assertStatus(Response::HTTP_OK);
+
+        $updateRequest3 = UpdateRequest::find($response3->json()['id']);
+
+        $this->assertEquals($data3, $updateRequest3->data);
+
+        $updateRequest1->refresh();
+
+        $this->assertTrue($updateRequest1->trashed());
+
+        $updateRequest2->refresh();
+
+        $this->assertEquals(['title' => 'New page title'], $updateRequest2->data);
+
+        $updateRequest3->refresh();
+
+        $this->assertEquals($data3, $updateRequest3->data);
+    }
+
+    /**
      * Delete page
      */
 

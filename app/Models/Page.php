@@ -9,6 +9,7 @@ use App\Models\Mutators\PageMutators;
 use App\Models\Relationships\PageRelationships;
 use App\Models\Scopes\PageScopes;
 use App\Rules\FileIsMimeType;
+use App\UpdateRequest\UpdateRequests;
 use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,6 +24,7 @@ class Page extends Model implements AppliesUpdateRequests
     use PageMutators;
     use PageScopes;
     use NodeTrait;
+    use UpdateRequests;
 
     /**
      * NodeTrait::usesSoftDelete and Laravel\Scout\Searchable::usesSoftDelete clash.

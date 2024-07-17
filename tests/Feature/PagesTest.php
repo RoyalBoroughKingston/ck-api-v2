@@ -4341,8 +4341,7 @@ class PagesTest extends TestCase
         /**
          * @var \App\Models\User $user
          */
-        $user = User::factory()->create();
-        $user->makeSuperAdmin();
+        $user = User::factory()->create()->makeGlobalAdmin();
 
         Passport::actingAs($user);
 
@@ -4368,6 +4367,8 @@ class PagesTest extends TestCase
         $updateRequest = UpdateRequest::find($response->json()['id']);
 
         $this->assertEquals($data, $updateRequest->data);
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
 
         $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
 

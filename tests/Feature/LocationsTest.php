@@ -902,6 +902,46 @@ class LocationsTest extends TestCase
         });
     }
 
+    /**
+     * @test
+     */
+    public function deleteLocationWithUpdateRequestsAsSuperAdmin200(): void
+    {
+        $service = Service::factory()->create();
+        $user = User::factory()->create()->makeGlobalAdmin();
+        $location = Location::factory()->create();
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'address_line_1' => '30-34 Aire St',
+            'address_line_2' => null,
+            'address_line_3' => null,
+            'city' => 'Leeds',
+            'county' => 'West Yorkshire',
+            'postcode' => 'LS1 4HT',
+            'country' => 'England',
+            'accessibility_info' => null,
+            'has_wheelchair_access' => false,
+            'has_induction_loop' => false,
+            'has_accessible_toilet' => false,
+        ];
+        $response = $this->json('PUT', "/core/v1/locations/{$location->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::findOrFail($response->json('id'));
+        $this->assertEquals($updateRequest->data, $payload);
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $response = $this->json('DELETE', "/core/v1/locations/{$location->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Location())->getTable(), ['id' => $location->id]);
+        $this->assertDatabaseMissing('update_requests', ['id' => $updateRequest->id, 'deleted_at' => null]);
+    }
+
     /*
      * Get a specific location's image.
      */

@@ -1479,6 +1479,40 @@ class OrganisationsTest extends TestCase
     /**
      * @test
      */
+    public function deleteOrganisationWithUpdateRequestsAsSuperAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create();
+
+        $user = User::factory()->create()->makeGlobalAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'slug' => 'test-org',
+            'name' => 'Test Org',
+            'description' => 'Test description',
+            'url' => null,
+            'email' => null,
+            'phone' => null,
+        ];
+
+        $response = $this->json('PUT', "/core/v1/organisations/{$organisation->id}", $payload);
+
+        $updateRequest = UpdateRequest::findOrFail($response->json('id'));
+        $this->assertEquals($updateRequest->data, $payload);
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Organisation())->getTable(), ['id' => $organisation->id]);
+        $this->assertDatabaseMissing('update_requests', ['id' => $updateRequest->id, 'deleted_at' => null]);
+    }
+
+    /**
+     * @test
+     */
     public function audit_created_when_deleted(): void
     {
         $this->fakeEvents();

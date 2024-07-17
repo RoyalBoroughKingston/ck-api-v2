@@ -4240,4 +4240,48 @@ class PagesTest extends TestCase
         $this->assertDatabaseMissing('pages', ['id' => $page->id]);
         $this->assertDatabaseMissing('files', ['id' => $imageId]);
     }
+
+    /**
+     * @test
+     */
+    public function deletePageWithUpdateRequestsAsSuperAdmin200(): void
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $page = Page::factory()->create();
+
+        $data = [
+            'content' => [
+                'introduction' => [
+                    'content' => [
+                        [
+                            'type' => 'copy',
+                            'value' => 'Updated text',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->json('PUT', '/core/v1/pages/' . $page->id, $data);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::find($response->json()['id']);
+
+        $this->assertEquals($data, $updateRequest->data);
+
+        $response = $this->json('DELETE', '/core/v1/pages/' . $page->id);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseMissing('pages', ['id' => $page->id]);
+        $this->assertDatabaseMissing('update_requests', ['id' => $updateRequest->id, 'deleted_at' => null]);
+    }
 }

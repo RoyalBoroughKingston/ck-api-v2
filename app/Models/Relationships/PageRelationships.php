@@ -4,8 +4,10 @@ namespace App\Models\Relationships;
 
 use App\Models\Collection;
 use App\Models\File;
+use App\Models\UpdateRequest;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Kalnoy\Nestedset\AncestorsRelation;
 
 trait PageRelationships
@@ -33,5 +35,10 @@ trait PageRelationships
     public function landingPageAncestors(): AncestorsRelation
     {
         return $this->ancestors()->where('page_type', static::PAGE_TYPE_LANDING);
+    }
+
+    public function updateRequests(): MorphMany
+    {
+        return $this->MorphMany(UpdateRequest::class, 'updateable');
     }
 }

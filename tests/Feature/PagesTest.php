@@ -4341,7 +4341,7 @@ class PagesTest extends TestCase
         /**
          * @var \App\Models\User $user
          */
-        $user = User::factory()->create()->makeGlobalAdmin();
+        $user = User::factory()->create()->makeContentAdmin();
 
         Passport::actingAs($user);
 

@@ -3152,4 +3152,39 @@ class OrganisationEventsTest extends TestCase
                 ($event->getModel()->id === $organisationEvent->id);
         });
     }
+
+    /**
+     * @test
+     */
+    public function deleteOrganisationEventWithUpdateRequestsAsSuperAdmin200(): void
+    {
+        $user = User::factory()->create()->makeGlobalAdmin();
+
+        Passport::actingAs($user);
+
+        $organisationEvent = OrganisationEvent::factory()->create([
+            'title' => 'Organisation Event Title',
+            'slug' => 'organisation-event-title',
+        ]);
+
+        $payload = [
+            'title' => 'New Event Title',
+        ];
+
+        $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::findOrFail($response->json('id'));
+        $this->assertEquals($updateRequest->data, $payload);
+
+        Passport::actingAs(User::factory()->create()->makeSuperAdmin());
+
+        $response = $this->json('DELETE', "/core/v1/organisation-events/{$organisationEvent->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseMissing((new OrganisationEvent())->getTable(), ['id' => $organisationEvent->id]);
+        $this->assertDatabaseMissing('update_requests', ['id' => $updateRequest->id, 'deleted_at' => null]);
+    }
 }

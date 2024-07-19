@@ -51,12 +51,12 @@ class PageContent implements ValidationRule
                 return;
             }
 
-            $validateMarkdown = new MarkdownMaxLength(config('local.page_copy_max_chars'), 'Description tab - The page content must be ' . config('local.page_copy_max_chars') . ' characters or fewer.');
-
-            $validateMarkdown->validate($attribute, $value['value'], fn ($msg) => $fail($msg));
-
             if (($this->pageType === 'landing' && mb_strpos($attribute, 'introduction') && empty($value['value']))) {
                 $fail('Page content is required for introduction');
+            } elseif (!empty($value['value'])) {
+                $validateMarkdown = new MarkdownMaxLength(config('local.page_copy_max_chars'), 'Description tab - The page content must be ' . config('local.page_copy_max_chars') . ' characters or fewer.');
+
+                $validateMarkdown->validate($attribute, $value['value'], fn ($msg) => $fail($msg));
             }
 
         } elseif ($value['type'] === 'cta') {

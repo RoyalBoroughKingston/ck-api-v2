@@ -105,6 +105,8 @@ class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
         // Ensure conditional fields are reset if needed.
         $organisationEvent->resetConditionalFields();
 
+        $updateRequest->updateable_id = $organisationEvent->id;
+
         return $updateRequest;
     }
 

@@ -81,6 +81,8 @@ class NewOrganisationCreatedByGlobalAdmin implements AppliesUpdateRequests
             $organisation->syncTaxonomyRelationships($taxonomies);
         }
 
+        $updateRequest->updateable_id = $organisation->id;
+
         return $updateRequest;
     }
 

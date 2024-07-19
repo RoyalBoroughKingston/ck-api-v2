@@ -167,6 +167,8 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
         // Ensure conditional fields are reset if needed.
         $service->resetConditionalFields();
 
+        $updateRequest->updateable_id = $service->id;
+
         return $updateRequest;
     }
 

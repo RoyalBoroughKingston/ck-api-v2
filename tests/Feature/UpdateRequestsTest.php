@@ -1150,6 +1150,7 @@ class UpdateRequestsTest extends TestCase
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
         $response->assertStatus(Response::HTTP_OK);
+
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'id' => $updateRequest->id,
             'actioning_user_id' => $globalAdminUser->id,

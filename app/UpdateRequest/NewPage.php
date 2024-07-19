@@ -92,6 +92,8 @@ class NewPage implements AppliesUpdateRequests
             $page->updateCollections($data['collections']);
         }
 
+        $updateRequest->updateable_id = $page->id;
+
         return $updateRequest;
     }
 

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Contracts\AppliesUpdateRequests;
-use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\Mutators\OrganisationEventMutators;
 use App\Models\Relationships\OrganisationEventRelationships;
@@ -117,12 +116,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
-        $slugGenerator = app(UniqueSlugGenerator::class);
         $data = $updateRequest->data;
-        $slug = Arr::get($data, 'slug', $this->slug);
-        if ($slug !== $this->slug) {
-            $slug = $slugGenerator->generate($slug, 'pages');
-        }
 
         // Update the Image File entity if new
         if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
@@ -139,7 +133,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $this->update([
             'organisation_id' => $this->organisation_id,
             'title' => Arr::get($data, 'title', $this->title),
-            'slug' => $slug,
+            'slug' => Arr::get($data, 'slug', $this->slug),
             'intro' => Arr::get($data, 'intro', $this->intro),
             'description' => sanitize_markdown(
                 Arr::get($data, 'description', $this->description)

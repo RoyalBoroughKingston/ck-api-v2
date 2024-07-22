@@ -8,12 +8,14 @@ use App\Models\Model;
 use App\Models\OrganisationEvent;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest as UpdateRequestModel;
+use App\Support\MissingValue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 
 class OrganisationEventPersistenceService implements DataPersistenceService
 {
     use ResizesImages;
+    use HasUniqueSlug;
 
     /**
      * Unique Slug Generator.
@@ -56,7 +58,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
             // Create the OrganisationEvent.
             $organisationEvent = OrganisationEvent::create([
                 'title' => $request->title,
-                'slug' => $this->slugGenerator->generate($request->input('slug', $request->input('title')), 'organisation_events'),
+                'slug' => $this->uniqueSlug($request->input('slug', $request->input('title')), (new OrganisationEvent())),
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'start_time' => $request->start_time,
@@ -100,12 +102,12 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Process the requested changes and either update the model or store an update request.
      */
-    public function processAsUpdateRequest(FormRequest $request, ?OrganisationEvent $event): UpdateRequestModel
+    public function processAsUpdateRequest(FormRequest $request, ?OrganisationEvent $event = null): UpdateRequestModel
     {
         return DB::transaction(function () use ($request, $event) {
             $data = array_filter_missing([
                 'title' => $request->missingValue('title'),
-                'slug' => $request->missingValue('slug'),
+                'slug' => $request->has('slug') ? $this->uniqueSlug($request->slug, $event ?? (new OrganisationEvent())) : new MissingValue(),
                 'start_date' => $request->missingValue('start_date'),
                 'end_date' => $request->missingValue('end_date'),
                 'start_time' => $request->missingValue('start_time'),

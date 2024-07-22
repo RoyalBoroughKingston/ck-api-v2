@@ -905,7 +905,7 @@ class ServicesTest extends TestCase
 
         $payload = [
             'organisation_id' => $organisation->id,
-            'slug' => 'test-service-1',
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
@@ -1173,6 +1173,79 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
+    public function createServiceWithSlugClashAsOrganisationAdmin200()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $organisation = Organisation::factory()->create();
+
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+        Passport::actingAs($user);
+
+        $service1 = Service::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-slug',
+        ]);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-slug',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'logo_file_id' => null,
+            'social_medias' => [],
+            'gallery_items' => [],
+            'tags' => [],
+            'category_taxonomies' => [],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('test-slug-1', $updateRequest->data['slug']);
+    }
+
+    /**
+     * @test
+     */
     public function global_admin_cannot_create_with_non_numeric_phone(): void
     {
         $organisation = Organisation::factory()->create();
@@ -1334,7 +1407,7 @@ class ServicesTest extends TestCase
 
         $payload = [
             'organisation_id' => $organisation->id,
-            'slug' => 'test-service-1',
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
@@ -1404,7 +1477,7 @@ class ServicesTest extends TestCase
 
         $this->approveUpdateRequest($updateRequest->id);
 
-        $response = $this->json('GET', '/core/v1/services/test-service-1');
+        $response = $this->json('GET', '/core/v1/services/test-service');
 
         $response->assertJsonFragment([
             'file_id' => $imageSvg->id,
@@ -1426,15 +1499,15 @@ class ServicesTest extends TestCase
         ]);
 
         // Get the gallery images for the service
-        $contentSvg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageSvg->id")->content();
+        $contentSvg = $this->get("/core/v1/services/test-service/gallery-items/$imageSvg->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $contentSvg);
 
-        $contentPng = $this->get("/core/v1/services/test-service-1/gallery-items/$imagePng->id")->content();
+        $contentPng = $this->get("/core/v1/services/test-service/gallery-items/$imagePng->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $contentPng);
 
-        $contentJpg = $this->get("/core/v1/services/test-service-1/gallery-items/$imageJpg->id")->content();
+        $contentJpg = $this->get("/core/v1/services/test-service/gallery-items/$imageJpg->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $contentJpg);
     }
@@ -1464,7 +1537,7 @@ class ServicesTest extends TestCase
 
         $payload = [
             'organisation_id' => $organisation->id,
-            'slug' => 'test-service-1',
+            'slug' => 'test-service',
             'name' => 'Test Service',
             'type' => Service::TYPE_SERVICE,
             'status' => Service::STATUS_INACTIVE,
@@ -1537,7 +1610,7 @@ class ServicesTest extends TestCase
 
         $this->approveUpdateRequest($updateRequest->id);
 
-        $service = Service::where('slug', 'test-service-1')->first();
+        $service = Service::where('slug', 'test-service')->first();
 
         $this->assertDatabaseHas('services', [
             'id' => $service->id,
@@ -4486,6 +4559,48 @@ class ServicesTest extends TestCase
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * @test
+     */
+    public function updateServiceWithSlugClashAsGlobalAdmin200()
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $organisation = Organisation::factory()->create();
+
+        $user = User::factory()->create()->makeGlobalAdmin();
+        Passport::actingAs($user);
+
+        $service1 = Service::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-slug',
+        ]);
+        $service1->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->firstOrFail()->id,
+        ]);
+
+        $service2 = Service::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'other-slug',
+        ]);
+        $service2->serviceTaxonomies()->create([
+            'taxonomy_id' => Taxonomy::category()->children()->firstOrFail()->id,
+        ]);
+
+        $payload = [
+            'slug' => 'test-slug',
+        ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service2->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('test-slug-1', $updateRequest->data['slug']);
     }
 
     /**

@@ -675,6 +675,7 @@ class OrganisationEventsTest extends TestCase
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
             'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -737,6 +738,7 @@ class OrganisationEventsTest extends TestCase
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
             'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -796,8 +798,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' =>
-            'A New Organisation Event',
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -851,7 +853,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -894,7 +897,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -937,7 +941,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -992,7 +997,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1041,7 +1047,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1085,7 +1092,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1176,7 +1184,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1251,7 +1260,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1309,7 +1319,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1379,7 +1390,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1468,7 +1480,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1516,20 +1529,29 @@ class OrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $response = $this->json('POST', '/core/v1/organisation-events', [
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
         ]);
@@ -1537,7 +1559,8 @@ class OrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1546,7 +1569,8 @@ class OrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1556,7 +1580,8 @@ class OrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1567,7 +1592,8 @@ class OrganisationEventsTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $response = $this->json('POST', '/core/v1/organisation-events', [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1577,6 +1603,56 @@ class OrganisationEventsTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @test
+     */
+    public function postCreateOrganisationEventCreatesUniqueSlugAsOrganisationAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $organisationEvent = OrganisationEvent::factory()->create([
+            'slug' => 'a-new-organisation-event',
+        ]);
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
+        $payload = [
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
+            'start_date' => $date,
+            'end_date' => $date,
+            'start_time' => '09:00:00',
+            'end_time' => '13:00:00',
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'organiser_name' => null,
+            'organiser_phone' => null,
+            'organiser_email' => null,
+            'organiser_url' => null,
+            'booking_title' => null,
+            'booking_summary' => null,
+            'booking_url' => null,
+            'booking_cta' => null,
+            'homepage' => false,
+            'is_virtual' => true,
+            'location_id' => null,
+            'organisation_id' => $organisation->id,
+            'category_taxonomies' => [],
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('a-new-organisation-event-1', $updateRequest->data['slug']);
     }
 
     /**
@@ -1592,7 +1668,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1653,7 +1730,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1722,7 +1800,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -1791,7 +1870,8 @@ class OrganisationEventsTest extends TestCase
         $end = $this->faker->dateTimeBetween('+1 days', '+7 days')->format('Y-m-d');
 
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $start,
             'end_date' => $end,
             'start_time' => '09:00:00',
@@ -1836,7 +1916,8 @@ class OrganisationEventsTest extends TestCase
         $end = $this->faker->dateTimeBetween('-3 days', '-1 days')->format('Y-m-d');
 
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $start,
             'end_date' => $end,
             'start_time' => '09:00:00',
@@ -1881,7 +1962,8 @@ class OrganisationEventsTest extends TestCase
         $end = $this->faker->dateTimeBetween('+1 days', '+3 days')->format('Y-m-d');
 
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $start,
             'end_date' => $end,
             'start_time' => '09:00:00',
@@ -1926,7 +2008,8 @@ class OrganisationEventsTest extends TestCase
         $end = Carbon::now()->addDay()->format('Y-m-d');
 
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $start,
             'end_date' => $end,
             'start_time' => '09:00:00',
@@ -2263,7 +2346,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2312,7 +2396,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2367,7 +2452,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2426,7 +2512,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2548,7 +2635,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2594,7 +2682,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2687,46 +2776,50 @@ class OrganisationEventsTest extends TestCase
 
         Passport::actingAs($user);
 
-        $organisationEvent = OrganisationEvent::factory()->create([
+        $organisationEvent1 = OrganisationEvent::factory()->create([
             'organisation_id' => $organisation->id,
+            'slug' => 'event-slug',
         ]);
 
-        $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
+        $organisationEvent2 = OrganisationEvent::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'other-slug',
+        ]);
+
+        $organisationEvent3 = OrganisationEvent::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'yet-another-slug',
+        ]);
+
         $payload = [
-            'title' => $this->faker->sentence(3),
-            'start_date' => $date,
-            'end_date' => $date,
-            'start_time' => '09:00:00',
-            'end_time' => '13:00:00',
-            'intro' => $this->faker->sentence(),
-            'description' => $this->faker->paragraph(),
-            'is_free' => false,
-            'fees_text' => $this->faker->sentence(),
-            'fees_url' => $this->faker->url(),
-            'organiser_name' => $this->faker->name(),
-            'organiser_phone' => random_uk_phone(),
-            'organiser_email' => $this->faker->safeEmail(),
-            'organiser_url' => $this->faker->url(),
-            'booking_title' => $this->faker->sentence(3),
-            'booking_summary' => $this->faker->sentence(),
-            'booking_url' => $this->faker->url(),
-            'booking_cta' => $this->faker->words(2, true),
-            'homepage' => false,
-            'is_virtual' => false,
-            'location_id' => $location->id,
+            'slug' => 'event-slug',
         ];
 
-        $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent->id}", $payload);
+        $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent2->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updateRequest = UpdateRequest::findOrFail($response->json('id'));
-        $this->assertEquals($updateRequest->data, $payload);
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('event-slug-1', $updateRequest->data['slug']);
 
         $this->approveUpdateRequest($updateRequest->id);
 
         // The organisation event is updated
-        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), array_merge(['id' => $organisationEvent->id], $payload));
+        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $organisationEvent2->id, 'slug' => 'event-slug-1']);
+
+        $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent3->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('event-slug-2', $updateRequest->data['slug']);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        // The organisation event is updated
+        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $organisationEvent3->id, 'slug' => 'event-slug-2']);
     }
 
     /**
@@ -2755,7 +2848,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2831,7 +2925,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',
@@ -2941,7 +3036,8 @@ class OrganisationEventsTest extends TestCase
 
         $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
         $payload = [
-            'title' => $this->faker->sentence(3),
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
             'start_date' => $date,
             'end_date' => $date,
             'start_time' => '09:00:00',

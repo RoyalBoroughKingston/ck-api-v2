@@ -3,28 +3,17 @@
 namespace App\Services\DataPersistence;
 
 use App\Contracts\DataPersistenceService;
-use App\Generators\UniqueSlugGenerator;
 use App\Models\Model;
 use App\Models\Page;
 use App\Models\UpdateRequest as UpdateRequestModel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PagePersistenceService implements DataPersistenceService
 {
     use ResizesImages;
-
-    /**
-     * Unique Slug Generator.
-     *
-     * @var \App\Generators\UniqueSlugGenerator
-     */
-    protected $slugGenerator;
-
-    public function __construct(UniqueSlugGenerator $slugGenerator)
-    {
-        $this->slugGenerator = $slugGenerator;
-    }
+    use HasUniqueSlug;
 
     /**
      * Store the model.
@@ -58,7 +47,7 @@ class PagePersistenceService implements DataPersistenceService
             $page = Page::make(
                 [
                     'title' => $request->input('title'),
-                    'slug' => $this->slugGenerator->generate($request->input('slug', $request->input('title')), 'pages'),
+                    'slug' => $request->input('slug', Str::slug($request->input('title'))),
                     'excerpt' => $request->input('excerpt'),
                     'content' => $request->input('content', []),
                     'page_type' => $request->input('page_type', Page::PAGE_TYPE_INFORMATION),

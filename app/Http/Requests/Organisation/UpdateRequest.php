@@ -4,7 +4,6 @@ namespace App\Http\Requests\Organisation;
 
 use App\Http\Requests\HasMissingValues;
 use App\Models\File;
-use App\Models\Organisation;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\CanUpdateCategoryTaxonomyRelationships;
@@ -44,8 +43,6 @@ class UpdateRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique(table(Organisation::class), 'slug')
-                    ->ignoreModel($this->organisation),
                 new Slug(),
             ],
             'name' => ['string', 'min:1', 'max:255'],

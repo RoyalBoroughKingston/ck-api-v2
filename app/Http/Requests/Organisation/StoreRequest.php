@@ -4,7 +4,6 @@ namespace App\Http\Requests\Organisation;
 
 use App\Http\Requests\HasMissingValues;
 use App\Models\File;
-use App\Models\Organisation;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\FileIsMimeType;
@@ -44,7 +43,6 @@ class StoreRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                'unique:' . table(Organisation::class) . ',slug',
                 new Slug(),
             ],
             'name' => ['required', 'string', 'min:1', 'max:255'],

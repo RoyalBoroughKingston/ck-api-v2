@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 class OrganisationPersistenceService implements DataPersistenceService
 {
     use ResizesImages;
+    use HasUniqueSlug;
 
     /**
      * Store the model.
@@ -42,7 +43,7 @@ class OrganisationPersistenceService implements DataPersistenceService
         return DB::transaction(function () use ($request) {
             // Create the Organisation.
             $organisation = Organisation::create([
-                'slug' => $request->slug,
+                'slug' => $this->uniqueSlug($request->input('slug', $request->input('name')), (new Organisation())),
                 'name' => $request->name,
                 'description' => sanitize_markdown($request->description),
                 'url' => $request->url,

@@ -45,7 +45,7 @@ class ServicePersistenceService implements DataPersistenceService
             // Initialise the data array
             $data = array_filter_missing([
                 'organisation_id' => $request->missingValue('organisation_id'),
-                'slug' => $request->has('slug') ? $this->uniqueSlug($request->slug, $service ?? (new Service())) : new MissingValue(),
+                'slug' => $request->missingValue('slug'),
                 'name' => $request->missingValue('name'),
                 'type' => $request->missingValue('type'),
                 'status' => $request->missingValue('status'),
@@ -267,22 +267,4 @@ class ServicePersistenceService implements DataPersistenceService
             return $service;
         });
     }
-
-    /**
-     * Return a unique version of the proposed slug.
-     */
-    // public function uniqueSlug(string $slug): string
-    // {
-    //     $uniqueSlug = $baseSlug = preg_replace('|\-\d$|', '', $slug);
-    //     $suffix = 1;
-    //     do {
-    //         $exists = DB::table((new Service())->getTable())->where('slug', $uniqueSlug)->exists();
-    //         if ($exists) {
-    //             $uniqueSlug = $baseSlug . '-' . $suffix;
-    //         }
-    //         $suffix++;
-    //     } while ($exists);
-
-    //     return $uniqueSlug;
-    // }
 }

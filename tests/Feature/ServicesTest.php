@@ -1238,9 +1238,31 @@ class ServicesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updateRequest = UpdateRequest::find($response->json('id'));
+        $updateRequest1 = UpdateRequest::find($response->json('id'));
 
-        $this->assertEquals('test-slug-1', $updateRequest->data['slug']);
+        $this->assertEquals('test-slug', $updateRequest1->data['slug']);
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest2 = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('test-slug', $updateRequest2->data['slug']);
+
+        $updateData = $this->approveUpdateRequest($updateRequest1->id);
+
+        $this->assertDatabaseHas('services', [
+            'id' => $updateData['updateable_id'],
+            'slug' => 'test-slug-1',
+        ]);
+
+        $updateData = $this->approveUpdateRequest($updateRequest2->id);
+
+        $this->assertDatabaseHas('services', [
+            'id' => $updateData['updateable_id'],
+            'slug' => 'test-slug-2',
+        ]);
     }
 
     /**
@@ -4600,7 +4622,14 @@ class ServicesTest extends TestCase
 
         $updateRequest = UpdateRequest::find($response->json('id'));
 
-        $this->assertEquals('test-slug-1', $updateRequest->data['slug']);
+        $this->assertEquals('test-slug', $updateRequest->data['slug']);
+
+        $this->approveUpdateRequest($updateRequest->id);
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service2->id,
+            'slug' => 'test-slug-1',
+        ]);
     }
 
     /**

@@ -772,6 +772,54 @@ class CollectionPersonasTest extends TestCase
         });
     }
 
+    /**
+     * @test
+     */
+    public function createCollectionWithUniqueSlugAsSuperAdmin201(): void
+    {
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->inRandomOrder()->firstOrFail()->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseHas('collections', [
+            'id' => $response->json('data.id'),
+            'type' => Collection::TYPE_PERSONA,
+            'slug' => 'test-persona',
+        ]);
+
+        $response = $this->json('POST', '/core/v1/collections/personas', [
+            'name' => 'Test Persona',
+            'intro' => 'Lorem ipsum',
+            'subtitle' => 'Subtitle here',
+            'order' => 2,
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->inRandomOrder()->firstOrFail()->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseHas('collections', [
+            'id' => $response->json('data.id'),
+            'type' => Collection::TYPE_PERSONA,
+            'slug' => 'test-persona-1',
+        ]);
+    }
+
     /*
      * Get a specific persona collection.
      */
@@ -1547,6 +1595,41 @@ class CollectionPersonasTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $persona->id);
         });
+    }
+
+    /**
+     * @test
+     */
+    public function updateCollectionWithUniqueSlugAsSuperAdmin200(): void
+    {
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+        $persona1 = Collection::factory()->typePersona()->create([
+            'name' => 'Test Persona',
+            'slug' => 'test-persona',
+        ]);
+        $persona2 = Collection::factory()->typePersona()->create([
+            'name' => 'Other Persona',
+            'slug' => 'other-persona',
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/collections/personas/{$persona2->id}", [
+            'name' => 'Test Persona',
+            'intro' => $persona2->meta['intro'],
+            'order' => $persona2->order,
+            'subtitle' => 'Subtitle here',
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [],
+        ]);
+
+        $this->assertDatabaseHas('collections', [
+            'id' => $persona2->id,
+            'slug' => 'test-persona-1',
+        ]);
     }
 
     /*

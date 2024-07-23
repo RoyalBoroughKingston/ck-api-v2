@@ -1089,6 +1089,54 @@ class CollectionCategoriesTest extends TestCase
         });
     }
 
+    /**
+     * @test
+     */
+    public function createCollectionWithUniqueSlugAsSuperAdmin201(): void
+    {
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+        Passport::actingAs($user);
+
+        $response = $this->json('POST', '/core/v1/collections/categories', [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => File::factory()->pendingAssignment()->imageSvg()->create()->id,
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->inRandomOrder()->firstOrFail()->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseHas('collections', [
+            'id' => $response->json('data.id'),
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'test-category',
+        ]);
+
+        $response = $this->json('POST', '/core/v1/collections/categories', [
+            'name' => 'Test Category',
+            'intro' => 'Lorem ipsum',
+            'image_file_id' => File::factory()->pendingAssignment()->imageSvg()->create()->id,
+            'order' => 1,
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [Taxonomy::category()->children()->inRandomOrder()->firstOrFail()->id],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertDatabaseHas('collections', [
+            'id' => $response->json('data.id'),
+            'type' => Collection::TYPE_CATEGORY,
+            'slug' => 'test-category-1',
+        ]);
+    }
+
     /*
      * Get a specific category collection.
      */
@@ -2346,6 +2394,41 @@ class CollectionCategoriesTest extends TestCase
                 ($event->getUser()->id === $user->id) &&
                 ($event->getModel()->id === $category->id);
         });
+    }
+
+    /**
+     * @test
+     */
+    public function updateCollectionWithUniqueSlugAsSuperAdmin200(): void
+    {
+        $user = User::factory()->create();
+        $user->makeSuperAdmin();
+        $category1 = Collection::factory()->create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+        ]);
+        $category2 = Collection::factory()->create([
+            'name' => 'Other Category',
+            'slug' => 'other-category',
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->json('PUT', "/core/v1/collections/categories/{$category2->id}", [
+            'name' => 'Test Category',
+            'intro' => $category2->meta['intro'],
+            'order' => $category2->order,
+            'image_file_id' => $category2->meta['image_file_id'],
+            'enabled' => true,
+            'homepage' => false,
+            'sideboxes' => [],
+            'category_taxonomies' => [],
+        ]);
+
+        $this->assertDatabaseHas('collections', [
+            'id' => $category2->id,
+            'slug' => 'test-category-1',
+        ]);
     }
 
     /*

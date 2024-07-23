@@ -36,8 +36,8 @@ class ServicePersistenceService implements DataPersistenceService
      * Create an update request to update or create a Service using the data from the request.
      *
      * @param Illuminate\Foundation\Http\FormRequest $request
-     * @param App\Models\Service $service
-     * @return App\Models\UpdateRequest
+     * @param \App\Models\Service $service
+     * @return \App\Models\UpdateRequest
      */
     private function processAsUpdateRequest(FormRequest $request, ?Service $service = null): UpdateRequestModel
     {

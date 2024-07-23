@@ -8,7 +8,6 @@ use App\Models\Model;
 use App\Models\OrganisationEvent;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest as UpdateRequestModel;
-use App\Support\MissingValue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 
@@ -107,7 +106,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
         return DB::transaction(function () use ($request, $event) {
             $data = array_filter_missing([
                 'title' => $request->missingValue('title'),
-                'slug' => $request->has('slug') ? $this->uniqueSlug($request->slug, $event ?? (new OrganisationEvent())) : new MissingValue(),
+                'slug' => $request->missingValue('slug'),
                 'start_date' => $request->missingValue('start_date'),
                 'end_date' => $request->missingValue('end_date'),
                 'start_time' => $request->missingValue('start_time'),

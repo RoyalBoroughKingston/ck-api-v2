@@ -8,6 +8,7 @@ use App\Models\Mutators\OrganisationEventMutators;
 use App\Models\Relationships\OrganisationEventRelationships;
 use App\Models\Scopes\OrganisationEventScopes;
 use App\Rules\FileIsMimeType;
+use App\Services\DataPersistence\HasUniqueSlug;
 use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\UpdateRequests;
@@ -28,6 +29,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     use UpdateRequests;
     use UpdateTaxonomyRelationships;
     use Searchable;
+    use HasUniqueSlug;
 
     /**
      * The attributes that should be cast to native types.
@@ -133,7 +135,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $this->update([
             'organisation_id' => $this->organisation_id,
             'title' => Arr::get($data, 'title', $this->title),
-            'slug' => Arr::get($data, 'slug', $this->slug),
+            'slug' => $this->uniqueSlug(Arr::get($data, 'slug', $this->slug), $this),
             'intro' => Arr::get($data, 'intro', $this->intro),
             'description' => sanitize_markdown(
                 Arr::get($data, 'description', $this->description)

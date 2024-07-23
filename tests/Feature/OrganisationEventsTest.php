@@ -1611,9 +1611,7 @@ class OrganisationEventsTest extends TestCase
     public function postCreateOrganisationEventCreatesUniqueSlugAsOrganisationAdmin200(): void
     {
         $organisation = Organisation::factory()->create();
-        $organisationEvent = OrganisationEvent::factory()->create([
-            'slug' => 'a-new-organisation-event',
-        ]);
+
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
 
         Passport::actingAs($user);
@@ -1650,9 +1648,104 @@ class OrganisationEventsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updateRequest = UpdateRequest::find($response->json('id'));
+        $updateRequest1 = UpdateRequest::find($response->json('id'));
 
-        $this->assertEquals('a-new-organisation-event-1', $updateRequest->data['slug']);
+        $this->assertEquals('a-new-organisation-event', $updateRequest1->data['slug']);
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest2 = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('a-new-organisation-event', $updateRequest2->data['slug']);
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $updateRequest3 = UpdateRequest::find($response->json('id'));
+
+        $this->assertEquals('a-new-organisation-event', $updateRequest3->data['slug']);
+
+        $updateRequest1 = $this->approveUpdateRequest($updateRequest1->id);
+
+        $this->assertDatabaseHas('organisation_events', [
+            'id' => $updateRequest1['updateable_id'],
+            'slug' => 'a-new-organisation-event',
+        ]);
+
+        $updateRequest2 = $this->approveUpdateRequest($updateRequest2->id);
+
+        $this->assertDatabaseHas('organisation_events', [
+            'id' => $updateRequest2['updateable_id'],
+            'slug' => 'a-new-organisation-event-1',
+        ]);
+
+        $updateRequest3 = $this->approveUpdateRequest($updateRequest3->id);
+
+        $this->assertDatabaseHas('organisation_events', [
+            'id' => $updateRequest3['updateable_id'],
+            'slug' => 'a-new-organisation-event-2',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function postCreateOrganisationEventCreatesUniqueSlugAsSuperAdmin201(): void
+    {
+        $organisation = Organisation::factory()->create();
+
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $date = $this->faker->dateTimeBetween('tomorrow', '+6 weeks')->format('Y-m-d');
+        $payload = [
+            'title' => 'A New Organisation Event',
+            'slug' => 'a-new-organisation-event',
+            'start_date' => $date,
+            'end_date' => $date,
+            'start_time' => '09:00:00',
+            'end_time' => '13:00:00',
+            'intro' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'organiser_name' => null,
+            'organiser_phone' => null,
+            'organiser_email' => null,
+            'organiser_url' => null,
+            'booking_title' => null,
+            'booking_summary' => null,
+            'booking_url' => null,
+            'booking_cta' => null,
+            'homepage' => false,
+            'is_virtual' => true,
+            'location_id' => null,
+            'organisation_id' => $organisation->id,
+            'category_taxonomies' => [],
+        ];
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertEquals('a-new-organisation-event', $response->json('data.slug'));
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertEquals('a-new-organisation-event-1', $response->json('data.slug'));
+
+        $response = $this->json('POST', '/core/v1/organisation-events', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+
+        $this->assertEquals('a-new-organisation-event-2', $response->json('data.slug'));
     }
 
     /**
@@ -2799,27 +2892,82 @@ class OrganisationEventsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updateRequest = UpdateRequest::find($response->json('id'));
+        $updateRequest1 = UpdateRequest::find($response->json('id'));
 
-        $this->assertEquals('event-slug-1', $updateRequest->data['slug']);
-
-        $this->approveUpdateRequest($updateRequest->id);
-
-        // The organisation event is updated
-        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $organisationEvent2->id, 'slug' => 'event-slug-1']);
+        $this->assertEquals('event-slug', $updateRequest1->data['slug']);
 
         $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent3->id}", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $updateRequest = UpdateRequest::find($response->json('id'));
+        $updateRequest2 = UpdateRequest::find($response->json('id'));
 
-        $this->assertEquals('event-slug-2', $updateRequest->data['slug']);
+        $this->assertEquals('event-slug', $updateRequest2->data['slug']);
 
-        $this->approveUpdateRequest($updateRequest->id);
+        $this->approveUpdateRequest($updateRequest1->id);
 
         // The organisation event is updated
-        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), ['id' => $organisationEvent3->id, 'slug' => 'event-slug-2']);
+        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), [
+            'id' => $organisationEvent2->id,
+            'slug' => 'event-slug-1',
+        ]);
+
+        $this->approveUpdateRequest($updateRequest2->id);
+
+        // The organisation event is updated
+        $this->assertDatabaseHas((new OrganisationEvent())->getTable(), [
+            'id' => $organisationEvent3->id,
+            'slug' => 'event-slug-2',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function putUpdateOrganisationEventUpdateSlugAsSuperAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $location = Location::factory()->create();
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $organisationEvent1 = OrganisationEvent::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'event-slug',
+        ]);
+
+        $organisationEvent2 = OrganisationEvent::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'other-slug',
+        ]);
+
+        $organisationEvent3 = OrganisationEvent::factory()->create([
+            'organisation_id' => $organisation->id,
+            'slug' => 'yet-another-slug',
+        ]);
+
+        $payload = [
+            'slug' => 'event-slug',
+        ];
+
+        $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent2->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseHas('organisation_events', [
+            'id' => $organisationEvent2->id,
+            'slug' => 'event-slug-1',
+        ]);
+
+        $response = $this->json('PUT', "/core/v1/organisation-events/{$organisationEvent3->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseHas('organisation_events', [
+            'id' => $organisationEvent3->id,
+            'slug' => 'event-slug-2',
+        ]);
     }
 
     /**

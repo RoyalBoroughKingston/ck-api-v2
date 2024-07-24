@@ -63,7 +63,6 @@ class UpdateRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique(table(Service::class), 'slug')->ignoreModel($this->service),
                 new Slug(),
                 new UserHasRole(
                     $this->user('api'),

@@ -144,7 +144,7 @@ class OpenActiveTaxonomyImporter
         ];
 
         if (Schema::hasColumn('taxonomies', 'slug')) {
-            $modelData['slug'] = $this->slugGenerator->generate($taxonomyData['prefLabel'], 'taxonomies');
+            $modelData['slug'] = $this->slugGenerator->generate($taxonomyData['prefLabel'], (new Taxonomy()));
         }
 
         return $modelData;

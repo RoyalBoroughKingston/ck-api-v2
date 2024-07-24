@@ -55,7 +55,7 @@ class StoreRequest extends FormRequest
                     }
                 },
             ],
-            'slug' => ['required', 'string', 'min:1', 'max:255', new Slug()],
+            'slug' => ['string', 'min:1', 'max:255', new Slug()],
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'type' => [
                 'required',

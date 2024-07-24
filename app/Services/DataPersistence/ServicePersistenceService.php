@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 class ServicePersistenceService implements DataPersistenceService
 {
     use ResizesImages;
+    use HasUniqueSlug;
 
     public function store(FormRequest $request)
     {
@@ -31,7 +32,14 @@ class ServicePersistenceService implements DataPersistenceService
         return $this->processAsUpdateRequest($request, $model);
     }
 
-    private function processAsUpdateRequest(FormRequest $request, $service = null)
+    /**
+     * Create an update request to update or create a Service using the data from the request.
+     *
+     * @param Illuminate\Foundation\Http\FormRequest $request
+     * @param \App\Models\Service $service
+     * @return \App\Models\UpdateRequest
+     */
+    private function processAsUpdateRequest(FormRequest $request, ?Service $service = null): UpdateRequestModel
     {
         return DB::transaction(function () use ($request, $service) {
             // Initialise the data array
@@ -139,12 +147,18 @@ class ServicePersistenceService implements DataPersistenceService
         });
     }
 
-    private function processAsNewEntity(FormRequest $request)
+    /**
+     * Create a new service using the data from the request.
+     *
+     * @param Illuminate\Foundation\Http\FormRequest $request
+     * @return App\Models\Service
+     */
+    private function processAsNewEntity(FormRequest $request): Service
     {
         return DB::transaction(function () use ($request) {
             $initialCreateData = [
                 'organisation_id' => $request->organisation_id,
-                'slug' => $this->uniqueSlug($request->slug),
+                'slug' => $this->uniqueSlug($request->input('slug', $request->input('title')), (new Service())),
                 'name' => $request->name,
                 'type' => $request->type,
                 'status' => $request->status,
@@ -252,23 +266,5 @@ class ServicePersistenceService implements DataPersistenceService
 
             return $service;
         });
-    }
-
-    /**
-     * Return a unique version of the proposed slug.
-     */
-    public function uniqueSlug(string $slug): string
-    {
-        $uniqueSlug = $baseSlug = preg_replace('|\-\d$|', '', $slug);
-        $suffix = 1;
-        do {
-            $exists = DB::table((new Service())->getTable())->where('slug', $uniqueSlug)->exists();
-            if ($exists) {
-                $uniqueSlug = $baseSlug . '-' . $suffix;
-            }
-            $suffix++;
-        } while ($exists);
-
-        return $uniqueSlug;
     }
 }

@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
+use App\Services\DataPersistence\HasUniqueSlug;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Arr;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
 {
+    use HasUniqueSlug;
+
     /**
      * Check if the update request is valid.
      */
@@ -41,7 +44,7 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
 
         $insert = [
             'organisation_id' => $data->get('organisation_id'),
-            'slug' => $data->get('slug'),
+            'slug' => $this->uniqueSlug($data->get('slug', $data->get('name')), (new Service())),
             'name' => $data->get('name'),
             'type' => $data->get('type'),
             'status' => $data->get('status'),

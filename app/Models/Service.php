@@ -12,6 +12,7 @@ use App\Models\Scopes\ServiceScopes;
 use App\Notifications\Notifiable;
 use App\Notifications\Notifications;
 use App\Rules\FileIsMimeType;
+use App\Services\DataPersistence\HasUniqueSlug;
 use App\Sms\Sms;
 use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateServiceEligibilityTaxonomyRelationships;
@@ -33,6 +34,7 @@ use Illuminate\Support\Str;
 class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTaxonomyRelationships
 {
     use HasFactory;
+    use HasUniqueSlug;
     use DispatchesJobs;
     use Notifications;
     use Searchable;
@@ -196,7 +198,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         // Update the service record.
         $this->update([
             'organisation_id' => Arr::get($data, 'organisation_id', $this->organisation_id),
-            'slug' => Arr::get($data, 'slug', $this->slug),
+            'slug' => $this->uniqueSlug(Arr::get($data, 'slug', $this->slug), $this),
             'name' => Arr::get($data, 'name', $this->name),
             'type' => Arr::get($data, 'type', $this->type),
             'status' => Arr::get($data, 'status', $this->status),

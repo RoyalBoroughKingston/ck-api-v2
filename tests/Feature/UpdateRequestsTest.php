@@ -1144,8 +1144,8 @@ class UpdateRequestsTest extends TestCase
             ->where('updateable_id', null)
             ->firstOrFail();
 
-        $globalAdminUser = User::factory()->create()->makeSuperAdmin();
-        Passport::actingAs($globalAdminUser);
+        $superAdminUser = User::factory()->create()->makeSuperAdmin();
+        Passport::actingAs($superAdminUser);
 
         $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve");
 
@@ -1153,7 +1153,7 @@ class UpdateRequestsTest extends TestCase
 
         $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
             'id' => $updateRequest->id,
-            'actioning_user_id' => $globalAdminUser->id,
+            'actioning_user_id' => $superAdminUser->id,
             'approved_at' => $now,
         ]);
 

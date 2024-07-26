@@ -1753,6 +1753,28 @@ class OrganisationsTest extends TestCase
     /**
      * @test
      */
+    public function deleteOrganisationWithTaxonomiesAsSuperAdmin200(): void
+    {
+        $organisation = Organisation::factory()->create();
+        $taxonomy = Taxonomy::factory()->create();
+        $organisation->syncTaxonomyRelationships(collect([$taxonomy]));
+        $user = User::factory()->create()->makeSuperAdmin();
+
+        Passport::actingAs($user);
+
+        $response = $this->json('DELETE', "/core/v1/organisations/{$organisation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDatabaseMissing((new Organisation())->getTable(), ['id' => $organisation->id]);
+        $this->assertDatabaseMissing((new OrganisationTaxonomy())->getTable(), [
+            'organisation_id' => $organisation->id,
+            'taxonomy_id' => $taxonomy->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function audit_created_when_deleted(): void
     {
         $this->fakeEvents();

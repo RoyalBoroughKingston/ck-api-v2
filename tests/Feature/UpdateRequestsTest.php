@@ -1164,6 +1164,127 @@ class UpdateRequestsTest extends TestCase
     /**
      * @test
      */
+    public function putApproveAndEditNewServiceUpdateRequestAsSuperAdmin200(): void
+    {
+        $now = Date::now();
+        Date::setTestNow($now);
+
+        $organisation = Organisation::factory()->create();
+        $taxonomy = Taxonomy::factory()->create();
+        $user = User::factory()->create()->makeGlobalAdmin();
+
+        //Given an organisation admin is logged in
+        Passport::actingAs($user);
+
+        $imagePayload = [
+            'is_private' => false,
+            'mime_type' => 'image/png',
+            'alt_text' => 'image description',
+            'file' => 'data:image/png;base64,' . self::BASE64_ENCODED_PNG,
+        ];
+
+        $response = $this->json('POST', '/core/v1/files', $imagePayload);
+        $logoImage = $this->getResponseContent($response, 'data');
+
+        $response = $this->json('POST', '/core/v1/files', $imagePayload);
+        $galleryImage1 = $this->getResponseContent($response, 'data');
+
+        $response = $this->json('POST', '/core/v1/files', $imagePayload);
+        $galleryImage2 = $this->getResponseContent($response, 'data');
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_ACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => random_uk_phone(),
+            'contact_email' => $this->faker->safeEmail(),
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'offerings' => [
+                [
+                    'offering' => 'Weekly club',
+                    'order' => 1,
+                ],
+            ],
+            'logo_file_id' => $logoImage['id'],
+            'social_medias' => [],
+            'gallery_items' => [
+                [
+                    'file_id' => $galleryImage1['id'],
+                ],
+                [
+                    'file_id' => $galleryImage2['id'],
+                ],
+            ],
+            'tags' => [],
+            'category_taxonomies' => [
+                $taxonomy->id,
+            ],
+        ];
+
+        //When they create a service
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+
+        //Then an update request should be created for the new service
+        $updateRequest = UpdateRequest::query()
+            ->where('updateable_type', UpdateRequest::NEW_TYPE_SERVICE_GLOBAL_ADMIN)
+            ->where('updateable_id', null)
+            ->firstOrFail();
+
+        $superAdminUser = User::factory()->create()->makeSuperAdmin();
+        Passport::actingAs($superAdminUser);
+
+        // Call approve endpoint with action edit flag
+        $response = $this->json('PUT', "/core/v1/update-requests/{$updateRequest->id}/approve?action=edit");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseHas((new UpdateRequest())->getTable(), [
+            'id' => $updateRequest->id,
+            'actioning_user_id' => $superAdminUser->id,
+            'approved_at' => $now,
+        ]);
+
+        $this->assertNotEmpty(Service::all());
+        $this->assertEquals(1, Service::all()->count());
+
+        // Service should be disabled
+        $this->assertDatabaseHas('services', [
+            'slug' => 'test-service',
+            'status' => Service::STATUS_INACTIVE,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function super_admin_can_approve_one_for_organisation_sign_up_form(): void
     {
         $now = Date::now();

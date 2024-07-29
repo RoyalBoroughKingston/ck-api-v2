@@ -69,6 +69,7 @@ class LocationsTest extends TestCase
                 'id' => $location->imageFile->id,
                 'mime_type' => $location->imageFile->mime_type,
                 'alt_text' => $location->imageFile->altText,
+                'url' => $location->imageFile->url(),
             ],
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,
@@ -255,6 +256,7 @@ class LocationsTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
+                'url' => $image->url(),
             ],
         ]);
 
@@ -374,6 +376,7 @@ class LocationsTest extends TestCase
                 'id' => $location->imageFile->id,
                 'mime_type' => $location->imageFile->mime_type,
                 'alt_text' => $location->imageFile->alt_text,
+                'url' => $location->imageFile->url(),
             ],
             'accessibility_info' => $location->accessibility_info,
             'has_wheelchair_access' => $location->has_wheelchair_access,

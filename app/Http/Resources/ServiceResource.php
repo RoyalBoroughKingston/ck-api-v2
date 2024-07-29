@@ -25,6 +25,7 @@ class ServiceResource extends JsonResource
             'description' => $this->description,
             'image' => $this->logoFile ? [
                 'id' => $this->logoFile->id,
+                'url' => $this->logoFile->url(),
                 'mime_type' => $this->logoFile->mime_type,
                 'alt_text' => $this->logoFile->altText,
             ] : null,

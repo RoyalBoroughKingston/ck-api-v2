@@ -31,6 +31,9 @@ class FileSchema extends Schema
                 Schema::string('src')
                     ->format(static::FORMAT_BINARY)
                     ->description('Base64 encoded string of the image'),
+                Schema::string('url')
+                    ->format(Schema::TYPE_STRING)
+                    ->description('The URL of the image file'),
                 Schema::string('created_at')
                     ->format(Schema::FORMAT_DATE_TIME)
                     ->nullable(),

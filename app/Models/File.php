@@ -107,7 +107,9 @@ class File extends Model implements Responsable
 
     public function url(): string
     {
-        return Storage::disk(config('filesystems.cloud'))->url($this->path());
+        // return Storage::disk(config('filesystems.cloud'))->url($this->path());
+
+        return route('core.v1.image.display', ['filename' => $this->filename]);
     }
 
     /**

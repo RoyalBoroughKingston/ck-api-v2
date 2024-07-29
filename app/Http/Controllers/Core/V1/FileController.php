@@ -17,7 +17,7 @@ class FileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api')->except('show');
+        $this->middleware('auth:api')->except('show', 'display');
     }
 
     /**
@@ -55,5 +55,30 @@ class FileController extends Controller
     public function show(ShowRequest $request, File $file)
     {
         return new FileResource($file);
+    }
+
+    /**
+     * Download streamed binary of an image file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function display(ShowRequest $request, string $fileName)
+    {
+        $file = File::where('filename', $fileName)->firstOrFail();
+
+        return response()->streamDownload(function () use ($request, $file) {
+            echo $file->resizedVersion($request->query('max_dimension', null))->getContent();
+        }, $file->filename, [
+            'Access-Control-Expose-Headers' => ['Content-Type', 'Content-Disposition'],
+            'Content-Type' => $file->mime_type,
+        ], 'inline');
+        // return response()->file($file->url(), [
+        //     'Access-Control-Expose-Headers' => ['Content-Type', 'Content-Disposition'],
+        //     'Content-Type' => $file->mime_type,
+        //     'Content-Disposition' => sprintf('inline; filename="%s"', $file->filename),
+        // ]);
+        // return response()->streamDownload(function () use ($file) {
+        //     return $file->toResponse();
+        // }, $file->id . File::extensionFromMime($file->mime_type));
     }
 }

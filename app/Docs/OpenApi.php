@@ -40,6 +40,7 @@ class OpenApi extends BaseOpenApi implements Responsable
                 Paths\Collections\OrganisationEvents\CollectionOrganisationEventsImagePath::create(),
                 Paths\Files\FilesRootPath::create(),
                 Paths\Files\FilesNestedPath::create(),
+                Paths\Files\ImagesNestedPath::create(),
                 Paths\Locations\LocationsRootPath::create(),
                 Paths\Locations\LocationsIndexPath::create(),
                 Paths\Locations\LocationsNestedPath::create(),

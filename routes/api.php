@@ -81,6 +81,8 @@ Route::prefix('/core/v1')
                 ->name('collection-personas.image');
 
             // Files.
+            Route::get('/images/{filename}', [Core\V1\FileController::class, 'display'])
+                ->name('image.display');
             Route::apiResource('/files', Core\V1\FileController::class)
                 ->only('store', 'show');
 

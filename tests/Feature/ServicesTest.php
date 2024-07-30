@@ -139,6 +139,7 @@ class ServicesTest extends TestCase
                 'id' => $service->logoFile->id,
                 'mime_type' => $service->logoFile->mime_type,
                 'alt_text' => $service->logoFile->altText,
+                'url' => $service->logoFile->url(),
             ],
             'wait_time' => $service->wait_time,
             'is_free' => $service->is_free,
@@ -4467,6 +4468,7 @@ class ServicesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
+                'url' => $image->url(),
             ],
         ]);
     }
@@ -6295,6 +6297,7 @@ class ServicesTest extends TestCase
                 'id' => $image->id,
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
+                'url' => $image->url(),
             ],
         ]);
     }

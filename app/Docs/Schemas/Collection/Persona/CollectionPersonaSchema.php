@@ -34,7 +34,8 @@ class CollectionPersonaSchema extends Schema
                     ->properties(
                         Schema::string('id'),
                         Schema::string('mime_type'),
-                        Schema::string('alt_text')
+                        Schema::string('alt_text'),
+                        Schema::string('url')
                     )
                     ->nullable(),
                 Schema::array('category_taxonomies')

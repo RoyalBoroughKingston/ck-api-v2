@@ -32,7 +32,8 @@ class LocationSchema extends Schema
                     ->properties(
                         Schema::string('id'),
                         Schema::string('mime_type'),
-                        Schema::string('alt_text')
+                        Schema::string('alt_text'),
+                        Schema::string('url')
                     )
                     ->nullable(),
                 Schema::string('accessibility_info')

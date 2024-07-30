@@ -72,6 +72,7 @@ class FilesTest extends TestCase
                 'alt_text' => 'image description',
                 'max_dimension' => null,
                 'src' => 'data:image/png;base64,' . base64_encode($image),
+                'url' => $service->logoFile->url(),
                 'created_at' => $service->logoFile->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $service->logoFile->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -116,6 +117,7 @@ class FilesTest extends TestCase
                 'alt_text' => 'image description',
                 'max_dimension' => null,
                 'src' => 'data:image/jpeg;base64,' . base64_encode($image),
+                'url' => $service->logoFile->url(),
                 'created_at' => $service->logoFile->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $service->logoFile->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -159,6 +161,7 @@ class FilesTest extends TestCase
                 'alt_text' => 'image description',
                 'max_dimension' => null,
                 'src' => 'data:image/svg+xml;base64,' . base64_encode($image),
+                'url' => $service->logoFile->url(),
                 'created_at' => $service->logoFile->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $service->logoFile->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -233,6 +236,7 @@ class FilesTest extends TestCase
                 'alt_text' => $image->meta['alt_text'],
                 'max_dimension' => null,
                 'src' => 'data:image/png;base64,' . base64_encode($image->getContent()),
+                'url' => $image->url(),
                 'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -261,6 +265,7 @@ class FilesTest extends TestCase
                 'alt_text' => $image->meta['alt_text'],
                 'max_dimension' => null,
                 'src' => 'data:image/jpeg;base64,' . base64_encode($image->getContent()),
+                'url' => $image->url(),
                 'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
@@ -289,11 +294,69 @@ class FilesTest extends TestCase
                 'alt_text' => $image->meta['alt_text'],
                 'max_dimension' => null,
                 'src' => 'data:image/svg+xml;base64,' . base64_encode($image->getContent()),
+                'url' => $image->url(),
                 'created_at' => $image->created_at->format(CarbonImmutable::ISO8601),
                 'updated_at' => $image->updated_at->format(CarbonImmutable::ISO8601),
             ],
         ]);
 
         $this->assertEquals('data:image/svg+xml;base64,' . base64_encode(Storage::disk('local')->get('/test-data/image.svg')), $response->json('data.src'));
+    }
+
+    /**
+     * @test
+     */
+    public function displayPngFileAsGuest200()
+    {
+        $image = File::factory()->pendingAssignment()->imagePng()->create();
+        $service = Service::factory()->create([
+            'logo_file_id' => $image->id,
+        ]);
+
+        $response = $this->get("/core/v1/images/$image->filename");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertHeader('Content-Disposition', 'inline; filename=' . $image->filename);
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $response->streamedContent());
+    }
+
+    /**
+     * @test
+     */
+    public function displayJpegFileAsGuest200()
+    {
+        $image = File::factory()->pendingAssignment()->imageJpg()->create();
+        $service = Service::factory()->create([
+            'logo_file_id' => $image->id,
+        ]);
+
+        $response = $this->get("/core/v1/images/$image->filename");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertHeader('Content-Disposition', 'inline; filename=' . $image->filename);
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $response->streamedContent());
+    }
+
+    /**
+     * @test
+     */
+    public function displaySvgFileAsGuest200()
+    {
+        $image = File::factory()->pendingAssignment()->imageSvg()->create();
+        $service = Service::factory()->create([
+            'logo_file_id' => $image->id,
+        ]);
+
+        $response = $this->get("/core/v1/images/$image->filename");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertHeader('Content-Disposition', 'inline; filename=' . $image->filename);
+
+        $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $response->streamedContent());
     }
 }

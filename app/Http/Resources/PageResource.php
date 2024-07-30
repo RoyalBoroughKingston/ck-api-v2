@@ -24,6 +24,7 @@ class PageResource extends JsonResource
             'page_type' => $this->page_type,
             'image' => $this->image ? [
                 'id' => $this->image->id,
+                'url' => $this->image->url(),
                 'mime_type' => $this->image->mime_type,
                 'alt_text' => $this->image->altText,
             ] : null,

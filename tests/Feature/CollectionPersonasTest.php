@@ -2026,6 +2026,8 @@ class CollectionPersonasTest extends TestCase
         ]);
         $imageResponse->assertStatus(Response::HTTP_CREATED);
 
+        $file = File::find($this->getResponseContent($imageResponse, 'data.id'));
+
         $response = $this->json('POST', '/core/v1/collections/personas', [
             'name' => 'Test Persona',
             'intro' => 'Lorem ipsum',
@@ -2035,16 +2037,17 @@ class CollectionPersonasTest extends TestCase
             'homepage' => false,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
-            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+            'image_file_id' => $file->id,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
 
         $response->assertJsonFragment([
             'image' => [
-                'id' => $this->getResponseContent($imageResponse, 'data.id'),
+                'id' => $file->id,
                 'mime_type' => 'image/png',
                 'alt_text' => 'image description',
+                'url' => $file->url(),
             ],
         ]);
         $collectionArray = $this->getResponseContent($response)['data'];

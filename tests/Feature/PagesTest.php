@@ -2660,6 +2660,7 @@ class PagesTest extends TestCase
                 'id',
                 'mime_type',
                 'alt_text',
+                'url',
             ],
             'landing_page',
             'children' => [
@@ -2711,6 +2712,7 @@ class PagesTest extends TestCase
                 'id',
                 'mime_type',
                 'alt_text',
+                'url',
             ],
             'landing_page',
             'parent',
@@ -2775,6 +2777,7 @@ class PagesTest extends TestCase
                 'id',
                 'mime_type',
                 'alt_text',
+                'url',
             ],
             'children' => [
                 '*' => [
@@ -2867,6 +2870,7 @@ class PagesTest extends TestCase
                 'id',
                 'mime_type',
                 'alt_text',
+                'url',
             ],
             'landing_page',
             'children' => [

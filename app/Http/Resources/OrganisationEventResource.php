@@ -22,6 +22,7 @@ class OrganisationEventResource extends JsonResource
             'description' => $this->description,
             'image' => $this->imageFile ? [
                 'id' => $this->imageFile->id,
+                'url' => $this->imageFile->url(),
                 'mime_type' => $this->imageFile->mime_type,
                 'alt_text' => $this->imageFile->altText,
             ] : null,

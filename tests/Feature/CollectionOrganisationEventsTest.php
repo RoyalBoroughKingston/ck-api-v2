@@ -331,6 +331,7 @@ class CollectionOrganisationEventsTest extends TestCase
             'image_file_id',
             'image' => [
                 'id',
+                'url',
                 'mime_type',
                 'alt_text',
             ],
@@ -367,6 +368,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -786,6 +788,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -817,6 +820,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -848,6 +852,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1580,6 +1585,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1611,6 +1617,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1642,6 +1649,7 @@ class CollectionOrganisationEventsTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -2060,6 +2068,8 @@ class CollectionOrganisationEventsTest extends TestCase
         ]);
         $imageResponse->assertStatus(Response::HTTP_CREATED);
 
+        $file = File::find($this->getResponseContent($imageResponse, 'data.id'));
+
         $response = $this->json('POST', '/core/v1/collections/organisation-events', [
             'name' => 'Test Organisation Event',
             'intro' => 'Lorem ipsum',
@@ -2067,7 +2077,7 @@ class CollectionOrganisationEventsTest extends TestCase
             'enabled' => true,
             'sideboxes' => [],
             'category_taxonomies' => [$randomCategory->id],
-            'image_file_id' => $this->getResponseContent($imageResponse, 'data.id'),
+            'image_file_id' => $file->id,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -2077,7 +2087,8 @@ class CollectionOrganisationEventsTest extends TestCase
 
         $response->assertJsonFragment([
             'image' => [
-                'id' => $this->getResponseContent($imageResponse, 'data.id'),
+                'id' => $file->id,
+                'url' => $file->url(),
                 'mime_type' => 'image/png',
                 'alt_text' => 'image description',
             ],

@@ -625,6 +625,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -662,6 +663,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -699,6 +701,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1561,6 +1564,7 @@ class CollectionCategoriesTest extends TestCase
             'image_file_id' => $image->id,
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1708,6 +1712,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1741,6 +1746,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -1774,6 +1780,7 @@ class CollectionCategoriesTest extends TestCase
         $response->assertJsonFragment([
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],
@@ -2003,6 +2010,7 @@ class CollectionCategoriesTest extends TestCase
             'image_file_id' => $image->id,
             'image' => [
                 'id' => $image->id,
+                'url' => $image->url(),
                 'mime_type' => $image->mime_type,
                 'alt_text' => $image->meta['alt_text'],
             ],

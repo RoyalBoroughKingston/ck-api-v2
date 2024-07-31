@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\File;
 use App\Models\User;
@@ -420,6 +421,127 @@ class ServiceLocationsTest extends TestCase
                 ],
             ],
             'created_at' => $serviceLocation->created_at->format(CarbonImmutable::ISO8601),
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getServiceLocationWithWeeklyFrequencyNextOccursAsGuest(): void
+    {
+        $location = Location::factory()->create();
+        $service = Service::factory()->create();
+        $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
+        $regularOpeningHour = RegularOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'frequency' => RegularOpeningHour::FREQUENCY_WEEKLY,
+            'weekday' => RegularOpeningHour::WEEKDAY_MONDAY,
+            'opens_at' => '09:00:00',
+            'closes_at' => '17:30:00',
+        ]);
+
+        Date::setTestNow(Carbon::parse('31st July 2024'));
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-08-05',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getServiceLocationWithMonthlyFrequencyNextOccursAsGuest(): void
+    {
+        $location = Location::factory()->create();
+        $service = Service::factory()->create();
+        $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
+        $regularOpeningHour = RegularOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'frequency' => RegularOpeningHour::FREQUENCY_MONTHLY,
+            'day_of_month' => 28,
+            'opens_at' => '09:00:00',
+            'closes_at' => '17:30:00',
+        ]);
+
+        Date::setTestNow(Carbon::parse('31st July 2024'));
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-08-28',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getServiceLocationWithFortnightlyFrequencyNextOccursAsGuest(): void
+    {
+        $location = Location::factory()->create();
+        $service = Service::factory()->create();
+        $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
+        $regularOpeningHour = RegularOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'frequency' => RegularOpeningHour::FREQUENCY_FORTNIGHTLY,
+            'starts_at' => '2024-07-30',
+            'opens_at' => '09:00:00',
+            'closes_at' => '17:30:00',
+        ]);
+
+        Date::setTestNow(Carbon::parse('31st July 2024'));
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-08-13',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getServiceLocationWithNthOccurringFrequencyNextOccursAsGuest(): void
+    {
+        $location = Location::factory()->create();
+        $service = Service::factory()->create();
+        $serviceLocation = $service->serviceLocations()->create(['location_id' => $location->id]);
+        $regularOpeningHour = RegularOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'frequency' => RegularOpeningHour::FREQUENCY_NTH_OCCURRENCE_OF_MONTH,
+            'weekday' => RegularOpeningHour::WEEKDAY_MONDAY,
+            'occurrence_of_month' => 5,
+            'opens_at' => '09:00:00',
+            'closes_at' => '17:30:00',
+        ]);
+
+        Date::setTestNow(Carbon::parse('31st July 2024'));
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-08-26',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
         ]);
     }
 

@@ -452,6 +452,26 @@ class ServiceLocationsTest extends TestCase
                 'end_time' => $regularOpeningHour->closes_at->toString(),
             ],
         ]);
+
+        HolidayOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'is_closed' => false,
+            'starts_at' => '2024-08-02',
+            'ends_at' => '2024-08-09',
+            'opens_at' => '10:00:00',
+            'closes_at' => '16:00:00',
+        ]);
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-08-05',
+                'start_time' => '10:00:00',
+                'end_time' => '16:00:00',
+            ],
+        ]);
     }
 
     /**
@@ -482,6 +502,23 @@ class ServiceLocationsTest extends TestCase
                 'end_time' => $regularOpeningHour->closes_at->toString(),
             ],
         ]);
+
+        HolidayOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'starts_at' => '2024-08-26',
+            'ends_at' => '2024-08-30',
+        ]);
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-09-28',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
+        ]);
     }
 
     /**
@@ -501,6 +538,23 @@ class ServiceLocationsTest extends TestCase
         ]);
 
         Date::setTestNow(Carbon::parse('31st July 2024'));
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-08-13',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
+        ]);
+
+        HolidayOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'starts_at' => '2024-08-05',
+            'ends_at' => '2024-08-09',
+        ]);
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
 
@@ -539,6 +593,23 @@ class ServiceLocationsTest extends TestCase
         $response->assertJsonFragment([
             'next_occurs' => [
                 'date' => '2024-08-26',
+                'start_time' => $regularOpeningHour->opens_at->toString(),
+                'end_time' => $regularOpeningHour->closes_at->toString(),
+            ],
+        ]);
+
+        HolidayOpeningHour::factory()->create([
+            'service_location_id' => $serviceLocation->id,
+            'starts_at' => '2024-08-26',
+            'ends_at' => '2024-08-30',
+        ]);
+
+        $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'next_occurs' => [
+                'date' => '2024-09-30',
                 'start_time' => $regularOpeningHour->opens_at->toString(),
                 'end_time' => $regularOpeningHour->closes_at->toString(),
             ],

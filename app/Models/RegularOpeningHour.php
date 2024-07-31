@@ -9,6 +9,7 @@ use App\Support\Time;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use DateTime;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Date;
 
@@ -107,10 +108,10 @@ class RegularOpeningHour extends Model
     /**
      * Get the next open times.
      *
-     * @param Date $from
+     * @param DateTimeInterface $from
      * @return DateTime
      */
-    public function nextOpenDate(?Date $from = null): DateTime
+    public function nextOpenDate(?DateTimeInterface $from = null): DateTime
     {
         $fromDate = $from ? (new Carbon($from)) : Carbon::now();
         $fromDate->settings(['monthOverflow' => false]);

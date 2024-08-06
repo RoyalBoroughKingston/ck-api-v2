@@ -91,11 +91,13 @@ class ServicePersistenceService implements DataPersistenceService
             }
 
             // Loop through each offering.
-            foreach ($request->input('offerings', []) as $offering) {
-                $data['offerings'][] = [
-                    'offering' => $offering['offering'],
-                    'order' => $offering['order'],
-                ];
+            if (config('flags.offerings')) {
+                foreach ($request->input('offerings', []) as $offering) {
+                    $data['offerings'][] = [
+                        'offering' => $offering['offering'],
+                        'order' => $offering['order'],
+                    ];
+                }
             }
 
             // Loop through each social media.
@@ -114,11 +116,13 @@ class ServicePersistenceService implements DataPersistenceService
             }
 
             // Loop through each tag.
-            foreach ($request->input('tags', []) as $tag) {
-                $data['tags'][] = [
-                    'slug' => Str::slug($tag['slug']),
-                    'label' => $tag['label'],
-                ];
+            if (config('flags.service_tags')) {
+                foreach ($request->input('tags', []) as $tag) {
+                    $data['tags'][] = [
+                        'slug' => Str::slug($tag['slug']),
+                        'label' => $tag['label'],
+                    ];
+                }
             }
 
             $updateableType = UpdateRequestModel::EXISTING_TYPE_SERVICE;
@@ -217,11 +221,13 @@ class ServicePersistenceService implements DataPersistenceService
             }
 
             // Create the offering records.
-            foreach ($request->offerings as $offering) {
-                $service->offerings()->create([
-                    'offering' => $offering['offering'],
-                    'order' => $offering['order'],
-                ]);
+            if (config('flags.offerings')) {
+                foreach ($request->offerings as $offering) {
+                    $service->offerings()->create([
+                        'offering' => $offering['offering'],
+                        'order' => $offering['order'],
+                    ]);
+                }
             }
 
             // Create the social media records.

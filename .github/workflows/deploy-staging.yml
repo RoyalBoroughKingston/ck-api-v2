@@ -1,0 +1,99 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - 'develop'
+  workflow_dispatch:
+
+env:
+  ENVIRONMENT: 'staging'
+  ECR_REPOSITORY: ${{vars.REPO_URI_STAGING}}
+  CLUSTER: ${{vars.CLUSTER_STAGING}}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            app
+            bootstrap
+            config
+            database
+            docker
+            elastic
+            lang
+            public
+            resources
+            routes
+            storage
+            artisan
+            composer.json
+            composer.lock
+            develop
+            package.json
+            package-lock.json
+            webpack.mix.js
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{vars.AWS_ACCESS_KEY_ID_STAGING}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY_STAGING}}
+          AWS_DEFAULT_REGION: ${{vars.AWS_DEFAULT_REGION_STAGING}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Login to Docker
+        run: echo ${DOCKER_PWD} | docker login --username ${DOCKER_USER} --password-stdin
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PWD: ${{secrets.DOCKER_PWD}}
+
+      - name: Install composer dependencies
+        run: ./develop composer install --no-dev --optimize-autoloader
+
+      - name: Install NPM dependencies
+        run: |
+          ./develop npm ci
+          ./develop npm run prod
+          rm -rf node_modules
+
+      - name: Download the secret
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            ENV_FILE, ${{env.ENV_SECRET_ID}}
+        env:
+          ENV_SECRET_ID: .env.api.${{env.ENVIRONMENT}}
+        shell: bash
+        run: echo "$ENV_FILE" | jq '.SecretString' >> .env
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Force new AWS ECS deployment
+        run: |
+          aws ecs update-service --cluster ${{env.CLUSTER}} --service api --force-new-deployment
+          aws ecs update-service --cluster ${{env.CLUSTER}} --service scheduler --force-new-deployment
+          aws ecs update-service --cluster ${{env.CLUSTER}} --service queue-worker --force-new-deployment
+        shell: bash

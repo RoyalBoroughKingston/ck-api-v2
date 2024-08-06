@@ -1,0 +1,41 @@
+name: Run All Tests
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches: ['develop']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Docker
+        run: echo ${DOCKER_PWD} | docker login --username ${DOCKER_USER} --password-stdin
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PWD: ${{secrets.DOCKER_PWD}}
+      - name: Build the Docker image
+        run: ./develop build
+      - name: Run the image
+        run: ./develop up -d
+      - name: Install NPM dependencies
+        run: ./develop npm ci
+      - name: Build the Javascript app
+        run: ./develop npm run dev
+      - name: Install Composer dependencies
+        run: ./develop composer install
+      - name: Configure Laravel app
+        run: |
+          ./develop run --rm -T app mv .env.example .env
+          ./develop artisan key:generate
+          ./develop artisan passport:keys
+      - name: Lint code
+        run: ./develop composer test:style
+      - name: Run tests
+        run: ./develop composer test:unit

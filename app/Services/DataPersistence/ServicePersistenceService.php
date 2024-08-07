@@ -36,8 +36,8 @@ class ServicePersistenceService implements DataPersistenceService
      * Create an update request to update or create a Service using the data from the request.
      *
      * @param Illuminate\Foundation\Http\FormRequest $request
-     * @param \App\Models\Service $service
-     * @return \App\Models\UpdateRequest
+     * @param Service $service
+     * @return UpdateRequestModel
      */
     private function processAsUpdateRequest(FormRequest $request, ?Service $service = null): UpdateRequestModel
     {
@@ -198,7 +198,7 @@ class ServicePersistenceService implements DataPersistenceService
             }
 
             // Create the service record.
-            /** @var \App\Models\Service $service */
+            /** @var Service $service */
             $service = Service::create($initialCreateData);
 
             if ($request->filled('gallery_items')) {

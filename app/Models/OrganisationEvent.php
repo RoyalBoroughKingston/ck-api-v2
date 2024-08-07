@@ -122,7 +122,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
         // Update the Image File entity if new
         if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::findOrFail($data['image_file_id'])->assigned();
 
             // Create resized version for common dimensions.
@@ -215,7 +215,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @return File|Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {

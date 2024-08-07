@@ -440,7 +440,7 @@ class ServiceLocationsTest extends TestCase
             'closes_at' => '17:30:00',
         ]);
 
-        Date::setTestNow(Carbon::parse('31st July 2024'));
+        Carbon::setTestNow(Carbon::parse('31st July 2024 12:00:00'));
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
 
@@ -490,7 +490,7 @@ class ServiceLocationsTest extends TestCase
             'closes_at' => '17:30:00',
         ]);
 
-        Date::setTestNow(Carbon::parse('31st July 2024'));
+        Carbon::setTestNow(Carbon::parse('31st July 2024'));
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
 
@@ -537,7 +537,7 @@ class ServiceLocationsTest extends TestCase
             'closes_at' => '17:30:00',
         ]);
 
-        Date::setTestNow(Carbon::parse('31st July 2024'));
+        Carbon::setTestNow(Carbon::parse('31st July 2024'));
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
 
@@ -585,7 +585,7 @@ class ServiceLocationsTest extends TestCase
             'closes_at' => '17:30:00',
         ]);
 
-        Date::setTestNow(Carbon::parse('31st July 2024'));
+        Carbon::setTestNow(Carbon::parse('31st July 2024'));
 
         $response = $this->json('GET', "/core/v1/service-locations/{$serviceLocation->id}");
 

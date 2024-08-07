@@ -28,7 +28,7 @@ class FileController extends Controller
     public function store(StoreRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::create([
                 'filename' => uuid() . File::extensionFromMime($request->mime_type),
                 'mime_type' => $request->mime_type,

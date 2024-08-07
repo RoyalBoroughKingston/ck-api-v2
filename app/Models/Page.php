@@ -216,7 +216,7 @@ class Page extends Model implements AppliesUpdateRequests
             $currentImage = $this->image;
 
             if ($imageId) {
-                /** @var \App\Models\File $file */
+                /** @var File $file */
                 $file = File::findOrFail($imageId)->assigned();
 
                 // Create resized version for common dimensions.

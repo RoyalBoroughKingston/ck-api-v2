@@ -77,7 +77,7 @@ class NewOrganisationEventCreatedByOrgAdmin implements AppliesUpdateRequests
         ]);
 
         if ($data->has('image_file_id') && !empty($data->get('image_file_id'))) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::findOrFail($data->get('image_file_id'))->assigned();
 
             // Create resized version for common dimensions.

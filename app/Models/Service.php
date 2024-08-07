@@ -186,7 +186,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
         // Update the Logo File entity if new
         if (Arr::get($data, 'logo_file_id', $this->logo_file_id) !== $this->logo_file_id && !empty($data['logo_file_id'])) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
             // Create resized version for common dimensions.
@@ -299,7 +299,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
         if (array_key_exists('gallery_items', $data)) {
             $this->serviceGalleryItems()->delete();
             foreach ($data['gallery_items'] as $galleryItem) {
-                /** @var \App\Models\File $file */
+                /** @var File $file */
                 $file = File::findOrFail($galleryItem['file_id'])->assigned();
 
                 // Create resized version for common dimensions.
@@ -408,7 +408,7 @@ class Service extends Model implements AppliesUpdateRequests, Notifiable, HasTax
 
     /**
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @return File|Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

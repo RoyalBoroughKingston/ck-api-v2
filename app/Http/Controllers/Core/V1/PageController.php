@@ -102,7 +102,7 @@ class PageController extends Controller
 
         event(EndpointHit::onRead($request, "Viewed page [{$page->id}]", $page));
 
-        return new pageResource($page);
+        return new PageResource($page);
     }
 
     /**

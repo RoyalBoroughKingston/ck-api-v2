@@ -18,7 +18,7 @@ class PagePersistenceService implements DataPersistenceService
     /**
      * Store the model.
      *
-     * @return \App\Models\UpdateRequest|\App\Models\OrganisationEvent
+     * @return UpdateRequestModel|\App\Models\OrganisationEvent
      */
     public function store(FormRequest $request)
     {
@@ -95,7 +95,7 @@ class PagePersistenceService implements DataPersistenceService
 
                 $data['page_type'] = $data['page_type'] ?? Page::PAGE_TYPE_INFORMATION;
             }
-            /** @var \App\Models\UpdateRequest $updateRequest */
+            /** @var UpdateRequestModel $updateRequest */
             $updateRequest = new UpdateRequestModel([
                 'updateable_type' => $updateableType,
                 'updateable_id' => $page->id ?? null,

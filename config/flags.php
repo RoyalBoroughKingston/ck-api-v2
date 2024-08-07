@@ -21,5 +21,5 @@ return [
     /**
      * Flag to allow the 'What we offer' fields.
      */
-    'offerings' => env('SERVICE_OFFERINGS', false),
+    'offerings' => env('SERVICE_OFFERINGS', true),
 ];

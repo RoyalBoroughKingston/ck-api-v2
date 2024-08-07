@@ -91,7 +91,7 @@ class NewServiceCreatedByGlobalAdmin implements AppliesUpdateRequests
 
         // Update the logo file
         if ($data->get('logo_file_id')) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
             // Create resized version for common dimensions.

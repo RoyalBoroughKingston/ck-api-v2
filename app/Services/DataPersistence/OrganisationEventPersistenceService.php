@@ -19,7 +19,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Unique Slug Generator.
      *
-     * @var \App\Generators\UniqueSlugGenerator
+     * @var UniqueSlugGenerator
      */
     protected $slugGenerator;
 
@@ -31,7 +31,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
     /**
      * Store the model.
      *
-     * @return \App\Models\UpdateRequest|\App\Models\OrganisationEvent
+     * @return UpdateRequestModel|OrganisationEvent
      */
     public function store(FormRequest $request)
     {
@@ -143,7 +143,7 @@ class OrganisationEventPersistenceService implements DataPersistenceService
             if (!$event) {
                 $updateableType = UpdateRequestModel::NEW_TYPE_ORGANISATION_EVENT;
             }
-            /** @var \App\Models\UpdateRequest $updateRequest */
+            /** @var UpdateRequestModel $updateRequest */
             $updateRequest = new UpdateRequestModel([
                 'updateable_type' => $updateableType,
                 'updateable_id' => $event->id ?? null,

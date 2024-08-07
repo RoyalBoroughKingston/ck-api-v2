@@ -26,7 +26,7 @@ class ApproveController extends Controller
      * Update the specified resource in storage.
      *
      * @throws \Exception
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, UpdateRequest $updateRequest)
     {

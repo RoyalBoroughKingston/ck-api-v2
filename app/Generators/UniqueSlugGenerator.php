@@ -11,7 +11,7 @@ use RuntimeException;
 class UniqueSlugGenerator
 {
     /**
-     * @var \Illuminate\Database\DatabaseManager
+     * @var DatabaseManager
      */
     protected $db;
 

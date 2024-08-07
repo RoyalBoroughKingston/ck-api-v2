@@ -157,10 +157,10 @@ class File extends Model implements Responsable
 
         // Create the resized version if it doesn't exist.
         if ($file === null) {
-            /** @var \App\ImageTools\Resizer $resizer */
+            /** @var Resizer $resizer */
             $resizer = resolve(Resizer::class);
 
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = static::create([
                 'filename' => $this->filename,
                 'mime_type' => $this->mime_type,
@@ -213,10 +213,10 @@ class File extends Model implements Responsable
 
         // Create the resized version if it doesn't exist.
         if ($file === null) {
-            /** @var \App\ImageTools\Resizer $resizer */
+            /** @var Resizer $resizer */
             $resizer = resolve(Resizer::class);
 
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = static::create([
                 'filename' => "$placeholderFor.png",
                 'mime_type' => static::MIME_TYPE_PNG,

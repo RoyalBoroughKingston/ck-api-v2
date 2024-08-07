@@ -130,7 +130,7 @@ class Organisation extends Model implements AppliesUpdateRequests, HasTaxonomyRe
 
     /**
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @return File|Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderLogo(int $maxDimension = null)
     {

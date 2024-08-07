@@ -229,7 +229,7 @@ class UpdateRequest extends FormRequest
                 )),
             ],
 
-            'offerings' => ['array'],
+            'offerings' => ['nullable', 'array'],
             'offerings.*' => ['array'],
             'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
             'offerings.*.order' => [

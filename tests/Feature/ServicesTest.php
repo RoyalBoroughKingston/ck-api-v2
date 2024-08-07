@@ -1110,6 +1110,72 @@ class ServicesTest extends TestCase
     /**
      * @test
      */
+    public function organisation_admin_can_create_one_without_offerings_field_if_offerings_flag_is_false(): void
+    {
+        config(['flags.offerings' => true]);
+        $organisation = Organisation::factory()->create();
+        $user = User::factory()->create()->makeOrganisationAdmin($organisation);
+
+        Passport::actingAs($user);
+
+        $payload = [
+            'organisation_id' => $organisation->id,
+            'slug' => 'test-service',
+            'name' => 'Test Service',
+            'type' => Service::TYPE_SERVICE,
+            'status' => Service::STATUS_INACTIVE,
+            'intro' => 'This is a test intro',
+            'description' => 'Lorem ipsum',
+            'wait_time' => null,
+            'is_free' => true,
+            'fees_text' => null,
+            'fees_url' => null,
+            'testimonial' => null,
+            'video_embed' => null,
+            'url' => $this->faker->url(),
+            'contact_name' => $this->faker->name(),
+            'contact_phone' => null,
+            'contact_email' => $this->faker->safeEmail(),
+            'show_referral_disclaimer' => false,
+            'referral_method' => Service::REFERRAL_METHOD_NONE,
+            'referral_button_text' => null,
+            'referral_email' => null,
+            'referral_url' => null,
+            'cqc_location_id' => $this->faker->numerify('#-#########'),
+            'ends_at' => null,
+            'useful_infos' => [
+                [
+                    'title' => 'Did you know?',
+                    'description' => 'Lorem ipsum',
+                    'order' => 1,
+                ],
+            ],
+            'tags' => [],
+            'social_medias' => [
+
+                [
+                    'type' => SocialMedia::TYPE_INSTAGRAM,
+                    'url' => 'https://www.instagram.com/ayupdigital/',
+                ],
+            ],
+            'gallery_items' => [],
+            'category_taxonomies' => [],
+        ];
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        config(['flags.offerings' => false]);
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment($payload);
+    }
+
+    /**
+     * @test
+     */
     public function organisation_admin_cannot_create_an_active_one(): void
     {
         $organisation = Organisation::factory()->create();

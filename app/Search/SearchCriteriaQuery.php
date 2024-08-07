@@ -74,7 +74,7 @@ class SearchCriteriaQuery
     protected $eligibilities;
 
     /**
-     * @var \App\Support\Coordinate|null
+     * @var Coordinate|null
      */
     protected $location;
 

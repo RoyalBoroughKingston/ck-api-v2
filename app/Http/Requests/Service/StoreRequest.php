@@ -192,10 +192,10 @@ class StoreRequest extends FormRequest
             'useful_infos.*.description' => ['required_with:useful_infos.*', 'string', new MarkdownMinLength(1), new MarkdownMaxLength(config('local.useful_info_description_max_chars'))],
             'useful_infos.*.order' => ['required_with:useful_infos.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->useful_infos, 'order'))],
 
-            'offerings' => ['present', 'array'],
+            'offerings' => ['present_if_flagged', 'array'],
             'offerings.*' => ['array'],
             'offerings.*.offering' => ['required_with:offerings.*', 'string', 'min:1', 'max:255'],
-            'offerings.*.order' => ['required_with:offerings.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->offerings, 'order'))],
+            'offerings.*.order' => ['required_with:offerings.*', 'integer', 'min:1', new InOrder(array_pluck_multi($this->offerings ?: [], 'order'))],
 
             'social_medias' => ['present', 'array'],
             'social_medias.*' => ['array'],

@@ -18,7 +18,7 @@ class OrganisationPersistenceService implements DataPersistenceService
     /**
      * Store the model.
      *
-     * @return \App\Models\UpdateRequest|\App\Models\Organisation
+     * @return UpdateRequest|Organisation
      */
     public function store(FormRequest $request)
     {

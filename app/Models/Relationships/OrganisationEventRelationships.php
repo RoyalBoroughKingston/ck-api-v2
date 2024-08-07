@@ -44,7 +44,7 @@ trait OrganisationEventRelationships
     /**
      * Return the image relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function imageFile(): BelongsTo
     {

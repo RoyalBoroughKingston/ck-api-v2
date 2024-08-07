@@ -4,7 +4,6 @@ namespace App\Http\Requests\OrganisationEvent;
 
 use App\Http\Requests\HasMissingValues;
 use App\Models\File;
-use App\Models\OrganisationEvent;
 use App\Models\Role;
 use App\Models\Taxonomy;
 use App\Models\UserRole;
@@ -49,7 +48,6 @@ class UpdateRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique(table(OrganisationEvent::class), 'slug')->ignoreModel($this->organisation_event),
                 new Slug(),
                 new UserHasRole(
                     $this->user('api'),
@@ -165,7 +163,7 @@ class UpdateRequest extends FormRequest
             'image_file_id' => [
                 'nullable',
                 'exists:files,id',
-                new FileIsMimeType(File::MIME_TYPE_PNG),
+                new FileIsMimeType(File::MIME_TYPE_PNG, File::MIME_TYPE_JPG, File::MIME_TYPE_JPEG, File::MIME_TYPE_SVG),
                 new FileIsPendingAssignment(),
             ],
             'category_taxonomies' => [

@@ -4,7 +4,6 @@ namespace App\Docs\Schemas\Page;
 
 use App\Docs\Schemas\Collection\Category\CollectionCategorySchema;
 use App\Docs\Schemas\Collection\Persona\CollectionPersonaSchema;
-use App\Docs\Schemas\File\FileSchema;
 use App\Models\Page;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\BaseObject;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
@@ -29,7 +28,14 @@ class PageSchema extends Schema
                         Page::PAGE_TYPE_INFORMATION,
                         Page::PAGE_TYPE_LANDING
                     ),
-                FileSchema::create('image'),
+                Schema::object('image')
+                    ->properties(
+                        Schema::string('id'),
+                        Schema::string('mime_type'),
+                        Schema::string('alt_text'),
+                        Schema::string('url')
+                    )
+                    ->nullable(),
                 PageListItemSchema::create('landing_page'),
                 PageListItemSchema::create('parent'),
                 Schema::array('children')

@@ -4,7 +4,6 @@ namespace App\Http\Requests\Organisation;
 
 use App\Http\Requests\HasMissingValues;
 use App\Models\File;
-use App\Models\Organisation;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
 use App\Rules\CanUpdateCategoryTaxonomyRelationships;
@@ -44,8 +43,6 @@ class UpdateRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique(table(Organisation::class), 'slug')
-                    ->ignoreModel($this->organisation),
                 new Slug(),
             ],
             'name' => ['string', 'min:1', 'max:255'],
@@ -81,11 +78,13 @@ class UpdateRequest extends FormRequest
             'social_medias.*.type' => [
                 'required_with:social_medias.*',
                 Rule::in([
-                    SocialMedia::TYPE_TWITTER,
                     SocialMedia::TYPE_FACEBOOK,
                     SocialMedia::TYPE_INSTAGRAM,
-                    SocialMedia::TYPE_YOUTUBE,
                     SocialMedia::TYPE_OTHER,
+                    SocialMedia::TYPE_TIKTOK,
+                    SocialMedia::TYPE_TWITTER,
+                    SocialMedia::TYPE_SNAPCHAT,
+                    SocialMedia::TYPE_YOUTUBE,
                 ]),
             ],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],

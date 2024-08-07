@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\Service;
 use App\Models\Taxonomy;
 use App\Models\UpdateRequest;
+use App\Services\DataPersistence\HasUniqueSlug;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Arr;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
 {
+    use HasUniqueSlug;
+
     /**
      * Check if the update request is valid.
      */
@@ -41,7 +44,7 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
 
         $insert = [
             'organisation_id' => $data->get('organisation_id'),
-            'slug' => $data->get('slug'),
+            'slug' => $this->uniqueSlug($data->get('slug', $data->get('name')), (new Service())),
             'name' => $data->get('name'),
             'type' => $data->get('type'),
             'status' => $data->get('status'),
@@ -88,7 +91,7 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
 
         // Update the logo file
         if ($data->get('logo_file_id')) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::findOrFail($data['logo_file_id'])->assigned();
 
             // Create resized version for common dimensions.
@@ -119,6 +122,17 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
             }
         }
 
+        // Update the social media records.
+        if ($data->has('social_medias')) {
+            $service->socialMedias()->delete();
+            foreach ($data['social_medias'] as $socialMedia) {
+                $service->socialMedias()->create([
+                    'type' => $socialMedia['type'],
+                    'url' => $socialMedia['url'],
+                ]);
+            }
+        }
+
         // Update the gallery item records.
         if ($data->has('gallery_items')) {
             $service->serviceGalleryItems()->delete();
@@ -137,6 +151,8 @@ class NewServiceCreatedByOrgAdmin implements AppliesUpdateRequests
 
         // Ensure conditional fields are reset if needed.
         $service->resetConditionalFields();
+
+        $updateRequest->updateable_id = $service->id;
 
         return $updateRequest;
     }

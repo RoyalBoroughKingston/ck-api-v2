@@ -258,7 +258,7 @@ class UpdateRequest extends FormRequest
             ],
             'social_medias.*.url' => ['required_with:social_medias.*', 'url', 'max:255'],
 
-            'gallery_items' => ['array'],
+            'gallery_items' => ['array', 'max:' . config('local.max_gallery_images')],
             'gallery_items.*' => ['array'],
             'gallery_items.*.file_id' => [
                 'required_with:gallery_items.*',

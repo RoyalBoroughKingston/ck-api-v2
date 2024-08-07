@@ -1482,6 +1482,8 @@ class ServicesTest extends TestCase
      */
     public function organisation_admin_can_create_one_with_gallery_items(): void
     {
+        // Set the max number of gallery images to 2
+        config(['local.max_gallery_images' => 2]);
         $organisation = Organisation::factory()->create();
         $user = User::factory()->create()->makeOrganisationAdmin($organisation);
 
@@ -1553,6 +1555,13 @@ class ServicesTest extends TestCase
             ],
             'category_taxonomies' => [],
         ];
+
+        $response = $this->json('POST', '/core/v1/services', $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        // Set the max number of gallery images to 5
+        config(['local.max_gallery_images' => 5]);
 
         $response = $this->json('POST', '/core/v1/services', $payload);
 
@@ -5283,6 +5292,8 @@ class ServicesTest extends TestCase
      */
     public function service_admin_can_update_gallery_items(): void
     {
+        // Set the max number of gallery images to 2
+        config(['local.max_gallery_images' => 2]);
         $service = Service::factory()->create([
             'slug' => 'test-service',
             'status' => Service::STATUS_ACTIVE,
@@ -5296,15 +5307,32 @@ class ServicesTest extends TestCase
         Passport::actingAs($user);
 
         // SVG
-        $image = File::factory()->pendingAssignment()->imageSvg()->create();
+        $imageSvg = File::factory()->pendingAssignment()->imageSvg()->create();
+        // PNG
+        $imagePng = File::factory()->pendingAssignment()->imagePng()->create();
+        // JPG
+        $imageJpg = File::factory()->pendingAssignment()->imageJpg()->create();
 
         $payload = [
             'gallery_items' => [
                 [
-                    'file_id' => $image->id,
+                    'file_id' => $imageSvg->id,
+                ],
+                [
+                    'file_id' => $imagePng->id,
+                ],
+                [
+                    'file_id' => $imageJpg->id,
                 ],
             ],
         ];
+
+        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        // Set the max number of gallery images to 5
+        config(['local.max_gallery_images' => 5]);
 
         $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
 
@@ -5321,88 +5349,38 @@ class ServicesTest extends TestCase
         $response = $this->json('GET', '/core/v1/services/test-service');
 
         $response->assertJsonFragment([
-            'file_id' => $image->id,
-            'url' => url("core/v1/services/$service->id/gallery-items/$image->id"),
-            'mime_type' => $image->mime_type,
-            'alt_text' => $image->meta['alt_text'],
+            'file_id' => $imageSvg->id,
+            'url' => url("core/v1/services/$service->id/gallery-items/$imageSvg->id"),
+            'mime_type' => $imageSvg->mime_type,
+            'alt_text' => $imageSvg->meta['alt_text'],
         ]);
 
-        // Get the event image for the service location
-        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
+        // Get the gallery item image
+        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$imageSvg->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.svg'), $content);
 
-        // PNG
-        $image = File::factory()->pendingAssignment()->imagePng()->create();
-
-        $payload = [
-            'gallery_items' => [
-                [
-                    'file_id' => $image->id,
-                ],
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-
-        $response->assertStatus(Response::HTTP_OK);
-
-        $response->assertJsonFragment(['data' => $payload]);
-
-        $updateRequest = UpdateRequest::find($response->json('id'));
-
-        $this->assertEquals($updateRequest->data, $payload);
-
-        $this->approveUpdateRequest($updateRequest->id);
-
-        $response = $this->json('GET', '/core/v1/services/test-service');
-
         $response->assertJsonFragment([
-            'file_id' => $image->id,
-            'url' => url("core/v1/services/$service->id/gallery-items/$image->id"),
-            'mime_type' => $image->mime_type,
-            'alt_text' => $image->meta['alt_text'],
+            'file_id' => $imagePng->id,
+            'url' => url("core/v1/services/$service->id/gallery-items/$imagePng->id"),
+            'mime_type' => $imagePng->mime_type,
+            'alt_text' => $imagePng->meta['alt_text'],
         ]);
 
-        // Get the event image for the service location
-        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
+        // Get the gallery item image
+        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$imagePng->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.png'), $content);
 
-        // JPG
-        $image = File::factory()->pendingAssignment()->imageJpg()->create();
-
-        $payload = [
-            'gallery_items' => [
-                [
-                    'file_id' => $image->id,
-                ],
-            ],
-        ];
-
-        $response = $this->json('PUT', "/core/v1/services/{$service->id}", $payload);
-
-        $response->assertStatus(Response::HTTP_OK);
-
-        $response->assertJsonFragment(['data' => $payload]);
-
-        $updateRequest = UpdateRequest::find($response->json('id'));
-
-        $this->assertEquals($updateRequest->data, $payload);
-
-        $this->approveUpdateRequest($updateRequest->id);
-
-        $response = $this->json('GET', '/core/v1/services/test-service');
-
         $response->assertJsonFragment([
-            'file_id' => $image->id,
-            'url' => url("/core/v1/services/$service->id/gallery-items/$image->id"),
-            'mime_type' => $image->mime_type,
-            'alt_text' => $image->meta['alt_text'],
+            'file_id' => $imageJpg->id,
+            'url' => url("core/v1/services/$service->id/gallery-items/$imageJpg->id"),
+            'mime_type' => $imageJpg->mime_type,
+            'alt_text' => $imageJpg->meta['alt_text'],
         ]);
 
-        // Get the event image for the service location
-        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$image->id")->content();
+        // Get the gallery item image
+        $content = $this->get("/core/v1/services/$service->slug/gallery-items/$imageJpg->id")->content();
 
         $this->assertEquals(Storage::disk('local')->get('/test-data/image.jpg'), $content);
     }

@@ -81,8 +81,10 @@ Route::prefix('/core/v1')
                 ->name('collection-personas.image');
 
             // Files.
+            Route::get('/images/{filename}', [Core\V1\FileController::class, 'display'])
+                ->name('image.display');
             Route::apiResource('/files', Core\V1\FileController::class)
-                ->only('store');
+                ->only('store', 'show');
 
             // Locations.
             Route::match(['GET', 'POST'], '/locations/index', [Core\V1\LocationController::class, 'index']);

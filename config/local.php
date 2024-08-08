@@ -98,4 +98,9 @@ return [
      * Page copy character limit.
      */
     'page_copy_max_chars' => env('PAGE_COPY_MAX_CHARS', 60000),
+
+    /**
+     * Max number of gallery images per service.
+     */
+    'max_gallery_images' => env('SERVICE_MAX_GALLERY_IMAGES', 5),
 ];

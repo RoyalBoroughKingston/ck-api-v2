@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Contracts\AppliesUpdateRequests;
-use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\Page\UpdateRequest as UpdatePageRequest;
 use App\Models\Mutators\PageMutators;
 use App\Models\Relationships\PageRelationships;
 use App\Models\Scopes\PageScopes;
 use App\Rules\FileIsMimeType;
+use App\Services\DataPersistence\HasUniqueSlug;
+use App\UpdateRequest\UpdateRequests;
 use ElasticScoutDriverPlus\Searchable;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,6 +24,8 @@ class Page extends Model implements AppliesUpdateRequests
     use PageMutators;
     use PageScopes;
     use NodeTrait;
+    use UpdateRequests;
+    use HasUniqueSlug;
 
     /**
      * NodeTrait::usesSoftDelete and Laravel\Scout\Searchable::usesSoftDelete clash.
@@ -213,7 +216,7 @@ class Page extends Model implements AppliesUpdateRequests
             $currentImage = $this->image;
 
             if ($imageId) {
-                /** @var \App\Models\File $file */
+                /** @var File $file */
                 $file = File::findOrFail($imageId)->assigned();
 
                 // Create resized version for common dimensions.
@@ -280,17 +283,12 @@ class Page extends Model implements AppliesUpdateRequests
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
-        $slugGenerator = app(UniqueSlugGenerator::class);
         $data = $updateRequest->data;
-        $slug = Arr::get($data, 'slug', $this->slug);
-        if ($slug !== $this->slug) {
-            $slug = $slugGenerator->generate($slug, 'pages');
-        }
 
         // Update the page record.
         $this->update([
             'title' => Arr::get($data, 'title', $this->title),
-            'slug' => $slug,
+            'slug' => Arr::has($data, 'slug') ? $this->uniqueSlug(Arr::get($data, 'slug'), $this) : $this->slug,
             'excerpt' => Arr::get($data, 'excerpt', $this->excerpt),
             'content' => Arr::get($data, 'content', $this->content),
             'page_type' => Arr::get($data, 'page_type', $this->page_type),

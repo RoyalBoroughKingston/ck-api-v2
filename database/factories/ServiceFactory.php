@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\File;
 use App\Models\Service;
 use App\Models\SocialMedia;
 use App\Models\Taxonomy;
@@ -47,6 +48,24 @@ class ServiceFactory extends Factory
         return $this->state(function () {
             return [
                 'score' => $this->faker->numberBetween(1, 5),
+            ];
+        });
+    }
+
+    public function withJpgLogo()
+    {
+        return $this->state(function () {
+            return [
+                'logo_file_id' => File::factory()->imageJpg()->create(),
+            ];
+        });
+    }
+
+    public function withPngLogo()
+    {
+        return $this->state(function () {
+            return [
+                'logo_file_id' => File::factory()->imagePng()->create(),
             ];
         });
     }

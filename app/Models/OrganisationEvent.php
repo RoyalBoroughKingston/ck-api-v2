@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Contracts\AppliesUpdateRequests;
-use App\Generators\UniqueSlugGenerator;
 use App\Http\Requests\OrganisationEvent\UpdateRequest as UpdateOrganisationEventRequest;
 use App\Models\Mutators\OrganisationEventMutators;
 use App\Models\Relationships\OrganisationEventRelationships;
 use App\Models\Scopes\OrganisationEventScopes;
 use App\Rules\FileIsMimeType;
+use App\Services\DataPersistence\HasUniqueSlug;
 use App\TaxonomyRelationships\HasTaxonomyRelationships;
 use App\TaxonomyRelationships\UpdateTaxonomyRelationships;
 use App\UpdateRequest\UpdateRequests;
@@ -29,6 +29,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
     use UpdateRequests;
     use UpdateTaxonomyRelationships;
     use Searchable;
+    use HasUniqueSlug;
 
     /**
      * The attributes that should be cast to native types.
@@ -117,16 +118,11 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
      */
     public function applyUpdateRequest(UpdateRequest $updateRequest): UpdateRequest
     {
-        $slugGenerator = app(UniqueSlugGenerator::class);
         $data = $updateRequest->data;
-        $slug = Arr::get($data, 'slug', $this->slug);
-        if ($slug !== $this->slug) {
-            $slug = $slugGenerator->generate($slug, 'pages');
-        }
 
         // Update the Image File entity if new
         if (Arr::get($data, 'image_file_id', $this->image_file_id) !== $this->image_file_id && !empty($data['image_file_id'])) {
-            /** @var \App\Models\File $file */
+            /** @var File $file */
             $file = File::findOrFail($data['image_file_id'])->assigned();
 
             // Create resized version for common dimensions.
@@ -139,7 +135,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
         $this->update([
             'organisation_id' => $this->organisation_id,
             'title' => Arr::get($data, 'title', $this->title),
-            'slug' => $slug,
+            'slug' => $this->uniqueSlug(Arr::get($data, 'slug', $this->slug), $this),
             'intro' => Arr::get($data, 'intro', $this->intro),
             'description' => sanitize_markdown(
                 Arr::get($data, 'description', $this->description)
@@ -219,7 +215,7 @@ class OrganisationEvent extends Model implements AppliesUpdateRequests, HasTaxon
 
     /**
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException|\InvalidArgumentException
-     * @return \App\Models\File|\Illuminate\Http\Response|\Illuminate\Contracts\Support\Responsable
+     * @return File|Response|\Illuminate\Contracts\Support\Responsable
      */
     public static function placeholderImage(int $maxDimension = null)
     {
